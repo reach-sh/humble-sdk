@@ -1,9 +1,8 @@
-import { initHumbleSDK, getPoolAnnouncer } from "humble-sdk";
+import { initHumbleSDK, getPoolAnnouncer, createReachAPI } from "humble-sdk";
 import {
-  Bright,
-  FgBlue,
-  FgGreen,
-  FgYellow,
+  Blue,
+  Green,
+  Yellow,
   fromArgs,
   getAccountFromArgs,
   iout,
@@ -16,27 +15,18 @@ import { runAnnouncerTest } from "./runAnnouncerTest.mjs";
 import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
 
-const reach = useReach();
-
-// TEST NOTES
-// POOL=76796988 ALGO / GAR on TestNet
-
 // init SDK
-/**
- * Default options are:
- * {
- *  connector: "ALGO",
- *  network: "TestNet",
- * }
- */
 initHumbleSDK();
+const reach = createReachAPI();
+
+console.log(reach.providerEnvByName("TestNet"));
 
 (async () => {
-  console.log(Bright(FgBlue(`ANNOUNCER: ${getPoolAnnouncer()}`)));
-  console.log(Bright(FgYellow(`Creating account ...`)));
+  Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
+  Yellow(`Creating account ...`);
   const args = process.argv.slice(2);
   const acc = await getAccountFromArgs(args);
-  console.log(Bright(FgGreen(`Connected ${reach.formatAddress(acc)}`)));
+  Green(`Connected ${reach.formatAddress(acc)}`);
 
   /* "Swap" requires a list of commands to be present */
   const swapArgs = getSwapArgs(args);

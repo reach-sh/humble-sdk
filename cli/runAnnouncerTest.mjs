@@ -1,37 +1,27 @@
 import { subscribeToPoolStream } from "humble-sdk";
-import {
-  Bright,
-  exitWithMsgs,
-  FgBlue,
-  FgRed,
-  FgYellow,
-  iout,
-} from "./utils.mjs";
+import { exitWithMsgs, Blue, Red, Yellow, iout } from "./utils.mjs";
 
 let exitTimeout;
-const LIMIT = 100;
+const LIMIT = 2;
 const TIMEOUT = 10;
 const pools = new Set();
 
 /** Attach to pool announcer and list a subset of pools */
 export function runAnnouncerTest(acc) {
-  console.log(Bright(FgBlue(`Running ANNOUNCER`)));
-  console.log(Bright(FgYellow(`Attaching pool listener ...`)));
+  Blue(`Running ANNOUNCER`);
+  Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
-    onPoolReceived(msg) {
-      Bright(FgBlue(msg));
-    },
-
+    onPoolReceived: (msg) => Blue(msg),
     onPoolFetched,
   });
-  console.log(Bright(FgBlue(`Listening for up to ${LIMIT} pools.`)));
+  Blue(`Listening for up to ${LIMIT} pools.`);
   resetTimer();
 }
 
 /** HELPER | When a pool is received, fetch details and reset the timer */
 async function onPoolFetched({ succeeded, poolAddress, data, message }) {
   if (pools.size >= LIMIT) return;
-  if (!succeeded) return console.log(Bright(FgRed(message)));
+  if (!succeeded) return Red(message);
 
   pools.add(poolAddress);
   iout(`\t * Fetched "${poolAddress}" (${pools.size} of ${LIMIT})`, data.pool);
@@ -42,8 +32,7 @@ async function onPoolFetched({ succeeded, poolAddress, data, message }) {
 function resetTimer() {
   if (exitTimeout) clearTimeout(exitTimeout);
   exitTimeout = setTimeout(stopTest, TIMEOUT * 1000);
-  const m = `\t * Auto-timeout in ${TIMEOUT}s`;
-  console.log(Bright(FgBlue(m)));
+  Blue(`\t * Auto-timeout in ${TIMEOUT}s`);
 }
 
 /** End CLI */

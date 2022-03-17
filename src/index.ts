@@ -1,6 +1,9 @@
 import { loadStdlib } from "@reach-sh/stdlib";
 import { ChainSymbol, loadReach, SDKOpts } from "./reach-helpers";
 import { setPoolAnnouncer, setSlippage } from "./constants";
+import dotenv from "dotenv";
+
+dotenv.config({ path: "./../.env" });
 
 let initialized = false;
 
@@ -22,15 +25,13 @@ function setSDKOpts(opts: SDKOpts) {
 }
 
 type Provider = "TestNet" | "MainNet";
-const ANNOUNCERS: Record<Provider, any> = {
-  // HumbleSwap dev environment
-  TestNet: process.env.ANNOUNCER_TESTNET,
-  // @TODO: update when we have mainnet announcer
-  MainNet: process.env.ANNOUNCER_MAINNET,
-};
 
 function getAnnouncerForEnv(opts: SDKOpts) {
   const { network = "TestNet" } = opts; // Get reach ready for global SDK use
+  const ANNOUNCERS: Record<Provider, any> = {
+    TestNet: process.env.ANNOUNCER_TESTNET,
+    MainNet: process.env.ANNOUNCER_MAINNET,
+  };
   return ANNOUNCERS[validateNetwork(network)];
 }
 

@@ -1,5 +1,9 @@
 # HumbleSwap SDK Tests
 
+<header>
+  <img src="./../logo-white.svg" width="80" height="auto">
+</header>
+
 This directory contains a command-line utility for testing specific HumbleSwap SDK functionality. 
 
 ## Table of contents

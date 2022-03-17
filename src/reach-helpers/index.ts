@@ -9,9 +9,7 @@ export const NETWORKS: T.NetworksMap = {
   ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 },
 };
 /** `@reach-helper` `StdLib` instance */
-const UNINSTANTIATED = `
-QUACK! ReachStdlib is not instantiated. See "@jackcom/reachduck" docs for info.
-`;
+const UNINSTANTIATED = `HumbleSDK is not instantiated!`;
 let reach: T.ReachStdLib;
 
 /** `@reach-helper` Global default reach object */
@@ -74,18 +72,20 @@ function loadProviderEnv(
     token = process.env.INDEXER_MAINNET;
   }
 
+  const humbleServer = `https://algod${domain}`;
+  const humbleIndexer = `https://api${domain}`;
   const env = {
-    ALGO_SERVER: `https://algod${domain}`,
+    ALGO_SERVER: humbleServer,
     ALGO_PORT: "",
-    ALGO_INDEXER_SERVER: `https://api${domain}`,
+    ALGO_INDEXER_SERVER: humbleIndexer,
     ALGO_INDEXER_PORT: "",
     REACH_ISOLATED_NETWORK: "no",
 
     ...overrides,
   };
 
-  if (!overrides.ALGO_TOKEN) env.ALGO_TOKEN = token;
-  if (!overrides.ALGO_INDEXER_TOKEN) env.ALGO_INDEXER_TOKEN = token;
+  if (env.ALGO_SERVER === humbleServer) env.ALGO_TOKEN = token;
+  if (env.ALGO_INDEXER_TOKEN === humbleIndexer) env.ALGO_INDEXER_TOKEN = token;
 
   return env as T.AlgoEnvOverride;
 }

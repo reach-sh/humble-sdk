@@ -1,11 +1,15 @@
-# HumbleSDK <img src="./logo-white.svg" width="80" height="auto"> | Methods
+# HumbleSDK | Methods
+
+<header>
+  <img src="./logo-white.svg" width="80" height="auto">
+</header>
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).\
 Methods are listed below, along with usage examples where possible.
 
 ## Table of contents
 The following methods are exported from the SDK:
-- [HumbleSDK <img src="./logo-white.svg" width="80" height="auto"> | Methods](#humblesdk---methods)
+- [HumbleSDK | Methods](#humblesdk--methods)
   - [Table of contents](#table-of-contents)
   - [initHumbleSDK](#inithumblesdk)
       - [initHumbleSDK Example](#inithumblesdk-example)

@@ -306,8 +306,8 @@ export async function Admin(ctcTop, interact) {
         kind: 'to',
         tok: undefined
         });
-      const v2101 = '                                                                                                ';
-      const v2102 = '                                ';
+      const v2101 = '������������������������������������������������������������������������������������������������';
+      const v2102 = '��������������������������������';
       const v2103 = stdlib.simTokenNew(sim_r, v2085, v2086, v2101, v2102, stdlib.UInt_max, undefined);
       const v2104 = await txn1.getOutput('internal', 'v2103', ctc3, v2103);
       sim_r.isHalt = false;
@@ -331,8 +331,8 @@ export async function Admin(ctcTop, interact) {
   ;
   ;
   ;
-  const v2101 = '                                                                                                ';
-  const v2102 = '                                ';
+  const v2101 = '������������������������������������������������������������������������������������������������';
+  const v2102 = '��������������������������������';
   const v2103 = undefined;
   const v2104 = await txn1.getOutput('internal', 'v2103', ctc3, v2103);
   const txn2 = await (ctc.sendrecv({
@@ -474,7 +474,7 @@ export async function Admin(ctcTop, interact) {
         stdlib.assert(v2754, {
           at: './util.rsh:278:10:application',
           fs: ['at ./index.rsh:103:49:application call to "doConsensusHarvest" (defined at: ./util.rsh:272:94:function exp)', 'at ./index.rsh:103:28:application call to [unknown function] (defined at: ./index.rsh:103:28:function exp)'],
-          msg: 'Thou art not the harvester                                      ',
+          msg: 'Thou art not the harvester��������������������������������������',
           who: 'Admin'
           });
         const v2760 = stdlib.sub(v2125, v2748);
@@ -604,14 +604,14 @@ export async function Admin(ctcTop, interact) {
           stdlib.assert(v3301, {
             at: './util.rsh:185:4:application',
             fs: ['at ./index.rsh:186:39:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-            msg: 'muldiv(amtA, amtB, minted) >= minted                            ',
+            msg: 'muldiv(amtA, amtB, minted) >= minted����������������������������',
             who: 'Admin'
             });
           const v3302 = stdlib.le(v3111, v2127);
           stdlib.assert(v3302, {
             at: './util.rsh:186:4:application',
             fs: ['at ./index.rsh:186:39:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-            msg: 'minted <= poolBalance                                           ',
+            msg: 'minted <= poolBalance�������������������������������������������',
             who: 'Admin'
             });
           v3297 = v3111;
@@ -627,7 +627,7 @@ export async function Admin(ctcTop, interact) {
           stdlib.assert(v3314, {
             at: './util.rsh:166:4:application',
             fs: ['at ./index.rsh:187:34:application call to [unknown function] (defined at: ./util.rsh:160:87:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-            msg: 'result <= poolBalance                                           ',
+            msg: 'result <= poolBalance�������������������������������������������',
             who: 'Admin'
             });
           v3297 = v3313;
@@ -1036,7 +1036,7 @@ export async function Harvester_harvest(ctcTop, interact) {
   stdlib.assert(v2172, {
     at: './util.rsh:264:9:application',
     fs: ['at ./index.rsh:101:33:application call to "doAssumeHarvest" (defined at: ./util.rsh:262:54:function exp)', 'at ./index.rsh:101:15:application call to [unknown function] (defined at: ./index.rsh:101:15:function exp)', 'at ./index.rsh:101:15:application call to [unknown function] (defined at: ./index.rsh:101:15:function exp)', 'at ./index.rsh:79:19:application call to "runHarvester_harvest0_164" (defined at: ./index.rsh:100:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'Thou art not the harvester                                      ',
+    msg: 'Thou art not the harvester��������������������������������������',
     who: 'Harvester_harvest'
     });
   const v2173 = v2167.newProtocolFee;
@@ -1134,7 +1134,7 @@ export async function Harvester_harvest(ctcTop, interact) {
           stdlib.assert(v2754, {
             at: './util.rsh:278:10:application',
             fs: ['at ./index.rsh:103:49:application call to "doConsensusHarvest" (defined at: ./util.rsh:272:94:function exp)', 'at ./index.rsh:103:28:application call to [unknown function] (defined at: ./index.rsh:103:28:function exp)'],
-            msg: 'Thou art not the harvester                                      ',
+            msg: 'Thou art not the harvester��������������������������������������',
             who: 'Harvester_harvest'
             });
           const v2760 = stdlib.sub(v2125, v2748);
@@ -1276,7 +1276,7 @@ export async function Harvester_harvest(ctcTop, interact) {
       stdlib.assert(v2754, {
         at: './util.rsh:278:10:application',
         fs: ['at ./index.rsh:103:49:application call to "doConsensusHarvest" (defined at: ./util.rsh:272:94:function exp)', 'at ./index.rsh:103:28:application call to [unknown function] (defined at: ./index.rsh:103:28:function exp)'],
-        msg: 'Thou art not the harvester                                      ',
+        msg: 'Thou art not the harvester��������������������������������������',
         who: 'Harvester_harvest'
         });
       const v2760 = stdlib.sub(v2125, v2748);
@@ -1536,7 +1536,7 @@ export async function Provider_deposit(ctcTop, interact) {
     stdlib.assert(v2263, {
       at: './util.rsh:183:5:application',
       fs: ['at ./index.rsh:167:34:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-      msg: 'minted > 0                                                      ',
+      msg: 'minted > 0������������������������������������������������������',
       who: 'Provider_deposit'
       });
     const v2264 = stdlib.muldiv(v2224, v2225, v2226);
@@ -1544,14 +1544,14 @@ export async function Provider_deposit(ctcTop, interact) {
     stdlib.assert(v2265, {
       at: './util.rsh:185:4:application',
       fs: ['at ./index.rsh:167:34:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-      msg: 'muldiv(amtA, amtB, minted) >= minted                            ',
+      msg: 'muldiv(amtA, amtB, minted) >= minted����������������������������',
       who: 'Provider_deposit'
       });
     const v2266 = stdlib.le(v2226, v2127);
     stdlib.assert(v2266, {
       at: './util.rsh:186:4:application',
       fs: ['at ./index.rsh:167:34:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-      msg: 'minted <= poolBalance                                           ',
+      msg: 'minted <= poolBalance�������������������������������������������',
       who: 'Provider_deposit'
       });
     v2261 = v2226;
@@ -1561,14 +1561,14 @@ export async function Provider_deposit(ctcTop, interact) {
     stdlib.assert(v2268, {
       at: './util.rsh:161:5:application',
       fs: ['at ./index.rsh:168:29:application call to [unknown function] (defined at: ./util.rsh:160:87:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-      msg: 'balA > 0                                                        ',
+      msg: 'balA > 0��������������������������������������������������������',
       who: 'Provider_deposit'
       });
     const v2269 = stdlib.gt(v2235, stdlib.checkedBigNumberify('./util.rsh:162:13:decimal', stdlib.UInt_max, 0));
     stdlib.assert(v2269, {
       at: './util.rsh:162:5:application',
       fs: ['at ./index.rsh:168:29:application call to [unknown function] (defined at: ./util.rsh:160:87:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-      msg: 'balB > 0                                                        ',
+      msg: 'balB > 0��������������������������������������������������������',
       who: 'Provider_deposit'
       });
     const v2270 = stdlib.muldiv(v2224, v2115, v2232);
@@ -1578,7 +1578,7 @@ export async function Provider_deposit(ctcTop, interact) {
     stdlib.assert(v2273, {
       at: './util.rsh:14:4:application',
       fs: ['at ./util.rsh:54:19:application call to [unknown function] (defined at: ./util.rsh:12:57:function exp)', 'at ./util.rsh:165:21:application call to "avg" (defined at: ./util.rsh:53:30:function exp)', 'at ./index.rsh:168:29:application call to [unknown function] (defined at: ./util.rsh:160:87:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-      msg: 'add overflow                                                    ',
+      msg: 'add overflow����������������������������������������������������',
       who: 'Provider_deposit'
       });
     const v2274 = stdlib.add(v2270, v2271);
@@ -1587,7 +1587,7 @@ export async function Provider_deposit(ctcTop, interact) {
     stdlib.assert(v2276, {
       at: './util.rsh:166:4:application',
       fs: ['at ./index.rsh:168:29:application call to [unknown function] (defined at: ./util.rsh:160:87:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-      msg: 'result <= poolBalance                                           ',
+      msg: 'result <= poolBalance�������������������������������������������',
       who: 'Provider_deposit'
       });
     v2261 = v2275;
@@ -1597,7 +1597,7 @@ export async function Provider_deposit(ctcTop, interact) {
   stdlib.assert(v2278, {
     at: './util.rsh:14:4:application',
     fs: ['at ./index.rsh:169:22:application call to "assAdd" (defined at: ./util.rsh:12:57:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:152:33:application call to [unknown function] (defined at: ./index.rsh:152:33:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_deposit0_164" (defined at: ./index.rsh:151:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Provider_deposit'
     });
   const v2281 = ['Provider_deposit0_164', v2223];
@@ -1672,14 +1672,14 @@ export async function Provider_deposit(ctcTop, interact) {
             stdlib.assert(v3301, {
               at: './util.rsh:185:4:application',
               fs: ['at ./index.rsh:186:39:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-              msg: 'muldiv(amtA, amtB, minted) >= minted                            ',
+              msg: 'muldiv(amtA, amtB, minted) >= minted����������������������������',
               who: 'Provider_deposit'
               });
             const v3302 = stdlib.le(v3111, v2127);
             stdlib.assert(v3302, {
               at: './util.rsh:186:4:application',
               fs: ['at ./index.rsh:186:39:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-              msg: 'minted <= poolBalance                                           ',
+              msg: 'minted <= poolBalance�������������������������������������������',
               who: 'Provider_deposit'
               });
             v3297 = v3111;
@@ -1695,7 +1695,7 @@ export async function Provider_deposit(ctcTop, interact) {
             stdlib.assert(v3314, {
               at: './util.rsh:166:4:application',
               fs: ['at ./index.rsh:187:34:application call to [unknown function] (defined at: ./util.rsh:160:87:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-              msg: 'result <= poolBalance                                           ',
+              msg: 'result <= poolBalance�������������������������������������������',
               who: 'Provider_deposit'
               });
             v3297 = v3313;
@@ -1785,14 +1785,14 @@ export async function Provider_deposit(ctcTop, interact) {
         stdlib.assert(v3301, {
           at: './util.rsh:185:4:application',
           fs: ['at ./index.rsh:186:39:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-          msg: 'muldiv(amtA, amtB, minted) >= minted                            ',
+          msg: 'muldiv(amtA, amtB, minted) >= minted����������������������������',
           who: 'Provider_deposit'
           });
         const v3302 = stdlib.le(v3111, v2127);
         stdlib.assert(v3302, {
           at: './util.rsh:186:4:application',
           fs: ['at ./index.rsh:186:39:application call to [unknown function] (defined at: ./util.rsh:182:76:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-          msg: 'minted <= poolBalance                                           ',
+          msg: 'minted <= poolBalance�������������������������������������������',
           who: 'Provider_deposit'
           });
         v3297 = v3111;
@@ -1808,7 +1808,7 @@ export async function Provider_deposit(ctcTop, interact) {
         stdlib.assert(v3314, {
           at: './util.rsh:166:4:application',
           fs: ['at ./index.rsh:187:34:application call to [unknown function] (defined at: ./util.rsh:160:87:function exp)', 'at ./index.rsh:176:46:application call to [unknown function] (defined at: ./index.rsh:176:46:function exp)'],
-          msg: 'result <= poolBalance                                           ',
+          msg: 'result <= poolBalance�������������������������������������������',
           who: 'Provider_deposit'
           });
         v3297 = v3313;
@@ -1962,7 +1962,7 @@ export async function Provider_withdraw(ctcTop, interact) {
   stdlib.assert(v2216, {
     at: './util.rsh:14:4:application',
     fs: ['at ./index.rsh:117:22:application call to "assAdd" (defined at: ./util.rsh:12:57:function exp)', 'at ./index.rsh:106:21:application call to [unknown function] (defined at: ./index.rsh:106:21:function exp)', 'at ./index.rsh:106:21:application call to [unknown function] (defined at: ./index.rsh:106:21:function exp)', 'at ./index.rsh:79:19:application call to "runProvider_withdraw0_164" (defined at: ./index.rsh:105:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Provider_withdraw'
     });
   const v2219 = ['Provider_withdraw0_164', v2197];
@@ -2310,7 +2310,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2334, {
     at: './util.rsh:27:4:application',
     fs: ['at ./util.rsh:103:31:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'denom > 0                                                       ',
+    msg: 'denom > 0�������������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2335 = stdlib.div(stdlib.UInt_max, v2333);
@@ -2318,7 +2318,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2336, {
     at: './util.rsh:28:4:application',
     fs: ['at ./util.rsh:103:31:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'mul overflow                                                    ',
+    msg: 'mul overflow����������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2337 = stdlib.mul(v2286, v2333);
@@ -2327,7 +2327,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2339, {
     at: './util.rsh:28:4:application',
     fs: ['at ./util.rsh:104:31:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'mul overflow                                                    ',
+    msg: 'mul overflow����������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2340 = stdlib.mul(v2291, stdlib.checkedBigNumberify('./util.rsh:104:43:decimal', stdlib.UInt_max, 10000));
@@ -2336,7 +2336,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2342, {
     at: './util.rsh:14:4:application',
     fs: ['at ./util.rsh:105:31:application call to "chkA" (defined at: ./util.rsh:12:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2343 = stdlib.add(v2340, v2337);
@@ -2360,7 +2360,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2351, {
     at: './util.rsh:40:4:application',
     fs: ['at ./util.rsh:124:23:application call to "chkS" (defined at: ./util.rsh:39:57:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'a >= b                                                          ',
+    msg: 'a >= b����������������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2352 = stdlib.sub(v2350, v2344);
@@ -2369,7 +2369,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2354, {
     at: './util.rsh:27:4:application',
     fs: ['at ./util.rsh:127:23:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'denom > 0                                                       ',
+    msg: 'denom > 0�������������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2355 = stdlib.div(stdlib.UInt_max, v2316);
@@ -2418,7 +2418,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2376, {
     at: './util.rsh:14:4:application',
     fs: ['at ./util.rsh:215:25:application call to "assAdd" (defined at: ./util.rsh:12:57:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2377 = stdlib.add(v2290, v2366);
@@ -2434,7 +2434,7 @@ export async function Trader_swapAForB(ctcTop, interact) {
   stdlib.assert(v2380, {
     at: './util.rsh:14:4:application',
     fs: ['at ./util.rsh:217:26:application call to "assAdd" (defined at: ./util.rsh:12:57:function exp)', 'at ./index.rsh:202:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:202:29:application call to [unknown function] (defined at: ./index.rsh:202:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapAForB0_164" (defined at: ./index.rsh:201:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Trader_swapAForB'
     });
   const v2381 = stdlib.add(v2293, v2367);
@@ -2937,7 +2937,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2456, {
     at: './util.rsh:27:4:application',
     fs: ['at ./util.rsh:103:31:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'denom > 0                                                       ',
+    msg: 'denom > 0�������������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2457 = stdlib.div(stdlib.UInt_max, v2455);
@@ -2945,7 +2945,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2458, {
     at: './util.rsh:28:4:application',
     fs: ['at ./util.rsh:103:31:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'mul overflow                                                    ',
+    msg: 'mul overflow����������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2459 = stdlib.mul(v2408, v2455);
@@ -2954,7 +2954,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2461, {
     at: './util.rsh:28:4:application',
     fs: ['at ./util.rsh:104:31:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'mul overflow                                                    ',
+    msg: 'mul overflow����������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2462 = stdlib.mul(v2413, stdlib.checkedBigNumberify('./util.rsh:104:43:decimal', stdlib.UInt_max, 10000));
@@ -2963,7 +2963,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2464, {
     at: './util.rsh:14:4:application',
     fs: ['at ./util.rsh:105:31:application call to "chkA" (defined at: ./util.rsh:12:57:function exp)', 'at ./util.rsh:121:36:application call to [unknown function] (defined at: ./util.rsh:97:68:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2465 = stdlib.add(v2462, v2459);
@@ -2987,7 +2987,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2473, {
     at: './util.rsh:40:4:application',
     fs: ['at ./util.rsh:124:23:application call to "chkS" (defined at: ./util.rsh:39:57:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'a >= b                                                          ',
+    msg: 'a >= b����������������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2474 = stdlib.sub(v2472, v2466);
@@ -2996,7 +2996,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2476, {
     at: './util.rsh:27:4:application',
     fs: ['at ./util.rsh:127:23:application call to "chkM" (defined at: ./util.rsh:26:57:function exp)', 'at ./util.rsh:207:60:application call to [unknown function] (defined at: ./util.rsh:110:82:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'denom > 0                                                       ',
+    msg: 'denom > 0�������������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2477 = stdlib.div(stdlib.UInt_max, v2438);
@@ -3045,7 +3045,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2498, {
     at: './util.rsh:14:4:application',
     fs: ['at ./util.rsh:215:25:application call to "assAdd" (defined at: ./util.rsh:12:57:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2499 = stdlib.add(v2412, v2488);
@@ -3061,7 +3061,7 @@ export async function Trader_swapBForA(ctcTop, interact) {
   stdlib.assert(v2502, {
     at: './util.rsh:14:4:application',
     fs: ['at ./util.rsh:217:26:application call to "assAdd" (defined at: ./util.rsh:12:57:function exp)', 'at ./index.rsh:220:44:application call to "doAssumeSwap" (defined at: ./util.rsh:192:141:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:220:29:application call to [unknown function] (defined at: ./index.rsh:220:29:function exp)', 'at ./index.rsh:79:19:application call to "runTrader_swapBForA0_164" (defined at: ./index.rsh:219:11:function exp)', 'at ./index.rsh:79:19:application call to [unknown function] (defined at: ./index.rsh:79:19:function exp)'],
-    msg: 'add overflow                                                    ',
+    msg: 'add overflow����������������������������������������������������',
     who: 'Trader_swapBForA'
     });
   const v2503 = stdlib.add(v2415, v2489);
@@ -3415,8 +3415,8 @@ const _ALGO = {
   ABI: {
     sigs: [`Harvester_harvest((address,(byte,byte[32]),(byte,byte[8]),(byte,byte[8])))(uint64,uint64)`, `Provider_deposit(uint64,uint64,uint64)uint64`, `Provider_withdraw(uint64)uint64[2]`, `Trader_swapAForB(uint64,uint64)(uint64,uint64,uint64,uint64,uint64)`, `Trader_swapBForA(uint64,uint64)(uint64,uint64,uint64,uint64,uint64)`]
     },
-  appApproval: `BSASAAEECJBOZAMQIKCNBgIo////////////AeHUmdEB2e/5uAPmxMq4DKfS2Z4BMCYFAQAIAAAAAAAAAAAAAQFDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACI1ADEYQQu6KmRJIls1ASVbNQI2GgAXSUEBJyI1AyM1BUkhDQxAAJNJIQ4MQABxSSEPDEAAEiEPEkQ2GgE1/yg0/1A1BEIBGyEOEkQ2GgE2GgJQNhoDUDX/KzT/UIA7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQNQRCAMMhDRJENhoBNhoCUDX/gAEDNP9QJwRQNQRCAKhJIRAMQAAbIRASRDYaATYaAlA1/4ABBDT/UCcEUDUEQgCGgdvY7UUSRDYaATX/gAECNP9QgEsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQNQRCACE2GgEXNhoCFzUDNhoDNQRJIQoMQAeASSEGDEAHeCEGEkQkNAESRDQDSSISTDQCEhFEKGQrZFBJIls1/0klWzX+SSEHWzX9SVcYEDX8SSELWzX7SVcwEDX6SVdAODX5SYF4WzX4SYGAAVs190mBiAFbNfZINARJFYFUEkRJNfVIgARdaqU5NPVQsDT1STX0IlVJIQoMQASHSSEGDEADmkkkDEAByyQSRDT0VwEQSTXzIls18jT3NPIINfE08klBACU0AEkjCDUATEsBOBISRDT+SwE4ERJEJEsBOBASRDIKSwE4FBJESDT6JVs18DTxNPAJNe80+iJbNe40+DTuCTXtNPI07wxENPIiDUQ07zTyCTXsNPkhCFs16zT5IRFbNeo08iEENOoJC0k16TTtHSI07CEECzTpCB9ISEwiEkRJNegiDUQ07DTyCEk15yINRDTyNO0dIjTnH0hITCISRDToCTXmNPI06x0iIQQfSEhMIhJENeU05jTrIQULNOoKCyEFCkk15DTmDkQ06BY05RZQKVA06BYpUDTkFlA05DTsHSI07R9ISEwiEkQ05Q9NSTXjIls14jTjJVs14TTjIQdbNeA04jTzJVsPRDTiNO0ORDT4NOIJNd804klBABCxshIkshAxALIUNP+yEbMiSDTfNO4JNd407zTeHSI07TTsSTTtDU0fSEhMIhJENO007Ek07QxND0SACAAAAAAAABODNOIWNOEWUDTgFlA03hZQNO8WUFCwNOIWNOEWUDTgFlA03hZQNO8WUEk1BjT/NP40/TT8NPs07jTgCBY08DThCBZQNPkyBjTfNPE09kIHkUg09FcBEEk18yJbNfI0+DTyCDXxNPJJQQAlNABJIwg1AExLATgSEkQ0/0sBOBESRCRLATgQEkQyCksBOBQSREg0+iJbNfA08TTwCTXvNPolWzXuNPc07gk17TTyNO8MRDTyIg1ENO808gk17DT5IQhbNes0+SERWzXqNPIhBDTqCQtJNek07R0iNOwhBAs06QgfSEhMIhJESTXoIg1ENOw08ghJNeciDUQ08jTtHSI05x9ISEwiEkQ06Ak15jTyNOsdIiEEH0hITCISRDXlNOY06yEFCzTqCgshBQpJNeQ05g5ENOgWNOUWUClQNOgWKVA05BZQNOQ07B0iNO0fSEhMIhJENOUPTUk14yJbNeI04yVbNeE04yEHWzXgNOI08yVbD0Q04jTtDkQ09zTiCTXfNOJJQQAQsbISJLIQMQCyFDT+shGzIkg03zTuCTXeNO803h0iNO007Ek07Q1NH0hITCISRDTtNOxJNO0MTQ9EgAgAAAAAAAAROTTiFjThFlA04BZQNN4WUDTvFlBQsDTiFjThFlA04BZQNN4WUDTvFlBJNQY0/zT+NP00/DT7NPA04QgWNO404AgWUDT5MgY08TTfNPZCBchINPRXAQhJNfMXNfI08klBACU0AEkjCDUATEsBOBISRDT9SwE4ERJEJEsBOBASRDIKSwE4FBJESDT4NPoiWwk18TT3NPolWwk18DTyNPEdIjT7H0hITCISREk17zTxDkQ070lBABCxshIkshAxALIUNP+yEbMiSDTyNPAdIjT7H0hITCISREk17jTwDkQ07klBABCxshIkshAxALIUNP6yEbMiSIAIAAAAAAAADvU07xY07hZQULA07xY07hZQSTUGNP80/jT9NPw0+zTyCTT6NPkyBjT4NO8JNPc07gk09jTyCEIE4kkjDEABOUg09FcBGEk18yJbNfI08yVbNfE08yEHWzXwNPg08gg17zTySUEAJTQASSMINQBMSwE4EhJENP9LATgREkQkSwE4EBJEMgpLATgUEkRINPc08Qg17jTxSUEAJTQASSMINQBMSwE4EhJENP5LATgREkQkSwE4EBJEMgpLATgUEkRINPIiDUQ08SINRDT7IhJBACA08jTxHSI08B9ISEwiEkQ08A9ENPA09g5ENPA17UIAPTTyNPsdIjTvNPoiWwk08gkfSEhMIhJENPE0+x0iNO40+iVbCTTxCR9ISEwiEkQIIQoKSTXsNPYORDTsNe007UlBABCxshIkshAxALIUNP2yEbMiSIAIAAAAAAAADOE07RZQsDTtSRY1BjT/NP40/TT8NPs07Qg0+jT5MgY07zTuNPY07QlCA6NINPRXAVM18zTzNfI0+VcAIDXxNPoiWzXwNPolWzXvNPJXACA17jEANPESRDTwSUEAELGyEiSyEDTushQ0/7IRsyJINO9JQQAQsbISJLIQNO6yFDT+shGzIkiACAAAAAAAAArRNPAWNO8WUFCwNPAWNO8WUEk1BjTyVyAhSTXsIlVJIwxAABAjEkQ07FcBIEk16zXtQgAISDTxNe1CAAA08ldBCUk16yJVSSMMQAAPIxJENOsjW0k16jXsQgALSDT5IQhbNexCAAA08ldKCUk16iJVSSMMQAAPIxJENOojW0k16TXrQgALSDT5IQtbNetCAAA07DTrCEk16jTrNOwIEjTqIQUMEDTqIg0QRDT/NP40/TT8NPs0/DTtNOwWUDTrFlA06hZQMgY0+DTwCTT3NO8JNPZCAmtISSMMQACSSCM0ARJENANJIhJMNAISEUQoZElXACA1/0khCFs1/kkhC1s1/UlXMCA1/EmBUFs1+0g0BEkVIhJESIAEmouRdLA0/zEAEkSAEAAAAAAAAAAAAAAAAAAAAAA1+jT+NP00+zT6IjT6NPyACAAAAAAAAAAFUIAIAAAAAAAAABlQgAgAAAAAAAAAHlAyBiIiIQxCAdJIIjQBEkQ0A0kiEkw0AhIRRCpINARJFYFYEkRJIls1/0klWzX+SVcQIDX9SVcwCDX8SVc4IDX7SIAE/ZnbBTT/FlA0/hZQNP1QNPxQNPtQsCEJSUEAHTQASSMINQBMSwE4CBJEI0sBOBASRDIKSwE4BxJESDT/NP4SFEQhCUlBAB00AEkjCDUATEsBOAgSRCNLATgQEkQyCksBOAcSREgisbISJLIQMgqyFDT/shGzIkghCUlBAB00AEkjCDUATEsBOAgSRCNLATgQEkQyCksBOAcSREgisbISJLIQMgqyFDT+shGzIkghDCEEDUQhCUlBAB00AEkjCDUATEsBOAgSRCNLATgQEkQyCksBOAcSREixIQayECEMsiKBBrIjNPyyJTT9siaAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALInMgOyKDIKsimztDw1+oAIAAAAAAAACDc0+hZQsDT6NfkxADT/FlA0/hZQNPtQNPkWUChLAVcAWGdIIzUBMgY1AjEZIhJEQgBXNf81/jX9Nfw1+zX6Nfk1+DX3NfZJNfUWNPYWUDT3FlA0+FA0+RZQNPpQNPtQNP0WUDT+FlA0/xZQKEsBVwB/ZytLAVd/EWdIJDUBMgY1AjEZIhJEQgAAKjQBFjQCFlBnNAVBAAqABBUffHU0BlCwNABJIwgyBBJEMRYSRCNDIkMxGSISRCI1ASI1AkL/yQ==`,
-  appClear: `BQ==`,
+  appApproval: `BiASAAEECJBOZAMQIKCNBgIo////////////AeHUmdEB2e/5uAPmxMq4DKfS2Z4BMCYFAQAIAAAAAAAAAAAAAQFDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACI1ADEYQQvYKmRJIls1ASVbNQI2GgAXSUEBJyI1AyM1BUkhDQxAAJNJIQ4MQABxSSEPDEAAEiEPEkQ2GgE1/yg0/1A1BEIBGyEOEkQ2GgE2GgJQNhoDUDX/KzT/UIA7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQNQRCAMMhDRJENhoBNhoCUDX/gAEDNP9QJwRQNQRCAKhJIRAMQAAbIRASRDYaATYaAlA1/4ABBDT/UCcEUDUEQgCGgdvY7UUSRDYaATX/gAECNP9QgEsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQNQRCACE2GgEXNhoCFzUDNhoDNQRJIQoMQAeVSSEGDEAHjSEGEkQkNAESRDQDSSISTDQCEhFEKGQrZFBJIls1/0klWzX+SSEHWzX9SVcYEDX8SSELWzX7SVcwEDX6SVdAODX5SYF4WzX4SYGAAVs190mBiAFbNfZINARJFYFUEkRJNfVIgARdaqU5NPVQsDT1STX0IlVJIQoMQASTSSEGDEADoEkkDEABziQSRDT0VwEQSTXzIls18jT3NPIINfE08klBACU0AEkjCDUATEsBOBISRDT+SwE4ERJEJEsBOBASRDIKSwE4FBJESDT6JVs18DTxNPAJNe80+iJbNe40+DTuCTXtNPI07wxENPIiDUQ07zTyCTXsNPkhCFs16zT5IRFbNeo08iEENOoJC0k16TTtHSI07CEECzTpCB9ISEwiEkRJNegiDUQ07DTyCEk15yINRDTyNO0dIjTnH0hITCISRDToCTXmNPI06x0iIQQfSEhMIhJENeU05jTrIQULNOoKCyEFCkk15DTmDkQ06BY05RZQKVA06BYpUDTkFlA05DTsHSI07R9ISEwiEkQ05Q9NSTXjIls14jTjJVs14TTjIQdbNeA04jTzJVsPRDTiNO0ORDT4NOIJNd804klBABOxshIkshAxALIUNP+yESKyAbMiSDTfNO4JNd407zTeHSI07TTsSTTtDU0fSEhMIhJENO007Ek07QxND0SACAAAAAAAABODNOIWNOEWUDTgFlA03hZQNO8WUFCwNOIWNOEWUDTgFlA03hZQNO8WUEk1BjT/NP40/TT8NPs07jTgCBY08DThCBZQNPkyBjTfNPE09kIHrEg09FcBEEk18yJbNfI0+DTyCDXxNPJJQQAlNABJIwg1AExLATgSEkQ0/0sBOBESRCRLATgQEkQyCksBOBQSREg0+iJbNfA08TTwCTXvNPolWzXuNPc07gk17TTyNO8MRDTyIg1ENO808gk17DT5IQhbNes0+SERWzXqNPIhBDTqCQtJNek07R0iNOwhBAs06QgfSEhMIhJESTXoIg1ENOw08ghJNeciDUQ08jTtHSI05x9ISEwiEkQ06Ak15jTyNOsdIiEEH0hITCISRDXlNOY06yEFCzTqCgshBQpJNeQ05g5ENOgWNOUWUClQNOgWKVA05BZQNOQ07B0iNO0fSEhMIhJENOUPTUk14yJbNeI04yVbNeE04yEHWzXgNOI08yVbD0Q04jTtDkQ09zTiCTXfNOJJQQATsbISJLIQMQCyFDT+shEisgGzIkg03zTuCTXeNO803h0iNO007Ek07Q1NH0hITCISRDTtNOxJNO0MTQ9EgAgAAAAAAAAROTTiFjThFlA04BZQNN4WUDTvFlBQsDTiFjThFlA04BZQNN4WUDTvFlBJNQY0/zT+NP00/DT7NPA04QgWNO404AgWUDT5MgY08TTfNPZCBeBINPRXAQhJNfMXNfI08klBACU0AEkjCDUATEsBOBISRDT9SwE4ERJEJEsBOBASRDIKSwE4FBJESDT4NPoiWwk18TT3NPolWwk18DTyNPEdIjT7H0hITCISREk17zTxDkQ070lBABOxshIkshAxALIUNP+yESKyAbMiSDTyNPAdIjT7H0hITCISREk17jTwDkQ07klBABOxshIkshAxALIUNP6yESKyAbMiSIAIAAAAAAAADvU07xY07hZQULA07xY07hZQSTUGNP80/jT9NPw0+zTyCTT6NPkyBjT4NO8JNPc07gk09jTyCEIE9EkjDEABPEg09FcBGEk18yJbNfI08yVbNfE08yEHWzXwNPg08gg17zTySUEAJTQASSMINQBMSwE4EhJENP9LATgREkQkSwE4EBJEMgpLATgUEkRINPc08Qg17jTxSUEAJTQASSMINQBMSwE4EhJENP5LATgREkQkSwE4EBJEMgpLATgUEkRINPIiDUQ08SINRDT7IhJBACA08jTxHSI08B9ISEwiEkQ08A9ENPA09g5ENPA17UIAPTTyNPsdIjTvNPoiWwk08gkfSEhMIhJENPE0+x0iNO40+iVbCTTxCR9ISEwiEkQIIQoKSTXsNPYORDTsNe007UlBABOxshIkshAxALIUNP2yESKyAbMiSIAIAAAAAAAADOE07RZQsDTtSRY1BjT/NP40/TT8NPs07Qg0+jT5MgY07zTuNPY07QlCA7JINPRXAVM18zTzNfI0+VcAIDXxNPoiWzXwNPolWzXvNPJXACA17jEANPESRDTwSUEAE7GyEiSyEDTushQ0/7IRIrIBsyJINO9JQQATsbISJLIQNO6yFDT+shEisgGzIkiACAAAAAAAAArRNPAWNO8WUFCwNPAWNO8WUEk1BjTyVyAhSTXsIlVJIwxAABAjEkQ07FcBIEk16zXtQgAISDTxNe1CAAA08ldBCUk16yJVSSMMQAAPIxJENOsjW0k16jXsQgALSDT5IQhbNexCAAA08ldKCUk16iJVSSMMQAAPIxJENOojW0k16TXrQgALSDT5IQtbNetCAAA07DTrCEk16jTrNOwIEjTqIQUMEDTqIg0QRDT/NP40/TT8NPs0/DTtNOwWUDTrFlA06hZQMgY0+DTwCTT3NO8JNPZCAnRISSMMQACSSCM0ARJENANJIhJMNAISEUQoZElXACA1/0khCFs1/kkhC1s1/UlXMCA1/EmBUFs1+0g0BEkVIhJESIAEmouRdLA0/zEAEkSAEAAAAAAAAAAAAAAAAAAAAAA1+jT+NP00+zT6IjT6NPyACAAAAAAAAAAFUIAIAAAAAAAAABlQgAgAAAAAAAAAHlAyBiIiIQxCAdtIIjQBEkQ0A0kiEkw0AhIRRCpINARJFYFYEkRJIls1/0klWzX+SVcQIDX9SVcwCDX8SVc4IDX7SIAE/ZnbBTT/FlA0/hZQNP1QNPxQNPtQsCEJSUEAHTQASSMINQBMSwE4CBJEI0sBOBASRDIKSwE4BxJESDT/NP4SFEQhCUlBAB00AEkjCDUATEsBOAgSRCNLATgQEkQyCksBOAcSREgisbISJLIQMgqyFDT/shEisgGzIkghCUlBAB00AEkjCDUATEsBOAgSRCNLATgQEkQyCksBOAcSREgisbISJLIQMgqyFDT+shEisgGzIkghDCEEDUQhCUlBAB00AEkjCDUATEsBOAgSRCNLATgQEkQyCksBOAcSREixIQayECEMsiKBBrIjNPyyJTT9siaAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALInMgOyKDIKsikisgGztDw1+oAIAAAAAAAACDc0+hZQsDT6NfkxADT/FlA0/hZQNPtQNPkWUChLAVcAWGdIIzUBMgY1AjEZIhJEQgBXNf81/jX9Nfw1+zX6Nfk1+DX3NfZJNfUWNPYWUDT3FlA0+FA0+RZQNPpQNPtQNP0WUDT+FlA0/xZQKEsBVwB/ZytLAVd/EWdIJDUBMgY1AjEZIhJEQgAAKjQBFjQCFlBnNAVBAAqABBUffHU0BlCwNABJIwgyBBJEMRYSRCNDIkMxGSISRCI1ASI1AkL/yQ==`,
+  appClear: `Bg==`,
   extraPages: 1,
   mapDataKeys: 0,
   mapDataSize: 0,

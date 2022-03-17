@@ -4,21 +4,8 @@ import {
   fetchPool,
   withdrawLiquidity,
 } from "humble-sdk";
-import {
-  exitWithMsgs,
-  iout,
-  parseAddress,
-  Bright,
-  FgBlue,
-  FgGreen,
-  FgRed,
-  FgYellow,
-} from "./utils.mjs";
+import { exitWithMsgs, iout, parseAddress, Blue, Yellow } from "./utils.mjs";
 
-const Yellow = (v) => console.log(Bright(FgYellow(v)));
-const Blue = (v) => console.log(Bright(FgBlue(v)));
-const Green = (v) => console.log(Bright(FgGreen(v)));
-const Red = (v) => console.log(Bright(FgRed(v)));
 const isNetworkToken = (v) => [0, "0"].includes(v);
 const actions = ["add", "withdraw"];
 

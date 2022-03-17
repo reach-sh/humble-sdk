@@ -2,21 +2,16 @@ import { fetchPool, performSwap } from "humble-sdk";
 import { calculatePriceImpact, calculateTokenSwap } from "humble-sdk";
 import { stopTest } from "./runAnnouncerTest.mjs";
 import {
-  Bright,
   exitWithMsgs,
-  FgBlue,
-  FgYellow,
-  FgGreen,
+  Blue,
+  Yellow,
+  Green,
   fromArgs,
   onProgress,
-  FgRed,
+  Red,
   iout,
 } from "./utils.mjs";
 
-const Yellow = (v) => console.log(Bright(FgYellow(v)));
-const Blue = (v) => console.log(Bright(FgBlue(v)));
-const Green = (v) => console.log(Bright(FgGreen(v)));
-const Red = (v) => console.log(Bright(FgRed(v)));
 const isNetworkToken = (v) => [0, "0"].includes(v);
 
 /** Swap between two tokens in the command line */
@@ -72,6 +67,6 @@ async function fetchSwapPool(acc, poolAddress, n2nn) {
   if (!tradeable) return exitWithMsgs("Pool is partially or completely empty");
 
   Blue("* Got pool");
-  console.log(JSON.stringify(pool, null, 2));
+  JSON.stringify(pool, null, 2);
   return { pool, contract };
 }

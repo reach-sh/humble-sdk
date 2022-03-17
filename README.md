@@ -16,6 +16,7 @@ A Javascript library for interacting with the [HumbleSwap DEx](https://app.humbl
   - [SDK Contents](#sdk-contents)
   - [Methods](#methods)
   - [Types](#types)
+  - [Development](#development)
 
 ---
 
@@ -82,3 +83,6 @@ See a full list of methods [**here**](./METHODS.md)
 See a full list of types [**here**](./TYPES.md)
 
 --- 
+
+## Development
+The `humble-sdk` contains some helper scripts for running the SDK on a command line. See more here [**here**](./cli/README.md)

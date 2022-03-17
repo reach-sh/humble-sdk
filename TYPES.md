@@ -1,11 +1,15 @@
-# HumbleSDK <img src="./logo-white.svg" width="80" height="auto"> | Types
+# HumbleSDK | Types
+
+<header>
+  <img src="./logo-white.svg" width="80" height="auto">
+</header>
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).\
 Types are listed below.
 
 ## Table of contents
 Some commonly-reused types are listed here. 
-- [HumbleSDK <img src="./logo-white.svg" width="80" height="auto"> | Types](#humblesdk---types)
+- [HumbleSDK | Types](#humblesdk--types)
   - [Table of contents](#table-of-contents)
   - [PoolDetails](#pooldetails)
   - [PoolInfo](#poolinfo)

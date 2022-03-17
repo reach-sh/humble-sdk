@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": "./src",
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ESNext", "DOM"],
+    "noEmit": false,
+    "declaration": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "useDefineForClassFields": true,
+    "module": "commonJs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "outDir": "./lib/",
+    "rootDir": "./src",
+    "sourceMap": false,
+    "strict": true,
+    "target": "es5"
+  },
+  "include": ["./src/**/*"],
+  "exclude": [
+    "./node_modules",
+    "./lib",
+    "./**/*.test.*",
+  ]
+}

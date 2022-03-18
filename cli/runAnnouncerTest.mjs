@@ -1,5 +1,5 @@
 import { subscribeToPoolStream } from "../lib/index.js";
-import { exitWithMsgs, Blue, Red, Yellow, iout } from "./utils.mjs";
+import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
 
 let exitTimeout;
 const LIMIT = 10;
@@ -12,7 +12,8 @@ export function runAnnouncerTest(acc) {
   Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
     onPoolReceived: (msg) => {
-      Blue(msg);
+      Blue("* Received [poolId, tokenA, tokenB]");
+      Green(`\t ${msg}`);
       resetTimer();
     },
     onPoolFetched,

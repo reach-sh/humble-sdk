@@ -9,7 +9,7 @@
     "lib/**/*"
   ],
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --watchAll --testTimeout=300000",
     "build": "rm -rf lib/ && tsc"
   },
   "repository": {

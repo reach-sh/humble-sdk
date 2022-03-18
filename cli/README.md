@@ -21,7 +21,10 @@ This directory contains a command-line utility for testing specific HumbleSwap S
       - [Swap Token Parameters](#swap-token-parameters)
 
 ## Usage
-Start by installing dependencies:
+Before you begin, make sure you run `npm run build` in the top-level (`./humble-sdk`) directory. 
+This will output a build file to a new `./lib` directory, which this current `./cli` depends on. 
+
+Once that's done, install some dependencies in here:
 ```bash
 $. npm i
 ```
@@ -29,7 +32,8 @@ $. npm i
 Now you can run one of a few tests: see below.
 
 ## DEx Functionality Tests
-All tests run against **Algorand TestNet**. You can change this by modifying the `useReach` function in `./utils.mjs`.
+All tests run against **Algorand TestNet**. You can change this by passing a custom `providerEnv` property into 
+the `initHumbleSDK` call in `./index.mjs`.
 
 ^[**Contents**](#table-of-contents)
 

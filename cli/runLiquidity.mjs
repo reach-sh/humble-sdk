@@ -3,7 +3,7 @@ import {
   calculatePairOpposite,
   fetchPool,
   withdrawLiquidity,
-} from "humble-sdk";
+} from "../lib/index.js";
 import { exitWithMsgs, iout, parseAddress, Blue, Yellow } from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);

@@ -1,8 +1,8 @@
-import { subscribeToPoolStream } from "humble-sdk";
-import { exitWithMsgs, Blue, Red, Yellow, iout } from "./utils.mjs";
+import { subscribeToPoolStream } from "../lib/index.js";
+import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
 
 let exitTimeout;
-const LIMIT = 2;
+const LIMIT = 10;
 const TIMEOUT = 10;
 const pools = new Set();
 
@@ -11,7 +11,11 @@ export function runAnnouncerTest(acc) {
   Blue(`Running ANNOUNCER`);
   Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
-    onPoolReceived: (msg) => Blue(msg),
+    onPoolReceived: (msg) => {
+      Blue("* Received [poolId, tokenA, tokenB]");
+      Green(`\t ${msg}`);
+      resetTimer();
+    },
     onPoolFetched,
   });
   Blue(`Listening for up to ${LIMIT} pools.`);

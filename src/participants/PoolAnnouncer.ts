@@ -15,7 +15,7 @@ import {
   poolBackendN2NN,
   announcerBackend,
 } from "../build/backend";
-import { getPoolAnnouncer, FEE_INFO, HUMBLE_ADDR } from "../constants";
+import { getPoolAnnouncer, getFeeInfo, getHumbleAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
 
 type PoolSubscriptionOpts = {
@@ -112,7 +112,11 @@ export async function fetchPool(
   // if the pools humble address doesn't match the internal one, it isn't a humble pool
   const [protocolInfo, protocolBals] = [i, pb].map((mVal) => fromMaybe(mVal));
   const hasProtocolInfo = Boolean(protocolInfo && protocolBals);
-  if (!hasProtocolInfo || !reach.addressEq(protocolInfo?.addr, HUMBLE_ADDR)) {
+  onProgress(`Checking against humble addr "${getHumbleAddr()}"`);
+  if (
+    !hasProtocolInfo ||
+    !reach.addressEq(protocolInfo?.addr, getHumbleAddr())
+  ) {
     const message = "invalid pool";
     return txnFailedResponse(message, ctcInfo, { tradeable: false });
   }
@@ -129,6 +133,7 @@ export async function fetchPool(
 
   // calculate the accrued protocol fees + lp fees (0.3%)
   onProgress(`Calculating fees ...`);
+  const FEE_INFO = getFeeInfo();
   const totalFees = (protocolBal: number) =>
     reach
       .bigNumberify(FEE_INFO.totFee)

@@ -25,12 +25,6 @@ export function fromMaybe(
   return mVal[0] === "Some" ? fmt(mVal[1]) : fallback || mVal[1];
 }
 
-/** Format currency in user locale (e.g. `fn(1000) -> 1,000) */
-export function formatCurrencyLocale(val: number, locale?: any) {
-  const intlFmt = Intl.NumberFormat(locale);
-  return intlFmt.format(val);
-}
-
 /** Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
 export function formatNumberShort(val: string | number | bigint, round = 2) {
   if (isNaN(Number(val))) return "";
@@ -69,15 +63,6 @@ export function formatNumberShort(val: string | number | bigint, round = 2) {
  */
 export function trimByteString(str: string = ""): string {
   return str.replace(/\0/g, "");
-}
-
-/**
- * Shortens string to `XXXX...XXXX`, with `XXX` padding determined by optional `pad` parameter
- */
-export function truncateString(str: string, pad = 6): string {
-  const { length } = str;
-  const start = str.substring(0, pad);
-  return `${start}...${str.substring(length - pad, length)}`;
 }
 
 function trimDecimals(val: string) {

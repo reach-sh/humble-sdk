@@ -1,4 +1,4 @@
-import { fetchPool } from "humble-sdk";
+import { fetchPool } from "../lib/index.js";
 import { iout, exitWithMsgs, Blue, Yellow, onProgress } from "./utils.mjs";
 import { stopTest } from "./runAnnouncerTest.mjs";
 

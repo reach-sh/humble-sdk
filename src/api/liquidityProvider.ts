@@ -88,6 +88,9 @@ export async function addLiquidity(
   acc: ReachAccount,
   opts: DepositTxnOpts
 ): Promise<TransactionResult> {
+  // Check if sdk is instantiated (throws error if not)
+  createReachAPI();
+
   const {
     amounts,
     contract,

@@ -1,5 +1,5 @@
-import { fetchPool, performSwap } from "humble-sdk";
-import { calculatePriceImpact, calculateTokenSwap } from "humble-sdk";
+import { fetchPool, performSwap } from "../lib/index.js";
+import { calculatePriceImpact, calculateTokenSwap } from "../lib/index.js";
 import { stopTest } from "./runAnnouncerTest.mjs";
 import {
   exitWithMsgs,

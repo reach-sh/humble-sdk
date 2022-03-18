@@ -1,3 +1,4 @@
+import { UNINSTANTIATED } from "./../constants";
 import * as T from "./types";
 import { trimByteString, formatNumberShort } from "./utils/helpers";
 
@@ -9,7 +10,6 @@ export const NETWORKS: T.NetworksMap = {
   ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 },
 };
 /** `@reach-helper` `StdLib` instance */
-const UNINSTANTIATED = `HumbleSDK is not instantiated!`;
 let reach: T.ReachStdLib;
 
 /** `@reach-helper` Global default reach object */

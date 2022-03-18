@@ -3,7 +3,7 @@ import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { addLiquidity } from "../api/liquidityProvider";
 import { isNetworkToken, parseContractError } from "../utils";
 import { PoolInfo, ReachTxnOpts, SDKToken, TransactionResult } from "../types";
-import { HUMBLE_ADDR } from "../constants";
+import { getHumbleAddr } from "../constants";
 import { fetchToken } from "./PoolAnnouncer";
 
 type InteractOpts = {
@@ -190,7 +190,7 @@ function PoolAdminInteract(opts: InteractOpts) {
     tokB: tokenB,
     ltName: lpTokenName,
     ltSymbol: tokSymbol,
-    humbleAddr: HUMBLE_ADDR,
+    humbleAddr: getHumbleAddr(),
     signalPoolCreation: onPoolCreated,
   };
 }

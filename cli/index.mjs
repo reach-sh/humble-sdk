@@ -1,4 +1,8 @@
-import { initHumbleSDK, getPoolAnnouncer, createReachAPI } from "humble-sdk";
+import {
+  initHumbleSDK,
+  getPoolAnnouncer,
+  createReachAPI,
+} from "../lib/index.js";
 import {
   Blue,
   Green,
@@ -6,7 +10,7 @@ import {
   fromArgs,
   getAccountFromArgs,
   iout,
-  useReach,
+  exitWithMsgs,
 } from "./utils.mjs";
 import { loadStdlib } from "@reach-sh/stdlib";
 import { runFetchPoolTest } from "./runFetchPoolTest.mjs";
@@ -16,10 +20,15 @@ import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
 
 // init SDK
-initHumbleSDK();
+initHumbleSDK({
+  providerEnv: {
+    ALGO_INDEXER_SERVER: "https://algoindexer.testnet.algoexplorerapi.io",
+    ALGO_SERVER: "https://node.testnet.algoexplorerapi.io",
+    ALGO_TOKEN: "".padEnd(64, "a"),
+    ALGO_INDEXER_TOKEN: "".padEnd(64, "a"),
+  },
+});
 const reach = createReachAPI();
-
-console.log(reach.providerEnvByName("TestNet"));
 
 (async () => {
   Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
@@ -38,25 +47,31 @@ console.log(reach.providerEnvByName("TestNet"));
   /* Check for LIQUIDITY (deposit/withdraw) flags in cli args */
   const [tokenIn, amountIn, tokenOut] = swapArgs;
   const liquidityArgs = [...swapArgs, fromArgs(args, "ACTION")];
-  if (liquidityArgs.every(Boolean)) {
-    const action = liquidityArgs[liquidityArgs.length - 1];
-    const lqOpts = { action, amountIn, poolAddress, tokenIn, tokenOut };
-    return runLiquidity(acc, lqOpts);
-  }
-
-  /* Check for SWAP flags */
-  if (swapArgs.every(Boolean))
-    return runSwapTest(acc, [...swapArgs, poolAddress]);
-
-  /* Check for TOKEN flag in cli args */
   const tokenId = fromArgs(args, "TOKEN");
-  if (tokenId) return runFetchTokenTest(acc, tokenId);
 
-  /* Check for POOL flag in cli args */
-  if (poolAddress) return runFetchPoolTest(acc, [poolAddress, n2nn]);
+  switch (true) {
+    case liquidityArgs.every(Boolean): {
+      const action = liquidityArgs[liquidityArgs.length - 1];
+      const lqOpts = { action, amountIn, poolAddress, tokenIn, tokenOut };
+      return runLiquidity(acc, lqOpts);
+    }
 
-  /* Default to listing pools */
-  return runAnnouncerTest(acc);
+    /* Check for SWAP flags */
+    case swapArgs.every(Boolean):
+      return runSwapTest(acc, [...swapArgs, poolAddress]);
+
+    /* Check for TOKEN flag in cli args */
+    case Boolean(tokenId):
+      return runFetchTokenTest(acc, tokenId);
+
+    /* Check for POOL flag in cli args */
+    case Boolean(poolAddress):
+      return runFetchPoolTest(acc, [poolAddress, n2nn]);
+
+    /* Default to listing pools */
+    default:
+      return runAnnouncerTest(acc);
+  }
 })();
 
 /** Checks for SWAP flags */

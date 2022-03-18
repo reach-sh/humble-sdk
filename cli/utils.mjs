@@ -1,21 +1,9 @@
+import { createReachAPI } from "../lib/index.js";
 import algosdk from "algosdk";
 import { loadStdlib } from "@reach-sh/stdlib";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
 
-let reach;
-
 export const onProgress = (msg) => Yellow(`\t :: ${msg}`);
-
-export function useReach() {
-  if (!reach) {
-    const connectorModeArg = fromArgs(process.argv, "REACH_CONNECTOR_MODE");
-    const REACH_CONNECTOR_MODE = connectorModeArg || "ALGO";
-    reach = loadStdlib({ REACH_CONNECTOR_MODE });
-    reach.setProviderByName("TestNet");
-  }
-
-  return reach;
-}
 // 'reset color' string
 const clear = `\x1b[0m`;
 export const Bright = (s) => `\x1b[1m${s}${clear}`;
@@ -27,12 +15,12 @@ export const Green = (s) => console.log(Bright(`\x1b[32m${s}${clear}`));
 export const Yellow = (s) => console.log(Bright(`\x1b[33m${s}${clear}`));
 export const Blue = (s) => console.log(Bright(`\x1b[34m${s}${clear}`));
 export const fmt = (x) => {
-  const stdlib = useReach();
+  const stdlib = createReachAPI();
   return stdlib.formatCurrency(x, stdlib.connector == "ALGO" ? 6 : 18);
 };
 
 export async function createAlgoAccount(secret) {
-  const reach = useReach();
+  const reach = createReachAPI();
   const acct = await getAccountFromMnemonic(secret);
   const { networkAccount } = acct;
   const mnm = algosdk.secretKeyToMnemonic(networkAccount.sk);
@@ -52,7 +40,7 @@ export function exitWithMsgs(...msgs) {
 }
 
 export function exitNoMnemonic() {
-  const chain = useReach().connector;
+  const chain = createReachAPI().connector;
   Red(`🔑 Cannot reveal new mnemonic for ${chain}.\n`);
   Blue(`Please run the last command with a mnemonic:\n\n${cmd}`);
   Blue('make [ cmd ] KEY="your mnemonic here"');
@@ -78,7 +66,7 @@ export async function extractAccount(args) {
 }
 
 export async function getAccountFromArgs(args) {
-  const reach = useReach();
+  const reach = createReachAPI();
 
   try {
     const acct = await extractAccount(args);
@@ -94,7 +82,7 @@ export async function getAccountFromArgs(args) {
 }
 
 export async function getAccountFromMnemonic(secret) {
-  const stdlib = useReach();
+  const stdlib = createReachAPI();
   if (!secret) return await stdlib.createAccount();
 
   const isAlgo = stdlib.connector === "ALGO";
@@ -111,7 +99,7 @@ export function iout(msg, data) {
 
 export function parseAddress(addr) {
   let ctcInfo = parseInt(addr);
-  if (useReach().connector !== "ALGO") {
+  if (createReachAPI().connector !== "ALGO") {
     let pit = addr.toString().trim().replace(/\0.*$/g, "");
     ctcInfo = pit.startsWith("0x") ? pit : "0x" + pit;
   }

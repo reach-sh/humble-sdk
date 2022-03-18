@@ -5,7 +5,7 @@ import {
   parseCurrency,
 } from "./reach-helpers";
 import { PoolDetails, PoolInfo, SwapInfo, SwapTxnOpts } from "./types";
-import { FEE_INFO } from "./constants";
+import { getFeeInfo } from "./constants";
 import { backendUtils } from "./build/backend";
 
 const MAX_DECIMALS = 5;
@@ -199,7 +199,12 @@ function swapTokenAToB(amountIn: any, pool: PoolDetails): any {
       const inputCurrency = parseCurrency(fmtIn, tokenADecimals);
       const poolBalA = parseCurrency(Number(balA) + fmtIn, tokenADecimals);
       const poolBalB = parseCurrency(balB, tokenBDecimals);
-      const amtOut = getAmtOutView(inputCurrency, poolBalA, poolBalB, FEE_INFO);
+      const amtOut = getAmtOutView(
+        inputCurrency,
+        poolBalA,
+        poolBalB,
+        getFeeInfo()
+      );
       return formatCurrency(amtOut, tokenBDecimals);
     }
 
@@ -235,7 +240,7 @@ function swapTokenBToA(amtOut: any, pool: PoolDetails): any {
         parseCurrency(amtOut, tokenBDecimals),
         poolBBalance,
         poolABalance,
-        FEE_INFO
+        getFeeInfo()
       );
 
       return formatCurrency(out, tokenADecimals);

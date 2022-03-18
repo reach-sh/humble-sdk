@@ -1,4 +1,4 @@
-import { fetchToken } from "humble-sdk";
+import { fetchToken } from "../lib/index.js";
 import { exitWithMsgs, Blue, Yellow, fromArgs, iout } from "./utils.mjs";
 import { stopTest } from "./runAnnouncerTest.mjs";
 

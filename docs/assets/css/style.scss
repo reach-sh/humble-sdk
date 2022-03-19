@@ -195,7 +195,7 @@ section {
 
 body {
   @include app-font();
-  font-size: $sm;
+  font-size: 0.9rem;
   height: 100%;
   margin: 0;
   overflow-y: auto;

@@ -1,11 +1,19 @@
 # HumbleSDK | Methods
 
 <header>
-  <img src="../logo-white.svg" width="120" height="auto">
+    <a 
+      href="/" 
+      title="Home" 
+      style="text-decoration:none; outline:none;">
+        <img src="./logo-white.svg" width="120" height="auto">
+    </a>
 </header>
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).\
-Methods are listed below, along with usage examples where possible.
+Methods are listed below, along with usage examples where possible.\
+[**Home Page**](./index.md)
+
+---
 
 ## Table of contents
 The following methods are exported from the SDK:
@@ -144,11 +152,16 @@ const acc = await stdlib.createAccount();
 
 // Fetch existing streams and get notified when a new one is created
 subscribeToPoolStream(acc, {
+    // This gets called as soon as the pool id, and the ids of its tokens, are
+    // received. The pool data hasn't been fetched yet and may still fail to do so.
+    // Implementing this method is optional.
     onPoolReceived: (info) => { 
         const [poolAddr, tokenAId, tokenBId] = info;
         console.log(poolAddr, tokenAId, tokenBId); // ... 
      },
 
+    // This gets called as soon as the pool (with its tokens') data has been 
+    // fetched. If the attempt failed, 'result.succeeded' will be false.
     onPoolFetched: (result: FetchPoolTxnResult) => { 
         const { succeeded, poolAddress, data, message } = result;
         if (succeeded) // ... 

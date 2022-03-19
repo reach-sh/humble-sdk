@@ -1,7 +1,7 @@
 # HumbleSDK 
 
 <header>
-  <img src="../logo-white.svg" width="80" height="auto">
+  <img src="./logo-white.svg" width="120" height="auto">
 </header>
 
 - [HumbleSDK](#humblesdk)
@@ -27,22 +27,27 @@ $. npm i -s @reach-sh/humble-sdk
 
 ### Option 2. Cloning the repo directly
 To get started without NPM, you can clone and build the SDK from the repository. 
-> **Important note:** If you follow this method, be sure to swap out `import ... from "humble-sdk"` with the path to your `lib/` build output. 
+
+
+1. Clone the repository 
 ```bash
-# Clone the repository 
 $. git clone # ...
+```
 
-# Enter the directory with the repo (replace with path to your repository clone)
-# and install dependencies (there aren't a lot)
+2. Enter the directory with the repo (replace with path to your repository clone) and install dependencies (there aren't a lot)
+```bash
 $. cd path/to/humble-sdk && npm install
+```
 
-# Build the SDK. Will output to a lib/ directory in the same folder as the 
-# package.json file. This takes seconds and doesn't output anything to your terminal.
+3. Build the SDK. Will output to a lib/ directory in the same folder as the package.json file. This takes seconds and doesn't output anything to your terminal.
+```bash
 $. npm run build
+```
+You will know 'build' is complete when your (terminal's) typing prompt reappears.
 
-# You will know 'build' is complete when your (terminal's) typing prompt reappears.
-``` 
-As a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module.
+4. As a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module.
+
+> **Important note:** If you follow this method, be sure to swap out `import ... from "humble-sdk"` with the path to your `lib/` build output. 
 
 ---
 

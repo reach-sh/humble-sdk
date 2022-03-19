@@ -31,7 +31,8 @@
   color: #191713;
 }
 @mixin h2 {
-  @include subheading(2.6rem);
+  @include heading(2.6rem);
+  color: #191713;
 }
 @mixin h3 {
   @include subheading(1.8rem);

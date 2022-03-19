@@ -1,5 +1,3 @@
-// LATO
-/* MIXINS (depends on mixins.scss) */
 $xxxlg: 5.25rem;
 $xxlg: 3.2rem;
 $xlg: 2.8rem;
@@ -16,7 +14,6 @@ $grey-light: #cecece;
 $border-radius: 4px;
 $parent: 100%;
 
-/* FLEX */
 @mixin flex($direction: row, $content-align: flex-start) {
   align-items: center;
   display: flex;
@@ -24,18 +21,15 @@ $parent: 100%;
   place-content: $content-align;
 }
 
-/* Global Application Font */
 @mixin app-font {
   font-family: 'Lato', sans-serif;
   letter-spacing: 0.04rem;
 }
 
-/* Global Application Headings Font */
 @mixin heading-font() {
   font-family: "Open Sans", sans-serif;
 }
 
-/* Global Application Headings */
 @mixin h1 {
   @include heading(3.5rem);
 }

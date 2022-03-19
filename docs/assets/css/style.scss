@@ -1,6 +1,6 @@
 ---
 ---
 
-@import "";
+@import "{{ site.theme }}";
 @import "./mixins.scss";
 @import "./reset.scss";

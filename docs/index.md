@@ -1,37 +1,84 @@
-## Welcome to GitHub Pages
+# HumbleSDK 
 
-You can use the [editor on GitHub](https://github.com/reach-sh/humble-sdk/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+<header>
+  <img src="../logo-white.svg" width="80" height="auto">
+</header>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+- [HumbleSDK](#humblesdk)
+  - [Installing the SDK](#installing-the-sdk)
+    - [Option 1. NPM (recommended)](#option-1-npm-recommended)
+    - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
+  - [Importing SDK Functions](#importing-sdk-functions)
+  - [Methods](#methods)
+  - [Types](#types)
+  - [SDK Contents](#sdk-contents)
 
-### Markdown
+A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+---
 
-```markdown
-Syntax highlighted code block
+## Installing the SDK
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+### Option 1. NPM (recommended)
+The fastest way is to use `npm`:
+```bash
+$. npm i -s @reach-sh/humble-sdk
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+### Option 2. Cloning the repo directly
+To get started without NPM, you can clone and build the SDK from the repository. 
+> **Important note:** If you follow this method, be sure to swap out `import ... from "humble-sdk"` with the path to your `lib/` build output. 
+```bash
+# Clone the repository 
+$. git clone # ...
 
-### Jekyll Themes
+# Enter the directory with the repo (replace with path to your repository clone)
+# and install dependencies (there aren't a lot)
+$. cd path/to/humble-sdk && npm install
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/reach-sh/humble-sdk/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+# Build the SDK. Will output to a lib/ directory in the same folder as the 
+# package.json file. This takes seconds and doesn't output anything to your terminal.
+$. npm run build
 
-### Support or Contact
+# You will know 'build' is complete when your (terminal's) typing prompt reappears.
+``` 
+As a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module.
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+---
+
+## Importing SDK Functions
+You can import [SDK functions](#methods) individually or as a single blob.\
+These examples are exactly the same: 
+```typescript
+import * as HumbleSDK from "humble-sdk";
+
+HumbleSDK.initHumbleSDK();
+```
+or
+```typescript
+import { initHumbleSDK } from "humble-sdk";
+
+initHumbleSDK();
+```
+
+---
+
+## Methods
+See a full list of methods [**here**](./METHODS.md)
+
+--- 
+
+## Types
+See a full list of types [**here**](./TYPES.md)
+
+--- 
+
+## SDK Contents
+This SDK contains:
+* Reach-compiled **smart contracts** (`.mjs` files) used by the HumbleSWAP front-end to communicate with the blockchain
+* `@reach-sh/stdlib@0.1.8-rc7`
+* A Javascript API for interacting with the compiled smart contracts.
+
+Some input parameters will require objects created by reach's Javascript standard library (`stdlib`). The SDK allows you to access its `stdlib` instance, so you may not need to install or instantiate reach yourself. You should ideally be familiar with reach, as well as reach concepts.
+
+---

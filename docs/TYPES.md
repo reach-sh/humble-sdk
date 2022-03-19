@@ -1,7 +1,7 @@
 # HumbleSDK | Types
 
 <header>
-  <img src="./logo-white.svg" width="80" height="auto">
+  <img src="../logo-white.svg" width="120" height="auto">
 </header>
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).\
@@ -153,7 +153,7 @@ type TransactionResult = {
 
 ---
 
-[**Return Home**](./README.md)
+[**Return Home**](./index.md)
 
 ---
 

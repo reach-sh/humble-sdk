@@ -6,22 +6,23 @@
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).
 
-## Table of contents
 - [HumbleSDK](#humblesdk)
-  - [Table of contents](#table-of-contents)
+  - [Documentation](#documentation)
   - [Installing the SDK](#installing-the-sdk)
     - [Option 1. NPM (recommended)](#option-1-npm-recommended)
     - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
-  - [Importing SDK Functions](#importing-sdk-functions)
-  - [SDK Contents](#sdk-contents)
-  - [Methods](#methods)
-  - [Types](#types)
-  - [Development](#development)
+  - [Example Usage](#example-usage)
+    - [Subscribing to a stream of **Liquidity Pool** data](#subscribing-to-a-stream-of-liquidity-pool-data)
+    - [**Swapping** between a pair of tokens](#swapping-between-a-pair-of-tokens)
+  - [Local Testing](#local-testing)
 
 ---
+## Documentation
+Documentation has moved [here](https://reach-sh.github.io/humble-sdk/).
+
+--- 
 
 ## Installing the SDK
-
 ### Option 1. NPM (recommended)
 The fastest way is to use `npm`:
 ```bash
@@ -47,42 +48,55 @@ Then, as a **FINAL STEP**, copy or move the new `lib/` directory into your proje
 
 ---
 
-## Importing SDK Functions
-You can import [SDK functions](#methods) individually or as a single blob.\
-These examples are exactly the same: 
+## Example Usage
+
+### Subscribing to a stream of **Liquidity Pool** data
 ```typescript
-import * as HumbleSDK from "humble-sdk";
+import { subscribeToPoolStream, createReachAPI } from "humble-sdk";
 
-HumbleSDK.initHumbleSDK();
+const stdlib = createReachAPI();
+const acc = await stdlib.createAccount();
+
+// Fetch existing streams and get notified when a new one is created
+subscribeToPoolStream(acc, {
+    // Pool ID (and id of pool tokens) received from contract.
+    // Pool data has NOT been fetched yet.
+    onPoolReceived: (info) => { 
+        const [poolAddr, tokenAId, tokenBId] = info;
+        // ... do something with data
+     },
+
+    // Pool and Token data has been received from network. 
+    onPoolFetched: (result: FetchPoolTxnResult) => { 
+        const { succeeded, poolAddress, data, message } = result;
+        if (succeeded) // ... do something with data
+     }
+})
 ```
-or
+
+
+### **Swapping** between a pair of tokens
+> **Note:** Swapping does not use routing. Read the [docs](https://reach-sh.github.io/humble-sdk/) to learn how to fetch pools for DEx operations.
 ```typescript
-import { initHumbleSDK } from "humble-sdk";
+import { calculateTokenSwap, performSwap } from "humble-sdk";
 
-initHumbleSDK();
+const pool = /* pool source */
+
+// Calculate expected swap output
+const { tokenAId, tokenBId } = pool;
+const amountA = 100;
+const swap = calculateTokenSwap({ 
+    pool, 
+    swap: { amountA, tokenAId, tokenBId } 
+});
+
+// Perform swap
+const swapOpts = { poolAddress: pool.poolAddress, swap, pool };
+const { data, message, succeeded } = await performSwap(acc, swapOpts);
+// if (succeeded) data == { amountIn: string; amountOut: string }
 ```
-
----
-
-## SDK Contents
-This SDK contains:
-* Reach-compiled **smart contracts** (`.mjs` files) used by the HumbleSWAP front-end to communicate with the blockchain
-* `@reach-sh/stdlib@0.1.8-rc7`
-* A Javascript API for interacting with the compiled smart contracts.
-
-Some input parameters will require objects created by reach's Javascript standard library (`stdlib`). The SDK allows you to access its `stdlib` instance, so you may not need to install or instantiate reach yourself. You should ideally be familiar with reach, as well as reach concepts.
-
----
-
-## Methods
-See a full list of methods [**here**](./METHODS.md)
 
 --- 
 
-## Types
-See a full list of types [**here**](./TYPES.md)
-
---- 
-
-## Development
-The `humble-sdk` contains some helper scripts for running the SDK on a command line. See more here [**here**](./cli/README.md)
+## Local Testing
+The `humble-sdk` contains some helper scripts for running the SDK on a command line. See more [**here**](./cli/README.md)

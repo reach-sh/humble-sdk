@@ -18,25 +18,32 @@
 
 @mixin heading-font() {
   font-family: "Open Sans", sans-serif;
+  margin-bottom: 0.55rem;
+}
+
+@mixin subheading($font-size) {
+  @include heading($font-size);
+  color: #36332e;
 }
 
 @mixin h1 {
   @include heading(3.5rem);
+  color: #191713;
 }
 @mixin h2 {
-  @include heading(2.6rem);
+  @include subheading(2.6rem);
 }
 @mixin h3 {
-  @include heading(1.8rem);
+  @include subheading(1.8rem);
 }
 @mixin h4 {
-  @include heading(1.4rem);
+  @include subheading(1.4rem);
 }
 @mixin h5 {
-  @include heading(1.2rem);
+  @include subheading(1.2rem);
 }
 @mixin h6 {
-  @include heading(0.995rem);
+  @include subheading(0.995rem);
   font-weight: bolder;
   line-height: 1.125rem;
 }
@@ -208,6 +215,10 @@ a {
   color: #6c9688;
   font-weight: bolder;
   text-decoration: none;
+
+  &:hover {
+    color: #b4ccc4;
+  }
 }
 
 h1,
@@ -252,13 +263,35 @@ input[type="text"] {
   border-bottom: 1px solid;
 }
 
+pre,
+code {
+  border-radius: 8px;
+  padding: 0.4rem;
+}
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-@media screen and (max-width: 800px) {
+/* Main content */
+.inner {
+  max-width: 900px;
+  width: 100vw;
+}
+
+@media screen and (max-width: 900px) {
   html {
     font-size: 14px;
+  }
+
+  .inner {
+    max-width: 600px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .inner {
+    max-width: 100%;
   }
 }

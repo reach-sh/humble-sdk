@@ -1,5 +1,3 @@
-# HumbleSDK | Types
-
 [![logo][logo]](./index.md)
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).\
@@ -9,15 +7,14 @@ Types are listed below.\
 ---
 
 ## Table of contents
-- [HumbleSDK | Types](#humblesdk--types)
-  - [Table of contents](#table-of-contents)
-  - [PoolDetails](#pooldetails)
-  - [PoolInfo](#poolinfo)
-  - [ReachTxnOpts](#reachtxnopts)
-  - [SwapTxnOpts](#swaptxnopts)
-  - [SwapInfo](#swapinfo)
-  - [Token](#token)
-  - [TransactionResult](#transactionresult)
+- [Table of contents](#table-of-contents)
+- [PoolDetails](#pooldetails)
+- [PoolInfo](#poolinfo)
+- [ReachTxnOpts](#reachtxnopts)
+- [SwapTxnOpts](#swaptxnopts)
+- [SwapInfo](#swapinfo)
+- [Token](#token)
+- [TransactionResult](#transactionresult)
 
 --- 
 

@@ -1,15 +1,12 @@
-# HumbleSDK 
-
 [![logo][logo]](./index.md)
 
-- [HumbleSDK](#humblesdk)
-  - [Installing the SDK](#installing-the-sdk)
-    - [Option 1. NPM (recommended)](#option-1-npm-recommended)
-    - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
-  - [Importing SDK Functions](#importing-sdk-functions)
-  - [Methods](#methods)
-  - [Types](#types)
-  - [SDK Contents](#sdk-contents)
+- [Installing the SDK](#installing-the-sdk)
+  - [Option 1. NPM (recommended)](#option-1-npm-recommended)
+  - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
+- [Importing SDK Functions](#importing-sdk-functions)
+- [Methods](#methods)
+- [Types](#types)
+- [SDK Contents](#sdk-contents)
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).
 

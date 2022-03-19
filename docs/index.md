@@ -1,8 +1,6 @@
 # HumbleSDK 
 
-<header>
-  <img src="./logo-white.svg" width="120" height="auto">
-</header>
+[![logo][logo]](./index.md)
 
 - [HumbleSDK](#humblesdk)
   - [Installing the SDK](#installing-the-sdk)
@@ -87,3 +85,5 @@ This SDK contains:
 Some input parameters will require objects created by reach's Javascript standard library (`stdlib`). The SDK allows you to access its `stdlib` instance, so you may not need to install or instantiate reach yourself. You should ideally be familiar with reach, as well as reach concepts.
 
 ---
+
+[logo]: ./logo-white.svg

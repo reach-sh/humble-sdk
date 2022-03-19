@@ -1,13 +1,6 @@
 # HumbleSDK | Types
 
-<header>
-    <a 
-      href="/"
-      title="Home" 
-      style="text-decoration:none; outline:none;">
-        <img src="./logo-white.svg" width="120" height="auto">
-    </a>
-</header>
+[![logo][logo]](./index.md)
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).\
 Types are listed below.\
@@ -163,4 +156,7 @@ type TransactionResult = {
 [**Return Home**](./index.md)
 
 ---
+
+[logo]: ./logo-white.svg
+
 

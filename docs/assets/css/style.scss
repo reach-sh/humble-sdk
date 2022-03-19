@@ -3,7 +3,68 @@
 
 @import "{{ site.theme }}";
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Open+Sans:wght@300&display=swap");
-@import './mixins.scss';
+
+@mixin flex($direction: row, $content-align: flex-start) {
+  align-items: center;
+  display: flex;
+  flex-direction: $direction;
+  place-content: $content-align;
+}
+
+@mixin app-font {
+  font-family: "Lato", sans-serif;
+  letter-spacing: 0.04rem;
+}
+
+@mixin heading-font() {
+  font-family: "Open Sans", sans-serif;
+}
+
+@mixin h1 {
+  @include heading(3.5rem);
+}
+@mixin h2 {
+  @include heading(2.6rem);
+}
+@mixin h3 {
+  @include heading(1.8rem);
+}
+@mixin h4 {
+  @include heading(1.4rem);
+}
+@mixin h5 {
+  @include heading(1.2rem);
+}
+@mixin h6 {
+  @include heading(0.995rem);
+  font-weight: bolder;
+  line-height: 1.125rem;
+}
+
+@mixin line-clamp($lines) {
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+@mixin sticky($top: 0) {
+  position: sticky;
+  top: $top;
+  z-index: 999;
+}
+
+@mixin heading($font-size: 1.2rem) {
+  @include heading-font();
+  font-weight: 600;
+  font-size: $font-size;
+  line-height: $font-size;
+}
+
+@mixin rounded {
+  border-radius: 4px;
+}
 
 /* 
   * CSS reset based on meyer reset: modified to pull in 
@@ -183,11 +244,11 @@ blockquote:before,
 blockquote:after,
 q:before,
 q:after {
-  content: '';
+  content: "";
   content: none;
 }
 
-input[type='text'] {
+input[type="text"] {
   border-bottom: 1px solid;
 }
 
@@ -201,4 +262,3 @@ table {
     font-size: 14px;
   }
 }
-

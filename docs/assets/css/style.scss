@@ -2,5 +2,6 @@
 ---
 
 @import "{{ site.theme }}";
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Open+Sans:wght@300&display=swap");
 @import "./mixins.scss";
 @import "./reset.scss";

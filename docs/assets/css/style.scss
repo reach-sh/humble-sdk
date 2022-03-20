@@ -16,14 +16,21 @@
   letter-spacing: 0.04rem;
 }
 
+@mixin heading($font-size: 1.2rem) {
+  @include heading-font();
+  font-weight: 600;
+  font-size: $font-size;
+  line-height: 2.8rem;
+}
+
 @mixin heading-font() {
   font-family: "Open Sans", sans-serif;
-  margin-bottom: 0.55rem;
 }
 
 @mixin subheading($font-size) {
   @include heading($font-size);
   color: #36332e;
+  margin: 0.55rem 0;
 }
 
 @mixin h1 {
@@ -61,13 +68,6 @@
   position: sticky;
   top: $top;
   z-index: 999;
-}
-
-@mixin heading($font-size: 1.2rem) {
-  @include heading-font();
-  font-weight: 600;
-  font-size: $font-size;
-  line-height: $font-size;
 }
 
 @mixin rounded {

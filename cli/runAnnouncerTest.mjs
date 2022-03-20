@@ -3,7 +3,7 @@ import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
 
 let exitTimeout;
 const LIMIT = 10;
-const TIMEOUT = 10;
+const TIMEOUT = 15;
 const pools = new Set();
 
 /** Attach to pool announcer and list a subset of pools */
@@ -24,6 +24,7 @@ export function runAnnouncerTest(acc) {
 
 /** HELPER | When a pool is received, fetch details and reset the timer */
 async function onPoolFetched({ succeeded, poolAddress, data, message }) {
+  console.log("onPoolFetched");
   if (pools.size >= LIMIT) return;
   if (!succeeded) return Red(message);
 

@@ -20,6 +20,9 @@ export async function runSwapTest(
   [tokenAId, amountA, tokenBId, poolAddress]
 ) {
   const args = process.argv.slice(2);
+  if (!poolAddress)
+    exitWithMsgs("Pool address flag POOL required but not found");
+
   Blue(`Running SWAP test on pool "${poolAddress}"`);
 
   // Fetch pool (delegate logging)

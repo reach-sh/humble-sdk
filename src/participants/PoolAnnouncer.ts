@@ -7,72 +7,11 @@ import {
   noOp,
   trimByteString,
   formatCurrency,
-  ReachContract,
 } from "../reach-helpers";
-import { PoolDetails, ReachTxnOpts } from "../types";
-import {
-  poolBackend,
-  poolBackendN2NN,
-  announcerBackend,
-} from "../build/backend";
-import { getPoolAnnouncer, getFeeInfo, getHumbleAddr } from "../constants";
+import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
+import { poolBackend, poolBackendN2NN } from "../build/backend";
+import { getFeeInfo, getHumbleAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
-
-type PoolSubscriptionOpts = {
-  /** (Optional) called when contract data is received, but BEFORE pool is fetched */
-  onPoolReceived?: (...args: any[]) => void;
-  /** Called when the pool data has been fetched and formatted */
-  onPoolFetched(data: FetchPoolTxnResult): any;
-};
-/** Passively attach `acc` to a Pool Listener to discover new pools */
-export function subscribeToPoolStream(
-  acc: ReachAccount,
-  opts: PoolSubscriptionOpts = { onPoolFetched: noOp }
-) {
-  const announcerInfo = getPoolAnnouncer();
-  if (!announcerInfo) throw new Error("Announcer is not set");
-
-  const ctc = acc.contract(announcerBackend, announcerInfo);
-  const { onPoolReceived = noOp, onPoolFetched } = opts;
-
-  return ctc.participants.Listener({
-    // if the pool is using the network token, then we know the first token
-    // from the response will be null when unwrapped
-    hear: async (poolAddr: string, maybeTokA: Maybe, tokB: any) => {
-      const fPoolAddr = parseAddress(poolAddr);
-      const tokA = fromMaybe(maybeTokA, parseAddress, "0");
-      onPoolReceived([fPoolAddr, tokA, parseAddress(tokB)]);
-
-      // Asynchronous fetch and check whether pool has liquidity
-      fetchPool(acc, fPoolAddr, {
-        ...opts,
-        n2nn: tokA === "0",
-      }).then(onPoolFetched);
-    },
-  });
-}
-
-/** High-level information about a pool */
-type FetchPoolData = {
-  /** Pool data */
-  pool: PoolDetails | null;
-  /** Pool token data */
-  tokens: [tokA: any, tokB: any];
-  /** Whether pool has liquidity and is tradeable */
-  tradeable: boolean;
-};
-type FetchPoolTxnResult = {
-  /** Whether the transaction succeeded or failed */
-  succeeded: boolean;
-  /** The pool address targeted for the txn */
-  poolAddress?: string | number;
-  /** Any useful data associated about the txn (or any error encountered) */
-  data: FetchPoolData;
-  /** Optional success or failure message */
-  message?: string;
-  /** Contract instance used for the transaction. Can be reused in subsequent calls. */
-  contract?: ReachContract<typeof poolBackend | typeof poolBackendN2NN>;
-};
 
 export type FetchPoolOpts = ReachTxnOpts & {
   /** when true, is a network-to-non-network pool */

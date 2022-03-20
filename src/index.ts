@@ -58,11 +58,8 @@ export { getSlippage, setSlippage, getPoolAnnouncer } from "./constants";
 export { addLiquidity, withdrawLiquidity } from "./api/liquidityProvider";
 
 // POOL + TOKEN DATA
-export {
-  subscribeToPoolStream,
-  fetchPool,
-  fetchToken,
-} from "./participants/PoolAnnouncer";
+export { subscribeToPoolStream } from "./participants/subscribeToPoolStream";
+export { fetchPool, fetchToken } from "./participants/PoolAnnouncer";
 
 // SWAP
 export { performSwap } from "./api/trader";

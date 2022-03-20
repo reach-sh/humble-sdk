@@ -111,3 +111,26 @@ export type SwapInfo = {
   tokenBId: string | number;
   tokenIn?: string | number;
 };
+
+/** High-level information about a pool */
+type FetchPoolData = {
+  /** Pool data */
+  pool: PoolDetails | null;
+  /** Pool token data */
+  tokens: [tokA: any, tokB: any];
+  /** Whether pool has liquidity and is tradeable */
+  tradeable: boolean;
+};
+
+export type FetchPoolTxnResult = {
+  /** Whether the transaction succeeded or failed */
+  succeeded: boolean;
+  /** The pool address targeted for the txn */
+  poolAddress?: string | number;
+  /** Any useful data associated about the txn (or any error encountered) */
+  data: FetchPoolData;
+  /** Optional success or failure message */
+  message?: string;
+  /** Contract instance used for the transaction. Can be reused in subsequent calls. */
+  contract?: ReachContract<any>;
+};

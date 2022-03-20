@@ -20,14 +20,7 @@ import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
 
 // init SDK
-initHumbleSDK({
-  providerEnv: {
-    ALGO_INDEXER_SERVER: "https://algoindexer.testnet.algoexplorerapi.io",
-    ALGO_SERVER: "https://node.testnet.algoexplorerapi.io",
-    ALGO_TOKEN: "".padEnd(64, "a"),
-    ALGO_INDEXER_TOKEN: "".padEnd(64, "a"),
-  },
-});
+initHumbleSDK();
 const reach = createReachAPI();
 
 (async () => {

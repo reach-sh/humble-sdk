@@ -16,14 +16,21 @@
   letter-spacing: 0.04rem;
 }
 
+@mixin heading($font-size: 1.2rem) {
+  @include heading-font();
+  font-weight: 600;
+  font-size: $font-size;
+  line-height: 2.8rem;
+}
+
 @mixin heading-font() {
   font-family: "Open Sans", sans-serif;
-  margin-bottom: 0.55rem;
 }
 
 @mixin subheading($font-size) {
   @include heading($font-size);
   color: #36332e;
+  margin: 0.55rem 0;
 }
 
 @mixin h1 {
@@ -61,13 +68,6 @@
   position: sticky;
   top: $top;
   z-index: 999;
-}
-
-@mixin heading($font-size: 1.2rem) {
-  @include heading-font();
-  font-weight: 600;
-  font-size: $font-size;
-  line-height: $font-size;
 }
 
 @mixin rounded {
@@ -186,23 +186,9 @@ video {
   vertical-align: baseline;
 }
 
-/* HTML5 display-role reset for older browsers */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-
 body {
   @include app-font();
+  color: #36332E;
   font-size: 0.9rem;
   height: 100%;
   margin: 0;
@@ -268,6 +254,9 @@ pre,
 code {
   border-radius: 8px;
   padding: 0.4rem;
+  &.highlight {
+    margin: 0.5rem 0 1rem;
+  }
 }
 
 table {
@@ -275,7 +264,11 @@ table {
   border-spacing: 0;
 }
 
-/* Main content */
+/* Main content/Overrides */
+#container {
+  background: #f8f4e6;
+}
+
 .inner {
   max-width: 900px;
   width: 100vw;

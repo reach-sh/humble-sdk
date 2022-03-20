@@ -1,6 +1,5 @@
 import { fetchPool, performSwap } from "../lib/index.js";
 import { calculatePriceImpact, calculateTokenSwap } from "../lib/index.js";
-import { stopTest } from "./runAnnouncerTest.mjs";
 import {
   exitWithMsgs,
   Blue,
@@ -20,6 +19,9 @@ export async function runSwapTest(
   [tokenAId, amountA, tokenBId, poolAddress]
 ) {
   const args = process.argv.slice(2);
+  if (!poolAddress)
+    exitWithMsgs("Pool address flag POOL required but not found");
+
   Blue(`Running SWAP test on pool "${poolAddress}"`);
 
   // Fetch pool (delegate logging)
@@ -52,7 +54,7 @@ export async function runSwapTest(
   else Red(`* Swap failed: ${JSON.stringify(out, null, 2)}`);
 
   // Exit
-  stopTest();
+  exitWithMsgs("Test complete! Exiting ...");
 }
 
 /** Helper | Fetch target pool for swap */

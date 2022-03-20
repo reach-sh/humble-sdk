@@ -64,28 +64,34 @@ function loadProviderEnv(
   provider: T.NetworkProvider,
   overrides: Partial<T.AlgoEnvOverride> = {}
 ): T.AlgoEnvOverride {
+  /*
   let domain = "-test.humbleswap.com";
   let token = process.env.INDEXER_TESTNET;
-
   if (provider === "MainNet") {
     domain = ".humble.sh";
     token = process.env.INDEXER_MAINNET;
   }
+  const server = `https://algod${domain}`;
+  const indexer = `https://api${domain}`;
+  */
+  let domain = "algoexplorerapi.io";
+  if (provider !== "MainNet") domain = `${provider.toLowerCase()}.${domain}`;
 
-  const humbleServer = `https://algod${domain}`;
-  const humbleIndexer = `https://api${domain}`;
+  const token = "a".padEnd(64, "a");
+  const server = `https://node.${domain}`;
+  const indexer = `https://algoindexer.${domain}`;
   const env = {
-    ALGO_SERVER: humbleServer,
+    ALGO_SERVER: server,
     ALGO_PORT: "",
-    ALGO_INDEXER_SERVER: humbleIndexer,
+    ALGO_INDEXER_SERVER: indexer,
     ALGO_INDEXER_PORT: "",
     REACH_ISOLATED_NETWORK: "no",
 
     ...overrides,
   };
 
-  if (env.ALGO_SERVER === humbleServer) env.ALGO_TOKEN = token;
-  if (env.ALGO_INDEXER_TOKEN === humbleIndexer) env.ALGO_INDEXER_TOKEN = token;
+  if (env.ALGO_SERVER === server) env.ALGO_TOKEN = token;
+  if (env.ALGO_INDEXER_TOKEN === indexer) env.ALGO_INDEXER_TOKEN = token;
 
   return env as T.AlgoEnvOverride;
 }

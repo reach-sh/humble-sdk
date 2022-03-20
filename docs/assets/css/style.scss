@@ -186,23 +186,9 @@ video {
   vertical-align: baseline;
 }
 
-/* HTML5 display-role reset for older browsers */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-
 body {
   @include app-font();
+  color: #36332E;
   font-size: 0.9rem;
   height: 100%;
   margin: 0;
@@ -268,6 +254,9 @@ pre,
 code {
   border-radius: 8px;
   padding: 0.4rem;
+  &.highlight {
+    margin: 0.5rem 0 1rem;
+  }
 }
 
 table {
@@ -275,7 +264,11 @@ table {
   border-spacing: 0;
 }
 
-/* Main content */
+/* Main content/Overrides */
+#container {
+  background: #f8f4e6;
+}
+
 .inner {
   max-width: 900px;
   width: 100vw;

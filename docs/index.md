@@ -34,13 +34,13 @@ $. git clone # ...
 $. cd path/to/humble-sdk && npm install
 ```
 
-3. Build the SDK. Will output to a lib/ directory in the same folder as the package.json file. This takes seconds and doesn't output anything to your terminal.
+3. Build the SDK. Will output to a lib/ directory in the same folder as the package.json file. This takes seconds and doesn't output anything to your terminal\
+   You will know 'build' is complete when your (terminal's) typing prompt reappears.
 ```bash
 $. npm run build
 ```
-You will know 'build' is complete when your (terminal's) typing prompt reappears.
 
-4. As a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module.
+4. As a **FINAL STEP**, copy or move the new `lib/` directory into your project and access it like any other JS module.
 
 > **Important note:** If you follow this method, be sure to swap out `import ... from "humble-sdk"` with the path to your `lib/` build output. 
 

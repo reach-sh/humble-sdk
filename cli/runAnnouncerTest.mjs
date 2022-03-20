@@ -24,7 +24,6 @@ export function runAnnouncerTest(acc) {
 
 /** HELPER | When a pool is received, fetch details and reset the timer */
 async function onPoolFetched({ succeeded, poolAddress, data, message }) {
-  console.log("onPoolFetched");
   if (pools.size >= LIMIT) return;
   if (!succeeded) return Red(message);
 

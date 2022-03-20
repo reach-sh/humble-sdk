@@ -41,7 +41,7 @@ function resetTimer() {
 }
 
 /** End CLI */
-export function stopTest() {
+function stopTest() {
   clearTimeout(exitTimeout);
   exitWithMsgs("Timer stopped. Exiting ...");
 }

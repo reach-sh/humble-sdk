@@ -1,6 +1,5 @@
 import { fetchPool, performSwap } from "../lib/index.js";
 import { calculatePriceImpact, calculateTokenSwap } from "../lib/index.js";
-import { stopTest } from "./runAnnouncerTest.mjs";
 import {
   exitWithMsgs,
   Blue,
@@ -55,7 +54,7 @@ export async function runSwapTest(
   else Red(`* Swap failed: ${JSON.stringify(out, null, 2)}`);
 
   // Exit
-  stopTest();
+  exitWithMsgs("Test complete! Exiting ...");
 }
 
 /** Helper | Fetch target pool for swap */

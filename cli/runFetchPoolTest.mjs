@@ -1,6 +1,5 @@
 import { fetchPool } from "../lib/index.js";
 import { iout, exitWithMsgs, Blue, Yellow, onProgress } from "./utils.mjs";
-import { stopTest } from "./runAnnouncerTest.mjs";
 
 /** Fetch a single pool */
 export async function runFetchPoolTest(acc, [addr, n2nn]) {
@@ -9,5 +8,5 @@ export async function runFetchPoolTest(acc, [addr, n2nn]) {
 
   Yellow(`Fetching single pool "${addr}"...`);
   iout("Fetched pool", await fetchPool(acc, addr, { onProgress, n2nn }));
-  stopTest();
+  exitWithMsgs("Test complete! Exiting ...");
 }

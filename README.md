@@ -52,7 +52,7 @@ Then, as a **FINAL STEP**, copy or move the new `lib/` directory into your proje
 
 ### Subscribing to a stream of **Liquidity Pool** data
 ```typescript
-import { subscribeToPoolStream, createReachAPI } from "humble-sdk";
+import { subscribeToPoolStream, createReachAPI } from "@reach-sh/humble-sdk";
 
 const stdlib = createReachAPI();
 const acc = await stdlib.createAccount();

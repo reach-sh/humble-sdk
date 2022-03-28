@@ -1,6 +1,6 @@
 {
   "name": "@reach-sh/humble-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Javascript library for interacting with the HumbleSwap DEx",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

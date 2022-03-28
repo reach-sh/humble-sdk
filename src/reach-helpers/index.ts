@@ -64,22 +64,11 @@ function loadProviderEnv(
   provider: T.NetworkProvider,
   overrides: Partial<T.AlgoEnvOverride> = {}
 ): T.AlgoEnvOverride {
-  /*
-  let domain = "-test.humbleswap.com";
-  let token = process.env.INDEXER_TESTNET;
-  if (provider === "MainNet") {
-    domain = ".humble.sh";
-    token = process.env.INDEXER_MAINNET;
-  }
-  const server = `https://algod${domain}`;
-  const indexer = `https://api${domain}`;
-  */
-  let domain = "algoexplorerapi.io";
-  if (provider !== "MainNet") domain = `${provider.toLowerCase()}.${domain}`;
+  let domain = "algonode.cloud";
+  const network = provider.toLowerCase();
 
-  const token = "a".padEnd(64, "a");
-  const server = `https://node.${domain}`;
-  const indexer = `https://algoindexer.${domain}`;
+  const server = `https://${network}-api.${domain}`;
+  const indexer = `https://${network}-idx.${domain}`;
   const env = {
     ALGO_SERVER: server,
     ALGO_PORT: "",
@@ -89,9 +78,6 @@ function loadProviderEnv(
 
     ...overrides,
   };
-
-  if (env.ALGO_SERVER === server) env.ALGO_TOKEN = token;
-  if (env.ALGO_INDEXER_TOKEN === indexer) env.ALGO_INDEXER_TOKEN = token;
 
   return env as T.AlgoEnvOverride;
 }

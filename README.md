@@ -78,7 +78,7 @@ subscribeToPoolStream(acc, {
 ### **Swapping** between a pair of tokens
 > **Note:** Swapping does not use routing. Read the [docs](https://reach-sh.github.io/humble-sdk/) to learn how to fetch pools for DEx operations.
 ```typescript
-import { calculateTokenSwap, performSwap } from "humble-sdk";
+import { calculateTokenSwap, performSwap } from "@reach-sh/humble-sdk";
 
 const pool = /* pool source */
 

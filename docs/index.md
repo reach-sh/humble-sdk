@@ -4,7 +4,7 @@
   - [Option 1. NPM (recommended)](#option-1-npm-recommended)
   - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
 - [Importing SDK Functions](#importing-sdk-functions)
-- [Methods](#methods)
+- [Functions (methods)](#functions-methods)
 - [Types](#types)
 - [SDK Contents](#sdk-contents)
 
@@ -42,7 +42,7 @@ $. npm run build
 
 4. As a **FINAL STEP**, copy or move the new `lib/` directory into your project and access it like any other JS module.
 
-> **Important note:** If you follow this method, be sure to swap out `import ... from "humble-sdk"` with the path to your `lib/` build output. 
+> **Important note:** If you follow this method, be sure to swap out `import ... from "@reach-sh/humble-sdk"` with the path to your `lib/` build output. 
 
 ---
 
@@ -50,20 +50,20 @@ $. npm run build
 You can import [SDK functions](#methods) individually or as a single blob.\
 These examples are exactly the same: 
 ```typescript
-import * as HumbleSDK from "humble-sdk";
+import * as HumbleSDK from "@reach-sh/humble-sdk";
 
 HumbleSDK.initHumbleSDK();
 ```
 or
 ```typescript
-import { initHumbleSDK } from "humble-sdk";
+import { initHumbleSDK } from "@reach-sh/humble-sdk";
 
 initHumbleSDK();
 ```
 
 ---
 
-## Methods
+## Functions (methods)
 See a full list of methods [**here**](./METHODS.md)
 
 --- 

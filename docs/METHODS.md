@@ -70,7 +70,7 @@ Prepares the SDK for use. This must be called once before any other functions ar
 
 #### initHumbleSDK Example
 ```typescript
-import { initHumbleSDK } from 'humble-sdk';
+import { initHumbleSDK } from "@reach-sh/humble-sdk";
 
 // Initialize HumbleSDK for Algo TestNet
 initHumbleSDK();
@@ -84,22 +84,22 @@ initHumbleSDK({ slippageTolerance: 5 });
 Optional parameters for `SDKOpts` include:
 ```typescript
 type SDKOpts = {
-  // (Optional) Network Provider (`TestNet` or `MainNet`). Defaults to `TestNet` 
-  network?: "TestNet" | "MainNet";
-  
-  // Slippage Tolerance: defaults to 0.5% 
-  slippageTolerance?: number;
-  
-  // (Optional) Node override settings (for using a custom provider with reach stdlib) 
-  providerEnv?: {
-    ALGO_INDEXER_SERVER: string;
-    ALGO_INDEXER_TOKEN: string;
-    ALGO_SERVER: string;
-    ALGO_TOKEN: string;
-    ALGO_INDEXER_PORT?: string;
-    ALGO_PORT?: string;
-    REACH_ISOLATED_NETWORK?: string;
-  };
+    // (Optional) Network Provider (`TestNet` or `MainNet`). Defaults to `TestNet` 
+    network?: "TestNet" | "MainNet";
+    
+    // Slippage Tolerance: defaults to 0.5% 
+    slippageTolerance?: number;
+    
+    // (Optional) Node override settings (for using a custom provider with reach stdlib) 
+    providerEnv?: {
+        ALGO_INDEXER_SERVER: string;
+        ALGO_INDEXER_TOKEN: string;
+        ALGO_SERVER: string;
+        ALGO_TOKEN: string;
+        ALGO_INDEXER_PORT?: string;
+        ALGO_PORT?: string;
+        REACH_ISOLATED_NETWORK?: string;
+    };
 }
 ```
 
@@ -215,7 +215,7 @@ Adds liquidity to a `Pool`.
 #### addLiquidity Example
 See [`fetchPool`](#fetchpool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
 ```typescript
-import { addLiquidity } from "humble-sdk";
+import { addLiquidity } from "@reach-sh/humble-sdk";
 
 const pool = /* pool source */
 const { tokenAId } = pool;
@@ -273,7 +273,7 @@ Fetch data about a single liquidity pool.
 
 #### fetchPool Example
 ```typescript
-import { fetchPool } from "humble-sdk";
+import { fetchPool } from "@reach-sh/humble-sdk";
 
 // Get a pool ID or reference to one (see 'subscribeToPoolStream')
 // The following is only an example, and is not a real pool id
@@ -534,7 +534,7 @@ Configure your slippage settings *after* initializing HumbleSDK.
 
 #### setSlippage Example
 ```typescript
-import { getSlippage, setSlippage, initHumbleSDK } from "humble-sdk";
+import { getSlippage, setSlippage, initHumbleSDK } from "@reach-sh/humble-sdk";
 
 initHumbleSDK({ slippageTolerance: 10 });
 console.log(getSlippage()); // 10

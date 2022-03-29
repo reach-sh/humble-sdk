@@ -243,16 +243,16 @@ For additional options, see [`ReachTxnOpts`](./TYPES.md#reachtxnopts).
 ##### DepositTxnOpts
 ```typescript
 type DepositTxnOpts = {
-  // Deposit Amounts (for Pool tokens `A` and `B` respectively). Order of
-  // amounts is important, or the transaction may fail.
-  amounts: [amountA: number | string, amountB: number | string];
+    // Deposit Amounts (for Pool tokens `A` and `B` respectively). Order of
+    // amounts is important, or the transaction may fail.
+    amounts: [amountA: number | string, amountB: number | string];
 
-  // Data about target pool to deposit
-  pool: PoolInfo;
+    // Data about target pool to deposit
+    pool: PoolInfo;
 
-  // When true, will opt user account into pool liquidity token. If false and
-  // user hasn't opted-in, the transaction may fail. Defaults to `false`.
-  optInToLPToken?: boolean;
+    // When true, will opt user account into pool liquidity token. If false and
+    // user hasn't opted-in, the transaction may fail. Defaults to `false`.
+    optInToLPToken?: boolean;
 } & ReachTxnOpts
 ```
 

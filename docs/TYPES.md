@@ -22,18 +22,18 @@ Types are listed below.\
 Enhanced pool information.
 ```typescript
 type PoolDetails = PoolInfo & {
-  // Balance of user pool LP tokens (amount of user Liquidity in the pool) 
-  userLiquidity?: any;
-  // LP Tokens minted for this pool 
-  mintedLiquidityTokens?: any;
-  // Balance of Pool `Token A` 
-  tokenABalance?: string | number;
-  // Fees accrued from `Token A` 
-  tokenAFees?: string | number;
-  // Balance of Pool `Token B` 
-  tokenBBalance?: string | number;
-  // Fees accrued from `Token B` 
-  tokenBFees?: string | number;
+    // Balance of user pool LP tokens (amount of user Liquidity in the pool) 
+    userLiquidity?: any;
+    // LP Tokens minted for this pool 
+    mintedLiquidityTokens?: any;
+    // Balance of Pool `Token A` 
+    tokenABalance?: string | number;
+    // Fees accrued from `Token A` 
+    tokenAFees?: string | number;
+    // Balance of Pool `Token B` 
+    tokenBBalance?: string | number;
+    // Fees accrued from `Token B` 
+    tokenBFees?: string | number;
 }
 ```
 ^[**Back to contents**](#table-of-contents)
@@ -44,20 +44,20 @@ type PoolDetails = PoolInfo & {
 SDK Functions always return this object (including for errors). Additional information from the function (or underlying transaction) will be found in the `data` property.
 ```typescript
 type PoolInfo = {
-  /** Pool contract address (or Algorand application ID) */
-  poolAddress: string | number;
-  // Pool's `Token A` id. Will be '0' for network token (e.g. ALGO or ETH)
-  tokenAId: string | number;
-  // Pool's `Token B` id
-  tokenBId: string | number;
-  // Number of decimal places for `Token A`. Defaults to `6`
-  tokenADecimals?: number;
-  // Number of decimal places for `Token B`. Defaults to `6`
-  tokenBDecimals?: number;
-  // When true, indicates this pool uses a network token (e.g. ALGO or ETH)
-  n2nn?: boolean;
-  // Liquidity Token ID
-  poolTokenId?: string | number;
+    /** Pool contract address (or Algorand application ID) */
+    poolAddress: string | number;
+    // Pool's `Token A` id. Will be '0' for network token (e.g. ALGO or ETH)
+    tokenAId: string | number;
+    // Pool's `Token B` id
+    tokenBId: string | number;
+    // Number of decimal places for `Token A`. Defaults to `6`
+    tokenADecimals?: number;
+    // Number of decimal places for `Token B`. Defaults to `6`
+    tokenBDecimals?: number;
+    // When true, indicates this pool uses a network token (e.g. ALGO or ETH)
+    n2nn?: boolean;
+    // Liquidity Token ID
+    poolTokenId?: string | number;
 }
 ```
 ^[**Back to contents**](#table-of-contents)
@@ -68,18 +68,18 @@ type PoolInfo = {
 Most transactions (or SDK functions) will accept the following additional properties, if you provide them (or have them available; `contract`, for example, is returned from some functions in the SDK).
 ```typescript
 type ReachTxnOpts = {
-  // (Optional) The pool address targeted for the txn 
-  poolAddress?: string | number;
-  
-  // A pre-attached `ReachContract` object, if any, to speed up initialization 
-  contract?: ReachContract<any>;
-  
-  // Optional function to call when withdrawal action is complete 
-  onComplete?: (...args: any[]) => void;
+    // (Optional) The pool address targeted for the txn 
+    poolAddress?: string | number;
 
-  // Optional function to call as the transaction progresses
-  // (e.g. for UI notifications) 
-  onProgress?: (msg: string) => void;
+    // A pre-attached `ReachContract` object, if any, to speed up initialization 
+    contract?: ReachContract<any>;
+
+    // Optional function to call when withdrawal action is complete 
+    onComplete?: (...args: any[]) => void;
+
+    // Optional function to call as the transaction progresses
+    // (e.g. for UI notifications) 
+    onProgress?: (msg: string) => void;
 }
 ```
 ^[**Back to contents**](#table-of-contents)

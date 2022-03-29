@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import { loadStdlib } from "@reach-sh/stdlib";
 import { ChainSymbol, loadReach, SDKOpts } from "./reach-helpers";
 import {
@@ -9,8 +8,6 @@ import {
   setPoolAnnouncer,
   setSlippage,
 } from "./constants";
-
-dotenv.config({ path: "./../.env" });
 
 export function initHumbleSDK(opts: SDKOpts = {}) {
   if (checkInitialized()) return;

@@ -2,7 +2,7 @@ import { getSlippage, setSlippage } from "./constants";
 import { createReachAPI, getPoolAnnouncer, initHumbleSDK } from "./index";
 import { fetchPool } from "./participants/PoolAnnouncer";
 
-describe.only("HumbleSDK Default Export tests", () => {
+describe("HumbleSDK Default Export tests", () => {
   it("Throws an error if the SDK is not initialized", () => {
     expect(getPoolAnnouncer()).toBeUndefined();
     expect(() => createReachAPI()).toThrow("HumbleSDK is not instantiated!");

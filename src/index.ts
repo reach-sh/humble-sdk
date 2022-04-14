@@ -36,8 +36,10 @@ type Provider = "TestNet" | "MainNet";
 /** Get Pool data source for Testnet/Mainnet */
 function getAnnouncerForEnv(network: Provider = "TestNet") {
   const valid = validateNetwork(network);
-  if (valid === "TestNet") return 77857906;
-  if (valid === "MainNet") return 662535515;
+  // if (valid === "TestNet") return 77857906; V1 Announcers
+  // if (valid === "MainNet") return 662535515; V1 Announcers
+  if (valid === "TestNet") return 83848196; // V2 Announcers
+  // if (valid === "MainNet") return 83848196; // V2 Announcers
 
   throw new Error(`Unrecognized provider "${network}"`);
 }

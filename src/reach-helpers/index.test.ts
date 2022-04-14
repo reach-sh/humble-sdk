@@ -37,9 +37,7 @@ const poolIsOverloaded = (data?: PoolData) => {
     bToA = getAmtOutView(minAmt, balB, balA, FEE_INFO);
     return false;
   } catch (e) {
-    const err = e.message;
-    const msg = trimByteString(JSON.parse(err).msg);
-    console.log({ aToB, bToA, msg });
+    console.log({ err: trimByteString(e.message) });
     return true;
   }
 };

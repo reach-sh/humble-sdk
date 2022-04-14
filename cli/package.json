@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@reach-sh/stdlib": "0.1.8-rc.7",
-    "algosdk": "^1.14.0"
+    "@reach-sh/stdlib": "^0.1.9-rc.7",
+    "algosdk": "^1.15.0"
   }
 }

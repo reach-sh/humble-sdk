@@ -19,6 +19,7 @@ type CreatePoolTxnOpts = {
   tokenAmounts: [a: number, b: number];
 } & ReachTxnOpts;
 
+/** @internal Create a pool */
 export async function createPool(
   acc: any,
   opts: CreatePoolTxnOpts
@@ -133,7 +134,8 @@ async function buildPool(
   }
 }
 
-/** INTERNAL HELPER | Create Pool failed */
+/**
+ * @internal HELPER | Create Pool failed */
 function createPoolFailed(e: Error): TransactionResult {
   const data = e;
   let message = parseContractError(`Pool creation failed.`, e);

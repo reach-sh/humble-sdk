@@ -9,6 +9,7 @@
     "noEmit": false,
     "declaration": true,
     "noUnusedLocals": true,
+    "stripInternal": true,
     "noUnusedParameters": true,
     "useDefineForClassFields": true,
     "module": "commonJs",

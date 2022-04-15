@@ -24,6 +24,11 @@ export type CtcFnGroup<T> = {
   [k in keyof T]: CtcFn;
 };
 
+/** Reach Contract Method (function) grouping */
+export type CtcFnSupergroup<T> = {
+  [k in keyof T]: CtcFnGroup<T[k]>;
+};
+
 export type InteractFn<T extends BackendModule> = {
   [fn in keyof T]: (interact: any, ctcInfo?: string | number) => any;
 };
@@ -73,6 +78,13 @@ export type ReachAccount = { [x: string]: any } & {
   stdlib: ReachStdLib;
 };
 
+/** Reach contract View representation */
+type CtcViewGroup<T extends BackendModule> =
+  | ReturnType<T["_getViews"]>["infos"];
+export type ContractView<T extends BackendModule> = {
+  [k in keyof CtcViewGroup<T>]: CtcFnGroup<CtcViewGroup<T>[k]>;
+};
+
 /** Reach contract representation */
 export type ReachContract<T extends BackendModule> = {
   /** Get contract address */
@@ -88,9 +100,9 @@ export type ReachContract<T extends BackendModule> = {
   /** Reach Contract `Participant` member */
   participants: InteractFn<T["_Participants"]>;
   /** Reach Contract `View` member */
-  v: CtcLabeledFunc<any>;
+  v: ContractView<T>;
   /** Reach Contract `View` member */
-  views: CtcLabeledFunc<any>;
+  views: ContractView<T>;
   /** Reach Contract `Events` member */
   e: ReachEventStream;
   /** Reach Contract `Events` member */

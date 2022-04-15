@@ -7,6 +7,7 @@ import {
   noOp,
   trimByteString,
   formatCurrency,
+  ReachContract,
 } from "../reach-helpers";
 import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
@@ -39,7 +40,9 @@ export async function fetchPool(
 
   // Load pool data from view
   onProgress(`Fetching balances for pool "${ctcInfo}"`);
-  const views: any = opts.contract || acc.contract(theBackend, ctcInfo).views;
+  const ctc: ReachContract<typeof theBackend> =
+    opts.contract || acc.contract(theBackend, ctcInfo);
+  const views = ctc.views;
   const aBal = await views.Tokens.aBal();
   const bBal = await views.Tokens.bBal();
   const liquidityToken = await views.Tokens.liquidityToken();

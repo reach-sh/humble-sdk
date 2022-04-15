@@ -1,5 +1,13 @@
 import { ReachContract } from "./reach-helpers";
 
+/** Address */
+export type Address = string;
+
+/** Big Number object from ethers.js */
+export type BigNumber = any;
+
+export type TokenID = string | number;
+
 export type SwapTxnOpts = {
   swap: SwapInfo;
   pool?: PoolDetails;
@@ -133,4 +141,66 @@ export type FetchPoolTxnResult = {
   message?: string;
   /** Contract instance used for the transaction. Can be reused in subsequent calls. */
   contract?: ReachContract<any>;
+};
+
+/**
+ * @version v2
+ * Reach `v.0.1.10x` + HUMBLE FARMING
+ */
+
+/** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
+export type Rewards = [any, any];
+
+/** Notification object (Stake updated) */
+export type StakeUpdate = {
+  newUserStaked: BigNumber;
+  newEveryoneStaked: BigNumber;
+};
+
+/** Notification object (Rewards updated) */
+export type RewardsUpdate = {
+  userReceived: Rewards;
+  totalRemaining: Rewards;
+};
+
+/** Options reused in the contract */
+export type Opts = {
+  rewardToken1: TokenID;
+  stakeToken: TokenID;
+  rewardsPerBlock: Rewards;
+  duration: number;
+};
+
+/** Farming pool view */
+export type View = {
+  /** Initial values submitted by contract creator */
+  opts: Opts;
+  /** Total amount staked in contract */
+  totalStaked: BigNumber;
+  /** Amount of rewards left in contract */
+  remainingRewards: Rewards;
+  /** When farming pool ends */
+  end: BigNumber;
+  /** Amount staked */
+  staked(addr: Address): BigNumber;
+  /** Round when rewards will be available for `addr` */
+  rewardsAvailableAt(addr: Address, round: BigNumber): Rewards;
+};
+
+/** Deployer (creates the farming pool) */
+export type Deployer = {
+  /** Initial contract options */
+  opts: Opts;
+  /** Notify deployer that contract is live */
+  readyForStakers(): any;
+};
+
+/** Staker (stakes tokens for rewards) */
+export type StakerAPI = {
+  /** Stake an amount for rewards */
+  stake(amt: BigNumber): Promise<StakeUpdate>;
+  /** Harvest rewards for stake */
+  harvest(): RewardsUpdate;
+  /** Withdraw stake */
+  withdraw(amt: BigNumber): Promise<StakeUpdate>;
 };

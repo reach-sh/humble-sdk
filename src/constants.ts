@@ -1,3 +1,6 @@
+import { NetworkProvider } from "./reach-helpers";
+import { PoolProtocolInfo } from "./types";
+
 // Application constants (or long-lived values)
 export const UNINSTANTIATED = `HumbleSDK is not instantiated!`;
 export const ASSURANCE_MSG = `Your funds were not moved.`;
@@ -7,21 +10,21 @@ export const TRANSACTION_CANCELLED_MSG = `Transaction Cancelled.`;
 // Fees
 export const FLOAT = 0.0001;
 
-export function getFeeInfo() {
+export function getFeeInfo(): PoolProtocolInfo {
   const LIQUIDITY_PROVIDER_FEE = 25;
   const HUMBLE_DAO_FEE = 5;
   const TOTAL_FEE = 30;
 
   return {
-    fee: HUMBLE_DAO_FEE,
     lpFee: LIQUIDITY_PROVIDER_FEE,
+    protoAddr: getHumbleAddr(),
+    protoFee: HUMBLE_DAO_FEE,
     totFee: TOTAL_FEE,
-    addr: getHumbleAddr(),
   };
 }
 
 let HUMBLE_ADDR: string;
-export function setHumbleAddr(prov: "TestNet" | "MainNet") {
+export function setHumbleAddr(prov: NetworkProvider) {
   const a = [
     "35KJV5W6CW2TQKGDGQD5FGMSJGLYARPSKD6JB7ZX5SADTCHNFI3WUN44PI",
     "U57LB3YXAVYAER4BWQLNRQZHI2TJWXSDJGOUI5OYJWORUYEAL6SPZGOWZI",

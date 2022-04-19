@@ -9,7 +9,12 @@ import {
   formatCurrency,
   ReachContract,
 } from "../reach-helpers";
-import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
+import {
+  FetchPoolTxnResult,
+  PoolContractView,
+  PoolDetails,
+  ReachTxnOpts,
+} from "../types";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { getFeeInfo, getHumbleAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
@@ -39,35 +44,37 @@ export async function fetchPool(
   const ctcInfo = parseAddress(poolAddress);
 
   // Load pool data from view
-  onProgress(`Fetching balances for pool "${ctcInfo}"`);
+  onProgress(`Fetching data for pool "${ctcInfo}"`);
   const ctc: ReachContract<typeof theBackend> =
     opts.contract || acc.contract(theBackend, ctcInfo);
-  const views = ctc.views;
-  const aBal = await views.Tokens.aBal();
-  const bBal = await views.Tokens.bBal();
-  const liquidityToken = await views.Tokens.liquidityToken();
-  const mintedLPBig = await views.Tokens.minted();
+  const view: PoolContractView = fromMaybe(await ctc.views.Info());
+  if (!view) {
+    const message = "invalid pool";
+    return txnFailedResponse(message, ctcInfo, { tradeable: false });
+  }
 
+  const {
+    tokA: tokenAId,
+    tokB: tokenBId,
+    poolBals,
+    protoBals: protocolBals,
+    protoInfo: protocolInfo,
+    liquidityToken,
+    lptBals,
+  } = view;
   onProgress(`Fetching protocol info for pool "${ctcInfo}"`);
-  const i = await views.Tokens.protocolInfo();
-  const pb = await views.Tokens.protocolBals();
   // if the pools humble address doesn't match the internal one, it isn't a humble pool
-  const [protocolInfo, protocolBals] = [i, pb].map((mVal) => fromMaybe(mVal));
   const hasProtocolInfo = Boolean(protocolInfo && protocolBals);
   onProgress(`Checking against humble addr "${getHumbleAddr()}"`);
   if (
     !hasProtocolInfo ||
-    !reach.addressEq(protocolInfo?.addr, getHumbleAddr())
+    !reach.addressEq(protocolInfo?.protoAddr, getHumbleAddr())
   ) {
     const message = "invalid pool";
     return txnFailedResponse(message, ctcInfo, { tradeable: false });
   }
 
   onProgress(`Fetching tokens for pool "${ctcInfo}"`);
-  const [tokenAId, tokenBId] = await Promise.all([
-    views.Tokens.aTok(),
-    views.Tokens.bTok(),
-  ]);
   const [tokA, tokB] = await Promise.all([
     fetchToken(acc, tokenAId),
     fetchToken(acc, tokenBId),
@@ -79,24 +86,26 @@ export async function fetchPool(
   const totalFees = (protocolBal: number) =>
     reach
       .bigNumberify(FEE_INFO.totFee)
-      .div(reach.bigNumberify(FEE_INFO.fee))
+      .div(reach.bigNumberify(FEE_INFO.protoFee))
       .mul(protocolBal);
 
   // subtract fees from token balances
-  const { balA, balB } = protocolBals;
-  const tokenBalA = fromMaybe(aBal, (v) => reach.sub(v, balA), 0);
-  const tokenBalB = fromMaybe(bBal, (v) => reach.sub(v, balB), 0);
+  const { A: aBal, B: bBal } = poolBals;
+  const { A: protoA, B: protoB } = protocolBals;
+  const tokenBalA = reach.sub(aBal, protoA);
+  const tokenBalB = reach.sub(bBal, protoB);
+  const { B: mintedLPBig } = lptBals;
   const pool: PoolDetails = {
     poolAddress: ctcInfo,
-    poolTokenId: fromMaybe(liquidityToken, parseAddress),
+    poolTokenId: parseAddress(liquidityToken),
     mintedLiquidityTokens: fromMaybe(mintedLPBig, reach.bigNumberToNumber, 0),
     n2nn,
     tokenABalance: formatCurrency(tokenBalA, tokA?.decimals),
-    tokenAFees: formatCurrency(totalFees(balA), tokA?.decimals),
+    tokenAFees: formatCurrency(totalFees(protoA), tokA?.decimals),
     tokenAId: tokA?.id,
     tokenADecimals: tokA?.decimals,
     tokenBBalance: formatCurrency(tokenBalB, tokB?.decimals),
-    tokenBFees: formatCurrency(totalFees(balB), tokB?.decimals),
+    tokenBFees: formatCurrency(totalFees(protoB), tokB?.decimals),
     tokenBId: tokB?.id,
     tokenBDecimals: tokB?.decimals,
   };

@@ -53,7 +53,7 @@ export async function withdrawLiquidity(
   try {
     onProgress(`Withdrawing ${pct}% of funds from pool "${poolAddress}"`);
     await ctc.a.Provider.withdraw(amount);
-    const tokensView: any = ctc.views.Tokens;
+    const tokensView: any = await ctc.views.Info();
 
     onProgress("Fetching updated pool LP token balance");
     const mintedLPTokens = await tokensView.minted();

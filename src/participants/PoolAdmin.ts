@@ -61,7 +61,7 @@ export async function createPool(
   const buildPoolResult = await buildPool(acc, backend, {
     tokenAId,
     tokenBId,
-    tokSymbol: "HMBL1LT",
+    tokSymbol: "HMBL2LT",
     lpTokenName: `HUMBLE LP - ${symbolA}/${symbolB}`,
   });
   if (!buildPoolResult.succeeded) return buildPoolResult;
@@ -186,13 +186,12 @@ async function fundPool(
  */
 function PoolAdminInteract(opts: InteractOpts) {
   const { tokenA, tokenB, lpTokenName, tokSymbol, onPoolCreated } = opts;
-
   return {
     tokA: tokenA,
     tokB: tokenB,
     ltName: lpTokenName,
     ltSymbol: tokSymbol,
-    humbleAddr: getHumbleAddr(),
+    protoAddr: getHumbleAddr(),
     signalPoolCreation: onPoolCreated,
   };
 }

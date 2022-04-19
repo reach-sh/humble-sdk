@@ -6,6 +6,20 @@ export type Address = string;
 /** Big Number object from ethers.js */
 export type BigNumber = any;
 
+/**
+ * Compute expected Swap output
+ * @returns Tuple, first object is `swap result`, and second object is
+ * `protocol fees` from swap
+ */
+export type ComputeSwapFn = {
+  (
+    aForB: boolean,
+    normalIn: Balances,
+    poolBalances: Balances,
+    protocolInfo: PoolProtocolInfo
+  ): Balances[];
+};
+
 export type TokenID = string | number;
 
 export type SwapTxnOpts = {
@@ -149,7 +163,7 @@ export type FetchPoolTxnResult = {
  */
 
 /** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
-export type Rewards = [any, any];
+export type StakingRewards = [any, any];
 
 /** Notification object (Stake updated) */
 export type StakeUpdate = {
@@ -158,39 +172,39 @@ export type StakeUpdate = {
 };
 
 /** Notification object (Rewards updated) */
-export type RewardsUpdate = {
-  userReceived: Rewards;
-  totalRemaining: Rewards;
+export type StakingRewardsUpdate = {
+  userReceived: StakingRewards;
+  totalRemaining: StakingRewards;
 };
 
 /** Options reused in the contract */
-export type Opts = {
+export type StakingDeployerOpts = {
   rewardToken1: TokenID;
   stakeToken: TokenID;
-  rewardsPerBlock: Rewards;
+  rewardsPerBlock: StakingRewards;
   duration: number;
 };
 
 /** Farming pool view */
-export type View = {
+export type StakingView = {
   /** Initial values submitted by contract creator */
-  opts: Opts;
+  opts: StakingDeployerOpts;
   /** Total amount staked in contract */
   totalStaked: BigNumber;
   /** Amount of rewards left in contract */
-  remainingRewards: Rewards;
+  remainingRewards: StakingRewards;
   /** When farming pool ends */
   end: BigNumber;
   /** Amount staked */
   staked(addr: Address): BigNumber;
   /** Round when rewards will be available for `addr` */
-  rewardsAvailableAt(addr: Address, round: BigNumber): Rewards;
+  rewardsAvailableAt(addr: Address, round: BigNumber): StakingRewards;
 };
 
 /** Deployer (creates the farming pool) */
-export type Deployer = {
+export type StakingDeployer = {
   /** Initial contract options */
-  opts: Opts;
+  opts: StakingDeployerOpts;
   /** Notify deployer that contract is live */
   readyForStakers(): any;
 };
@@ -200,7 +214,29 @@ export type StakerAPI = {
   /** Stake an amount for rewards */
   stake(amt: BigNumber): Promise<StakeUpdate>;
   /** Harvest rewards for stake */
-  harvest(): RewardsUpdate;
+  harvest(): StakingRewardsUpdate;
   /** Withdraw stake */
   withdraw(amt: BigNumber): Promise<StakeUpdate>;
+};
+
+export type Balances = { A: any; B: any };
+
+/** Reach contract `Pool` view (v2) */
+export type PoolContractView = {
+  liquidityToken: TokenID;
+  lptBals: Balances;
+  poolBals: Balances;
+  protoBals: Balances;
+  protoInfo: PoolProtocolInfo;
+  tokA: ["Some", TokenID] | ["None", null];
+  tokB: TokenID;
+};
+
+/** Reach contract `Pool` Protocol info (v2) */
+export type PoolProtocolInfo = {
+  locked?: boolean;
+  lpFee?: number;
+  protoAddr: Address;
+  protoFee: number;
+  totFee: number;
 };

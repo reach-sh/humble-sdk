@@ -82,7 +82,7 @@ export type ReachAccount = { [x: string]: any } & {
 type CtcViewGroup<T extends BackendModule> =
   | ReturnType<T["_getViews"]>["infos"];
 export type ContractView<T extends BackendModule> = {
-  [k in keyof CtcViewGroup<T>]: CtcFnGroup<CtcViewGroup<T>[k]>;
+  [k in keyof CtcViewGroup<T>]: any;
 };
 
 /** Reach contract representation */
@@ -206,9 +206,15 @@ export type AlgoEnvOverride = {
 /** Configuration options for the SDK */
 export type SDKOpts = {
   /** (Optional) Network Provider (`TestNet` or `MainNet`). Defaults to `TestNet` */
-  network?: "TestNet" | "MainNet";
+
+  network?: NetworkProvider;
   /** Slippage Tolerance: defaults to 0.5% */
   slippageTolerance?: number;
   /** Provider Environment override (for using a custom provider with reach stdlib) */
   providerEnv?: AlgoEnvOverride;
+  /** Wallet fallback (optional) */
+  walletFallback?: {
+    MyAlgoConnect?: any;
+    WalletConnect?: any;
+  };
 };

@@ -1,64 +1,30 @@
-import { loadStdlib } from "@reach-sh/stdlib";
-import {
-  loadReach,
-  parseCurrency,
-  createReachAPI,
-  formatCurrency,
-} from "./index";
+import { parseCurrency, formatCurrency } from "./index";
+import { fetchPool, initHumbleSDK, createReachAPI } from "../index";
 
-import { getExports } from "./../build/util.default";
-import { getFeeInfo } from "../constants";
-import { trimByteString } from "./utils/helpers";
+initHumbleSDK();
 
-type PoolData = {
-  tokADecimals: number | undefined;
-  tokBDecimals: number | undefined;
-  tokABalance: any;
-  tokBBalance: any;
-};
-
-loadReach(loadStdlib);
+/* loadReach(loadStdlib); */
 const reach = createReachAPI();
 
-const poolIsOverloaded = (data?: PoolData) => {
-  if (!data) return true;
-  const { tokADecimals, tokBDecimals, tokABalance, tokBBalance } = data;
-  let aToB: number;
-  let bToA: number;
-
-  try {
-    const FEE_INFO = getFeeInfo();
-    const { getAmtOutView } = getExports(reach);
-
-    const minAmt = reach.bigNumberify(1);
-    const balA = parseCurrency(tokABalance, tokADecimals);
-    const balB = parseCurrency(tokBBalance, tokBDecimals);
-    aToB = getAmtOutView(minAmt, balA, balB, FEE_INFO);
-    bToA = getAmtOutView(minAmt, balB, balA, FEE_INFO);
-    return false;
-  } catch (e) {
-    console.log({ err: trimByteString(e.message) });
-    return true;
-  }
-};
-
 describe("Reach Helpers", () => {
-  it("Converts values into decimal-sensitive atomic units", () => {
+  it("Converts values into atomic units", () => {
     const dec6 = parseCurrency(100); // default 6 decs
-    const dec0 = parseCurrency(100, 0);
     const dec4 = parseCurrency(100, 4);
-    const sub = parseCurrency(5);
-    const fmt = (val: any, d = 6) =>
-      formatCurrency(reach.sub(val, sub), Math.max(d, 6));
 
     expect(reach.eq(dec6, 100000000)).toBe(true);
-    expect(reach.eq(dec0, 100)).toBe(true);
     expect(reach.eq(dec4, 1000000)).toBe(true);
-    expect(reach.gt(dec0, sub)).toBe(false);
+  });
 
-    // Test overflow capture
-    expect(() => fmt(dec4)).toThrow("bigNumberify: -4000000 out of range ");
-    expect(() => fmt(dec0)).toThrow("bigNumberify: -4999900 out of range ");
+  it("Overflows when operating on converted units", () => {
+    const sub = (v: any, d = 6) => formatCurrency(reach.sub(v, x), d);
+    const zeroDec = parseCurrency(100, 0);
+    const x = parseCurrency(5); // defaults to 6 decimals
+
+    expect(reach.eq(zeroDec, 100)).toBe(true);
+    // check atomic 100 < 5000000
+    expect(reach.gt(zeroDec, x)).toBe(false);
+    // check that 100 - 5000000 triggers overflow error
+    expect(() => sub(zeroDec)).toThrow("bigNumberify: -4999900 out of range ");
   });
 
   it("Preserves decimals between BigNumber calculations", () => {
@@ -69,53 +35,19 @@ describe("Reach Helpers", () => {
     expect(reach.isBigNumber(big2)).toBe(true);
 
     const diff = bigN.sub(big2);
-    const out = formatCurrency(diff, decimals);
-    expect(out).toBe("99.95");
+    const diff2 = reach.sub(bigN, big2);
+    const f = (d: any) => formatCurrency(d, decimals);
+    expect(f(diff2)).toStrictEqual(f(diff));
+    expect(f(diff)).toBe("99.95");
   });
 
-  const resetPool = () => ({
-    tokABalance: 1_000_000,
-    tokADecimals: 6,
-    tokBBalance: 1000,
-    tokBDecimals: 6,
-  });
+  it("Fetches a pool", async () => {
+    expect.assertions(2);
+    const acc = await reach.createAccount();
+    expect(acc.networkAccount).toBeTruthy();
 
-  let pool: PoolData = resetPool();
-
-  afterEach(() => {
-    pool = resetPool();
-  });
-
-  it("Errors when 1.845M * 1K", () => {
-    expect(poolIsOverloaded(pool)).toBe(false);
-
-    pool.tokADecimals = 9;
-    pool.tokABalance = 1_845_000;
-    pool.tokBBalance = 1_000;
-    expect(poolIsOverloaded(pool)).toBe(true);
-  });
-
-  it("is quiet when 1.844M * 1K", () => {
-    expect(poolIsOverloaded(pool)).toBe(false);
-    expect(pool.tokABalance).toStrictEqual(1000000);
-
-    pool.tokADecimals = 9;
-    pool.tokABalance = 1_844_000;
-    pool.tokBBalance = 1_000;
-    expect(poolIsOverloaded(pool)).toBe(false);
-  });
-
-  it("is quiet when 1.844M * 1B", () => {
-    expect(poolIsOverloaded(pool)).toBe(false);
-    expect(pool.tokABalance).toStrictEqual(1000000);
-
-    pool.tokADecimals = 9;
-    pool.tokABalance = 1_844_000;
-    pool.tokBBalance = 1_000_000_000;
-    expect(poolIsOverloaded(pool)).toBe(false);
+    await expect(
+      fetchPool(acc, 84181191, { n2nn: false })
+    ).resolves.toHaveProperty("succeeded", true);
   });
 });
-// 1_844_000.000_000_000 * 1_000.000_000 // No error
-// 1_845_000.000_000_000 * 1_000.000_000 // Error
-
-// 1_844_000.000_000_000 * 1_000_000_000.000_000 // No error

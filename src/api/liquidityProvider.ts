@@ -209,11 +209,17 @@ function successResult(
 function getPreMintedAmt(parsedAmtA: any, parsedAmtB: any) {
   const value = parsedAmtA.mul(parsedAmtB);
   let acc = [value, value.div(2).add(1)];
-  while (true) {
-    const [z, x] = acc;
-    if (x.lt(2)) return x;
-
-    if (x.lt(z)) acc = [x, value.div(x).add(x).div(2)];
-    else return x;
+  let ans = undefined;
+  while (ans === undefined) {
+    let [z, x] = acc;
+    if (x.lt(2)) {
+      ans = x;
+    } else if (x.lt(z)) {
+      acc = [x, value.div(x).add(x).div(2)];
+    } else {
+      ans = x;
+    }
   }
+  const giv = ans.mul(ans);
+  return giv.lt(value) ? ans.add(1) : ans;
 }

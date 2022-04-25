@@ -46,7 +46,7 @@ export function initHumbleSDK(opts: SDKOpts = {}) {
   loadReach(loadStdlib, {
     provider: network,
     providerEnv,
-    walletFallback: opts.walletFallback
+    walletFallback: opts.walletFallback,
   });
   setSDKOpts(opts);
 }
@@ -73,8 +73,9 @@ function setSDKOpts(opts: SDKOpts) {
  * Get Pool data source for Testnet/Mainnet */
 function getAnnouncerForEnv(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
-  if (valid === "TestNet") return 84873764; // V2 Announcers
-  // if (valid === "MainNet") return ???; // V2 Announcers
+  // V2 Triumvirate
+  if (valid === "TestNet") return 85981609;
+  // if (valid === "MainNet") return 85981609
 
   throw new Error(`Unrecognized provider "${network}"`);
 }

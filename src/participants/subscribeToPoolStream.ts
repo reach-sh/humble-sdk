@@ -22,7 +22,7 @@ type PoolRegisterEvent = {
     /** Pool address */
     poolAddr: string,
     /** Pool `Token A` (might be `null` if network token) */
-    maybeTokA: Maybe,
+    maybeTokA: Maybe<any>,
     /** Pool `Token B` */
     tokB: any
   ];

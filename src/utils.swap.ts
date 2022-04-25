@@ -7,7 +7,13 @@ import {
   parseCurrency,
   trailing0s,
 } from "./reach-helpers";
-import { PoolDetails, PoolInfo, SwapInfo, SwapTxnOpts } from "./types";
+import {
+  Balances,
+  PoolDetails,
+  PoolInfo,
+  SwapInfo,
+  SwapTxnOpts,
+} from "./types";
 
 const MAX_DECIMALS = 5;
 
@@ -98,6 +104,13 @@ export function calculatePriceImpact(amtA: any, opts: SwapTxnOpts) {
 /**
  * Calculate the result of a token swap. Order of tokens may vary, as
  * long as all required arguments are passed.
+ * @param opts options
+ * @param opts.swap Swap options
+ * @param opts.swap.amountA input amount
+ * @param opts.swap.tokenAId input token ID
+ * @param opts.swap.amountB (expected) output amount
+ * @param opts.swap.tokenBId output token ID
+ * @param opts.pool Swap target Pool data
  */
 export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
   // Exit if one token is missing
@@ -136,18 +149,30 @@ export function poolIsOverloaded(data?: PoolDetails) {
 
   try {
     const computeSwap = getComputeSwap(reach);
-    const minAmt = reach.bigNumberify(1);
     const poolBals = {
       A: parseCurrency(tokenABalance, tokenADecimals),
       B: parseCurrency(tokenBBalance, tokenBDecimals),
     };
     const pi = getFeeInfo();
+    const checkA = (s: Balances) => void computeSwap(true, s, poolBals, pi);
+    const checkB = (s: Balances) => void computeSwap(false, s, poolBals, pi);
+    const checkNext = (input: any): boolean => {
+      // Stop if we've swapped up to 1M
+      if (reach.ge(input, 10_000_000)) return false;
 
-    void computeSwap(true, { A: minAmt, B: 0 }, poolBals, pi);
-    void computeSwap(false, { B: minAmt, A: 0 }, poolBals, pi);
-    return false;
+      // Check input
+      checkA({ A: input, B: 0 });
+      checkB({ B: input, A: 0 });
+
+      // if we got here, it worked. Increment and check again
+      const next = reach.mul(input, reach.bigNumberify(10));
+      const done =
+        reach.le(tokenABalance, next) && reach.le(tokenBBalance, next);
+      return done ? false : checkNext(next);
+    };
+
+    return checkNext(reach.bigNumberify(1));
   } catch (e: any) {
-    console.log("poolIsOverloaded", e);
     return true;
   }
 }
@@ -246,8 +271,8 @@ function swapTokenAToB(amountIn: any, pool: PoolDetails): any {
         A: parseCurrency(Number(balA) + fmtIn, tokenADecimals),
         B: parseCurrency(balB, tokenBDecimals),
       };
-      const out = computeSwap(true, input, poolBals, getFeeInfo());
-      return formatCurrency(out, tokenBDecimals);
+      const [outBals] = computeSwap(true, input, poolBals, getFeeInfo());
+      return formatCurrency(outBals.B, tokenBDecimals);
     }
 
     return "";
@@ -262,8 +287,8 @@ function swapTokenAToB(amountIn: any, pool: PoolDetails): any {
  */
 function swapTokenBToA(amtOut: any, pool: PoolDetails): any {
   try {
-    const fmtAmt = Number(amtOut);
-    if (fmtAmt === 0) return "";
+    const fmtOut = Number(amtOut);
+    if (fmtOut === 0) return "";
     const computeSwap = getComputeSwap(createReachAPI());
     const {
       tokenADecimals,
@@ -272,15 +297,14 @@ function swapTokenBToA(amtOut: any, pool: PoolDetails): any {
       tokenBBalance: balB,
     } = pool;
 
-    if (tokenADecimals && tokenBDecimals) {
+    if (tokenADecimals !== undefined && tokenBDecimals !== undefined) {
       const input = { A: 0, B: parseCurrency(amtOut, tokenBDecimals) };
       const poolBals = {
         A: parseCurrency(balA, tokenADecimals),
-        B: parseCurrency(Number(balB) + Number(amtOut), tokenBDecimals),
+        B: parseCurrency(Number(balB) + fmtOut, tokenBDecimals),
       };
-      const out = computeSwap(false, input, poolBals, getFeeInfo());
-
-      return formatCurrency(out, tokenADecimals);
+      const [outBals] = computeSwap(false, input, poolBals, getFeeInfo());
+      return formatCurrency(outBals.A, tokenADecimals);
     }
     return "";
   } catch (err) {

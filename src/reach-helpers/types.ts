@@ -82,8 +82,18 @@ export type ReachAccount = { [x: string]: any } & {
 type CtcViewGroup<T extends BackendModule> =
   | ReturnType<T["_getViews"]>["infos"];
 export type ContractView<T extends BackendModule> = {
-  [k in keyof CtcViewGroup<T>]: any;
+  [k in keyof CtcViewGroup<T>]: (
+    ...a: any[]
+  ) => Promise<
+    | [
+        "Some",
+        Unwrap<ReturnType<ReturnType<T["_getViews"]>["infos"][k]["decode"]>>
+      ]
+    | ["None", null]
+  >;
 };
+
+type Unwrap<T extends any> = T extends Promise<infer A> ? A : T;
 
 /** Reach contract representation */
 export type ReachContract<T extends BackendModule> = {
@@ -104,9 +114,9 @@ export type ReachContract<T extends BackendModule> = {
   /** Reach Contract `View` member */
   views: ContractView<T>;
   /** Reach Contract `Events` member */
-  e: ReachEventStream;
+  e: ReachEventStream<ReturnType<T["_getEvents"]>>;
   /** Reach Contract `Events` member */
-  events: ReachEventStream;
+  events: ReachEventStream<ReturnType<T["_getEvents"]>>;
   /** @deprecated Get contract `Views`. Use `ctc.views` or `ctc.v` */
   getViews(): CtcLabeledFunc<any>;
 };
@@ -115,8 +125,8 @@ export type ReachContract<T extends BackendModule> = {
 export type ReachEvent<T extends any> = { when: any; what: T };
 
 /** `ReachEvent` is an `Event` emitted from a contract `EventStream` */
-export type ReachEventStream = {
-  [name: string]: {
+export type ReachEventStream<T> = {
+  [k in keyof T]: {
     next(): Promise<ReachEvent<any>>;
     seek(t: BigNumber): void;
     seekNow(): Promise<void>;

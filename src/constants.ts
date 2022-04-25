@@ -21,13 +21,14 @@ export function getFeeInfo(): PoolProtocolInfo {
     protoAddr: getProtocolAddr(),
     protoFee: HUMBLE_DAO_FEE,
     totFee: TOTAL_FEE,
+    locked: false
   };
 }
 
 let HUMBLE_ADDR: string;
 export function setProtocolAddr(prov: NetworkProvider) {
   const a = [
-    "32SX2IUDHJ4QX4LP336WUBOMIEUIEGQETNX6WH3N3QBMLGUTPWWAHPE2ZE",
+    "5Q67CWK22S3UUNBOUNOQ5XF74W3QH3HKBH3FMW6YCBOJUJI4PCNQZS4JZA",
     "???",
   ];
   if (prov === "TestNet") HUMBLE_ADDR = a[0];

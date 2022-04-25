@@ -46,52 +46,74 @@ describe("HumbleSDK Swap Utils", () => {
     expect(impact).toBe("1");
   });
 
-  it.skip("Calculates the expected output for a swap", () => {
+  it("Calculates the expected output for a B-to-A swap", () => {
     const s = { ...swap };
     s.amountA = 0;
     s.amountB = 1;
     const opts = { swap, pool: p1Ato3B };
     const { amountA, amountB } = calculateTokenSwap(opts);
 
-    console.log({ amountA, amountB });
-    expect(Number(amountB)).toBeGreaterThan(0);
+    const [a, b] = [Number(amountA), Number(amountB)];
+    expect(a).toStrictEqual(s.amountB);
+    expect(b).toStrictEqual(2.9);
   });
 });
 
-describe.skip("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
+describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
   // 1_844_000.000_000_000 * 1_000.000_000 // No error
   // 1_844_000.000_000_000 * 1_000_000_000.000_000 // No error
   // 1_845_000.000_000_000 * 1_000.000_000 // Error
 
-  it("Warns of overload at 1.845M * 1K", () => {
+  it("Can handle balances of 1.845M * 1K", () => {
     const pool = { ...p1Ato3B };
     expect(poolIsOverloaded(pool)).toBe(false);
 
     pool.tokenADecimals = 9;
     pool.tokenABalance = 1_845_000;
     pool.tokenBBalance = 1_000;
-    expect(poolIsOverloaded(pool)).toBe(true);
+    expect(poolIsOverloaded(pool)).toBe(false);
   });
 
-  it("Warns of overload at 1.844M * 1K", () => {
+  it("Can handle balances of > 1.844M * 1M", () => {
     const pool = { ...p1Ato3B };
+    pool.tokenABalance = 1_000_000;
+    expect(pool.tokenABalance).toStrictEqual(1_000_000);
     expect(poolIsOverloaded(pool)).toBe(false);
-    expect(pool.tokenABalance).toStrictEqual(1000000);
 
     pool.tokenADecimals = 9;
-    pool.tokenABalance = 1_844_000;
-    pool.tokenBBalance = 1_000;
+    pool.tokenBBalance = 1_844_000;
     expect(poolIsOverloaded(pool)).toBe(false);
   });
 
-  it("Warns of overload at 1.844M * 1B", () => {
+  it("Can handle balances of 1.844M * 1B", () => {
     const pool = { ...p1Ato3B };
     expect(poolIsOverloaded(pool)).toBe(false);
-    expect(pool.tokenABalance).toStrictEqual(1000000);
 
     pool.tokenADecimals = 9;
     pool.tokenABalance = 1_844_000;
     pool.tokenBBalance = 1_000_000_000;
     expect(poolIsOverloaded(pool)).toBe(false);
+  });
+
+  it("Can handle balances of 1B (10-dec) * 10B (9-dec)", () => {
+    const pool = { ...p1Ato3B };
+    expect(poolIsOverloaded(pool)).toBe(false);
+
+    pool.tokenADecimals = 10;
+    pool.tokenBDecimals = 9;
+    pool.tokenABalance = 1_000_000_000;
+    pool.tokenBBalance = 10_000_000_000;
+    expect(poolIsOverloaded(pool)).toBe(false);
+  });
+
+  it("Warns of balances around 10B (10-dec) * 10B (9-dec)", () => {
+    const pool = { ...p1Ato3B };
+    expect(poolIsOverloaded(pool)).toBe(false);
+
+    pool.tokenADecimals = 10;
+    pool.tokenBDecimals = 9;
+    pool.tokenABalance = 10_000_000_000;
+    pool.tokenBBalance = 10_000_000_000;
+    expect(poolIsOverloaded(pool)).toBe(true);
   });
 });

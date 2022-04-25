@@ -9,12 +9,7 @@ import {
   formatCurrency,
   ReachContract,
 } from "../reach-helpers";
-import {
-  FetchPoolTxnResult,
-  PoolContractView,
-  PoolDetails,
-  ReachTxnOpts,
-} from "../types";
+import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { getFeeInfo, getProtocolAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
@@ -47,7 +42,7 @@ export async function fetchPool(
   onProgress(`Fetching data for pool "${ctcInfo}"`);
   const ctc: ReachContract<typeof theBackend> =
     opts.contract || acc.contract(theBackend, ctcInfo);
-  const view: PoolContractView = fromMaybe(await ctc.views.Info());
+  const view = fromMaybe(await ctc.views.Info());
   if (!view) {
     const message = "invalid pool";
     return txnFailedResponse(message, ctcInfo, { tradeable: false });
@@ -126,11 +121,11 @@ export async function fetchPool(
 /** Get info for a token (or `Maybe` Token) */
 export async function fetchToken(
   acc: ReachAccount,
-  token: string | number | Maybe
+  token: string | number | Maybe<string | number>
 ) {
   const id = Array.isArray(token) ? fromMaybe(token) : token;
-  if (isNaN(id)) return null;
   if (id === null || isNetworkToken(id)) return makeNetworkToken();
+  if (isNaN(Number(id))) return null;
 
   // Stdlib will infinitely retry on a failed request. We timeout the
   // request after 3.5 seconds and return null

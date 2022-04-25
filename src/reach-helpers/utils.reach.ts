@@ -11,17 +11,17 @@ function abbrevNumber(numOfGroups: number) {
 /**
  * Unwrap a `Maybe` value. When `mVal[0]` is `"Some"`, `mVal[1]` has a value
  */
-export type Maybe = [val: "Some" | "None", v?: any | null];
-export function fromMaybe(
-  mVal: Maybe,
+export type Maybe<T> = [val: "Some" | "None", v?: T | null];
+export function fromMaybe<T extends any>(
+  mVal: Maybe<T>,
   format?: (v: any) => any,
   fallback?: any
-): any | null {
+): T | null {
   const fmt = format || ((v: any) => v);
   return mVal[0] === "Some" ? fmt(mVal[1]) : fallback || mVal[1];
 }
 
-/** 
+/**
  * @internal
  * Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
 export function formatNumberShort(val: string | number | bigint, round = 2) {

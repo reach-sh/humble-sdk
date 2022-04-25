@@ -17,6 +17,18 @@ type PoolSubscriptionOpts = {
   onPoolFetched(data: FetchPoolTxnResult): any;
 };
 
+type PoolRegisterEvent = {
+  what: [
+    /** Pool address */
+    poolAddr: string,
+    /** Pool `Token A` (might be `null` if network token) */
+    maybeTokA: Maybe,
+    /** Pool `Token B` */
+    tokB: any
+  ];
+  when: any;
+};
+
 /** Passively attach `acc` to a Pool Listener to discover new pools */
 export function subscribeToPoolStream(
   acc: ReachAccount,
@@ -28,17 +40,16 @@ export function subscribeToPoolStream(
   const ctc = acc.contract(announcerBackend, announcerInfo);
   const { onPoolReceived = noOp, onPoolFetched } = opts;
 
-  return ctc.participants.Listener({
-    // if the pool is using the network token, then we know the first token
-    // from the response will be null when unwrapped
-    hear: async (poolAddr: string, maybeTokA: Maybe, tokB: any) => {
-      const fPoolAddr = parseAddress(poolAddr);
-      const tokA = fromMaybe(maybeTokA, parseAddress, "0");
-      onPoolReceived([fPoolAddr, tokA, parseAddress(tokB)]);
+  // if the pool is using the network token, then we know the first token
+  // from the response will be null when unwrapped
+  return ctc.events.Register.monitor(({ what }: PoolRegisterEvent) => {
+    const [poolAddr, maybeTokA, tokB] = what;
+    const fPoolAddr = parseAddress(poolAddr);
+    const tokA = fromMaybe(maybeTokA, parseAddress, "0");
+    onPoolReceived([fPoolAddr, tokA, parseAddress(tokB)]);
 
-      // Asynchronous fetch and check whether pool has liquidity
-      const fetchOpts = { ...opts, n2nn: tokA === "0" };
-      fetchPool(acc, fPoolAddr, fetchOpts).then(onPoolFetched);
-    },
+    // Asynchronous fetch and check whether pool has liquidity
+    const fetchOpts = { ...opts, n2nn: tokA === "0" };
+    fetchPool(acc, fPoolAddr, fetchOpts).then(onPoolFetched);
   });
 }

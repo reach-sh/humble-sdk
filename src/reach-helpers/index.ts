@@ -49,16 +49,25 @@ export function loadReach(
 ) {
   if (reach?.connector) return reach;
 
-  const { provider = "TestNet", chain = "ALGO", providerEnv } = opts;
-  const REACH_CONNECTOR_MODE = chain;
-
   // Instantiate Reach stdlib
-  reach = loadStdlibFn({ REACH_CONNECTOR_MODE });
-  reach.setProviderByEnv(loadProviderEnv(provider, providerEnv));
+  const { provider = "TestNet", chain = "ALGO", providerEnv } = opts;
+  reach = loadStdlibFn({
+    REACH_CONNECTOR_MODE: chain,
+  });
+
+  if (opts.walletFallback) {
+    reach.setWalletFallback(
+      reach.walletFallback({
+        providerEnv: buildProviderEnv(provider, providerEnv),
+        ...opts.walletFallback,
+      })
+    );
+  }
+
   return reach;
 }
 
-function loadProviderEnv(
+function buildProviderEnv(
   provider: T.NetworkProvider,
   overrides: Partial<T.AlgoEnvOverride> = {}
 ): T.AlgoEnvOverride {

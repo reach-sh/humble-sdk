@@ -1,6 +1,6 @@
 import {
   addLiquidity,
-  calculatePairOpposite,
+  calculateAmountIn,
   fetchPool,
   withdrawLiquidity,
 } from "../lib/index.js";
@@ -49,7 +49,7 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
   const args = {
     amountA,
     tokenIn: tokenIds[0],
-    amountB: calculatePairOpposite(amountA, tokenIn, pool),
+    amountB: calculateAmountIn(amountA, tokenIn, pool),
     tokenOut: tokenIds[1],
   };
   Blue(`${label} ${JSON.stringify(args, null, 2)}`);

@@ -61,7 +61,7 @@ export async function withdrawLiquidity(
       poolLPTokens: fromMaybe(mintedLPTokens, bigNumberToNumber, 0),
     };
     const msg = "Funds withdrawn";
-    const result: TransactionResult = successResult(msg, null, ctc, data);
+    const result = successResult(msg, null, ctc, data);
 
     onComplete(result);
     return result;
@@ -88,8 +88,8 @@ export async function addLiquidity(
   acc: ReachAccount,
   opts: DepositTxnOpts
 ): Promise<TransactionResult> {
-  // Check if sdk is instantiated (throws error if not)
-  createReachAPI();
+  const [valid, message] = protectArgs(opts);
+  if (!valid) return errorResult(message, null, null);
 
   const {
     amounts,
@@ -99,43 +99,32 @@ export async function addLiquidity(
     onComplete = noOp,
     optInToLPToken = false,
   } = opts;
-
-  if (!pool) {
-    const message = "Required 'Pool' data was not provided";
-    return errorResult(message, null, contract);
-  }
-
-  const {
-    poolAddress,
-    n2nn = false,
-    poolTokenId,
-    tokenADecimals = 6,
-    tokenBDecimals = 6,
-  } = pool;
-
-  const backend = n2nn ? poolBackendN2NN : poolBackend;
-  const ctc = contract || acc.contract(backend, poolAddress);
+  const backend = pool.n2nn ? poolBackendN2NN : poolBackend;
+  const ctc = contract || acc.contract(backend, pool.poolAddress);
   const { Provider } = ctc.apis;
 
   // (OPTIONAL) opt-in to LP token
+  const { poolTokenId } = pool;
   if (optInToLPToken && poolTokenId) {
     onProgress("Opting into LP token (optional)");
     try {
       await acc.tokenAccept(poolTokenId.toString());
     } catch (e) {
       const msg = parseContractError(`Token opt-in failed.`, e);
-      return errorResult(msg, poolAddress, ctc, e);
+      return errorResult(msg, pool.poolAddress, ctc, e);
     }
   }
 
-  let result: TransactionResult;
+  const { poolAddress, tokenADecimals = 6, tokenBDecimals = 6 } = pool;
+  const done = (result: TransactionResult) => {
+    onComplete(result);
+    return result;
+  };
 
   try {
-    // format amounts
     const [amountA, amountB] = amounts;
     const parsedAmtA = parseCurrency(amountA, tokenADecimals);
     const parsedAmtB = parseCurrency(amountB, tokenBDecimals);
-
     onProgress(`Depositing funds`);
     await Provider.deposit(
       parsedAmtA,
@@ -143,20 +132,42 @@ export async function addLiquidity(
       getPreMintedAmt(parsedAmtA, parsedAmtB)
     );
 
-    result = successResult("Funds deposited", poolAddress, ctc, {});
+    return done(successResult("Funds deposited", poolAddress, ctc, {}));
   } catch (e) {
     const msg = parseContractError(`Deposit failed.`, e);
-    onProgress(
-      "Deposit failed because you sent " + JSON.stringify(opts, null, 2)
-    );
-    result = errorResult(msg, poolAddress, ctc, e);
+    console.log(msg, JSON.stringify(opts, null, 2));
+    return done(errorResult(msg, poolAddress, ctc, e));
   }
-
-  onComplete(result);
-  return result;
 }
 
-/** `INTERNAL HELPER` | Creates a `TransactionResult` object */
+/**
+ * @internal
+ * Ensure user provided correct args for adding liquidity
+ * @param opts Deposit options
+ * @returns [`isValid: boolean`, `validationError?: string`]
+ */
+function protectArgs(opts: DepositTxnOpts): [boolean, string] {
+  const { amounts, pool } = opts;
+  let valid = true;
+  let message = "";
+  if (!pool) return [false, "No pool provided"];
+
+  const { poolAddress } = pool;
+  if (!poolAddress) return [false, "Invalid pool provided"];
+
+  const [tokAAmt, tokBAmt] = amounts;
+  const sum = Number(tokAAmt) + Number(tokBAmt) !== 0;
+  if (!tokAAmt || !tokBAmt || Number.isNaN(sum) || !sum) {
+    return [false, "Invalid amounts provided"];
+  }
+
+  return [valid, message];
+}
+
+/**
+ * @internal
+ * `INTERNAL HELPER` | Creates a `TransactionResult` object
+ */
 function errorResult(
   message: string,
   poolAddress: number | string | null = "",
@@ -172,7 +183,10 @@ function errorResult(
   };
 }
 
-/** `INTERNAL HELPER` | Creates a `TransactionResult` object */
+/**
+ * @internal
+ * `INTERNAL HELPER` | Creates a `TransactionResult` object
+ */
 function successResult(
   message: string,
   poolAddress: number | string | null = "",
@@ -188,7 +202,10 @@ function successResult(
   };
 }
 
-/** `INTERNAL HELPER` | Compute how many LP tokens have been pre-minted */
+/** `
+ * @internal
+ * INTERNAL HELPER` | Compute how many LP tokens have been pre-minted
+ */
 function getPreMintedAmt(parsedAmtA: any, parsedAmtB: any) {
   const value = parsedAmtA.mul(parsedAmtB);
   let acc = [value, value.div(2).add(1)];

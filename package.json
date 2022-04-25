@@ -35,6 +35,6 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@reach-sh/stdlib": "^0.1.10-rc.0"
+    "@reach-sh/stdlib": "0.1.10-rc.1"
   }
 }

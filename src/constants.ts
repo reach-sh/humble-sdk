@@ -7,6 +7,7 @@ export const ASSURANCE_MSG = `Your funds were not moved.`;
 export const MIN_BALANCE_MSG = `Transaction would drop account below minimum required balance.`;
 export const POPUP_BLOCKED_MSG = `Your browser is blocking popups; please disable this blocker before retrying.`;
 export const TRANSACTION_CANCELLED_MSG = `Transaction Cancelled.`;
+export const POOL_CREATION_ERR = `Pool creation failed.`;
 // Fees
 export const FLOAT = 0.0001;
 
@@ -17,28 +18,31 @@ export function getFeeInfo(): PoolProtocolInfo {
 
   return {
     lpFee: LIQUIDITY_PROVIDER_FEE,
-    protoAddr: getHumbleAddr(),
+    protoAddr: getProtocolAddr(),
     protoFee: HUMBLE_DAO_FEE,
     totFee: TOTAL_FEE,
   };
 }
 
 let HUMBLE_ADDR: string;
-export function setHumbleAddr(prov: NetworkProvider) {
+export function setProtocolAddr(prov: NetworkProvider) {
   const a = [
-    "35KJV5W6CW2TQKGDGQD5FGMSJGLYARPSKD6JB7ZX5SADTCHNFI3WUN44PI",
-    "U57LB3YXAVYAER4BWQLNRQZHI2TJWXSDJGOUI5OYJWORUYEAL6SPZGOWZI",
+    "32SX2IUDHJ4QX4LP336WUBOMIEUIEGQETNX6WH3N3QBMLGUTPWWAHPE2ZE",
+    "???",
   ];
   if (prov === "TestNet") HUMBLE_ADDR = a[0];
   if (prov === "MainNet") HUMBLE_ADDR = a[1];
 }
 
-export function getHumbleAddr() {
+export function getProtocolAddr() {
   return HUMBLE_ADDR;
 }
 
 let POOL_ANNOUNCER_ADDRESS: string | number | undefined;
-/** Set address of Pool announcer contract */
+/**
+ * @internal
+ * Set address of Pool announcer contract 
+ */
 export function setPoolAnnouncer(address: string | number) {
   POOL_ANNOUNCER_ADDRESS = address;
 }

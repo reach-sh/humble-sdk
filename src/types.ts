@@ -70,17 +70,17 @@ export type PoolTxnOpts = ReachTxnOpts & {
 
 export type ResourceIdentifier = string | number | Promise<string | number>;
 
+export type TokenPair = {
+  /** `Token A` id. Use '0' for network token  */
+  tokenAId: string | number;
+  /** `Token B` id */
+  tokenBId: string | number;
+};
+
 /** Basic, high-level info about a `Liquidity Pool` */
-export type PoolInfo = {
+export type PoolInfo = TokenPair & {
   /** Pool contract address (or Algorand application ID) */
   poolAddress: string | number;
-  /**
-   * Pool's `Token A` id (order is important!)\
-   * Will be '0' for network-to-non-network (`n2nn`) pools
-   */
-  tokenAId: string | number;
-  /** Pool's `Token B` id (order is important!) */
-  tokenBId: string | number;
   /** Number of decimal places for `Token A`. Defaults to `6` */
   tokenADecimals?: number;
   /** Number of decimal places for `Token B`. Defaults to `6` */
@@ -126,11 +126,9 @@ export type DepositTxnOpts = {
   optInToLPToken?: boolean;
 } & ReachTxnOpts;
 
-export type SwapInfo = {
+export type SwapInfo = TokenPair & {
   amountA?: any;
   amountB?: any;
-  tokenAId: string | number;
-  tokenBId: string | number;
   tokenIn?: string | number;
 };
 

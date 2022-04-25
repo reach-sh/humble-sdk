@@ -33,9 +33,10 @@ The following methods are exported from the SDK:
     - [fetchToken Parameters](#fetchtoken-parameters)
     - [fetchToken Returns](#fetchtoken-returns)
 - [calculatePairOpposite](#calculatepairopposite)
-    - [calculatePairOpposite Example](#calculatepairopposite-example)
-    - [calculatePairOpposite Parameters](#calculatepairopposite-parameters)
-    - [calculatePairOpposite Returns](#calculatepairopposite-returns)
+- [calculateOtherAmount](#calculateotheramount)
+    - [calculateOtherAmount Example](#calculateotheramount-example)
+    - [calculateOtherAmount Parameters](#calculateotheramount-parameters)
+    - [calculateOtherAmount Returns](#calculateotheramount-returns)
 - [calculatePriceImpact](#calculatepriceimpact)
     - [calculatePriceImpact Example](#calculatepriceimpact-example)
     - [calculatePriceImpact Parameters](#calculatepriceimpact-parameters)
@@ -222,7 +223,7 @@ const { tokenAId } = pool;
 
 // Order of inputs is important
 const amountA = 100;
-const amountB = calculatePairOpposite(amountA, tokenAId, pool);
+const amountB = calculateOtherAmount(amountA, tokenAId, pool);
 
 // Create options for adding liquidity
 const opts = {
@@ -375,16 +376,23 @@ console.log(await fetchToken(acc, tokenId)); /* -> {
 ---
 
 ## calculatePairOpposite
+See [`calculateOtherAmount`](#calculateotheramount)
+
+^[**Back to contents**](#table-of-contents)
+
+---
+
+## calculateOtherAmount
 ```typescript
-function calculatePairOpposite(amountIn: number, tokenIn: string | number, pool: PoolDetails): string;
+function calculateOtherAmount(amountIn: number, tokenIn: string | number, pool: PoolDetails): string;
 ```
 Use to calculate the other half of a liquidity deposit amount based on the pool. This will be relevant only for [**adding liquidity**](#addliquidity).
-> **💡** If you are adding liquidity (depositing) into `A/B` pool, but only know how much `B` token you want to deposit, use `calculatePairOpposite( ... )` to calculate how much `A` you will pay based on that (`B`) amount.
+> **💡** If you are adding liquidity (depositing) into `A/B` pool, but only know how much `B` token you want to deposit, use `calculateOtherAmount( ... )` to calculate how much `A` you will pay based on that (`B`) amount.
 
-#### calculatePairOpposite Example
+#### calculateOtherAmount Example
 See [`addLiquidity`](#addliquidity) for example usage.
 
-#### calculatePairOpposite Parameters
+#### calculateOtherAmount Parameters
 All input params are required.
 * `amountIn: number` User's input amount
 * `tokenIn: string | number` The token associated with the input amount
@@ -406,7 +414,7 @@ type PoolDetails = PoolInfo & {
 }
 ```
 
-#### calculatePairOpposite Returns
+#### calculateOtherAmount Returns
 Amount of opposite token that will be *required* for the deposit as a `string`.
 
 ^[**Back to contents**](#table-of-contents)

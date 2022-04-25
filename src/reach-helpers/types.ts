@@ -186,10 +186,23 @@ export type ReachStdLib = {
 } & { [x: string]: any };
 
 /** Options passed into `loadStdlib` */
+export type ReachEnvOpts = {
+  /** Provider Environment override (for using a custom provider with reach stdlib) */
+  providerEnv?: AlgoEnvOverride;
+  /** Wallet fallback (optional) */
+  walletFallback?: WalletFallbackOpts;
+};
+
+/** Options passed into `loadStdlib` */
 export type LoadReachOpts = {
   chain?: ChainSymbol;
   provider?: NetworkProvider;
-  providerEnv?: AlgoEnvOverride;
+} & ReachEnvOpts;
+
+/** Algorand wallet fallback options */
+export type WalletFallbackOpts = {
+  MyAlgoConnect?: any;
+  WalletConnect?: any;
 };
 
 /** Algorand node override options */
@@ -206,15 +219,7 @@ export type AlgoEnvOverride = {
 /** Configuration options for the SDK */
 export type SDKOpts = {
   /** (Optional) Network Provider (`TestNet` or `MainNet`). Defaults to `TestNet` */
-
   network?: NetworkProvider;
   /** Slippage Tolerance: defaults to 0.5% */
   slippageTolerance?: number;
-  /** Provider Environment override (for using a custom provider with reach stdlib) */
-  providerEnv?: AlgoEnvOverride;
-  /** Wallet fallback (optional) */
-  walletFallback?: {
-    MyAlgoConnect?: any;
-    WalletConnect?: any;
-  };
-};
+} & ReachEnvOpts;

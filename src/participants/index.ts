@@ -1,4 +1,9 @@
 /** @file Contract Participant exports */
 
-export { subscribeToPoolStream } from "./subscribeToPoolStream";
-export { fetchPool, fetchToken } from "./PoolAnnouncer";
+import { subscribeToPoolStream } from "./subscribeToPoolStream";
+import { fetchPool, fetchToken } from "./PoolAnnouncer";
+
+/**
+ * @exports Module exports
+ */
+export { subscribeToPoolStream, fetchPool, fetchToken };

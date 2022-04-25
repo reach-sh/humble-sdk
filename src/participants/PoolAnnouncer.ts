@@ -16,7 +16,7 @@ import {
   ReachTxnOpts,
 } from "../types";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
-import { getFeeInfo, getHumbleAddr } from "../constants";
+import { getFeeInfo, getProtocolAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
 
 export type FetchPoolOpts = ReachTxnOpts & {
@@ -62,13 +62,12 @@ export async function fetchPool(
     liquidityToken,
     lptBals,
   } = view;
-  onProgress(`Fetching protocol info for pool "${ctcInfo}"`);
+  onProgress(`Checking protocol info for pool "${ctcInfo}"`);
   // if the pools humble address doesn't match the internal one, it isn't a humble pool
   const hasProtocolInfo = Boolean(protocolInfo && protocolBals);
-  onProgress(`Checking against humble addr "${getHumbleAddr()}"`);
   if (
     !hasProtocolInfo ||
-    !reach.addressEq(protocolInfo?.protoAddr, getHumbleAddr())
+    !reach.addressEq(protocolInfo?.protoAddr, getProtocolAddr())
   ) {
     const message = "invalid pool";
     return txnFailedResponse(message, ctcInfo, { tradeable: false });

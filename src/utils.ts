@@ -6,6 +6,12 @@ import {
   TRANSACTION_CANCELLED_MSG,
 } from "./constants";
 
+/**
+ * @internal
+ * Format a value using exponential notation
+ * @param val Value
+ * @returns Formatted value `1e-N`
+ */
 export const exponentialFormat = (val: string) => {
   if ((val.split(".")[1] || "").length > 7) {
     return Number.parseFloat(val).toExponential(1);
@@ -13,11 +19,19 @@ export const exponentialFormat = (val: string) => {
   return val;
 };
 
+/**
+ * @internal
+ * Assert that `tokenId` is a Network Token (e.g. ALGO, ETH)
+ * @param tokenId Token id
+ * @returns Boolean (true if token id represents network Token)
+ */
 export function isNetworkToken(tokenId: string | number) {
   return [0, "0"].includes(tokenId);
 }
 
-/** Create a Network `Token` representation for the current chain  */
+/**
+ * @internal
+ * Create a Network `Token` representation for the current chain  */
 export function makeNetworkToken() {
   const { connector } = createReachAPI();
   return {
@@ -31,7 +45,9 @@ export function makeNetworkToken() {
   };
 }
 
-/** Turn blockchain error messages into something more user-friendly */
+/**
+ * @internal
+ * Turn blockchain error messages into something more user-friendly */
 export function parseContractError(failureMsg: string, e: any) {
   const error = e.toString();
 
@@ -51,7 +67,10 @@ export function parseContractError(failureMsg: string, e: any) {
   }
 }
 
-// HELPER | cancel request if it takes longer than `timeout` (default 3.5s)
+/**
+ * @internal
+ * HELPER | cancel request if it takes longer than `timeout` (default 3.5s)
+ */
 export async function withTimeout(
   request: Promise<any> | (() => Promise<any>),
   fallback = null,

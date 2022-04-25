@@ -1,42 +1,36 @@
-import { poolBackend } from "./build/backend";
+import { getComputeSwap } from "./build/backend";
 import { getFeeInfo } from "./constants";
 import {
   createReachAPI,
   formatCurrency,
   parseAddress,
   parseCurrency,
-  trimByteString,
+  trailing0s,
 } from "./reach-helpers";
-import {
-  ComputeSwapFn,
-  PoolDetails,
-  PoolInfo,
-  SwapInfo,
-  SwapTxnOpts,
-} from "./types";
-// import { backendUtils } from "./build/backend";
+import { PoolDetails, PoolInfo, SwapInfo, SwapTxnOpts } from "./types";
 
 const MAX_DECIMALS = 5;
 
 /**
- * Calculate the required input amount for the other half of a token pair.
+ * Calculate the required input amount for the other half of a token
+ * pair. Useful when swapping or adding liquidity to a pool.
  * @param expectedOut User's input amount
  * @param tokenIn The token associated with the input amount
  * @param pool The Liquidity pool target
  * @returns
  */
-export function calculatePairOpposite(...args: any[]) {
-  return calculateAmountIn(args[0], args[1], args[2]);
-}
+export const calculatePairOpposite = calculateOtherAmount;
 
 /**
- * Calculate the required input amount for the other half of a token pair.
+ * Calculate the required input amount for the other half of a token
+ * pair. Useful when swapping or adding liquidity to a pool.
  * @param expectedOut User's input amount
  * @param tokenIn The token associated with the input amount
  * @param pool The Liquidity pool target
- * @returns
+ * @returns Other amount (either swap input or second half of liquidity
+ * deposit amount) as string
  */
-export function calculateAmountIn(
+export function calculateOtherAmount(
   expectedOut: number,
   tokenIn: string | number,
   pool: PoolDetails
@@ -73,14 +67,16 @@ export function calculateAmountIn(
 }
 
 /**
- * Compares the size of expected swap output to the size of an "ideal" output
+ * Compares the size of expected swap output to the value of the sa,e
+ * in a "ideal"/balanced pool state (i.e. if `k` value doesn't change).
  * @param amtA Input amount for swap
  * @param opts Swap options
  * @returns Price impact (percentage) as a string
  */
 export function calculatePriceImpact(amtA: any, opts: SwapTxnOpts) {
+  if (!amtA) return "0";
   const { pool, swap } = opts;
-  if (!pool) return 0;
+  if (!pool) return "0";
   const { tokenABalance, tokenBBalance } = pool;
   let balA = Number(tokenABalance);
   let balB = Number(tokenBBalance);
@@ -90,16 +86,19 @@ export function calculatePriceImpact(amtA: any, opts: SwapTxnOpts) {
     balB = Number(tokenABalance);
   }
 
-  if (!balA || !balB) return 0;
+  if (!balA || !balB) return "0";
 
   const fmtA = Number(amtA);
   const idealAmtOut = (balB / balA) * fmtA;
   const amtOutWithPriceImpact = balB - (balA / (balA + fmtA)) * balB;
   const priceImpact = (idealAmtOut / amtOutWithPriceImpact - 1) * 100;
-  return priceImpact.toFixed(2);
+  return trailing0s(priceImpact.toFixed(2));
 }
 
-/** Helper: update UI state when a token is selected */
+/**
+ * Calculate the result of a token swap. Order of tokens may vary, as
+ * long as all required arguments are passed.
+ */
 export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
   // Exit if one token is missing
   const { pool, swap } = opts;
@@ -116,7 +115,6 @@ export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
     const expectedIn = reverseTokenBToA(amountB, pool, inputIsAligned);
     swapped.amountA = adjustForPriceImpact(expectedIn, opts);
   } else {
-    console.log("swappenAtoB", { inputIsAligned });
     // Else convert Token A to Token B
     swapped.amountB = inputIsAligned
       ? swapTokenAToB(amountA, pool)
@@ -128,18 +126,16 @@ export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
   return swapped;
 }
 
-/** Pre-emptively check for number overflow on swap */
+/**
+ * @internal
+ * Pre-emptively check for number overflow on swap */
 export function poolIsOverloaded(data?: PoolDetails) {
   if (!data) return true;
   const { tokenADecimals, tokenBDecimals, tokenABalance, tokenBBalance } = data;
-  let aToB: any;
-  let bToA: any;
   const reach = createReachAPI();
 
   try {
-    const computeSwap: ComputeSwapFn =
-      poolBackend.getExports(reach).computeSwap_;
-
+    const computeSwap = getComputeSwap(reach);
     const minAmt = reach.bigNumberify(1);
     const poolBals = {
       A: parseCurrency(tokenABalance, tokenADecimals),
@@ -147,18 +143,17 @@ export function poolIsOverloaded(data?: PoolDetails) {
     };
     const pi = getFeeInfo();
 
-    aToB = computeSwap(true, { A: minAmt, B: 0 }, poolBals, pi);
-    console.log({ aToB });
-    bToA = computeSwap(false, { B: minAmt, A: 0 }, poolBals, pi);
-    console.log({ bToA });
+    void computeSwap(true, { A: minAmt, B: 0 }, poolBals, pi);
+    void computeSwap(false, { B: minAmt, A: 0 }, poolBals, pi);
     return false;
   } catch (e: any) {
-    console.log({ err: trimByteString(e.message) });
+    console.log("poolIsOverloaded", e);
     return true;
   }
 }
 
 /**
+ * @internal
  * Given an output amount, calculate the expected input. This function
  * calls `swapTokenBToA` if a possible overflow is detected (i.e. `amtOut`
  * is greater than the balance of `amtOut` token in the pool)
@@ -230,12 +225,12 @@ function adjustForPriceImpact(amtA: any, opts: SwapTxnOpts) {
 /**
  * Given an output amount, calculate the expected `amount B` output.
  */
-function swapTokenAToB(_amountIn: any, _pool: PoolDetails): any {
-  /* try {
+function swapTokenAToB(amountIn: any, pool: PoolDetails): any {
+  try {
     const fmtIn = Number(amountIn);
     if (fmtIn === 0) return "";
 
-    const { getAmtOutView } = backendUtils.getExports(createReachAPI());
+    const computeSwap = getComputeSwap(createReachAPI());
     const {
       tokenAId,
       tokenADecimals,
@@ -246,34 +241,30 @@ function swapTokenAToB(_amountIn: any, _pool: PoolDetails): any {
     } = pool;
 
     if (tokenAId && tokenBId) {
-      const inputCurrency = parseCurrency(fmtIn, tokenADecimals);
-      const poolBalA = parseCurrency(Number(balA) + fmtIn, tokenADecimals);
-      const poolBalB = parseCurrency(balB, tokenBDecimals);
-      const amtOut = getAmtOutView(
-        inputCurrency,
-        poolBalA,
-        poolBalB,
-        getFeeInfo()
-      );
-      return formatCurrency(amtOut, tokenBDecimals);
+      const input = { A: parseCurrency(fmtIn, tokenADecimals), B: 0 };
+      const poolBals = {
+        A: parseCurrency(Number(balA) + fmtIn, tokenADecimals),
+        B: parseCurrency(balB, tokenBDecimals),
+      };
+      const out = computeSwap(true, input, poolBals, getFeeInfo());
+      return formatCurrency(out, tokenBDecimals);
     }
 
     return "";
   } catch (err) {
-    // @TODO | handle overflow error
+    console.log("swapTokenAToB Error:\n", err);
     return "";
-  } */
+  }
 }
 
 /**
  * Given an output amount, calculate the expected `amount A` output.
  */
-function swapTokenBToA(_amtOut: any, _pool: PoolDetails): any {
-  return "";
-  /* try {
+function swapTokenBToA(amtOut: any, pool: PoolDetails): any {
+  try {
     const fmtAmt = Number(amtOut);
     if (fmtAmt === 0) return "";
-    const { getAmtOutView } = backendUtils.getExports(createReachAPI());
+    const computeSwap = getComputeSwap(createReachAPI());
     const {
       tokenADecimals,
       tokenBDecimals,
@@ -282,26 +273,20 @@ function swapTokenBToA(_amtOut: any, _pool: PoolDetails): any {
     } = pool;
 
     if (tokenADecimals && tokenBDecimals) {
-      const poolABalance = parseCurrency(balA, tokenADecimals);
-      const poolBBalance = parseCurrency(
-        Number(balB) + Number(amtOut),
-        tokenBDecimals
-      );
-      const out = getAmtOutView(
-        parseCurrency(amtOut, tokenBDecimals),
-        poolBBalance,
-        poolABalance,
-        getFeeInfo()
-      );
+      const input = { A: 0, B: parseCurrency(amtOut, tokenBDecimals) };
+      const poolBals = {
+        A: parseCurrency(balA, tokenADecimals),
+        B: parseCurrency(Number(balB) + Number(amtOut), tokenBDecimals),
+      };
+      const out = computeSwap(false, input, poolBals, getFeeInfo());
 
       return formatCurrency(out, tokenADecimals);
     }
     return "";
   } catch (err) {
-    // @TODO | handle overflow error
-    console.warn("Error swapping A to expected", amtOut);
+    console.log("swapTokenBToA Error:\n", err);
     return "";
-  } */
+  }
 }
 
 /** Helper: takes a `SwapInfo` object and orders token A/B to match pool */
@@ -330,13 +315,13 @@ function alignSwapInfo(
 // checks the number amount and prevents any decimals being added than the explicitely described max decimal
 function getValueWithMaxDecimals(original: string, decs = MAX_DECIMALS) {
   if (!original) return "0";
+  const decIndex = original.indexOf(".");
   let value = original.toString();
-  const hasDecimal = value.includes(".");
-  if (hasDecimal) {
-    value =
-      value.substring(0, value.indexOf(".")) +
-      value.substring(value.indexOf("."), decs + 1);
+
+  if (decIndex > -1) {
+    value = value.substring(0, decIndex) + value.substring(decIndex, decs + 1);
   }
+
   if (decs === 0 && value) value = Math.floor(Number(value)).toString();
   return value;
 }

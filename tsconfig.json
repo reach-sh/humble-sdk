@@ -27,6 +27,8 @@
     "./node_modules",
     "./lib",
     "./cli",
+    "./src/utils.ts",
+    "./src/participants/PoolAdmin.ts",
     "./**/*.test.*",
   ]
 }

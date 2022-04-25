@@ -1,5 +1,5 @@
 import { parseCurrency, formatCurrency } from "./index";
-import { fetchPool, initHumbleSDK, createReachAPI } from "../index";
+import { initHumbleSDK, createReachAPI } from "../index";
 
 initHumbleSDK();
 
@@ -39,15 +39,5 @@ describe("Reach Helpers", () => {
     const f = (d: any) => formatCurrency(d, decimals);
     expect(f(diff2)).toStrictEqual(f(diff));
     expect(f(diff)).toBe("99.95");
-  });
-
-  it("Fetches a pool", async () => {
-    expect.assertions(2);
-    const acc = await reach.createAccount();
-    expect(acc.networkAccount).toBeTruthy();
-
-    await expect(
-      fetchPool(acc, 84181191, { n2nn: false })
-    ).resolves.toHaveProperty("succeeded", true);
   });
 });

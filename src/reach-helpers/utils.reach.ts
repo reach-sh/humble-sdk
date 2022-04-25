@@ -1,9 +1,5 @@
 export const noOp = () => null;
 
-export const isBrowser = new Function(
-  "try { return this === window } catch(e) { return false; }"
-);
-
 // Generate a number abbreviation
 function abbrevNumber(numOfGroups: number) {
   if (Number.isNaN(numOfGroups) || !numOfGroups) return "";
@@ -25,7 +21,9 @@ export function fromMaybe(
   return mVal[0] === "Some" ? fmt(mVal[1]) : fallback || mVal[1];
 }
 
-/** Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
+/** 
+ * @internal
+ * Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
 export function formatNumberShort(val: string | number | bigint, round = 2) {
   if (isNaN(Number(val))) return "";
 
@@ -57,6 +55,7 @@ export function formatNumberShort(val: string | number | bigint, round = 2) {
 }
 
 /**
+ * @internal
  * Strip `\u0000` characters from byte string
  * @param {stringn} str String with empty `\0000` characters to remove
  * @returns
@@ -65,7 +64,11 @@ export function trimByteString(str: string = ""): string {
   return str.replace(/\0/g, "");
 }
 
+export function trailing0s(val: string) {
+  return val.replace(/0*$/, "").replace(/\.$/, "");
+}
+
 function trimDecimals(val: string) {
   if (val.replace(/0*/, "") === "") return "";
-  return `.${val.replace(/0$/, "")}`;
+  return `.${trailing0s(val)}`;
 }

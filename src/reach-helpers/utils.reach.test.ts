@@ -22,6 +22,12 @@ describe("Reach Helpers | Utils", () => {
     expect(H.fromMaybe(none, fmt, "apple")).toStrictEqual("apple");
   });
 
+  it("Trims trailing zeros", () => {
+    expect(H.trailing0s('1000')).toStrictEqual('1')
+    expect(H.trailing0s('1000.100')).toStrictEqual('1000.1')
+    expect(H.trailing0s('1000.1001')).toStrictEqual('1000.1001')
+  });
+
   it("Abbreviates numbers", () => {
     const k = 1000;
     const k1 = 1111;

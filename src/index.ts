@@ -1,25 +1,59 @@
 import { loadStdlib } from "@reach-sh/stdlib";
 import { loadReach, NetworkProvider, SDKOpts } from "./reach-helpers";
+
+// DATA & DATA FETCHERS
+import {
+  subscribeToPoolStream,
+  fetchPool,
+  fetchToken,
+} from "./participants/index";
+
+// SWAP
+import {
+  calculateOtherAmount,
+  calculatePriceImpact,
+  calculateTokenSwap,
+} from "./utils.swap";
+
+// REACH HELPERS
+import {
+  createReachAPI,
+  parseAddress,
+  parseCurrency,
+  formatAddress,
+  formatCurrency,
+} from "./reach-helpers";
+
+// LIQUIDITY PROVIDER and SWAP
+import { addLiquidity, withdrawLiquidity, performSwap } from "./api/index";
+
+// CONSTANTS
 import {
   checkInitialized,
-  setHumbleAddr,
   setInitialized,
-  setNetworkProvider,
+  getPoolAnnouncer,
   setPoolAnnouncer,
+  getSlippage,
   setSlippage,
+  setNetworkProvider,
+  setProtocolAddr,
 } from "./constants";
 
 export function initHumbleSDK(opts: SDKOpts = {}) {
   if (checkInitialized()) return;
 
   const { network, providerEnv } = opts;
-  loadReach(loadStdlib, { provider: network, providerEnv });
+  loadReach(loadStdlib, {
+    provider: network,
+    providerEnv,
+    walletFallback: opts.walletFallback
+  });
   setSDKOpts(opts);
 }
 
-/** 
- * @internal 
- * Set SDK options for operation 
+/**
+ * @internal
+ * Set SDK options for operation
  */
 function setSDKOpts(opts: SDKOpts) {
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
@@ -29,26 +63,24 @@ function setSDKOpts(opts: SDKOpts) {
   // User network (testnet/mainnet) preference
   const network = safeNetwork(opts.network);
   setNetworkProvider(network);
-  setHumbleAddr(network);
+  setProtocolAddr(network);
   // Set 'initialized'
   setInitialized(true);
 }
 
-/** 
- * @internal 
+/**
+ * @internal
  * Get Pool data source for Testnet/Mainnet */
 function getAnnouncerForEnv(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
-  // if (valid === "TestNet") return 77857906; V1 Announcers
-  // if (valid === "MainNet") return 662535515; V1 Announcers
-  if (valid === "TestNet") return 84180240; // V2 Announcers
+  if (valid === "TestNet") return 84873764; // V2 Announcers
   // if (valid === "MainNet") return ???; // V2 Announcers
 
   throw new Error(`Unrecognized provider "${network}"`);
 }
 
-/** 
- * @internal 
+/**
+ * @internal
  * Ensure `network` param from user is a recognized value */
 function safeNetwork(val?: NetworkProvider): NetworkProvider {
   const valid: NetworkProvider[] = ["TestNet", "MainNet"];
@@ -57,26 +89,22 @@ function safeNetwork(val?: NetworkProvider): NetworkProvider {
   return safe;
 }
 
-// CONSTANTS
-export { getSlippage, setSlippage, getPoolAnnouncer } from "./constants";
-
-// LIQUIDITY PROVIDER
-export { addLiquidity, withdrawLiquidity } from "./api/liquidityProvider";
-
-// DATA & DATA FETCHERS
 export {
+  addLiquidity,
+  withdrawLiquidity,
+  performSwap,
+  getPoolAnnouncer,
+  getSlippage,
+  setSlippage,
   subscribeToPoolStream,
   fetchPool,
   fetchToken,
-} from "./participants/index";
-
-// SWAP
-export { performSwap } from "./api/index";
-export {
-  calculateAmountIn,
+  calculateOtherAmount,
   calculatePriceImpact,
   calculateTokenSwap,
-} from "./utils.swap";
-
-// REACH HELPERS
-export { createReachAPI } from "./reach-helpers";
+  createReachAPI,
+  parseAddress,
+  parseCurrency,
+  formatAddress,
+  formatCurrency,
+};

@@ -74,8 +74,8 @@ function setSDKOpts(opts: SDKOpts) {
 function getAnnouncerForEnv(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
-  if (valid === "TestNet") return 85981609;
-  // if (valid === "MainNet") return 85981609
+  if (valid === "TestNet") return 86015355;
+  // if (valid === "MainNet") return ???
 
   throw new Error(`Unrecognized provider "${network}"`);
 }

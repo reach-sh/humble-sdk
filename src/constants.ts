@@ -21,14 +21,14 @@ export function getFeeInfo(): PoolProtocolInfo {
     protoAddr: getProtocolAddr(),
     protoFee: HUMBLE_DAO_FEE,
     totFee: TOTAL_FEE,
-    locked: false
+    locked: false,
   };
 }
 
 let HUMBLE_ADDR: string;
 export function setProtocolAddr(prov: NetworkProvider) {
   const a = [
-    "5Q67CWK22S3UUNBOUNOQ5XF74W3QH3HKBH3FMW6YCBOJUJI4PCNQZS4JZA",
+    "2KR4VFBBJYAROFMG2PJNCHHPZ7XQHPR5IOQG2A3EBZ3POUPFWFODKCNEPU",
     "???",
   ];
   if (prov === "TestNet") HUMBLE_ADDR = a[0];
@@ -42,7 +42,7 @@ export function getProtocolAddr() {
 let POOL_ANNOUNCER_ADDRESS: string | number | undefined;
 /**
  * @internal
- * Set address of Pool announcer contract 
+ * Set address of Pool announcer contract
  */
 export function setPoolAnnouncer(address: string | number) {
   POOL_ANNOUNCER_ADDRESS = address;

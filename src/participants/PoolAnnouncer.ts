@@ -44,7 +44,7 @@ export async function fetchPool(
     opts.contract || acc.contract(theBackend, ctcInfo);
   const view = fromMaybe(await ctc.views.Info());
   if (!view) {
-    const message = "invalid pool";
+    const message = "invalid pool (no view data)";
     return txnFailedResponse(message, ctcInfo, { tradeable: false });
   }
 
@@ -64,7 +64,7 @@ export async function fetchPool(
     !hasProtocolInfo ||
     !reach.addressEq(protocolInfo?.protoAddr, getProtocolAddr())
   ) {
-    const message = "invalid pool";
+    const message = "invalid pool (protocol mismatch)";
     return txnFailedResponse(message, ctcInfo, { tradeable: false });
   }
 

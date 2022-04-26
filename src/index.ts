@@ -76,7 +76,7 @@ export {
 /** @internal Set SDK options for operation */
 function setSDKOpts(opts: SDKOpts) {
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
-  setPoolAnnouncer(getAnnouncerForEnv(opts.network));
+  setPoolAnnouncer(getTriumvirContract(opts.network));
   // User slippage tolerance
   setSlippage(opts.slippageTolerance || 0.5);
   // User network (testnet/mainnet) preference
@@ -87,10 +87,10 @@ function setSDKOpts(opts: SDKOpts) {
 }
 
 /** @internal Get Pool data source for Testnet/Mainnet */
-function getAnnouncerForEnv(network: NetworkProvider = "TestNet") {
+function getTriumvirContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
-  if (valid === "TestNet") return 86015355;
+  if (valid === "TestNet") return 86197132;
   // if (valid === "MainNet") return ???
 
   throw new Error(`Unrecognized provider "${network}"`);

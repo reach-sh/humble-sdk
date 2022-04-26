@@ -30,14 +30,14 @@ export const calculatePairOpposite = calculateOtherAmount;
 /**
  * Calculate the required input amount for the other half of a token
  * pair. Useful when swapping or adding liquidity to a pool.
- * @param expectedOut User's input amount
- * @param tokenIn The token associated with the input amount
+ * @param amtIn User's input amount (could be expected output or input)
+ * @param tokenIn The token associated with `input` amount
  * @param pool The Liquidity pool target
  * @returns Other amount (either swap input or second half of liquidity
  * deposit amount) as string
  */
 export function calculateOtherAmount(
-  expectedOut: number,
+  amtIn: number,
   tokenIn: string | number,
   pool: PoolDetails
 ) {
@@ -54,8 +54,8 @@ export function calculateOtherAmount(
   if (
     tokenABalance === 0 ||
     tokenBBalance === 0 ||
-    expectedOut === 0 ||
-    Number.isNaN(expectedOut)
+    amtIn === 0 ||
+    Number.isNaN(amtIn)
   ) {
     return "0";
   }
@@ -64,7 +64,7 @@ export function calculateOtherAmount(
   const balB = Number(tokenBBalance);
   const tokenA = tokenIn === pool.tokenAId;
   const conversionRate = tokenA ? balB / balA : balA / balB;
-  const output = expectedOut * conversionRate;
+  const output = amtIn * conversionRate;
   const tokDecimals = tokenA ? tokenBDecimals : tokenADecimals;
   const minimum = Number(`1.0e-${tokDecimals}`);
   if (output < minimum) return "0";

@@ -1,4 +1,4 @@
-# HumbleSDK 
+# HumbleSDK v2.0.0
 
 <header>
   <img src="./logo-white.svg" width="80" height="auto">
@@ -6,8 +6,9 @@
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).
 
-- [HumbleSDK](#humblesdk)
+- [HumbleSDK v2.0.0](#humblesdk-v200)
   - [Documentation](#documentation)
+  - [v2 Changes](#v2-changes)
   - [Installing the SDK](#installing-the-sdk)
     - [Option 1. NPM (recommended)](#option-1-npm-recommended)
     - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
@@ -19,6 +20,11 @@ A Javascript library for interacting with the [HumbleSwap DEx](https://app.humbl
 ---
 ## Documentation
 Documentation has moved [here](https://reach-sh.github.io/humble-sdk/).
+
+--- 
+
+## v2 Changes 
+`v2` introduces a few changes and adds new functionality, including staking pools. Some functions may have been renamed: review changes in our [changelog](./CHANGELOG.md), and view our [documentation](https://reach-sh.github.io/humble-sdk/) for additional info.
 
 --- 
 

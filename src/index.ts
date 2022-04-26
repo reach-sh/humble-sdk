@@ -3,9 +3,10 @@ import { loadReach, NetworkProvider, SDKOpts } from "./reach-helpers";
 
 // DATA & DATA FETCHERS
 import {
-  subscribeToPoolStream,
+  createPool,
   fetchPool,
   fetchToken,
+  subscribeToPoolStream,
 } from "./participants/index";
 
 // SWAP
@@ -51,10 +52,28 @@ export function initHumbleSDK(opts: SDKOpts = {}) {
   setSDKOpts(opts);
 }
 
-/**
- * @internal
- * Set SDK options for operation
- */
+export {
+  addLiquidity,
+  calculateOtherAmount,
+  calculatePriceImpact,
+  calculateTokenSwap,
+  createPool,
+  createReachAPI,
+  fetchPool,
+  fetchToken,
+  formatAddress,
+  formatCurrency,
+  getPoolAnnouncer,
+  getSlippage,
+  parseAddress,
+  parseCurrency,
+  performSwap,
+  setSlippage,
+  subscribeToPoolStream,
+  withdrawLiquidity,
+};
+
+/** @internal Set SDK options for operation */
 function setSDKOpts(opts: SDKOpts) {
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
   setPoolAnnouncer(getAnnouncerForEnv(opts.network));
@@ -64,13 +83,10 @@ function setSDKOpts(opts: SDKOpts) {
   const network = safeNetwork(opts.network);
   setNetworkProvider(network);
   setProtocolAddr(network);
-  // Set 'initialized'
   setInitialized(true);
 }
 
-/**
- * @internal
- * Get Pool data source for Testnet/Mainnet */
+/** @internal Get Pool data source for Testnet/Mainnet */
 function getAnnouncerForEnv(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
@@ -80,32 +96,10 @@ function getAnnouncerForEnv(network: NetworkProvider = "TestNet") {
   throw new Error(`Unrecognized provider "${network}"`);
 }
 
-/**
- * @internal
- * Ensure `network` param from user is a recognized value */
+/** @internal Ensure `network` param from user is a recognized value */
 function safeNetwork(val?: NetworkProvider): NetworkProvider {
   const valid: NetworkProvider[] = ["TestNet", "MainNet"];
   if (!val) return valid[0];
   const safe = valid.includes(val) ? val : "TestNet";
   return safe;
 }
-
-export {
-  addLiquidity,
-  withdrawLiquidity,
-  performSwap,
-  getPoolAnnouncer,
-  getSlippage,
-  setSlippage,
-  subscribeToPoolStream,
-  fetchPool,
-  fetchToken,
-  calculateOtherAmount,
-  calculatePriceImpact,
-  calculateTokenSwap,
-  createReachAPI,
-  parseAddress,
-  parseCurrency,
-  formatAddress,
-  formatCurrency,
-};

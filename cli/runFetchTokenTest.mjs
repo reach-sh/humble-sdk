@@ -1,4 +1,4 @@
-import { fetchToken } from "../lib/index.js";
+import { fetchToken } from "@reach-sh/humble-sdk";
 import { exitWithMsgs, Blue, Yellow, fromArgs, iout } from "./utils.mjs";
 
 /** Fetch and display data for a single token */

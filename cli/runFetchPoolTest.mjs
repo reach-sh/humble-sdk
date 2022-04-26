@@ -1,4 +1,4 @@
-import { fetchPool } from "../lib/index.js";
+import { fetchPool } from "@reach-sh/humble-sdk";
 import { iout, exitWithMsgs, Blue, Yellow, onProgress } from "./utils.mjs";
 
 /** Fetch a single pool */

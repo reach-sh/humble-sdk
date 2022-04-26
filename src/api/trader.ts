@@ -55,7 +55,7 @@ export async function performSwap(
 
   try {
     onProgress(`Swapping in pool "${poolAddress}"`);
-    const [swapResult]: Balances[] = swapBForA
+    const swapResult: Balances = swapBForA
       ? await traderAPI.swapBForA(amtIn, expectedOut)
       : await traderAPI.swapAForB(amtIn, expectedOut);
     const amountIn = swap.amountA;

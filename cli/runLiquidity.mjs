@@ -1,10 +1,17 @@
 import {
   addLiquidity,
-  calculateAmountIn,
+  calculateOtherAmount,
   fetchPool,
   withdrawLiquidity,
-} from "../lib/index.js";
-import { exitWithMsgs, iout, parseAddress, Blue, Yellow } from "./utils.mjs";
+} from "@reach-sh/humble-sdk";
+import {
+  answerOrDie,
+  exitWithMsgs,
+  iout,
+  parseAddress,
+  Blue,
+  Yellow,
+} from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);
 const actions = ["add", "withdraw"];
@@ -46,17 +53,21 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
   if (parseAddress(tokenIn) === tokenBId) tokenIds.reverse();
 
   const label = "* Input args:";
+  const amountB =
+    pool.tokenBBalance === "0"
+      ? await answerOrDie("Enter deposit amount for Token B:")
+      : calculateOtherAmount(amountA, tokenIn, pool);
   const args = {
     amountA,
     tokenIn: tokenIds[0],
-    amountB: calculateAmountIn(amountA, tokenIn, pool),
+    amountB,
     tokenOut: tokenIds[1],
   };
   Blue(`${label} ${JSON.stringify(args, null, 2)}`);
 
   //   Deposit
   Yellow(`Depositing to pool "${poolAddress}"`);
-  const amounts = [args.amountA, args.amountB];
+  const amounts = [amountA, amountB];
   const p = parseAddress;
   if (p(tokenIn) === p(pool.tokenBId)) amounts.reverse();
 

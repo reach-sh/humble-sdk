@@ -2,8 +2,9 @@
 
 import { subscribeToPoolStream } from "./subscribeToPoolStream";
 import { fetchPool, fetchToken } from "./PoolAnnouncer";
+import { createPool } from "./PoolAdmin";
 
 /**
  * @exports Module exports
  */
-export { subscribeToPoolStream, fetchPool, fetchToken };
+export { createPool, subscribeToPoolStream, fetchPool, fetchToken };

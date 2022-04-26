@@ -86,25 +86,24 @@ export async function fetchPool(
   // subtract fees from token balances
   const { A: aBal, B: bBal } = poolBals;
   const { A: protoA, B: protoB } = protocolBals;
-  const tokenBalA = reach.sub(aBal, protoA);
-  const tokenBalB = reach.sub(bBal, protoB);
-  const { B: mintedLPBig } = lptBals;
+  const A = reach.ge(aBal, protoA) ? reach.sub(aBal, protoA) : "0";
+  const B = reach.ge(bBal, protoB) ? reach.sub(bBal, protoB) : "0";
   const pool: PoolDetails = {
     poolAddress: ctcInfo,
     poolTokenId: parseAddress(liquidityToken),
-    mintedLiquidityTokens: fromMaybe(mintedLPBig, reach.bigNumberToNumber, 0),
+    mintedLiquidityTokens: fromMaybe(lptBals.B, reach.bigNumberToNumber, 0),
     n2nn,
-    tokenABalance: formatCurrency(tokenBalA, tokA?.decimals),
+    tokenABalance: formatCurrency(A, tokA?.decimals),
     tokenAFees: formatCurrency(totalFees(protoA), tokA?.decimals),
     tokenAId: tokA?.id,
     tokenADecimals: tokA?.decimals,
-    tokenBBalance: formatCurrency(tokenBalB, tokB?.decimals),
+    tokenBBalance: formatCurrency(B, tokB?.decimals),
     tokenBFees: formatCurrency(totalFees(protoB), tokB?.decimals),
     tokenBId: tokB?.id,
     tokenBDecimals: tokB?.decimals,
   };
 
-  const tradeable = reach.gt(tokenBalA, 0) && reach.gt(tokenBalB, 0);
+  const tradeable = reach.gt(A, 0) && reach.gt(B, 0);
   const result: FetchPoolTxnResult = {
     poolAddress: ctcInfo,
     succeeded: true,

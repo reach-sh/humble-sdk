@@ -1,6 +1,6 @@
 import { fetchToken } from "./participants";
 import { isNetworkToken, parseContractError } from "./utils";
-import { getProtocolAddr, POOL_CREATION_ERR } from "./constants";
+import { getPoolAnnouncer, POOL_CREATION_ERR } from "./constants";
 import { ReachAccount, parseAddress } from "./reach-helpers";
 import { ReachTxnOpts, PoolInfo, TokenPair, TransactionResult } from "./types";
 
@@ -33,7 +33,7 @@ export async function deployPool(
           tokB: tokenBId.toString(),
           ltName: lpTokenName,
           ltSymbol: tokSymbol,
-          protoAddr: getProtocolAddr(),
+          proto: getPoolAnnouncer(),
           signalPoolCreation: resolve,
         })
       ),
@@ -41,7 +41,7 @@ export async function deployPool(
       fetchToken(acc, tokenBId),
     ]);
 
-    const poolAddress = await ctcAdmin.getInfo();
+    const poolAddress = parseAddress(await ctcAdmin.getInfo());
     const data: PoolInfo = {
       poolAddress,
       tokenAId,

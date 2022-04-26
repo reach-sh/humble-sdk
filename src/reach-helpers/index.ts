@@ -1,4 +1,4 @@
-import { withTimeout } from "../utils";
+import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
 import { UNINSTANTIATED } from "../constants";
 import * as T from "./types";
 import { formatNumberShort, trimByteString } from "./utils.reach";
@@ -12,25 +12,24 @@ export const NETWORKS: T.NetworksMap = {
 };
 /**
  * @internal
- * `@reach-helper` `StdLib` instance */
+ * @reach_helper `StdLib` instance */
 let reach: T.ReachStdLib;
 
-/** `@reach-helper` Global default reach object */
+/** @reach_helper Global default reach object */
 export function createReachAPI() {
   if (!reach) throw new Error(UNINSTANTIATED);
   return reach;
 }
 
-/**
- * @internal
- * `@reach-helper` Format address for `networkAccount` instance */
+/** @reach_helper Format address for `networkAccount` instance */
 export function formatAddress(acc: T.ReachAccount) {
   return createReachAPI().formatAddress(acc.getAddress());
 }
 
 /**
  * @internal
- * `@reach-helper` Optionally-abbreviated currency formatter (e.g. `fn(1000)` -> `1000` || `1K` ). Expects `amt` to be in atomic unit for network */
+ * @reach_helper Optionally-abbreviated currency formatter (e.g.
+ * `fn(1000)` -> `1000` || `1K` ). Expects `amt` to be in atomic unit for network */
 export function formatCurrency(amt: any, decs?: number, abbr = false): string {
   const { formatWithDecimals } = createReachAPI();
   const decimals = parseNetworkDecimals(Number(decs));
@@ -40,7 +39,7 @@ export function formatCurrency(amt: any, decs?: number, abbr = false): string {
 
 /**
  * @internal
- * `@reach-helper` Initialize the stdlib instance. Note: this will NOT configure
+ * @reach_helper Initialize the stdlib instance. Note: this will NOT configure
  * a wallet fallback: you can handle that later with other helper functions.
  */
 export function loadReach(
@@ -62,7 +61,7 @@ export function loadReach(
         ...opts.walletFallback,
       })
     );
-  }
+  } else reach.setProviderByEnv(buildProviderEnv(provider, providerEnv));
 
   return reach;
 }
@@ -91,6 +90,7 @@ function buildProviderEnv(
 
 /**
  * @internal
+ * @reach_helper
  * Parses a contract address for Algorand or other chains
  * @param {string|number} ctc string|number contract address
  * @returns string|number contract address
@@ -106,7 +106,7 @@ export function parseAddress(ctc: any) {
 
 /**
  * @internal
- * `@reach-helper` Convert `val` to atomic units for the current network */
+ * @reach_helper Convert `val` to atomic units for the current network */
 export function parseCurrency(val: any, dec?: number) {
   const decimals = parseNetworkDecimals(Number(dec));
   return createReachAPI().parseCurrency(val, decimals);
@@ -114,11 +114,13 @@ export function parseCurrency(val: any, dec?: number) {
 
 /**
  * @internal
- * `@reach-helper` Get token data and `acc`'s balance of token (if available) */
+ * @reach_helper Get token data and `acc`'s balance of token (if available) */
 export async function tokenMetadata(
   token: any,
   acc: T.ReachAccount
 ): Promise<T.ReachToken> {
+  if (isNetworkToken(token)) return makeNetworkToken();
+
   const { balanceOf } = createReachAPI();
   const fetchBalance = () => withTimeout(balanceOf(acc, token));
   const fetchToken = () =>
@@ -137,7 +139,7 @@ export async function tokenMetadata(
 
 /**
  * @internal
- * `@reach-helper` Format token metadata from `tokenMetadata` API request */
+ * @reach_helper Format token metadata from `tokenMetadata` API request */
 function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
   const id = parseAddress(tokenId);
   const fallbackName = `Asset #${id}`;
@@ -154,9 +156,7 @@ function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
     verified: data.verified || false,
   };
 }
-/**
- * @internal
- */
+/** @internal  */
 function parseNetworkDecimals(decimals?: number) {
   const key = createReachAPI().connector as T.ChainSymbol;
   return isNaN(Number(decimals)) ? NETWORKS[key].decimals || 0 : decimals;

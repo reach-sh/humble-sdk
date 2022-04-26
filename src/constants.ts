@@ -11,6 +11,7 @@ export const POOL_CREATION_ERR = `Pool creation failed.`;
 // Fees
 export const FLOAT = 0.0001;
 
+/** @internal Get protocol fee info for all pools */
 export function getFeeInfo(): PoolProtocolInfo {
   const LIQUIDITY_PROVIDER_FEE = 25;
   const HUMBLE_DAO_FEE = 5;
@@ -25,7 +26,10 @@ export function getFeeInfo(): PoolProtocolInfo {
   };
 }
 
+/** @internal account address (not App ID!) of Triumvirate contract */
 let HUMBLE_ADDR: string;
+/** 
+ * @internal Set account address (not App ID!) of Triumvirate contract for current network */
 export function setProtocolAddr(prov: NetworkProvider) {
   const a = [
     "2KR4VFBBJYAROFMG2PJNCHHPZ7XQHPR5IOQG2A3EBZ3POUPFWFODKCNEPU",
@@ -34,21 +38,19 @@ export function setProtocolAddr(prov: NetworkProvider) {
   if (prov === "TestNet") HUMBLE_ADDR = a[0];
   if (prov === "MainNet") HUMBLE_ADDR = a[1];
 }
-
+/** @internal get account address (not App ID!) of Triumvirate contract */
 export function getProtocolAddr() {
   return HUMBLE_ADDR;
 }
 
+/** @internal Triumvirate contract app id */
 let POOL_ANNOUNCER_ADDRESS: string | number | undefined;
-/**
- * @internal
- * Set address of Pool announcer contract
- */
+/** @internal Set app id of Triumvirate contract */
 export function setPoolAnnouncer(address: string | number) {
   POOL_ANNOUNCER_ADDRESS = address;
 }
 
-/** Get address of Pool announcer contract. */
+/** Get app id of Triumvirate contract. */
 export function getPoolAnnouncer() {
   return POOL_ANNOUNCER_ADDRESS;
 }
@@ -61,28 +63,39 @@ export function setSlippage(slippage = 0.5) {
   SLIPPAGE = slippage;
 }
 
-/**
- * Get user's slippage tolerance (in-memory only) */
+/** Get user's slippage tolerance (in-memory only) */
 export function getSlippage() {
   return SLIPPAGE;
 }
 
+/** @internal */
 let NETWORK_PROVIDER: string;
-/** SDK user's network preference */
+/** SDK user's provider preference (TestNet/MainNet) */
 export function getNetworkProvider() {
   return NETWORK_PROVIDER;
 }
-
+/** @internal */
 export function setNetworkProvider(provider: string) {
   NETWORK_PROVIDER = provider;
 }
 
-/** When 'true', SDK is ready for use */
+/** @internal */
+let BLOCKCHAIN: string;
+/** SDK user's blockchain (consensus network) preference */
+export function getBlockchain() {
+  return BLOCKCHAIN;
+}
+/** @internal */
+export function setBlockchain(provider: string) {
+  BLOCKCHAIN = provider;
+}
+
+/** @internal When 'true', SDK is ready for use */
 let INITIALIZED = false;
 export function checkInitialized() {
   return INITIALIZED;
 }
-
+/** @internal */
 export function setInitialized(init = false) {
   INITIALIZED = init;
 }

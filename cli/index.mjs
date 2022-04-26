@@ -2,7 +2,8 @@ import {
   initHumbleSDK,
   getPoolAnnouncer,
   createReachAPI,
-} from "../lib/index.js";
+} from "@reach-sh/humble-sdk";
+import { loadStdlib } from "@reach-sh/stdlib";
 import {
   Blue,
   Green,
@@ -12,15 +13,15 @@ import {
   iout,
   exitWithMsgs,
 } from "./utils.mjs";
-import { loadStdlib } from "@reach-sh/stdlib";
 import { runFetchPoolTest } from "./runFetchPoolTest.mjs";
 import { runFetchTokenTest } from "./runFetchTokenTest.mjs";
 import { runAnnouncerTest } from "./runAnnouncerTest.mjs";
 import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
+import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
 
 // init SDK
-initHumbleSDK();
+initHumbleSDK({ network: "TestNet" });
 const reach = createReachAPI();
 
 (async () => {
@@ -59,7 +60,9 @@ const reach = createReachAPI();
 
     /* Check for POOL flag in cli args */
     case Boolean(poolAddress):
-      return runFetchPoolTest(acc, [poolAddress, n2nn]);
+      return poolAddress === "1"
+        ? runCreatePoolTest(acc, n2nn)
+        : runFetchPoolTest(acc, [poolAddress, n2nn]);
 
     /* Default to listing pools */
     default:

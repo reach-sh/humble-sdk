@@ -106,7 +106,8 @@ export async function addLiquidity(
     optInToLPToken = false,
   } = opts;
   const backend = pool.n2nn ? poolBackendN2NN : poolBackend;
-  const ctc: ReachContract<typeof backend> = contract || acc.contract(backend, pool.poolAddress);
+  const ctc: ReachContract<typeof backend> =
+    contract || acc.contract(backend, pool.poolAddress);
   const { Provider } = ctc.apis;
 
   // (OPTIONAL) opt-in to LP token
@@ -128,20 +129,18 @@ export async function addLiquidity(
   };
 
   try {
-    const [amountA, amountB] = amounts;
-    const parsedAmtA = parseCurrency(amountA, tokenADecimals);
-    const parsedAmtB = parseCurrency(amountB, tokenBDecimals);
     onProgress(`Depositing funds`);
-    await Provider.deposit(
-      parsedAmtA,
-      parsedAmtB,
-      getPreMintedAmt(parsedAmtA, parsedAmtB)
-    );
+    const A = parseCurrency(amounts[0], tokenADecimals);
+    const B = parseCurrency(amounts[1], tokenBDecimals);
+    console.log("Depositing", { pre: getPreMintedAmt(A, B) }, "\n");
+    await Provider.deposit({ A, B }, getPreMintedAmt(A, B));
 
     return done(successResult("Funds deposited", poolAddress, ctc, {}));
   } catch (e) {
-    const msg = parseContractError(`Deposit failed.`, e);
-    console.log(msg, JSON.stringify(opts, null, 2));
+    console.log({ e });
+    const parsedMsg = parseContractError(`Deposit failed`, e);
+    const msg = `${parsedMsg}: ${JSON.stringify(e, null, 2)}`;
+    onProgress(msg);
     return done(errorResult(msg, poolAddress, ctc, e));
   }
 }
@@ -213,19 +212,23 @@ function successResult(
  * INTERNAL HELPER` | Compute how many LP tokens have been pre-minted
  */
 function getPreMintedAmt(parsedAmtA: any, parsedAmtB: any) {
-  const value = parsedAmtA.mul(parsedAmtB);
-  let acc = [value, value.div(2).add(1)];
+  const product = parsedAmtA.mul(parsedAmtB);
+  let acc = [product, product.div(2).add(1)];
   let ans = undefined;
   while (ans === undefined) {
     let [z, x] = acc;
     if (x.lt(2)) {
       ans = x;
     } else if (x.lt(z)) {
-      acc = [x, value.div(x).add(x).div(2)];
+      acc = [x, product.div(x).add(x).div(2)];
     } else {
       ans = x;
     }
   }
   const giv = ans.mul(ans);
-  return giv.lt(value) ? ans.add(1) : ans;
+  if (giv.lt(product)) {
+    return ans.add(1);
+  } else {
+    return ans;
+  }
 }

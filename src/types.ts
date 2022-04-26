@@ -37,13 +37,13 @@ export type SDKToken = {
 };
 
 /** Result from SDK function */
-export type TransactionResult = {
+export type TransactionResult<T> = {
   /** Whether the transaction succeeded or failed */
   succeeded: boolean;
   /** The pool address targeted for the txn */
   poolAddress?: string | number;
   /** Any useful data associated about the txn (or any error encountered) */
-  data?: any;
+  data?: T;
   /** Optional success or failure message */
   message?: string;
   /** Contract instance used for the transaction. Can be reused in subsequent calls. */

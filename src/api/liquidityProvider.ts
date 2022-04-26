@@ -32,7 +32,7 @@ type PoolCtc = ReachContract<typeof poolBackendN2NN | typeof poolBackend>;
 export async function withdrawLiquidity(
   acc: ReachAccount,
   opts: WithdrawOpts
-): Promise<TransactionResult> {
+): Promise<TransactionResult<{ poolLPTokens: number | null }>> {
   const {
     percentToWithdraw: pct,
     n2nn,
@@ -53,20 +53,26 @@ export async function withdrawLiquidity(
   try {
     onProgress(`Withdrawing ${pct}% of funds from pool "${poolAddress}"`);
     await ctc.a.Provider.withdraw(amount);
-    const tokensView: any = await ctc.views.Info();
+    const tokensView = fromMaybe(await ctc.views.Info());
+    if (tokensView === null) {
+      const msg = "Pool not found";
+      return errorResult(msg, poolAddress, ctc, null);
+    }
 
     onProgress("Fetching updated pool LP token balance");
-    const mintedLPTokens = await tokensView.minted();
     const data = {
-      poolLPTokens: fromMaybe(mintedLPTokens, bigNumberToNumber, 0),
+      poolLPTokens: fromMaybe<number>(
+        tokensView.lptBals.A,
+        bigNumberToNumber,
+        0
+      ),
     };
-    const msg = "Funds withdrawn";
-    const result = successResult(msg, null, ctc, data);
+    const result = successResult("Funds withdrawn", null, ctc, data);
 
     onComplete(result);
     return result;
   } catch (e) {
-    const msg = parseContractError("Funds withdrawn", e);
+    const msg = parseContractError("Funds were not withdrawn", e);
     return errorResult(msg, poolAddress, ctc, e);
   }
 }
@@ -87,7 +93,7 @@ export async function withdrawLiquidity(
 export async function addLiquidity(
   acc: ReachAccount,
   opts: DepositTxnOpts
-): Promise<TransactionResult> {
+): Promise<TransactionResult<any>> {
   const [valid, message] = protectArgs(opts);
   if (!valid) return errorResult(message, null, null);
 
@@ -100,7 +106,7 @@ export async function addLiquidity(
     optInToLPToken = false,
   } = opts;
   const backend = pool.n2nn ? poolBackendN2NN : poolBackend;
-  const ctc = contract || acc.contract(backend, pool.poolAddress);
+  const ctc: ReachContract<typeof backend> = contract || acc.contract(backend, pool.poolAddress);
   const { Provider } = ctc.apis;
 
   // (OPTIONAL) opt-in to LP token
@@ -116,7 +122,7 @@ export async function addLiquidity(
   }
 
   const { poolAddress, tokenADecimals = 6, tokenBDecimals = 6 } = pool;
-  const done = (result: TransactionResult) => {
+  const done = (result: TransactionResult<any>) => {
     onComplete(result);
     return result;
   };
@@ -173,7 +179,7 @@ function errorResult(
   poolAddress: number | string | null = "",
   contract?: any | null,
   data?: any
-): TransactionResult {
+): TransactionResult<any> {
   return {
     succeeded: false,
     poolAddress: poolAddress || "",
@@ -192,7 +198,7 @@ function successResult(
   poolAddress: number | string | null = "",
   contract: any,
   data?: any
-): TransactionResult {
+): TransactionResult<any> {
   return {
     succeeded: true,
     poolAddress: poolAddress || "",

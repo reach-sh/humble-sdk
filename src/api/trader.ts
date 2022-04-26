@@ -1,14 +1,17 @@
 import { poolBackend, poolBackendN2NN } from "../build/backend";
-import { SwapTxnOpts, TransactionResult } from "../types";
+import { Balances, SwapTxnOpts, TransactionResult } from "../types";
 import {
   formatCurrency,
   noOp,
   parseAddress,
   parseCurrency,
   ReachAccount,
+  ReachContract,
 } from "../reach-helpers";
 import { ASSURANCE_MSG, getSlippage } from "../constants";
 import { isNetworkToken } from "../utils";
+
+type SwapResult = { amountIn: string; amountOut: string };
 
 /**
  * Perform a swap between two tokens
@@ -19,7 +22,7 @@ import { isNetworkToken } from "../utils";
 export async function performSwap(
   acct: ReachAccount,
   opts: SwapTxnOpts
-): Promise<TransactionResult> {
+): Promise<TransactionResult<SwapResult>> {
   const {
     poolAddress,
     contract,
@@ -41,30 +44,32 @@ export async function performSwap(
   const { n2nn, tokenBDecimals = 6, tokenBId } = pool;
   onProgress(`Checking Token "${tokenBId}" opt-in`);
   const [[amtIn, expectedOut, swapBForA], _tokBOptIn] = await Promise.all([
-    alignTradeAmounts(acct, opts),
+    alignTradeAmounts(opts),
     !isNetworkToken(tokenBId) && acct.tokenAccept(tokenBId),
   ]);
 
-  const ctc =
-    contract || acct.contract(n2nn ? poolBackendN2NN : poolBackend, addr);
+  const backend = n2nn ? poolBackendN2NN : poolBackend;
+  const ctc: ReachContract<typeof backend> =
+    contract || acct.contract(backend, addr);
   const traderAPI = ctc.apis.Trader;
 
   try {
     onProgress(`Swapping in pool "${poolAddress}"`);
-    const result = swapBForA
+    const [swapResult]: Balances[] = swapBForA
       ? await traderAPI.swapBForA(amtIn, expectedOut)
       : await traderAPI.swapAForB(amtIn, expectedOut);
     const amountIn = swap.amountA;
-    const amountOut = formatCurrency(result[0], tokenBDecimals);
-    const response: TransactionResult = {
+    const out = swapBForA ? swapResult.A : swapResult.B;
+    const amountOut = formatCurrency(out, tokenBDecimals);
+    const txnResult = {
       poolAddress,
       data: { amountIn, amountOut },
       succeeded: true,
       message: "Swap complete",
       contract: ctc,
     };
-    onComplete(response);
-    return response;
+    onComplete(txnResult);
+    return txnResult;
   } catch (e) {
     return onSwapError(poolAddress, "The Swap transaction failed", e);
   }
@@ -75,7 +80,7 @@ function onSwapError(
   poolAddress: string | number,
   reason?: string,
   e: any = {}
-): TransactionResult {
+): TransactionResult<any> {
   const error = e.toString();
   const data = { error: e, reason };
   let message = reason || "";
@@ -102,7 +107,7 @@ function onSwapError(
 }
 
 /** INTERNAL HELPER | organize trade amounts into expected Token A and Token B */
-async function alignTradeAmounts(_acc: ReachAccount, opts: SwapTxnOpts) {
+async function alignTradeAmounts(opts: SwapTxnOpts) {
   const { poolAddress, swap, pool } = opts;
   if (!pool) return [0, 0, false];
 

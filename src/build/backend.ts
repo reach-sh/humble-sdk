@@ -3,12 +3,12 @@ import { ComputeSwapFn } from "types.js";
 import * as PoolBackend from "./index.tok_tok.js";
 import * as PoolBackendN2NN from "./index.net_tok.js";
 import * as TriumvirateBackend from "./index.triumvirate.js";
-import * as FarmBackend from "./staker.main.js";
+import * as StakingBackend from "./staker.main.js";
 
 export const poolBackend = PoolBackend;
 export const poolBackendN2NN = PoolBackendN2NN;
 export const announcerBackend = TriumvirateBackend;
-export const farmBackend = FarmBackend;
+export const stakingBackend = StakingBackend;
 
 /**
  * Get a function for calculating the expected output of a swap.

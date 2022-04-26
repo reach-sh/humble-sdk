@@ -22,7 +22,7 @@ export async function deployPool(
   acc: ReachAccount,
   backend: any,
   opts: CreatePoolOpts
-): Promise<TransactionResult> {
+): Promise<TransactionResult<PoolInfo>> {
   const { tokenAId, tokenBId, lpTokenName, tokSymbol } = opts;
   try {
     const ctcAdmin = acc.contract(backend);
@@ -61,7 +61,7 @@ export async function deployPool(
 /**
  * @internal
  * HELPER | Create Pool failed */
-export function createPoolFailed(e: any, m = ""): TransactionResult {
+export function createPoolFailed<T>(e: T, m = ""): TransactionResult<T> {
   const data = e;
   const response = { poolAddress: "", succeeded: false, data, message: m };
   if (!m) response.message = parseContractError(POOL_CREATION_ERR, e);

@@ -14,10 +14,10 @@ function abbrevNumber(numOfGroups: number) {
 export type Maybe<T> = [val: "Some" | "None", v?: T | null];
 export function fromMaybe<T extends any>(
   mVal: Maybe<T>,
-  format?: (v: any) => any,
+  format?: (v: any) => T,
   fallback?: any
 ): T | null {
-  const fmt = format || ((v: any) => v);
+  const fmt = format || ((v: any) => v as T);
   return mVal[0] === "Some" ? fmt(mVal[1]) : fallback || mVal[1];
 }
 

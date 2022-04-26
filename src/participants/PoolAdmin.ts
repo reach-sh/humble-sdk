@@ -1,7 +1,7 @@
 import { noOp } from "../reach-helpers";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { isNetworkToken } from "../utils";
-import { ReachTxnOpts, SDKToken, TransactionResult } from "../types";
+import { PoolInfo, ReachTxnOpts, SDKToken, TransactionResult } from "../types";
 import { createPoolFailed, deployPool } from "../utils.pool";
 import { addLiquidity } from "../api/index";
 
@@ -14,7 +14,7 @@ type CreatePoolTxnOpts = {
 export async function createPool(
   acc: any,
   opts: CreatePoolTxnOpts
-): Promise<TransactionResult> {
+): Promise<TransactionResult<PoolInfo | Error>> {
   const { tokenAmounts, tokens, onComplete = noOp, onProgress = noOp } = opts;
   const tokenSymbols: string[] = [];
   const tokenIds: any = [];
@@ -60,7 +60,7 @@ export async function createPool(
   const deposit = await addLiquidity(acc, {
     amounts: tokenAmounts,
     contract,
-    pool: poolData.pool,
+    pool: poolData,
     onComplete,
     onProgress,
     optInToLPToken: true,
@@ -69,6 +69,7 @@ export async function createPool(
 
   const result = {
     ...deposit,
+    data: poolData,
     message: "Pool created",
   };
   onComplete(result);

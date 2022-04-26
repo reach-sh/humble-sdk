@@ -1,7 +1,5 @@
-export type APIFn<T extends BackendModule> = {
-  [fn in keyof T]: (...args: any[]) => Promise<any>;
-} & {
-  [fnGroup in keyof T]: CtcLabeledFunc<any>;
+export type APIFn<T> = {
+  [fn in keyof T]: UnwrapAPI<T[fn]>;
 };
 
 export type BackendModule = Record<string, any>;
@@ -93,7 +91,10 @@ export type ContractView<T extends BackendModule> = {
   >;
 };
 
-type Unwrap<T extends any> = T extends Promise<infer A> ? A : T;
+type Unwrap<T> = T extends Promise<infer A> ? A : T;
+type UnwrapAPI<T> = T extends (...a: any[]) => Promise<undefined>
+  ? (...a: any[]) => Promise<any>
+  : CtcFnGroup<T>;
 
 /** Reach contract representation */
 export type ReachContract<T extends BackendModule> = {

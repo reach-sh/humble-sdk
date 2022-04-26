@@ -33,18 +33,24 @@ $. npm i -s @reach-sh/humble-sdk
 To get started without NPM, you can clone and build the SDK from the repository. 
 ```bash
 # Clone the repository 
-$. git clone # ...
+$. git clone https://github.com/reach-sh/humble-sdk.git
 
 # Enter the directory with the repo (replace with path to your repository clone)
+$. cd path/to/humble-sdk 
+
 # and install dependencies (there aren't a lot)
-$. cd path/to/humble-sdk && npm install
+$. npm install
 
 # Build the SDK. Will output to a ./lib directory in the same folder as the 
 # package.json file. This takes seconds and doesn't output anything to your terminal.
 $. npm run build
 ``` 
 You will know it is complete when your (terminal's) typing prompt reappears.\
-Then, as a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module.
+Then, as a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module:
+
+```typescript
+import { initHumbleSDK } from "path/to/lib";
+```
 
 ---
 

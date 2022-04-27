@@ -142,18 +142,7 @@ type FetchPoolData = {
   tradeable: boolean;
 };
 
-export type FetchPoolTxnResult = {
-  /** Whether the transaction succeeded or failed */
-  succeeded: boolean;
-  /** The pool address targeted for the txn */
-  poolAddress?: string | number;
-  /** Any useful data associated about the txn (or any error encountered) */
-  data: FetchPoolData;
-  /** Optional success or failure message */
-  message?: string;
-  /** Contract instance used for the transaction. Can be reused in subsequent calls. */
-  contract?: ReachContract<any>;
-};
+export type FetchPoolTxnResult = TransactionResult<FetchPoolData>;
 
 /**
  * @version v2

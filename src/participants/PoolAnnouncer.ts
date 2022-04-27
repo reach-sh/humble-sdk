@@ -110,7 +110,7 @@ export async function fetchPool(
     data: {
       pool,
       tradeable,
-      tokens: [tokA, tokB] as [any, any],
+      tokens: [tokA, tokB],
     },
   };
   onComplete(result);

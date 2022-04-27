@@ -11,7 +11,7 @@ type CreatePoolTxnOpts = {
 } & ReachTxnOpts;
 
 /** Create a Liquidity pool */
-export async function createPool(
+export async function createLiquidityPool(
   acc: any,
   opts: CreatePoolTxnOpts
 ): Promise<TransactionResult<PoolInfo | Error>> {

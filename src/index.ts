@@ -3,7 +3,8 @@ import { loadReach, NetworkProvider, SDKOpts } from "./reach-helpers";
 
 // DATA & DATA FETCHERS
 import {
-  createPool,
+  createLiquidityPool,
+  createStakingPool,
   fetchPool,
   fetchToken,
   subscribeToPoolStream,
@@ -57,8 +58,9 @@ export {
   calculateOtherAmount,
   calculatePriceImpact,
   calculateTokenSwap,
-  createPool,
+  createLiquidityPool,
   createReachAPI,
+  createStakingPool,
   fetchPool,
   fetchToken,
   formatAddress,

@@ -1,10 +1,6 @@
 /** @file Contract Participant exports */
 
-import { subscribeToPoolStream } from "./subscribeToPoolStream";
-import { fetchPool, fetchToken } from "./PoolAnnouncer";
-import { createPool } from "./PoolAdmin";
-
-/**
- * @exports Module exports
- */
-export { createPool, subscribeToPoolStream, fetchPool, fetchToken };
+export { subscribeToPoolStream } from "./subscribeToPoolStream";
+export { fetchPool, fetchToken } from "./PoolAnnouncer";
+export { createLiquidityPool } from "./PoolAdmin";
+export { createStakingPool } from "./StakingAdmin";

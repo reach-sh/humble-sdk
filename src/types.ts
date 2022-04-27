@@ -160,15 +160,21 @@ export type StakeUpdate = {
 
 /** Notification object (Rewards updated) */
 export type StakingRewardsUpdate = {
+  /** Rewards issued to user ([`networkAmt`, `nonNetworkAmt`]) */
   userReceived: StakingRewards;
+  /** Contract rewards balance ([`networkAmt`, `nonNetworkAmt`]) */
   totalRemaining: StakingRewards;
 };
 
 /** Options reused in the contract */
 export type StakingDeployerOpts = {
-  rewardToken1: TokenID;
+  /** Rewards token (cannot be `network` token e.g. `ALGO`]) */
+  nnRewardToken: TokenID;
+  /** Token to stake for rewards */
   stakeToken: TokenID;
+  /** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
   rewardsPerBlock: StakingRewards;
+  /** Length of rewards (blocks) */
   duration: number;
 };
 

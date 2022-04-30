@@ -27,7 +27,6 @@ export function formatAddress(acc: T.ReachAccount) {
 }
 
 /**
- * @internal
  * @reach_helper Optionally-abbreviated currency formatter (e.g.
  * `fn(1000)` -> `1000` || `1K` ). Expects `amt` to be in atomic unit for network */
 export function formatCurrency(amt: any, decs?: number, abbr = false): string {
@@ -66,6 +65,28 @@ export function loadReach(
   return reach;
 }
 
+/**
+ * @reach_helper
+ * Parses a contract address for Algorand or other chains
+ * @param {string|number} ctc string|number contract address
+ * @returns string|number contract address
+ */
+export function parseAddress(ctc: any) {
+  const { isBigNumber, bigNumberToNumber } = createReachAPI();
+  const addr = isBigNumber(ctc) ? bigNumberToNumber(ctc) : ctc;
+  if (reach.connector === "ALGO") return parseInt(addr);
+
+  const pit = addr.toString().trim().replace(/\0.*$/g, "");
+  return pit.startsWith("0x") ? pit : `0x${pit}`;
+}
+
+/** @reach_helper Convert `val` to atomic units for the current network */
+export function parseCurrency(val: any, dec?: number) {
+  const decimals = parseNetworkDecimals(Number(dec));
+  return createReachAPI().parseCurrency(val, decimals);
+}
+
+/** @internal */
 function buildProviderEnv(
   provider: T.NetworkProvider,
   overrides: Partial<T.AlgoEnvOverride> = {}
@@ -88,33 +109,7 @@ function buildProviderEnv(
   return env as T.AlgoEnvOverride;
 }
 
-/**
- * @internal
- * @reach_helper
- * Parses a contract address for Algorand or other chains
- * @param {string|number} ctc string|number contract address
- * @returns string|number contract address
- */
-export function parseAddress(ctc: any) {
-  const { isBigNumber, bigNumberToNumber } = createReachAPI();
-  const addr = isBigNumber(ctc) ? bigNumberToNumber(ctc) : ctc;
-  if (reach.connector === "ALGO") return parseInt(addr);
-
-  const pit = addr.toString().trim().replace(/\0.*$/g, "");
-  return pit.startsWith("0x") ? pit : `0x${pit}`;
-}
-
-/**
- * @internal
- * @reach_helper Convert `val` to atomic units for the current network */
-export function parseCurrency(val: any, dec?: number) {
-  const decimals = parseNetworkDecimals(Number(dec));
-  return createReachAPI().parseCurrency(val, decimals);
-}
-
-/**
- * @internal
- * @reach_helper Get token data and `acc`'s balance of token (if available) */
+/** @internal Get token data and `acc`'s balance of token (if available) */
 export async function tokenMetadata(
   token: any,
   acc: T.ReachAccount
@@ -135,11 +130,7 @@ export async function tokenMetadata(
   return formatReachToken(token, bal, metadata);
 }
 
-/* INTERNAL */
-
-/**
- * @internal
- * @reach_helper Format token metadata from `tokenMetadata` API request */
+/** @internal Format token metadata from `tokenMetadata` API request */
 function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
   const id = parseAddress(tokenId);
   const fallbackName = `Asset #${id}`;

@@ -7,7 +7,7 @@ import {
 } from "../reach-helpers";
 import { announcerBackend } from "../build/backend";
 import { getPoolAnnouncer } from "../constants";
-import { fetchPool } from "./PoolAnnouncer";
+import { fetchPool } from "../participants/PoolAnnouncer";
 import { FetchPoolTxnResult } from "types";
 
 type PoolSubscriptionOpts = {

@@ -1,4 +1,4 @@
-import { createPool } from "@reach-sh/humble-sdk";
+import { createLiquidityPool } from "@reach-sh/humble-sdk";
 import {
   iout,
   exitWithMsgs,

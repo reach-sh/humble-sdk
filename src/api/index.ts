@@ -1,7 +1,7 @@
 /** @file Contract API Functions */
 
-import { performSwap } from "./trader";
-import { addLiquidity, withdrawLiquidity } from "./liquidityProvider";
+export { fetchFarm } from "./staker";
+export { swapTokens } from "./trader";
+export { addLiquidity, withdrawLiquidity } from "./liquidityProvider";
+export { subscribeToPoolStream } from "./subscribeToPoolStream";
 
-/** Module exports */
-export { performSwap, addLiquidity, withdrawLiquidity };

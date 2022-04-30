@@ -1,9 +1,20 @@
 import { fetchPool } from "@reach-sh/humble-sdk";
-import { iout, exitWithMsgs, Blue, Yellow, onProgress } from "./utils.mjs";
+import {
+  iout,
+  exitWithMsgs,
+  Blue,
+  Yellow,
+  onProgress,
+  answerOrDie,
+} from "./utils.mjs";
 
 /** Fetch a single pool */
-export async function runFetchPoolTest(acc, [addr, n2nn]) {
+export async function runFetchPoolTest(acc, [info, isN2nn]) {
   Blue(`Running POOL-FETCH`);
+
+  const isNetworkPrompt = "Does the pool contain ALGO or ETH?";
+  const n2nn = isN2nn || (await answerOrDie(isNetworkPrompt));
+  const addr = info || (await answerOrDie("Enter pool address:"));
   if (!addr) return exitWithMsgs("POOL address required but not found");
 
   Yellow(`Fetching single pool "${addr}"...`);

@@ -1,24 +1,36 @@
 import { loadStdlib } from "@reach-sh/stdlib";
 import { loadReach, NetworkProvider, SDKOpts } from "./reach-helpers";
 
-// DATA & DATA FETCHERS
+// CONSTANTS
 import {
+  checkInitialized,
+  setInitialized,
+  setPoolAnnouncer,
+  setSlippage,
+  setNetworkProvider,
+  setProtocolAddr,
+} from "./constants";
+
+// MAIN EXPORTS
+export { initHumbleSDK, setSlippage };
+
+// DATA & DATA FETCHERS
+export {
   createLiquidityPool,
   createStakingPool,
   fetchPool,
   fetchToken,
-  subscribeToPoolStream,
 } from "./participants/index";
 
-// SWAP
-import {
+// SWAP UTILS
+export {
   calculateOtherAmount,
   calculatePriceImpact,
   calculateTokenSwap,
 } from "./utils.swap";
 
 // REACH HELPERS
-import {
+export {
   createReachAPI,
   parseAddress,
   parseCurrency,
@@ -27,21 +39,21 @@ import {
 } from "./reach-helpers";
 
 // LIQUIDITY PROVIDER and SWAP
-import { addLiquidity, withdrawLiquidity, performSwap } from "./api/index";
+export {
+  addLiquidity,
+  fetchFarm,
+  withdrawLiquidity,
+  swapTokens,
+  subscribeToPoolStream,
+} from "./api/index";
 
 // CONSTANTS
-import {
-  checkInitialized,
-  setInitialized,
-  getPoolAnnouncer,
-  setPoolAnnouncer,
-  getSlippage,
-  setSlippage,
-  setNetworkProvider,
-  setProtocolAddr,
-} from "./constants";
+export { getSlippage, getPoolAnnouncer } from "./constants";
 
-export function initHumbleSDK(opts: SDKOpts = {}) {
+/**
+ * Create `stdlib` instance for SDK. Options allow for selective environment
+ * overrides. */
+function initHumbleSDK(opts: SDKOpts = {}) {
   if (checkInitialized()) return;
 
   const { network, providerEnv } = opts;
@@ -52,28 +64,6 @@ export function initHumbleSDK(opts: SDKOpts = {}) {
   });
   setSDKOpts(opts);
 }
-
-export {
-  addLiquidity,
-  calculateOtherAmount,
-  calculatePriceImpact,
-  calculateTokenSwap,
-  createLiquidityPool,
-  createReachAPI,
-  createStakingPool,
-  fetchPool,
-  fetchToken,
-  formatAddress,
-  formatCurrency,
-  getPoolAnnouncer,
-  getSlippage,
-  parseAddress,
-  parseCurrency,
-  performSwap,
-  setSlippage,
-  subscribeToPoolStream,
-  withdrawLiquidity,
-};
 
 /** @internal Set SDK options for operation */
 function setSDKOpts(opts: SDKOpts) {
@@ -93,7 +83,7 @@ function getTriumvirContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
   if (valid === "TestNet") return 86197132;
-  // if (valid === "MainNet") return ???
+  // if (valid === "MainNet") return 86635789 // Next V2 contract
 
   throw new Error(`Unrecognized provider "${network}"`);
 }

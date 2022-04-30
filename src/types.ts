@@ -180,14 +180,16 @@ export type StakingDeployerOpts = {
 
 /** Farming pool view */
 export type StakingView = {
-  /** Initial values submitted by contract creator */
-  opts: StakingDeployerOpts;
-  /** Total amount staked in contract */
-  totalStaked: BigNumber;
-  /** Amount of rewards left in contract */
-  remainingRewards: StakingRewards;
-  /** When farming pool ends */
-  end: BigNumber;
+  Info: {
+    /** Initial values submitted by contract creator */
+    opts: StakingDeployerOpts;
+    /** Total amount staked in contract */
+    totalStaked: BigNumber;
+    /** Amount of rewards left in contract */
+    remainingRewards: StakingRewards;
+    /** When farming pool ends */
+    end: BigNumber;
+  };
   /** Amount staked */
   staked(addr: Address): BigNumber;
   /** Round when rewards will be available for `addr` */

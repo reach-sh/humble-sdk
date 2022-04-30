@@ -1,5 +1,9 @@
-import { fetchPool, performSwap } from "../lib/index.js";
-import { calculatePriceImpact, calculateTokenSwap } from "../lib/index.js";
+import {
+  fetchPool,
+  swapTokens,
+  calculatePriceImpact,
+  calculateTokenSwap,
+} from "@reach-sh/humble-sdk";
 import {
   exitWithMsgs,
   Blue,
@@ -9,20 +13,20 @@ import {
   onProgress,
   Red,
   iout,
+  answerOrDie,
 } from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);
 
 /** Swap between two tokens in the command line */
-export async function runSwapTest(
-  acc,
-  [tokenAId, amountA, tokenBId, poolAddress]
-) {
+export async function runSwapTest(acc, [tokA, inputA, tokB, poolCtc]) {
   const args = process.argv.slice(2);
-  if (!poolAddress)
-    exitWithMsgs("Pool address flag POOL required but not found");
-
+  const poolAddress = poolCtc || (await answerOrDie("Enter pool address"));
   Blue(`Running SWAP test on pool "${poolAddress}"`);
+
+  const tokenAId = tokA || (await answerOrDie("Enter token A Id:"));
+  const amountA = inputA || (await answerOrDie("How much are you putting in?"));
+  const tokenBId = tokB || (await answerOrDie("Enter token B Id:"));
 
   // Fetch pool (delegate logging)
   const n2nn = [tokenAId, tokenBId].some(isNetworkToken);
@@ -41,7 +45,7 @@ export async function runSwapTest(
 
   // Perform swap
   Yellow(`Swapping in pool "${poolAddress}" ... `);
-  const { data, message, succeeded } = await performSwap(acc, {
+  const { data, message, succeeded } = await swapTokens(acc, {
     poolAddress,
     contract,
     swap,

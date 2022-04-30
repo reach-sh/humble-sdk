@@ -19,7 +19,7 @@ type SwapResult = { amountIn: string; amountOut: string };
  * @param opts Options for performing swap
  * @returns Transaction results
  */
-export async function performSwap(
+export async function swapTokens(
   acct: ReachAccount,
   opts: SwapTxnOpts
 ): Promise<TransactionResult<SwapResult>> {

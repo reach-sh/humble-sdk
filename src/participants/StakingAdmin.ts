@@ -6,7 +6,7 @@ import {
   StakingRewards,
   TransactionResult,
 } from "../types";
-import { createPoolFailed } from "utils.pool";
+import { createPoolFailed } from "../utils.pool";
 
 /** Transaction options (create staking pool) */
 type CreateFarmTxnOpts = { opts: StakingDeployerOpts } & ReachTxnOpts;

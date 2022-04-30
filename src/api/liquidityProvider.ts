@@ -132,7 +132,12 @@ export async function addLiquidity(
     onProgress(`Depositing funds`);
     const A = parseCurrency(amounts[0], tokenADecimals);
     const B = parseCurrency(amounts[1], tokenBDecimals);
-    console.log("Depositing", { pre: getPreMintedAmt(A, B) }, "\n");
+    const { bigNumberToNumber } = createReachAPI();
+    console.log(
+      "Depositing",
+      { pre: bigNumberToNumber(getPreMintedAmt(A, B)) },
+      "\n"
+    );
     await Provider.deposit({ A, B }, getPreMintedAmt(A, B));
 
     return done(successResult("Funds deposited", poolAddress, ctc, {}));

@@ -76,6 +76,8 @@ export type ReachAccount = { [x: string]: any } & {
   stdlib: ReachStdLib;
 };
 
+export type Maybe<T> = ["Some", T] | ["None", null];
+
 /** Reach contract View representation */
 type CtcViewGroup<T extends BackendModule> =
   | ReturnType<T["_getViews"]>["infos"];
@@ -83,11 +85,7 @@ export type ContractView<T extends BackendModule> = {
   [k in keyof CtcViewGroup<T>]: (
     ...a: any[]
   ) => Promise<
-    | [
-        "Some",
-        Unwrap<ReturnType<ReturnType<T["_getViews"]>["infos"][k]["decode"]>>
-      ]
-    | ["None", null]
+    Maybe<Unwrap<ReturnType<ReturnType<T["_getViews"]>["infos"][k]["decode"]>>>
   >;
 };
 

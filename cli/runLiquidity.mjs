@@ -60,7 +60,7 @@ export async function runLiquidity(acc, opts) {
     const withdrawPrompt = "Enter percentage of liquidity to withdraw:";
     const p = await answerOrDie(withdrawPrompt);
     const withdrawOpts = { poolAddress, percentToWithdraw: p.replace("%", "") };
-    return runWithdrawLiquidity(acc, opts, poolResult);
+    return runWithdrawLiquidity(acc, withdrawOpts, poolResult);
   }
 
   // No action match

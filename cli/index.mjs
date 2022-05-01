@@ -35,6 +35,8 @@ const options = [
 ];
 
 (async () => {
+  console.clear();
+
   Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
   Yellow(`Getting account ...`);
   const args = process.argv.slice(2);
@@ -52,36 +54,6 @@ const options = [
 
   const { action } = options[index];
   return action(acc);
-
-  // /* "Swap" requires a list of commands to be present */
-  // const swapArgs = await getSwapArgs(args);
-  // const [poolAddress, n2nn] = [
-  //   fromArgs(args, "POOL"),
-  //   Boolean(fromArgs(args, "N2NN")),
-  // ];
-
-  // /* Check for LIQUIDITY (deposit/withdraw) flags in cli args */
-  // const [tokenIn, amountIn, tokenOut] = swapArgs;
-  // const liquidityArgs = [...swapArgs, fromArgs(args, "ACTION")];
-  // const tokenId = fromArgs(args, "TOKEN");
-
-  // switch (true) {
-  //   case liquidityArgs.every(Boolean): {
-  //     const action = liquidityArgs[liquidityArgs.length - 1];
-  //     const lqOpts = { action, amountIn, poolAddress, tokenIn, tokenOut };
-  //     return runLiquidity(acc, lqOpts);
-  //   }
-
-  //   /* Check for POOL flag in cli args */
-  //   case Boolean(poolAddress):
-  //     return poolAddress === "1"
-  //       ? runCreatePoolTest(acc, n2nn)
-  //       : runFetchPoolTest(acc, [poolAddress, n2nn]);
-
-  //   /* Default to listing pools */
-  //   default:
-  //     return runAnnouncerTest(acc);
-  // }
 })();
 
 /** Checks for SWAP flags */

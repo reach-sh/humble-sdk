@@ -1,4 +1,4 @@
-import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
+import { makeNetworkToken } from "../utils";
 import { UNINSTANTIATED } from "../constants";
 import * as T from "./types";
 import { formatNumberShort, trimByteString } from "./utils.reach";
@@ -114,19 +114,16 @@ export async function tokenMetadata(
   token: any,
   acc: T.ReachAccount
 ): Promise<T.ReachToken> {
-  if (isNetworkToken(token)) return makeNetworkToken();
-
-  const { balanceOf } = createReachAPI();
-  const fetchBalance = () => withTimeout(balanceOf(acc, token));
+  const { balanceOf, eq } = createReachAPI();
+  const fetchBalance = () =>
+    eq(token, 0) ? balanceOf(acc) : balanceOf(acc, token);
   const fetchToken = () =>
-    withTimeout(
-      acc.tokenMetadata(token).then((md) => formatReachToken(token, 0, md)),
-      null
-    );
+    eq(token, 0)
+      ? makeNetworkToken()
+      : acc.tokenMetadata(token).then((md) => formatReachToken(token, 0, md));
   const [metadata, bal] = await Promise.all([fetchToken(), fetchBalance()]);
 
   if (!metadata) throw new Error(`Token "${token}" not found`);
-
   return formatReachToken(token, bal, metadata);
 }
 

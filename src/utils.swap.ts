@@ -139,13 +139,15 @@ export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
   return swapped;
 }
 
-/**
- * @internal
- * Pre-emptively check for number overflow on swap */
-export function poolIsOverloaded(data?: PoolDetails) {
-  if (!data) return true;
+export type OverloadCheck = [isOverloaded: boolean, maxSwapInput: number];
+
+/** Pre-emptively check for number overflow on swap */
+export function poolIsOverloaded(data?: PoolDetails): OverloadCheck {
+  if (!data) return [true, 0];
   const { tokenADecimals, tokenBDecimals, tokenABalance, tokenBBalance } = data;
   const reach = createReachAPI();
+  const M100 = 100_000_000; // 100 million
+  let lastInput = reach.bigNumberify(1);
 
   try {
     const computeSwap = getComputeSwap(reach);
@@ -156,24 +158,27 @@ export function poolIsOverloaded(data?: PoolDetails) {
     const pi = getFeeInfo();
     const checkA = (s: Balances) => void computeSwap(true, s, poolBals, pi);
     const checkB = (s: Balances) => void computeSwap(false, s, poolBals, pi);
-    const checkNext = (input: any): boolean => {
+    const checkNext = (): OverloadCheck => {
       // Stop if we've swapped up to 1M
-      if (reach.ge(input, 10_000_000)) return false;
+      if (reach.ge(lastInput, M100)) return [false, M100];
 
       // Check input
-      checkA({ A: input, B: 0 });
-      checkB({ B: input, A: 0 });
+      checkA({ A: lastInput, B: 0 });
+      checkB({ B: lastInput, A: 0 });
 
       // if we got here, it worked. Increment and check again
-      const next = reach.mul(input, reach.bigNumberify(10));
-      const done =
-        reach.le(tokenABalance, next) && reach.le(tokenBBalance, next);
-      return done ? false : checkNext(next);
+      lastInput = reach.mul(lastInput, reach.bigNumberify(10));
+      const lessThanA = reach.le(tokenABalance, lastInput);
+      const lessThanB = reach.le(tokenBBalance, lastInput);
+      if (!lessThanA && !lessThanB) return checkNext();
+
+      const max = lessThanA ? tokenABalance : tokenBBalance;
+      return [false, Number(max)];
     };
 
-    return checkNext(reach.bigNumberify(1));
+    return checkNext();
   } catch (e: any) {
-    return true;
+    return [true, reach.bigNumberToNumber(lastInput)];
   }
 }
 

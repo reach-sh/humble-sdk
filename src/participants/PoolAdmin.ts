@@ -72,13 +72,12 @@ export async function createLiquidityPool(
   });
   if (!deployment.succeeded || !deployment.data) return deployment;
 
-  onProgress("Funding pool...");
+  onProgress("Funding pool");
   const { data: poolData, contract } = deployment;
-  const deposit = await addLiquidity(acc, {
+  const deposit: TransactionResult<PoolInfo> = await addLiquidity(acc, {
     amounts: tokenAmounts,
     contract,
     pool: poolData,
-    onComplete,
     onProgress,
     optInToLPToken: true,
   });

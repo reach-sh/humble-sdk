@@ -27,6 +27,7 @@ export {
   calculateOtherAmount,
   calculatePriceImpact,
   calculateTokenSwap,
+  poolIsOverloaded,
 } from "./utils.swap";
 
 // REACH HELPERS
@@ -36,6 +37,7 @@ export {
   parseCurrency,
   formatAddress,
   formatCurrency,
+  noOp,
 } from "./reach-helpers";
 
 // LIQUIDITY PROVIDER and SWAP
@@ -46,6 +48,8 @@ export {
   swapTokens,
   subscribeToPoolStream,
 } from "./api/index";
+
+export * from "./types"
 
 // CONSTANTS
 export { getSlippage, getPoolAnnouncer } from "./constants";

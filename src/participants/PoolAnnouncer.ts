@@ -91,7 +91,7 @@ export async function fetchPool(
   const pool: PoolDetails = {
     poolAddress: ctcInfo,
     poolTokenId: parseAddress(liquidityToken),
-    mintedLiquidityTokens: fromMaybe(lptBals.B, reach.bigNumberToNumber, 0),
+    mintedLiquidityTokens: reach.bigNumberToNumber(lptBals.B),
     n2nn,
     tokenABalance: formatCurrency(A, tokA?.decimals),
     tokenAFees: formatCurrency(totalFees(protoA), tokA?.decimals),

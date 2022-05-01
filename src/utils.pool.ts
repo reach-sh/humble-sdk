@@ -1,7 +1,12 @@
 import { fetchToken } from "./participants";
 import { isNetworkToken, parseContractError } from "./utils";
 import { getPoolAnnouncer, POOL_CREATION_ERR } from "./constants";
-import { ReachAccount, parseAddress } from "./reach-helpers";
+import {
+  ReachAccount,
+  parseAddress,
+  noOp,
+  createReachAPI,
+} from "./reach-helpers";
 import { ReachTxnOpts, PoolInfo, TokenPair, TransactionResult } from "./types";
 
 type CreatePoolOpts = ReachTxnOpts &
@@ -23,9 +28,17 @@ export async function deployPool(
   backend: any,
   opts: CreatePoolOpts
 ): Promise<TransactionResult<PoolInfo>> {
-  const { tokenAId, tokenBId, lpTokenName, tokSymbol } = opts;
+  const {
+    tokenAId,
+    tokenBId,
+    lpTokenName,
+    tokSymbol,
+    onProgress = noOp,
+  } = opts;
   try {
     const ctcAdmin = acc.contract(backend);
+    createReachAPI().setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+
     const [poolLPTokenId, tokA, tokB] = await Promise.all([
       new Promise((resolve) =>
         ctcAdmin.participants.Admin({
@@ -41,7 +54,9 @@ export async function deployPool(
       fetchToken(acc, tokenBId),
     ]);
 
+    onProgress("Getting pool info");
     const poolAddress = parseAddress(await ctcAdmin.getInfo());
+    const n2nn = isNetworkToken(tokenAId) || isNetworkToken(tokenBId);
     const data: PoolInfo = {
       poolAddress,
       tokenAId,
@@ -49,7 +64,7 @@ export async function deployPool(
       tokenADecimals: tokA?.decimals,
       tokenBDecimals: tokB?.decimals,
       poolTokenId: parseAddress(poolLPTokenId),
-      n2nn: isNetworkToken(tokenAId) || isNetworkToken(tokenBId),
+      n2nn,
     };
 
     return { succeeded: true, poolAddress, contract: ctcAdmin, data };

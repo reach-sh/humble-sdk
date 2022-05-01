@@ -133,7 +133,7 @@ export type SwapInfo = TokenPair & {
 };
 
 /** High-level information about a pool */
-type FetchPoolData = {
+export type FetchPoolData = {
   /** Pool data */
   pool: PoolDetails | null;
   /** Pool token data */

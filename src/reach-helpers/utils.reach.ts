@@ -1,3 +1,5 @@
+import { Maybe } from "./types";
+
 export const noOp = () => null;
 
 // Generate a number abbreviation
@@ -11,7 +13,6 @@ function abbrevNumber(numOfGroups: number) {
 /**
  * Unwrap a `Maybe` value. When `mVal[0]` is `"Some"`, `mVal[1]` has a value
  */
-export type Maybe<T> = [val: "Some" | "None", v?: T | null];
 export function fromMaybe<T extends any>(
   mVal: Maybe<T>,
   format?: (v: any) => T,

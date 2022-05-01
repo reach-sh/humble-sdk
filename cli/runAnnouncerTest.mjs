@@ -26,10 +26,11 @@ export function runAnnouncerTest(acc) {
 async function onPoolFetched({ succeeded, poolAddress, data, message }) {
   if (pools.size >= LIMIT) return;
   if (!succeeded) return Red(message);
+  if (!data.tradeable) return Red("Untradeable pool" + poolAddress);
 
   pools.add(poolAddress);
   Blue(`\t * Got "${poolAddress}" (${pools.size} of ${LIMIT})`);
-  iout("", { pool: data.pool, tradeable: data.tradeable });
+  iout(poolAddress, data.pool);
   resetTimer();
 }
 

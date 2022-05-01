@@ -54,7 +54,7 @@ export async function withdrawLiquidity(
     onProgress(`Withdrawing ${pct}% of funds from pool "${poolAddress}"`);
     await ctc.a.Provider.withdraw(amount);
     const tokensView = fromMaybe(await ctc.views.Info());
-    if (tokensView === null) {
+    if (!tokensView) {
       const msg = "Pool not found";
       return errorResult(msg, poolAddress, ctc, null);
     }

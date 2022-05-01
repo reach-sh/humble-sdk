@@ -14,6 +14,13 @@ export async function runFetchTokenTest(acc, id) {
   const tokenId = id || (await answerOrDie("Enter token id:"));
 
   Yellow(`Fetching Token "${tokenId}"...`);
-  iout("Fetched token", await fetchToken(acc, tokenId));
-  exitWithMsgs("Test complete! Exiting ...");
+  await fetchToken(acc, tokenId)
+    .then((token) => {
+      iout("Fetched token", token);
+      exitWithMsgs("Test complete! Exiting ...");
+    })
+    .catch((e) => {
+      console.log({ e });
+      exitWithMsgs("Token was not fetched");
+    });
 }

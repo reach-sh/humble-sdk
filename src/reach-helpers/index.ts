@@ -1,4 +1,4 @@
-import { makeNetworkToken } from "../utils";
+import { isNetworkToken, makeNetworkToken } from "../utils";
 import { UNINSTANTIATED } from "../constants";
 import * as T from "./types";
 import { formatNumberShort, trimByteString } from "./utils.reach";
@@ -115,16 +115,28 @@ export async function tokenMetadata(
   acc: T.ReachAccount
 ): Promise<T.ReachToken> {
   const { balanceOf, eq } = createReachAPI();
+  const netToken = isNetworkToken(token) || eq(token, 0);
   const fetchBalance = () =>
-    eq(token, 0) ? balanceOf(acc) : balanceOf(acc, token);
+    netToken ? balanceOf(acc) : balanceOf(acc, token);
   const fetchToken = () =>
-    eq(token, 0)
+    netToken
       ? makeNetworkToken()
-      : acc.tokenMetadata(token).then((md) => formatReachToken(token, 0, md));
-  const [metadata, bal] = await Promise.all([fetchToken(), fetchBalance()]);
+      : acc
+          .tokenMetadata(token)
+          .catch(() => Promise.resolve(null))
+          .then((md) => formatReachToken(token, 0, md));
 
-  if (!metadata) throw new Error(`Token "${token}" not found`);
-  return formatReachToken(token, bal, metadata);
+  const [metadata, bal] = await Promise.allSettled([
+    fetchToken(),
+    fetchBalance(),
+  ]);
+
+  if (metadata.status === "rejected" || metadata.value === null) {
+    return Promise.reject(new Error(`Token "${token}" not found`));
+  }
+
+  const userBal = bal.status === "rejected" ? 0 : bal.value;
+  return formatReachToken(token, userBal, metadata.value);
 }
 
 /** @internal Format token metadata from `tokenMetadata` API request */

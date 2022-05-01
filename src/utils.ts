@@ -5,6 +5,7 @@ import {
   POPUP_BLOCKED_MSG,
   TRANSACTION_CANCELLED_MSG,
 } from "./constants";
+import { TransactionResult } from "./types";
 
 /**
  * @internal
@@ -26,7 +27,7 @@ export const exponentialFormat = (val: string) => {
  * @returns Boolean (true if token id represents network Token)
  */
 export function isNetworkToken(tokenId: string | number) {
-  return [0, '0', null].includes(tokenId)
+  return [0, "0", null].includes(tokenId);
 }
 
 /**
@@ -84,4 +85,42 @@ export async function withTimeout(
 
     resolve(d);
   });
+}
+
+/**
+ * @internal
+ * `INTERNAL HELPER` | Creates a `TransactionResult` object
+ */
+export function errorResult<T extends Error>(
+  message: string,
+  poolAddress: number | string | null = "",
+  data: T,
+  contract?: any | null
+): TransactionResult<T> {
+  return {
+    succeeded: false,
+    poolAddress: poolAddress || "",
+    message,
+    contract,
+    data,
+  };
+}
+
+/**
+ * @internal
+ * `INTERNAL HELPER` | Creates a `TransactionResult` object
+ */
+export function successResult<T>(
+  message: string,
+  poolAddress: number | string | null = "",
+  contract: any,
+  data?: T
+): TransactionResult<T> {
+  return {
+    succeeded: true,
+    poolAddress: poolAddress || "",
+    message,
+    contract,
+    data,
+  };
 }

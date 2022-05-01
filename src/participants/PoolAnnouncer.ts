@@ -74,6 +74,11 @@ export async function fetchPool(
     fetchToken(acc, tokenBId),
   ]);
 
+  if (tokA === null || tokB === null){
+    const message = "invalid pool (one or more tokens were not found)";
+    return txnFailedResponse(message, ctcInfo, { tradeable: false });
+  }
+
   // calculate the accrued protocol fees + lp fees (0.3%)
   onProgress(`Calculating fees ...`);
   const FEE_INFO = getFeeInfo();

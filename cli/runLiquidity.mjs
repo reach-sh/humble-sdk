@@ -57,9 +57,20 @@ export async function runLiquidity(acc, opts) {
 
   //  Withdraw Liquidity options
   if (index === 1) {
-    const withdrawPrompt = "Enter percentage of liquidity to withdraw:";
+    Yellow("Withdraw a percent or exchange an amount of LP Tokens?");
+    Blue("1. Enter percentage");
+    Blue("2. Enter amount of LP tokens to exchange");
+    const withdrawOpts = { poolAddress };
+    const actionPrompt = await answerOrDie("Enter [ 1 ] or [ 2 ]");
+    const withdrawPrompt =
+      actionPrompt === "1"
+        ? "Enter percentage of liquidity to withdraw:"
+        : "Enter amount of liquidity tokens you will deposit:";
     const p = await answerOrDie(withdrawPrompt);
-    const withdrawOpts = { poolAddress, percentToWithdraw: p.replace("%", "") };
+    if (actionPrompt === "1") {
+      withdrawOpts.percentToWithdraw = p.replace("%", "");
+    } else withdrawOpts.exchangeLPTokens = p;
+
     return runWithdrawLiquidity(acc, withdrawOpts, poolResult);
   }
 
@@ -101,7 +112,11 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
   Yellow(`Depositing to pool "${poolAddress}"`);
   Blue(`\t Pool ${JSON.stringify(pool, null, 2)}`);
   Blue(`\t ${label} ${JSON.stringify(args, null, 2)}`);
-  const { succeeded, message, data: addResult } = await addLiquidity(acc, {
+  const {
+    succeeded,
+    message,
+    data: addResult,
+  } = await addLiquidity(acc, {
     amounts,
     pool,
     contract,
@@ -121,10 +136,11 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
 /** Pull Liquidity from a pool */
 async function runWithdrawLiquidity(acc, opts, poolFetchData) {
   Blue(`\t * Running WITHDRAW-LIQUIDITY (pool "${opts.poolAddress}")`);
-  const { percentToWithdraw } = opts;
+  const { percentToWithdraw, exchangeLPTokens } = opts;
   const { data: poolFetchResult, contract } = poolFetchData;
   const { pool } = poolFetchResult;
   const { succeeded, message, data } = await withdrawLiquidity(acc, {
+    exchangeLPTokens,
     percentToWithdraw,
     contract,
     n2nn: pool.n2nn,

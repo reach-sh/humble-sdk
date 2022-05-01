@@ -1,4 +1,4 @@
-import { ReachContract } from "./reach-helpers";
+import { ReachContract, ReachToken } from "./reach-helpers";
 
 /** Address */
 export type Address = string;
@@ -137,7 +137,7 @@ export type FetchPoolData = {
   /** Pool data */
   pool: PoolDetails | null;
   /** Pool token data */
-  tokens: [tokA: any, tokB: any];
+  tokens: [tokA: ReachToken, tokB: ReachToken];
   /** Whether pool has liquidity and is tradeable */
   tradeable: boolean;
 };

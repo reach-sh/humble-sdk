@@ -74,7 +74,7 @@ export async function fetchPool(
     fetchToken(acc, tokenBId),
   ]);
 
-  if (tokA === null || tokB === null){
+  if (tokA === null || tokB === null) {
     const message = "invalid pool (one or more tokens were not found)";
     return txnFailedResponse(message, ctcInfo, { tradeable: false });
   }
@@ -91,8 +91,8 @@ export async function fetchPool(
   // subtract fees from token balances
   const { A: aBal, B: bBal } = poolBals;
   const { A: protoA, B: protoB } = protocolBals;
-  const A = reach.ge(aBal, protoA) ? reach.sub(aBal, protoA) : "0";
-  const B = reach.ge(bBal, protoB) ? reach.sub(bBal, protoB) : "0";
+  const A = aBal; // reach.ge(aBal, protoA) ? reach.sub(aBal, protoA) : "0";
+  const B = bBal; // reach.ge(bBal, protoB) ? reach.sub(bBal, protoB) : "0";
   const pool: PoolDetails = {
     poolAddress: ctcInfo,
     poolTokenId: parseAddress(liquidityToken),

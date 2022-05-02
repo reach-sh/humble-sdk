@@ -10,6 +10,7 @@ import {
 
 /** Fetch and display data for a single token */
 export async function runFetchTokenTest(acc, id) {
+  console.clear();
   Blue(`Running TOKEN`);
   const tokenId = id || (await answerOrDie("Enter token id:"));
 

@@ -112,13 +112,13 @@ export function errorResult<T extends Error>(
  */
 export function successResult<T>(
   message: string,
-  poolAddress: number | string | null = "",
+  poolAddress = "",
   contract: any,
   data?: T
 ): TransactionResult<T> {
   return {
     succeeded: true,
-    poolAddress: poolAddress || "",
+    poolAddress,
     message,
     contract,
     data,

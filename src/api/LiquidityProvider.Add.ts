@@ -24,10 +24,7 @@ type AddLiquidityResult = { lpTokens?: number };
  * @param opts.tokenADecimals Decimal places for `token A`. Defaults to `6`
  * @param opts.tokenBDecimals Decimal places for `token B`. Defaults to `6`
  */
-export async function addLiquidity(
-  acc: ReachAccount,
-  opts: DepositTxnOpts
-): Promise<TransactionResult<any>> {
+export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
   const [valid, message] = protectArgs(opts);
   if (!valid) return errorResult(message, null, new Error(message));
 
@@ -57,8 +54,9 @@ export async function addLiquidity(
     }
   }
 
-  const { poolAddress, tokenADecimals = 6, tokenBDecimals = 6 } = pool;
-  const done = (result: TransactionResult<any>) => {
+  const { poolAddress: poolId, tokenADecimals = 6, tokenBDecimals = 6 } = pool;
+  const poolAddress = poolId.toString();
+  const done = (result: TransactionResult<AddLiquidityResult | Error>) => {
     onComplete(result);
     return result;
   };
@@ -67,10 +65,9 @@ export async function addLiquidity(
     onProgress(`Depositing funds`);
     const A = parseCurrency(amounts[0], tokenADecimals);
     const B = parseCurrency(amounts[1], tokenBDecimals);
-    const lpTokens = await Provider.deposit({ A, B }, getPreMintedAmt(A, B));
-    const data: AddLiquidityResult = {
-      lpTokens: lpTokens && createReachAPI().bigNumberToNumber(lpTokens),
-    };
+    const { bigNumberToNumber } = createReachAPI();
+    const lpTokens = await Provider.deposit({ A, B });
+    const data: AddLiquidityResult = { lpTokens: bigNumberToNumber(lpTokens) };
 
     return done(successResult("Funds deposited", poolAddress, ctc, data));
   } catch (e) {
@@ -105,30 +102,4 @@ function protectArgs(opts: DepositTxnOpts): [boolean, string] {
   }
 
   return [valid, message];
-}
-
-/** `
- * @internal
- * INTERNAL HELPER` | Compute how many LP tokens have been pre-minted
- */
-function getPreMintedAmt(parsedAmtA: any, parsedAmtB: any) {
-  const product = parsedAmtA.mul(parsedAmtB);
-  let acc = [product, product.div(2).add(1)];
-  let ans = undefined;
-  while (ans === undefined) {
-    let [z, x] = acc;
-    if (x.lt(2)) {
-      ans = x;
-    } else if (x.lt(z)) {
-      acc = [x, product.div(x).add(x).div(2)];
-    } else {
-      ans = x;
-    }
-  }
-  const giv = ans.mul(ans);
-  if (giv.lt(product)) {
-    return ans.add(1);
-  } else {
-    return ans;
-  }
 }

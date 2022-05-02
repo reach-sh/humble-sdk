@@ -30,8 +30,8 @@ export type WithdrawOpts = RequiredWithdrawOpts & {
 
 /** Result of withdrawal transaction */
 export type WithdrawResult = {
+  lpBalance: number;
   received: { tokenA: any; tokenB: any };
-  poolLPTokens: string | number;
   mintedLPTokens: string | number;
 };
 
@@ -56,16 +56,17 @@ export async function withdrawLiquidity(
     percentToWithdraw: pct,
     n2nn,
     poolTokenId,
-    poolAddress,
+    poolAddress: poolId,
     onComplete = noOp,
     onProgress = noOp,
   } = opts;
+  const poolAddress = poolId?.toString();
   if ((!inputAmt && !pct) || !poolAddress) {
     const msg = "Invalid options supplied";
     return errorResult(msg, poolAddress, new Error(msg));
   }
 
-  const { setSigningMonitor } = createReachAPI();
+  const { setSigningMonitor, balanceOf, bigNumberToNumber } = createReachAPI();
   onProgress(`Checking user balance of LP Token "${poolAddress}"`);
   const amount = inputAmt || (await amountFromPctInput(pct, acc, poolTokenId));
   const backend = n2nn ? poolBackendN2NN : poolBackend;
@@ -87,26 +88,29 @@ export async function withdrawLiquidity(
     if (!succeeded || !poolResult) return poolNotFound();
 
     onProgress("Fetching updated pool LP token balance");
-    const tokensView = fromMaybe(await ctc.views.Info());
+    const [tokensView, lpBalance] = await Promise.all([
+      fromMaybe(await ctc.views.Info()),
+      balanceOf(acc, poolTokenId).then(bigNumberToNumber),
+    ]);
     const { tokens } = poolResult;
     if (!tokensView) return poolNotFound();
 
-    const data = {
+    const data: WithdrawResult = {
+      lpBalance,
       received: {
         tokenA: formatCurrency(withdrawResult.A, tokens[0].decimals),
         tokenB: formatCurrency(withdrawResult.B, tokens[1].decimals),
       },
-      poolLPTokens: formatCurrency(tokensView.lptBals.A, 0),
       mintedLPTokens: formatCurrency(tokensView.lptBals.B, 0),
     };
 
-    const result = successResult("Funds withdrawn", null, ctc, data);
+    const result = successResult("Funds withdrawn", poolAddress, ctc, data);
     onComplete(result);
     return result;
   } catch (e: any) {
     console.error("HumbleSDK withdraw error", { e });
     const msg = parseContractError("Funds were not withdrawn", e);
-    const err = new Error(e?.toString() || msg);
+    const err = new Error(`${msg} ${e?.toString()}`);
     return errorResult(msg, poolAddress, err, ctc);
   }
 }

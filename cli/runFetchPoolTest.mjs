@@ -10,6 +10,7 @@ import {
 
 /** Fetch a single pool */
 export async function runFetchPoolTest(acc, [info, isN2nn]) {
+  console.clear();
   Blue(`Running POOL-FETCH`);
 
   const isNetworkPrompt = "Does the pool contain ALGO or ETH?";

@@ -27,11 +27,11 @@ initHumbleSDK({ network: "TestNet" });
 const reach = createReachAPI();
 const options = [
   { title: "List Pools", action: runAnnouncerTest },
-  { title: "Add/remove Liquidity", action: runLiquidity },
   { title: "Create a Pool", action: runCreatePoolTest },
+  { title: "Add/remove Liquidity", action: runLiquidity },
+  { title: "Swap tokens", action: runSwapTest },
   { title: "Fetch a Pool", action: runFetchPoolTest },
   { title: "Fetch a Token", action: runFetchTokenTest },
-  { title: "Swap tokens", action: runSwapTest },
 ];
 
 (async () => {
@@ -55,17 +55,3 @@ const options = [
   const { action } = options[index];
   return action(acc);
 })();
-
-/** Checks for SWAP flags */
-async function getSwapArgs(args) {
-  const isSwap = await answerOrDie("Are you swapping tokens? (y/n)");
-  if (isSwap === "y") {
-    const tokA = fromArgs(args, "TOKA") || (await answerOrDie("Enter token A"));
-    const amtA =
-      fromArgs(args, "AMTA") || (await answerOrDie("Enter amount A"));
-    const tokB = fromArgs(args, "TOKB") || (await answerOrDie("Enter token B"));
-    return [tokA, amtA, tokB];
-  }
-
-  return [];
-}

@@ -118,8 +118,8 @@ export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
   const { amountA, amountB, tokenAId, tokenBId } = swap;
   if (!opts || (!tokenAId && !tokenBId) || !pool) return swap;
 
-  const inputIsAligned = alignSwapInfo(swap, pool)[1];
   const decimals = [pool.tokenADecimals, pool.tokenBDecimals];
+  const inputIsAligned = alignSwapInfo(swap, pool)[1];
   if (!inputIsAligned) decimals.reverse();
 
   const swapped = { ...swap };
@@ -134,7 +134,8 @@ export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
       : swapTokenBToA(amountA, pool);
   }
 
-  swapped.amountB = getValueWithMaxDecimals(swapped.amountB, decimals[1]);
+  const amtB = swapped.amountB.toString();
+  swapped.amountB = getValueWithMaxDecimals(amtB, decimals[1]);
   swapped.tokenIn = tokenAId;
   return swapped;
 }
@@ -205,21 +206,18 @@ const reverseTokenBToA = (
 
   if (!(tokenABalance && tokenBBalance)) return 0;
 
-  // Assume inverted
-  let decimalsA = tokenBDecimals;
-  let reserveA = parseCurrency(tokenBBalance, decimalsA);
-  let decimalsB = tokenADecimals;
-  let reserveB = parseCurrency(tokenABalance, decimalsB);
-  let expected = parseCurrency(amtOut, decimalsA);
-
-  // Align if not inverted
+  // Assume inverted (and align if not)
+  const decs = [tokenBDecimals, tokenADecimals];
+  const balances = [tokenBBalance, tokenABalance];
   if (inputsAligned) {
-    decimalsA = tokenADecimals;
-    decimalsB = tokenBDecimals;
-    reserveA = parseCurrency(tokenABalance, decimalsA);
-    reserveB = parseCurrency(tokenBBalance, decimalsB);
-    expected = parseCurrency(amtOut, decimalsB);
+    decs.reverse();
+    balances.reverse();
   }
+
+  const [decimals1, decimals2] = decs;
+  const reserveA = parseCurrency(balances[0], decimals1);
+  const reserveB = parseCurrency(balances[1], decimals2);
+  const expected = parseCurrency(amtOut, decimals2);
 
   // Check overflow (low liquidity) and use alternate calc since
   // results don't matter (UI will prevent swap)
@@ -228,8 +226,7 @@ const reverseTokenBToA = (
   const num = reserveA.mul(expected).mul(bigNumberify(10000));
   const den = sub(reserveB, expected).mul(bigNumberify(9975));
   const input = div(num, den).add(1);
-  const inputDec = inputsAligned ? decimalsA : decimalsB;
-  return formatCurrency(input, inputDec);
+  return formatCurrency(input, decimals1);
 };
 
 function adjustForPriceImpact(amtA: any, opts: SwapTxnOpts) {
@@ -346,6 +343,14 @@ function getValueWithMaxDecimals(original: string, decs = MAX_DECIMALS) {
   if (!original) return "0";
   const decIndex = original.indexOf(".");
   let value = original.toString();
+  if (value.includes("e")) {
+    const exPlaces = value.slice(value.indexOf("e") + 2);
+    // if the exponential value (lets say 7 in 3.0e-7) is higher than the decimal
+    // value for the coin (6), then the fee is zero since it's calculated amount
+    // is too small for the coins precision
+    if (decs < Number(exPlaces)) return "0";
+    return decs;
+  }
 
   if (decIndex > -1) {
     value = value.substring(0, decIndex) + value.substring(decIndex, decs + 1);

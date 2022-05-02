@@ -9,16 +9,16 @@ import {
 
 initHumbleSDK();
 
-const poolIds = { tokenAId: 456, tokenBId: 123 };
+const tokenIds = { tokenAId: 456, tokenBId: 123 };
+const swap = { ...tokenIds, amountA: 10, amountB: 0 };
 const p1Ato3B: PoolDetails = {
-  ...poolIds,
+  ...tokenIds,
   poolAddress: 1,
-  tokenABalance: 100,
+  tokenABalance: 1000,
   tokenADecimals: 3,
-  tokenBBalance: 300,
+  tokenBBalance: 3000,
   tokenBDecimals: 3,
 };
-const swap = { ...poolIds, amountA: 1, amountB: 0 };
 
 describe("HumbleSDK Swap Utils", () => {
   it("Estimates token B input when user wants 1 A", () => {
@@ -36,26 +36,57 @@ describe("HumbleSDK Swap Utils", () => {
     expect(impact).toBe("0");
 
     impact = calculatePriceImpact(1, { swap, pool: p1Ato3B });
-    expect(impact).toBe("1");
+    expect(impact).toBe("0.1");
 
     const rSwap = { ...swap, tokenAId: swap.tokenBId, tokenBId: swap.tokenAId };
     impact = calculatePriceImpact(1, { swap: rSwap, pool: p1Ato3B });
-    expect(impact).toBe("0.33");
+    expect(impact).toBe("0.03");
 
     impact = calculatePriceImpact(3, { swap: rSwap, pool: p1Ato3B });
-    expect(impact).toBe("1");
+    expect(impact).toBe("0.1");
   });
 
-  it("Calculates the expected output for a B-to-A swap", () => {
-    const s = { ...swap };
-    s.amountA = 0;
-    s.amountB = 1;
+  it("Calculates the expected output for a A-to-B swap (with fees)", () => {
     const opts = { swap, pool: p1Ato3B };
     const { amountA, amountB } = calculateTokenSwap(opts);
 
     const [a, b] = [Number(amountA), Number(amountB)];
-    expect(a).toStrictEqual(s.amountB);
-    expect(b).toStrictEqual(2.9);
+    expect(a).toStrictEqual(swap.amountA);
+    expect(b).toBeLessThanOrEqual(30);
+    expect(b).toBeGreaterThan(28);
+  });
+
+  it("Calculates the expected output for a B-to-A swap (with fees)", () => {
+    const modswap = {
+      tokenAId: tokenIds.tokenBId,
+      tokenBId: tokenIds.tokenAId,
+      amountA: 3,
+      amountB: 0,
+    };
+    const opts = { swap: modswap, pool: p1Ato3B };
+    const { amountA, amountB } = calculateTokenSwap(opts);
+    const [a, b] = [Number(amountA), Number(amountB)];
+
+    expect(a).toStrictEqual(modswap.amountA);
+    expect(b).toBeGreaterThan(0.9);
+    expect(b).toBeLessThanOrEqual(1);
+  });
+
+  it.skip("Calculates the expected output for a B-to-A swap (with fees)", () => {
+    const pool = { ...p1Ato3B };
+    pool.tokenABalance = 500;
+    pool.tokenADecimals = 6;
+    pool.tokenBBalance = 2000;
+    pool.tokenBDecimals = 6;
+
+    const modswap = { ...swap, amountA: 10, amountB: 0 };
+    const opts = { swap: modswap, pool };
+    const { amountA, amountB } = calculateTokenSwap(opts);
+    const [a, b] = [Number(amountA), Number(amountB)];
+
+    expect(a).toStrictEqual(modswap.amountA);
+    expect(b).toBeGreaterThan(0.9);
+    expect(b).toBeLessThanOrEqual(1);
   });
 });
 
@@ -67,8 +98,8 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
   const M100 = 100_000_000;
   const checkInitialPool = (pool: PoolDetails) => {
     const [isOverloaded, max] = poolIsOverloaded(pool);
-    expect(pool.tokenABalance).toStrictEqual(100);
-    expect(pool.tokenBBalance).toStrictEqual(300);
+    expect(pool.tokenABalance).toStrictEqual(p1Ato3B.tokenABalance);
+    expect(pool.tokenBBalance).toStrictEqual(p1Ato3B.tokenBBalance);
     expect(isOverloaded).toBe(false);
     expect(max).toBe(pool.tokenABalance);
   };
@@ -82,7 +113,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
     pool.tokenBBalance = 1_000;
     const [isOverloaded, max] = poolIsOverloaded(pool);
     expect(isOverloaded).toBe(false);
-    expect;
+    expect(max).toBe(pool.tokenBBalance);
   });
 
   it("Can handle balances of > 1.844M * 1M", () => {
@@ -91,7 +122,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
 
     pool.tokenABalance = 1_000_000;
     expect(pool.tokenABalance).toStrictEqual(1_000_000);
-    expect(pool.tokenBBalance).toStrictEqual(300);
+    expect(pool.tokenBBalance).toStrictEqual(p1Ato3B.tokenBBalance);
 
     pool.tokenADecimals = 9;
     pool.tokenBBalance = 1_844_000;

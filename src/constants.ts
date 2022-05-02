@@ -32,7 +32,7 @@ let HUMBLE_ADDR: string;
  * @internal Set account address (not App ID!) of Triumvirate contract for current network */
 export function setProtocolAddr(prov: NetworkProvider) {
   const a = [
-    "RXMWRESHEXFOQOC7QTLKIX3IKIOC37U22KPJTZEVRFOTR5TCJEJAUUKM6M",
+    "RMPV36J33LQKK34XKJCRKMC2YQ235MLFKKMCCFEPTWYU75TZR563UV66OI",
     "???",
   ];
   if (prov === "TestNet") HUMBLE_ADDR = a[0];

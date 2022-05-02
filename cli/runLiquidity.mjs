@@ -22,6 +22,7 @@ const actions = ["add", "withdraw"];
 
 /** Run Add/Withdraw Liquidity Tests */
 export async function runLiquidity(acc, opts) {
+  console.clear();
   Blue("Running LIQUIDITY");
 
   const poolResult = await fetchLPool(acc, process.argv.slice(2));
@@ -43,7 +44,6 @@ export async function runLiquidity(acc, opts) {
   // Add Liquidity options
   if (index === 0) {
     Yellow("Getting deposit amounts ...");
-    Blue(`${tokenB} amount will be calculated for you`);
     const amtPrompt = `How much ${tokenA} will you deposit?`;
     const amountA = await answerOrDie(amtPrompt);
     const addOpts = {
@@ -90,12 +90,18 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
   const { poolAddress, tokenAId, tokenBId } = pool;
   const tokenIds = [tokenAId, tokenBId];
   const label = "* Input args:";
-  const amountB =
-    pool.tokenBBalance === "0"
-      ? await answerOrDie("Enter deposit amount for Token B:")
-      : calculateOtherAmount(amountA, tokenIn, pool);
 
-  const amounts = [amountA, amountB];
+  const amounts = [amountA];
+  const tokenB = data.tokens.find(({ id }) => id === tokenBId);
+  let amountB = 0;
+  if (pool.tokenBBalance === "0") {
+    amountB = await answerOrDie(`Enter deposit amount for ${tokenB.name}:`);
+  } else {
+    Blue(`${tokenB.name} amount will be calculated for you`);
+    amountB = calculateOtherAmount(amountA, tokenIn, pool);
+  }
+
+  amounts.push(amountB);
   if (parseAddress(tokenIn) === tokenBId) {
     tokenIds.reverse();
     amounts.reverse();
@@ -126,7 +132,7 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
 
   if (succeeded) {
     Blue("Deposit complete!");
-    iout(message, "(no data)");
+    iout(message, addResult);
     return exitWithMsgs("'Add Liquidity' Test complete");
   }
 

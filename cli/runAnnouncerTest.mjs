@@ -8,6 +8,7 @@ const pools = new Set();
 
 /** Attach to pool announcer and list a subset of pools */
 export function runAnnouncerTest(acc) {
+  console.clear()
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {

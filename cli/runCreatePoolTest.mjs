@@ -13,6 +13,7 @@ const splitInput = (i) => i.split(",").map((s) => s.trim());
 
 /** Fetch a single pool */
 export async function runCreatePoolTest(acc) {
+  console.clear();
   Blue(`Running POOL-CREATE`);
 
   //   Get token Ids
@@ -35,7 +36,7 @@ export async function runCreatePoolTest(acc) {
   //   Output result
   iout(
     "Fetched pool",
-    await createPool(acc, {
+    await createLiquidityPool(acc, {
       tokenAmounts,
       tokenIds,
       onProgress: Yellow,

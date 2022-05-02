@@ -19,8 +19,10 @@ import {
 const isNetworkToken = (v) => [0, "0"].includes(v);
 
 /** Swap between two tokens in the command line */
-export async function runSwapTest(acc, [tokA, inputA, tokB, poolCtc]) {
+export async function runSwapTest(acc, opts) {
+  console.clear();
   const args = process.argv.slice(2);
+  const [tokA, inputA, tokB, poolCtc] = opts || [];
   const poolAddress = poolCtc || (await answerOrDie("Enter pool address"));
   Blue(`Running SWAP test on pool "${poolAddress}"`);
 

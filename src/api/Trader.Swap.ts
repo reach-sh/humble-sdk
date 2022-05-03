@@ -10,6 +10,7 @@ import {
 } from "../reach-helpers";
 import { ASSURANCE_MSG, getSlippage } from "../constants";
 import { isNetworkToken } from "../utils";
+import { fetchToken } from "../participants/index";
 
 type SwapResult = { amountIn: string; amountOut: string };
 
@@ -23,16 +24,12 @@ export async function swapTokens(
   acct: ReachAccount,
   opts: SwapTxnOpts
 ): Promise<TransactionResult<SwapResult>> {
-  const {
-    poolAddress,
-    contract,
-    swap,
-    pool,
-    onProgress = noOp,
-    onComplete = noOp,
-  } = opts;
-  if (!poolAddress) return onSwapError("", "Pool address is required");
-  if (!pool) return onSwapError(poolAddress, "Pool data is required");
+  const { contract, swap, pool, onProgress = noOp, onComplete = noOp } = opts;
+  if (!pool) return onSwapError("", "Pool data is required");
+
+  const { poolAddress } = pool;
+  if (!poolAddress) return onSwapError("", "Valid Pool address is required");
+
   const addr = parseAddress(poolAddress);
   if (addr !== parseAddress(pool.poolAddress)) {
     return onSwapError(poolAddress, "Pool address does not match data");
@@ -41,11 +38,15 @@ export async function swapTokens(
   if (!swap.tokenAId || !swap.tokenBId)
     return onSwapError(poolAddress, "Invalid swap info", {});
 
-  const { n2nn, tokenBDecimals = 6, tokenBId } = pool;
-  onProgress(`Checking Token "${tokenBId}" opt-in`);
-  const [[amtIn, expectedOut, swapBForA], _tokBOptIn] = await Promise.all([
+  // onProgress(`Fetching metadata`);
+  const { n2nn, tokenBId } = pool;
+  const [tokenB, optedInB] = await Promise.all([
+    fetchToken(acct, tokenBId),
+    !isNetworkToken(tokenBId) && acct.tokenAccepted(tokenBId),
+  ]);
+  const [[amtIn, expectedOut, swapBForA], _optIn] = await Promise.all([
     alignTradeAmounts(opts),
-    !isNetworkToken(tokenBId) && acct.tokenAccept(tokenBId),
+    !optedInB && acct.tokenAccept(tokenBId),
   ]);
 
   const backend = n2nn ? poolBackendN2NN : poolBackend;
@@ -54,13 +55,16 @@ export async function swapTokens(
   const traderAPI = ctc.apis.Trader;
 
   try {
-    onProgress(`Swapping in pool "${poolAddress}"`);
+    onProgress(`Swapping for "${tokenB?.symbol}"`);
     const swapResult: Balances = swapBForA
       ? await traderAPI.swapBForA(amtIn, expectedOut)
       : await traderAPI.swapAForB(amtIn, expectedOut);
     const amountIn = swap.amountA;
     const out = swapBForA ? swapResult.A : swapResult.B;
-    const amountOut = formatCurrency(out, tokenBDecimals);
+    const decs = [pool.tokenADecimals, pool.tokenBDecimals];
+    if (swapBForA) decs.reverse();
+
+    const amountOut = formatCurrency(out, decs[1] === undefined ? 6 : decs[1]);
     const txnResult = {
       poolAddress,
       data: { amountIn, amountOut },
@@ -108,8 +112,11 @@ function onSwapError(
 
 /** INTERNAL HELPER | organize trade amounts into expected Token A and Token B */
 async function alignTradeAmounts(opts: SwapTxnOpts) {
-  const { poolAddress, swap, pool } = opts;
+  const { swap, pool } = opts;
   if (!pool) return [0, 0, false];
+
+  const { poolAddress } = pool;
+  if (!poolAddress) return [0, 0, false];
 
   const { tokenAId, tokenBId, amountA, amountB } = swap;
   const { tokenADecimals = 6, tokenBDecimals = 6 } = pool;

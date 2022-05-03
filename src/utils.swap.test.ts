@@ -53,7 +53,7 @@ describe("HumbleSDK Swap Utils", () => {
     const [a, b] = [Number(amountA), Number(amountB)];
     expect(a).toStrictEqual(swap.amountA);
     expect(b).toBeLessThanOrEqual(30);
-    expect(b).toBeGreaterThan(28);
+    expect(b).toBeGreaterThan(29);
   });
 
   it("Calculates the expected output for a B-to-A swap (with fees)", () => {
@@ -68,25 +68,8 @@ describe("HumbleSDK Swap Utils", () => {
     const [a, b] = [Number(amountA), Number(amountB)];
 
     expect(a).toStrictEqual(modswap.amountA);
-    expect(b).toBeGreaterThan(0.9);
-    expect(b).toBeLessThanOrEqual(1);
-  });
-
-  it.skip("Calculates the expected output for a B-to-A swap (with fees)", () => {
-    const pool = { ...p1Ato3B };
-    pool.tokenABalance = 500;
-    pool.tokenADecimals = 6;
-    pool.tokenBBalance = 2000;
-    pool.tokenBDecimals = 6;
-
-    const modswap = { ...swap, amountA: 10, amountB: 0 };
-    const opts = { swap: modswap, pool };
-    const { amountA, amountB } = calculateTokenSwap(opts);
-    const [a, b] = [Number(amountA), Number(amountB)];
-
-    expect(a).toStrictEqual(modswap.amountA);
-    expect(b).toBeGreaterThan(0.9);
-    expect(b).toBeLessThanOrEqual(1);
+    expect(b).toStrictEqual(0.99);
+    expect(b).toBeLessThan(1);
   });
 });
 
@@ -172,5 +155,27 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
     expect(pool.tokenBBalance).toBeGreaterThan(M100);
     expect(isOverloaded).toBe(true);
     expect(max).toBe(1);
+  });
+});
+
+describe("HumbleSDK Swap Utils | Spot swap test", () => {
+  // Use this to spot-test a pool's conversion maths
+  it("SWAP-ON-DEMAND", () => {
+    const modPool = { ...p1Ato3B };
+    modPool.tokenABalance = 200;
+    modPool.tokenADecimals = 6;
+    modPool.tokenBBalance = 1000;
+    modPool.tokenBDecimals = 6;
+
+    const modswap = { ...swap, amountA: 1, amountB: 0 };
+    const opts = { swap: modswap, pool: modPool };
+    const { amountA, amountB } = calculateTokenSwap(opts);
+    const [a, b] = [Number(amountA), Number(amountB)];
+
+    expect(a).toStrictEqual(modswap.amountA);
+    expect(b).toBeGreaterThan(4.9);
+    // Check difference between result and 4.9 is no greater than 0.05
+    expect(b).toBeCloseTo(4.9, 1);
+    expect(b).toBeLessThan(5);
   });
 });

@@ -3,7 +3,6 @@ import { getFeeInfo } from "./constants";
 import {
   createReachAPI,
   formatCurrency,
-  parseAddress,
   parseCurrency,
   trailing0s,
 } from "./reach-helpers";
@@ -267,10 +266,11 @@ function swapTokenAToB(amountIn: any, pool: PoolDetails): any {
       tokenBBalance: balB,
     } = pool;
 
-    if (tokenAId && tokenBId) {
+    if ([tokenAId, tokenBId].every(Boolean)) {
       const input = { A: parseCurrency(fmtIn, tokenADecimals), B: 0 };
       const poolBals = {
-        A: parseCurrency(Number(balA) + fmtIn, tokenADecimals),
+        // A: parseCurrency(Number(balA) + fmtIn, tokenADecimals),
+        A: parseCurrency(balA, tokenADecimals),
         B: parseCurrency(balB, tokenBDecimals),
       };
       const [outBals] = computeSwap(true, input, poolBals, getFeeInfo());
@@ -299,11 +299,12 @@ function swapTokenBToA(amtOut: any, pool: PoolDetails): any {
       tokenBBalance: balB,
     } = pool;
 
-    if (tokenADecimals !== undefined && tokenBDecimals !== undefined) {
+    if ([tokenADecimals, tokenBDecimals].every((dec) => dec !== undefined)) {
       const input = { A: 0, B: parseCurrency(amtOut, tokenBDecimals) };
       const poolBals = {
         A: parseCurrency(balA, tokenADecimals),
-        B: parseCurrency(Number(balB) + fmtOut, tokenBDecimals),
+        B: parseCurrency(balB, tokenBDecimals),
+        // B: parseCurrency(Number(balB) + fmtOut, tokenBDecimals),
       };
       const [outBals] = computeSwap(false, input, poolBals, getFeeInfo());
       return formatCurrency(outBals.A, tokenADecimals);
@@ -323,8 +324,9 @@ function alignSwapInfo(
   const { tokenAId } = pool;
   if (!swap.tokenAId || !tokenAId) return [swap, false];
 
-  if (parseAddress(swap.tokenAId) === parseAddress(tokenAId))
+  if (swap.tokenAId.toString() === tokenAId.toString()) {
     return [{ ...swap, tokenIn: swap.tokenAId }, true];
+  }
 
   return [
     {
@@ -339,7 +341,9 @@ function alignSwapInfo(
 }
 
 // checks the number amount and prevents any decimals being added than the explicitely described max decimal
-function getValueWithMaxDecimals(original: string, decs = MAX_DECIMALS) {
+function getValueWithMaxDecimals(original: string, decimals?: number) {
+  const decs =
+    decimals === undefined || decimals === null ? MAX_DECIMALS : decimals;
   if (!original) return "0";
   const decIndex = original.indexOf(".");
   let value = original.toString();

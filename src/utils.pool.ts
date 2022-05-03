@@ -38,23 +38,38 @@ export async function deployPool(
   try {
     const ctcAdmin = acc.contract(backend);
     createReachAPI().setSigningMonitor(() => onProgress("SIGNING_EVENT"));
-
-    const [poolLPTokenId, tokA, tokB] = await Promise.all([
-      new Promise((resolve) =>
-        ctcAdmin.participants.Admin({
-          tokA: tokenAId.toString(),
-          tokB: tokenBId.toString(),
-          ltName: lpTokenName,
-          ltSymbol: tokSymbol,
-          proto: getPoolAnnouncer(),
-          signalPoolCreation: resolve,
-        })
-      ),
+    const runAdmin = () =>
+      new Promise((resolve, reject) =>
+        ctcAdmin.participants
+          .Admin({
+            tokA: tokenAId.toString(),
+            tokB: tokenBId.toString(),
+            ltName: lpTokenName,
+            ltSymbol: tokSymbol,
+            proto: getPoolAnnouncer(),
+            signalPoolCreation: resolve,
+          })
+          .catch(reject)
+      );
+    const [poolLPTokenIdProm, tokAProm, tokBProm] = await Promise.allSettled([
+      runAdmin(),
       fetchToken(acc, tokenAId),
       fetchToken(acc, tokenBId),
     ]);
 
-    onProgress("Getting pool info");
+    const resolved: any[] = [];
+    const rejected: any[] = [];
+    [poolLPTokenIdProm, tokAProm, tokBProm].forEach((prom) => {
+      if (rejected.length > 0) return;
+
+      if (prom.status === "fulfilled") resolved.push(prom.value);
+      else rejected.push(prom.reason);
+    });
+
+    if (rejected.length > 0) return createPoolFailed(rejected[0]);
+
+    onProgress("Getting new pool info");
+    const [poolLPTokenId, tokA, tokB] = resolved;
     const poolAddress = parseAddress(await ctcAdmin.getInfo());
     const n2nn = isNetworkToken(tokenAId) || isNetworkToken(tokenBId);
     const data: PoolInfo = {
@@ -73,9 +88,7 @@ export async function deployPool(
   }
 }
 
-/**
- * @internal
- * HELPER | Create Pool failed */
+/** @internal HELPER | "Create Pool failed" response */
 export function createPoolFailed<T>(e: T, m = ""): TransactionResult<T> {
   const data = e;
   const response = { poolAddress: "", succeeded: false, data, message: m };

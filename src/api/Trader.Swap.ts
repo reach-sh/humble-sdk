@@ -39,32 +39,33 @@ export async function swapTokens(
     return onSwapError(poolAddress, "Invalid swap info", {});
 
   // onProgress(`Fetching metadata`);
-  const { n2nn, tokenBId } = pool;
-  const [tokenB, optedInB] = await Promise.all([
+  const { n2nn } = pool;
+  const { tokenBId } = opts.swap;
+  const [aligned, tokenB, optedInB] = await Promise.all([
+    alignTradeAmounts(opts),
     fetchToken(acct, tokenBId),
     !isNetworkToken(tokenBId) && acct.tokenAccepted(tokenBId),
   ]);
-  const [[amtIn, expectedOut, swapBForA], _optIn] = await Promise.all([
-    alignTradeAmounts(opts),
-    !optedInB && acct.tokenAccept(tokenBId),
-  ]);
 
+  if (!optedInB) await acct.tokenAccept(tokenBId);
+
+  const [aIn, eOut, swapAForB] = aligned;
   const backend = n2nn ? poolBackendN2NN : poolBackend;
   const ctc: ReachContract<typeof backend> =
     contract || acct.contract(backend, addr);
   const traderAPI = ctc.apis.Trader;
 
   try {
-    onProgress(`Swapping for "${tokenB?.symbol}"`);
-    const swapResult: Balances = swapBForA
-      ? await traderAPI.swapBForA(amtIn, expectedOut)
-      : await traderAPI.swapAForB(amtIn, expectedOut);
-    const amountIn = swap.amountA;
-    const out = swapBForA ? swapResult.A : swapResult.B;
-    const decs = [pool.tokenADecimals, pool.tokenBDecimals];
-    if (swapBForA) decs.reverse();
+    const expectedOut = swap.amountB;
+    onProgress(`Swapping for ${expectedOut} ${tokenB?.symbol}`);
 
-    const amountOut = formatCurrency(out, decs[1] === undefined ? 6 : decs[1]);
+    const amountIn = swap.amountA;
+    const swapResult: Balances = swapAForB
+      ? await traderAPI.swapAForB(aIn, eOut)
+      : await traderAPI.swapBForA(aIn, eOut);
+    const out = swapAForB ? swapResult.B : swapResult.A;
+    const decs = swapAForB ? pool.tokenBDecimals : pool.tokenADecimals;
+    const amountOut = formatCurrency(out, decs === undefined ? 6 : decs);
     const txnResult = {
       poolAddress,
       data: { amountIn, amountOut },
@@ -75,6 +76,7 @@ export async function swapTokens(
     onComplete(txnResult);
     return txnResult;
   } catch (e) {
+    console.log("Swap Failed", { e });
     return onSwapError(poolAddress, "The Swap transaction failed", e);
   }
 }
@@ -110,28 +112,30 @@ function onSwapError(
   return { poolAddress, data, succeeded: false, message };
 }
 
-/** INTERNAL HELPER | organize trade amounts into expected Token A and Token B */
+/**
+ * INTERNAL HELPER | organize trade amounts into expected Token A and Token B
+ * @returns [`amountIn`, `expectedOut`, `swapAForB` (true|false)]
+ */
 async function alignTradeAmounts(opts: SwapTxnOpts) {
   const { swap, pool } = opts;
   if (!pool) return [0, 0, false];
 
-  const { poolAddress } = pool;
+  const { poolAddress, tokenADecimals = 6, tokenBDecimals = 6 } = pool;
   if (!poolAddress) return [0, 0, false];
 
   const { tokenAId, tokenBId, amountA, amountB } = swap;
-  const { tokenADecimals = 6, tokenBDecimals = 6 } = pool;
-  if (!tokenAId || !tokenBId || !poolAddress) return [0, 0, false];
+  if (!tokenAId || !tokenBId) return [0, 0, false];
 
   // re-arrange tokens to match pool if token order is reversed:
   // - If user is swapping B-in-pool for A, amtA must be 0
   // - else for pool-A-to-B, amtB must be 0.
-  const isAligned = parseAddress(tokenAId) === parseAddress(pool.tokenAId);
-  const [decimalsA, decimalsB] = isAligned
+  const swapAForB = tokenAId.toString() === pool.tokenAId.toString();
+  const [decimalsA, decimalsB] = swapAForB
     ? [tokenADecimals, tokenBDecimals]
     : [tokenBDecimals, tokenADecimals];
   const amtIn = parseCurrency(amountA, decimalsA);
   const out = parseCurrency(minimumReceived(amountB), decimalsB);
-  return [amtIn, out, !isAligned];
+  return [amtIn, out, swapAForB];
 }
 
 /**

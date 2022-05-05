@@ -3,7 +3,7 @@ import { StakerAPI } from "../build/backend";
 import { parseCurrency, ReachAccount } from "../reach-helpers/index";
 import { ReachTxnOpts, StakeUpdate } from "../types";
 import { errorResult, successResult } from "../utils";
-import { formatStakeRewardsUpdate } from "./staker";
+import { formatStakeRewardsUpdate } from "../utils/utils.staker";
 import { fetchFarmAndTokens } from "./Staker.Fetch";
 
 /** Options for staking */

@@ -7,13 +7,24 @@ import {
 import {
   BigNumber,
   createReachAPI,
-  formatCurrency,
   parseCurrency,
   ReachAccount,
 } from "../reach-helpers/index";
-import { TransactionResult, ReachTxnOpts, StakeUpdate } from "../types";
+import {
+  TransactionResult,
+  ReachTxnOpts,
+  StakeUpdate,
+  StakingRewards,
+} from "../types";
 import { errorResult, successResult } from "../utils";
 import { fetchFarmAndTokens } from "./Staker.Fetch";
+import {
+  SDKStakeUpdate,
+  formatStakeRewardsUpdate,
+} from "../utils/utils.staker";
+
+export { fetchFarmAndTokens, fetchStakingPool } from "./Staker.Fetch";
+export { stakeAmount } from "./Staker.Stake";
 
 /**
  * Check user's staked amount in staking pool `farmId`
@@ -24,10 +35,10 @@ import { fetchFarmAndTokens } from "./Staker.Fetch";
  * @param opts.onProgress Optional callback for txn events/updates
  * @returns Number or BigNumber of user's staking balance
  */
-export const getStakingBalance = async (
+export async function getStakingBalance(
   acc: ReachAccount,
   opts: ReachTxnOpts
-): Promise<any> => {
+): Promise<any> {
   const { contract, poolAddress, onComplete = noOp, onProgress = noOp } = opts;
   const ctc = contract || acc.contract(stakingBackend, poolAddress);
   const view: StakingContractViews = ctc.views;
@@ -37,7 +48,7 @@ export const getStakingBalance = async (
   const staked = fromMaybe(await view?.staked(address));
   onComplete(staked);
   return staked;
-};
+}
 
 /** Options for checking rewards */
 type GetRewardsOpts = { time?: string | number | BigNumber } & ReachTxnOpts;
@@ -54,10 +65,10 @@ type GetRewardsOpts = { time?: string | number | BigNumber } & ReachTxnOpts;
  * @param opts.onProgress Optional callback for txn events/updates
  * @returns Number or BigNumber of rewards available to user at `time`
  */
-export const getRewardsAvailableAt = async (
+export async function getRewardsAvailableAt(
   acc: ReachAccount,
   opts: GetRewardsOpts
-): Promise<TransactionResult<StakingRewards | null>> => {
+): Promise<TransactionResult<StakingRewards | null>> {
   const { poolAddress: farm, contract } = opts;
   const poolAddress = farm?.toString();
   const { formatAddress, bigNumberify, getNetworkTime } = createReachAPI();
@@ -81,7 +92,7 @@ export const getRewardsAvailableAt = async (
   return succeeded
     ? successResult(message, poolAddress, ctc, data)
     : errorResult(message, poolAddress, data, ctc);
-};
+}
 
 /**
  * Claim all rewards available to user,
@@ -98,26 +109,12 @@ export async function claimStakingRewards(
   acc: ReachAccount,
   opts: ReachTxnOpts
 ) {
-  const {
-    poolAddress: id,
-    succeeded,
-    contract,
-    data: farmAndTokens,
-    message,
-  } = await fetchFarmAndTokens(acc, opts);
-  const stop =
-    !succeeded ||
-    !farmAndTokens?.farmView ||
-    !farmAndTokens?.stakeToken ||
-    !contract;
-
-  if (stop)
-    return errorResult(
-      message || "Farm or token(s) not found",
-      id,
-      null,
-      contract
-    );
+  const id = opts.poolAddress?.toString();
+  const fandTResult = await fetchFarmAndTokens(acc, opts);
+  const { succeeded, contract, message, data: farmAndTokens } = fandTResult;
+  const missingFarm = !farmAndTokens?.farmView || !farmAndTokens?.stakeToken;
+  if (!succeeded || missingFarm || !contract)
+    return errorResult(message as string, id, null, contract);
 
   const { onProgress = noOp, onComplete = noOp } = opts;
   const { stakeToken } = farmAndTokens;
@@ -155,19 +152,13 @@ type UnstakeOpts = { amount: number | string } & ReachTxnOpts;
  * @returns
  */
 export async function unstakeAmount(acc: ReachAccount, opts: UnstakeOpts) {
-  const {
-    contract,
-    poolAddress,
-    amount,
-    onProgress = noOp,
-    onComplete = noOp,
-  } = opts;
-  if (!poolAddress) {
+  const { contract, amount, onProgress = noOp, onComplete = noOp } = opts;
+  if (!opts.poolAddress) {
     return errorResult("Pool address is required", null, null, null);
   }
 
   onProgress("Withdrawing stake");
-  const id = poolAddress?.toString();
+  const id = opts.poolAddress?.toString();
   const ctc: StakingContract = contract || acc.contract(stakingBackend, id);
   const { isBigNumber } = createReachAPI();
   const amt = isBigNumber(amount) ? amount : parseCurrency(amount);
@@ -185,30 +176,3 @@ export async function unstakeAmount(acc: ReachAccount, opts: UnstakeOpts) {
     return errorResult(msg, id, error, contract);
   }
 }
-
-/**
- * @internal Format response from staking in a farm
- * @param data Raw response data from API
- * @param data.newUserStaked Amount new user staked
- * @param data.newEveryoneStaked Total amount staked in contract
- * @param decimals
- * @returns
- */
-export function formatStakeRewardsUpdate(
-  data: StakeUpdate,
-  decimals?: number
-): SDKStakeUpdate {
-  const { newUserStaked: newStake, newEveryoneStaked: newTotal } = data;
-  return {
-    amountStaked: formatCurrency(newStake, decimals),
-    newTotalStaked: formatCurrency(newTotal, decimals),
-  };
-}
-
-/** Formatted response from contract API */
-type SDKStakeUpdate = {
-  /** Amount user staked */
-  amountStaked: string;
-  /** New total amount staked in contract */
-  newTotalStaked: string;
-};

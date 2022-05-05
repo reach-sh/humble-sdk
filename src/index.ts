@@ -106,14 +106,8 @@ export {
   SDKOpts,
 } from "./reach-helpers";
 
-// LIQUIDITY PROVIDER and SWAP
-export {
-  addLiquidity,
-  fetchStakingPool,
-  withdrawLiquidity,
-  swapTokens,
-  subscribeToPoolStream,
-} from "./api/index";
+// LIQUIDITY PROVIDER, SWAP, FARMING
+export * from "./api/index";
 
 // UTILS | GENERAL
 export { isNetworkToken } from "./utils";

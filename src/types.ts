@@ -146,12 +146,14 @@ export type FetchPoolTxnResult = TransactionResult<FetchPoolData>;
  * Reach `v.0.1.10x` + HUMBLE FARMING
  */
 
-/** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
-export type StakingRewards = [any, any];
+/** Staking Rewards ([`network token rewards`, `rewards token rewards`]) */
+export type StakingRewards = [BigNumber, BigNumber];
 
 /** Notification object (Stake updated) */
 export type StakeUpdate = {
+  /** New total amount staked by user */
   newUserStaked: BigNumber;
+  /** New total amount staked in contract */
   newEveryoneStaked: BigNumber;
 };
 

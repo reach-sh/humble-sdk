@@ -6,18 +6,20 @@ import {
   ReachToken,
   tokenMetadata,
 } from "../reach-helpers/index";
-import { TransactionResult, ReachTxnOpts } from "../types";
+import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
 import { stakingBackend } from "../build/backend";
 
-type DeployerOpts = {
+export type DeployerOpts = {
+  /** Number of blocks to run contract */
   duration: BigNumber;
+  /** Non-network reward token */
   rewardToken1: BigNumber;
-  rewardsPerBlock: [BigNumber, BigNumber];
+  /** Rewards emitted per block [`network`, `nonNetwork`] */
+  rewardsPerBlock: StakingRewards;
+  /** Token to stake in exchange for `rewardToken1`  */
   stakeToken: BigNumber;
 };
 
-/** Staking Rewards ([`network token rewards`, `rewards token rewards`]) */
-type StakingRewards = [BigNumber, BigNumber];
 /** Staking Contract details */
 export type FarmView = {
   /** When farming pool ends */

@@ -15,6 +15,10 @@ The following methods are exported from the SDK:
 - [createReachAPI](#createreachapi)
     - [createReachAPI Example](#createreachapi-example)
     - [createReachAPI Returns](#createreachapi-returns)
+- [createLiquidityPool](#createliquiditypool)
+    - [Transaction Options](#transaction-options)
+    - [createLiquidityPool Example](#createliquiditypool-example)
+    - [createLiquidityPool Returns](#createliquiditypool-returns)
 - [subscribeToPoolStream](#subscribetopoolstream)
     - [subscribeToPoolStream Example](#subscribetopoolstream-example)
     - [subscribeToPoolStream Parameters](#subscribetopoolstream-parameters)
@@ -46,10 +50,11 @@ The following methods are exported from the SDK:
     - [calculateTokenSwap Parameters](#calculatetokenswap-parameters)
     - [calculateTokenSwap Returns](#calculatetokenswap-returns)
 - [performSwap](#performswap)
-    - [performSwap Example: Swap](#performswap-example-swap)
-    - [performSwap Example: Price Impact](#performswap-example-price-impact)
-    - [performSwap Parameters](#performswap-parameters)
-    - [performSwap Returns](#performswap-returns)
+- [swapTokens](#swaptokens)
+    - [swapTokens Example: Swap](#swaptokens-example-swap)
+    - [swapTokens Example: Price Impact](#swaptokens-example-price-impact)
+    - [swapTokens Parameters](#swaptokens-parameters)
+    - [swapTokens Returns](#swaptokens-returns)
 - [getSlippage](#getslippage)
     - [getSlippage Returns](#getslippage-returns)
 - [setSlippage](#setslippage)
@@ -124,6 +129,78 @@ const acc = await stdlib.createAccount();
 
 #### createReachAPI Returns
 Configured `stdlib` instance.
+
+---
+
+## createLiquidityPool
+```typescript
+async function createLiquidityPool(
+  acc: any,
+  opts: CreatePoolTxnOpts
+): Promise<TransactionResult<PoolInfo | Error>> 
+```
+Create a liquidity pool for a pair of tokens. 
+
+#### Transaction Options
+```typescript
+type CreatePoolTxnOpts = {
+  tokenIds: [string | number, string | number];
+  tokenAmounts: [a: number, b: number];
+} & ReachTxnOpts;
+```
+
+#### createLiquidityPool Example
+```typescript
+import { createLiquidityPool } from "@reach-sh/humble-sdk";
+
+const createOpts = {
+    tokenAmounts: [100, 200] as [number, number],
+    tokenIds: [112233, 446688] as [any, any],
+
+    // progress bar updated
+    onProgress(msg: string) {
+      if (msg === 'SIGNING_EVENT') {
+        // e.g. tell user to check mobile wallet 
+      } else {
+        // otherwise the message tells what the SDK is currently doing
+      }
+    },
+  }
+
+const acc = /* connected account */;
+const result = await createLiquidityPool(acc, createOpts)
+const { data, succeeded, message } = result
+if (!succeeded || !data?.poolTokenId) {
+    // Pool creation failed; handle error
+    // or check 'message' for an explanation
+}
+
+// If here, Pool creation and funding was successful
+const { poolAddress, tokenAId, tokenBId, poolTokenId } = data;
+
+// do something with 'data'
+```
+
+#### createLiquidityPool Returns
+`PoolInfo` about the new pool.
+```typescript
+type PoolInfo = {
+  /** `Token A` id. Use '0' for network token  */
+  tokenAId: string | number;
+  /** `Token B` id */
+  tokenBId: string | number;
+  /** Pool contract address (or Algorand application ID) */
+  poolAddress: string | number;
+  /** Number of decimal places for `Token A`. Defaults to `6` */
+  tokenADecimals?: number;
+  /** Number of decimal places for `Token B`. Defaults to `6` */
+  tokenBDecimals?: number;
+  /** When true, indicates this pool uses a network token (e.g. ALGO or ETH) */
+  n2nn?: boolean;
+  /** ID for pool liquidity token */
+  poolTokenId?: ResourceIdentifier;
+}
+```
 
 ---
 
@@ -435,7 +512,7 @@ So e.g. if `calculatePriceImpact(x, { ... })` returns `20`, it means that trade
 will result in 20% less value than if the pool was balanced by (e.g.) more liquidity.
 
 #### calculatePriceImpact Example
-See [Perform Swap](#performswap) for usage.
+See [Perform Swap](#swapTokens) for usage.
 
 #### calculatePriceImpact Parameters
 * `amtA: string | number` input amount (can represent amount for token `A` or `B`) 
@@ -455,7 +532,7 @@ function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo
 Calculates how much you should expect from a swap, based on the amount put in and the state of the pool.
 
 #### calculateTokenSwap Example
-See [Perform Swap](#performswap) for usage.
+See [Perform Swap](#swapTokens) for usage.
 
 #### calculateTokenSwap Parameters
 * [`opts: SwapTxnOpts`](./TYPES.md#swaptxnopts)
@@ -469,12 +546,19 @@ An object with your input amount and expected outputs. You can use this object t
 --- 
 
 ## performSwap
+See [**Swap Tokens**](#swaptokens)
+
+^[**Back to contents**](#table-of-contents)
+
+--- 
+
+## swapTokens
 ```typescript
-function performSwap(acct: ReachAccount, opts: SwapTxnOpts): Promise<TransactionResult>
+function swapTokens(acct: ReachAccount, opts: SwapTxnOpts): Promise<TransactionResult>
 ```
 Swap one token in a Liquidity Pool for another.
 
-#### performSwap Example: Swap
+#### swapTokens Example: Swap
 See [`fetchPool`](#fetchpool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
 ```typescript
 const pool = /* pool source */
@@ -489,11 +573,11 @@ const swap = calculateTokenSwap({
 
 // Perform swap
 const swapOpts = { poolAddress: pool.poolAddress, swap, pool };
-const { data, message, succeeded } = await performSwap(acc, swapOpts);
+const { data, message, succeeded } = await swapTokens(acc, swapOpts);
 // if (succeeded) data == { amountIn: string; amountOut: string }
 ```
 
-#### performSwap Example: Price Impact
+#### swapTokens Example: Price Impact
 (Optional) Calculate price impact to ensure the best price. Price impact is inversely proportional to expected swap output:
 the higher the price impact, the smaller the swap output.\
 This calculation doesn't affect the swap operation and is only included for illustration.
@@ -506,11 +590,11 @@ const impact = calculatePriceImpact(amountA, calcOpts);
 console.log(impact); //  "3.04"
 ```
 
-#### performSwap Parameters
+#### swapTokens Parameters
 * `acc: ReachAccount`: **reach** [account abstraction](https://docs.reach.sh/frontend/#ref-frontends-js-acc)
 * [`opts: SwapTxnOpts`](./TYPES.md#swaptxnopts)
 
-#### performSwap Returns
+#### swapTokens Returns
 * `TransactionResult`\
   where `data` = `{ amountIn: string; amountOut: string }` when successful
 

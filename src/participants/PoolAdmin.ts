@@ -1,9 +1,9 @@
-import { tokenMetadata } from "../reach-helpers";
+import { createReachAPI, tokenMetadata } from "../reach-helpers";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
-import { isNetworkToken } from "../utils";
+import { errorResult, isNetworkToken, parseContractError } from "../utils";
 import { noOp } from "../utils.reach";
 import { PoolInfo, ReachTxnOpts, TransactionResult } from "../types";
-import { createPoolFailed, deployPool } from "../utils.pool";
+import { deployPool } from "../utils.pool";
 import { addLiquidity } from "../api/index";
 
 type CreatePoolTxnOpts = {
@@ -15,23 +15,27 @@ type CreatePoolTxnOpts = {
 export async function createLiquidityPool(
   acc: any,
   opts: CreatePoolTxnOpts
-): Promise<TransactionResult<PoolInfo | Error>> {
+): Promise<TransactionResult<PoolInfo>> {
   // Validate params
-  const { tokenAmounts, tokenIds } = opts;
+  const { tokenAmounts, tokenIds, onComplete = noOp, onProgress = noOp } = opts;
+  const data = { tokenAId: "", tokenBId: "", poolAddress: "" };
   if (![tokenAmounts, tokenIds].every(({ length }) => length === 2)) {
     const f = ["tokenAmounts", "tokenIds"];
-    const e = new Error(`Missing fields ${f.join(", ")}`);
-    return createPoolFailed(e, "invalid transaction arguments");
-  } else if (tokenAmounts.some((a) => !a)) {
-    const e = new Error(`A deposit amount was zero`);
-    return createPoolFailed(e, "invalid transaction arguments");
+    const d = `Missing fields ${f.join(", ")}`;
+    return errorResult(d, null, data, null);
   }
 
-  const { onComplete = noOp, onProgress = noOp } = opts;
+  if (tokenAmounts.some((a) => !a)) {
+    const d = `A deposit amount was zero`;
+    return errorResult(d, null, data, null);
+  }
+
   onProgress("Fetching token data ... ");
+  const { eq } = createReachAPI();
+  const checkIsNetwork = (id: any) => eq(id, 0) || isNetworkToken(id);
   const tokenSymbols: string[] = [];
   const tokenDecimals: number[] = [];
-  const isN2nnPool = tokenIds.some(isNetworkToken);
+  const isN2nnPool = tokenIds.some(checkIsNetwork);
   const tokens = await Promise.allSettled([
     tokenMetadata(tokenIds[0], acc),
     tokenMetadata(tokenIds[1], acc),
@@ -46,8 +50,8 @@ export async function createLiquidityPool(
   });
 
   if (tokens.length < 2) {
-    const e = new Error(`Could not fetch data for one or more tokens`);
-    return createPoolFailed(e, "invalid transaction arguments");
+    const d = `Could not fetch data for one or more tokens`;
+    return errorResult(d, null, data, null);
   }
 
   // If the network token is tokenB then it needs to be swapped out with
@@ -69,10 +73,9 @@ export async function createLiquidityPool(
 
   onProgress(`Creating pool`);
   try {
-    const [tokenAId, tokenBId] = ids;
     const deployment = await deployPool(acc, backend, {
-      tokenAId,
-      tokenBId,
+      tokenAId: ids[0],
+      tokenBId: ids[1],
       tokSymbol: "HMBL2LT",
       lpTokenName: `HUMBLE LP - ${symbolA}/${symbolB}`,
       onProgress,
@@ -98,11 +101,7 @@ export async function createLiquidityPool(
 
     return deposit as TransactionResult<any>;
   } catch (error: any) {
-    return {
-      message: error?.message || "Pool creation failed",
-      data: error,
-      succeeded: false,
-      poolAddress,
-    };
+    const msg = parseContractError("Pool creation failed", error);
+    return errorResult(msg, poolAddress, data);
   }
 }

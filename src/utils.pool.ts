@@ -1,8 +1,18 @@
 import { fetchToken } from "./participants";
-import { isNetworkToken, parseContractError } from "./utils";
+import {
+  errorResult,
+  isNetworkToken,
+  parseContractError,
+  successResult,
+} from "./utils";
 import { noOp } from "./utils.reach";
 import { getPoolAnnouncer, POOL_CREATION_ERR } from "./constants";
-import { ReachAccount, parseAddress, createReachAPI } from "./reach-helpers";
+import {
+  ReachAccount,
+  parseAddress,
+  createReachAPI,
+  ReachContract,
+} from "./reach-helpers";
 import { ReachTxnOpts, PoolInfo, TokenPair, TransactionResult } from "./types";
 
 type CreatePoolOpts = ReachTxnOpts &
@@ -24,31 +34,14 @@ export async function deployPool(
   backend: any,
   opts: CreatePoolOpts
 ): Promise<TransactionResult<PoolInfo>> {
-  const {
-    tokenAId,
-    tokenBId,
-    lpTokenName,
-    tokSymbol,
-    onProgress = noOp,
-  } = opts;
+  const { tokenAId, tokenBId, onProgress = noOp } = opts;
+  const data: PoolInfo = { poolAddress: "", tokenAId, tokenBId };
+
   try {
     const ctcAdmin = acc.contract(backend);
     createReachAPI().setSigningMonitor(() => onProgress("SIGNING_EVENT"));
-    const runAdmin = () =>
-      new Promise((resolve, reject) =>
-        ctcAdmin.participants
-          .Admin({
-            tokA: tokenAId.toString(),
-            tokB: tokenBId.toString(),
-            ltName: lpTokenName,
-            ltSymbol: tokSymbol,
-            proto: getPoolAnnouncer(),
-            signalPoolCreation: resolve,
-          })
-          .catch(reject)
-      );
     const [poolLPTokenIdProm, tokAProm, tokBProm] = await Promise.allSettled([
-      runAdmin(),
+      runAdminParticipant(ctcAdmin, opts),
       fetchToken(acc, tokenAId),
       fetchToken(acc, tokenBId),
     ]);
@@ -66,21 +59,16 @@ export async function deployPool(
 
     onProgress("Getting new pool info");
     const [poolLPTokenId, tokA, tokB] = resolved;
-    const poolAddress = parseAddress(await ctcAdmin.getInfo());
-    const n2nn = isNetworkToken(tokenAId) || isNetworkToken(tokenBId);
-    const data: PoolInfo = {
-      poolAddress,
-      tokenAId,
-      tokenBId,
-      tokenADecimals: tokA?.decimals,
-      tokenBDecimals: tokB?.decimals,
-      poolTokenId: parseAddress(poolLPTokenId),
-      n2nn,
-    };
+    data.poolAddress = parseAddress(await ctcAdmin.getInfo()).toString();
+    data.tokenADecimals = tokA?.decimals;
+    data.tokenBDecimals = tokB?.decimals;
+    data.poolTokenId = parseAddress(poolLPTokenId);
+    data.n2nn = isNetworkToken(tokenAId) || isNetworkToken(tokenBId);
 
-    return { succeeded: true, poolAddress, contract: ctcAdmin, data };
+    return successResult("OK", data.poolAddress as string, ctcAdmin, data);
   } catch (error: any) {
-    return createPoolFailed(error);
+    const msg = parseContractError("Pool creation failed", error);
+    return errorResult(msg, null, data);
   }
 }
 
@@ -91,4 +79,22 @@ export function createPoolFailed<T>(e: T, m = ""): TransactionResult<T> {
   if (!m) response.message = parseContractError(POOL_CREATION_ERR, e);
 
   return response;
+}
+
+/** @internal Run `Admin` participant to create pool contract */
+function runAdminParticipant(ctc: ReachContract<any>, opts: CreatePoolOpts) {
+  const { tokenAId, tokenBId, lpTokenName: ltName, tokSymbol: ltSymbol } = opts;
+
+  return new Promise((resolve, reject) =>
+    ctc.participants
+      .Admin({
+        tokA: tokenAId.toString(),
+        tokB: tokenBId.toString(),
+        ltName,
+        ltSymbol,
+        proto: getPoolAnnouncer(),
+        signalPoolCreation: resolve,
+      })
+      .catch(reject)
+  );
 }

@@ -2,7 +2,6 @@ import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { Balances, SwapTxnOpts, TransactionResult } from "../types";
 import {
   formatCurrency,
-  noOp,
   parseAddress,
   parseCurrency,
   ReachAccount,
@@ -11,6 +10,7 @@ import {
 import { ASSURANCE_MSG, getSlippage } from "../constants";
 import { isNetworkToken } from "../utils";
 import { fetchToken } from "../participants/index";
+import { noOp } from "../utils.reach";
 
 type SwapResult = { amountIn: string; amountOut: string };
 

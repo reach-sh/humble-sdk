@@ -1,4 +1,4 @@
-import { Maybe } from "./types";
+import { Maybe } from "../src/reach-helpers/types";
 
 export const noOp = () => null;
 
@@ -11,11 +11,21 @@ function abbrevNumber(numOfGroups: number) {
 }
 
 /**
+ * Wrap a value as a `Maybe` value. Returrns [`"Some"`, `val`] when
+ * `val` has a value
+ */
+export function asMaybe<T extends any>(val: T): Maybe<T> {
+  return [undefined, null].includes(val as any)
+    ? ["None", null]
+    : ["Some", val];
+}
+
+/**
  * Unwrap a `Maybe` value. When `mVal[0]` is `"Some"`, `mVal[1]` has a value
  */
 export function fromMaybe<T extends any>(
   mVal: Maybe<T>,
-  format?: (v: any) => T,
+  format?: (v: any) => any,
   fallback?: any
 ): T | null {
   const fmt = format || ((v: any) => v as T);
@@ -25,7 +35,7 @@ export function fromMaybe<T extends any>(
 /**
  * @internal
  * Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
-export function formatNumberShort(val: string | number | bigint, round = 2) {
+export function formatNumberShort(val: any, round = 2) {
   if (isNaN(Number(val))) return "";
 
   const parts = val.toString().split(".");

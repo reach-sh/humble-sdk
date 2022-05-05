@@ -1,11 +1,10 @@
 import { isNetworkToken, makeNetworkToken } from "../utils";
 import { UNINSTANTIATED } from "../constants";
 import * as T from "./types";
-import { formatNumberShort, trimByteString } from "./utils.reach";
+import { formatNumberShort, trimByteString } from "../utils.reach";
 
 type LoadStdlibFn = { (args: any): any };
 export * from "./types";
-export * from "./utils.reach";
 export const NETWORKS: T.NetworksMap = {
   ALGO: { name: "Algorand", abbr: "ALGO", decimals: 6 },
   ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 },
@@ -109,17 +108,23 @@ function buildProviderEnv(
   return env as T.AlgoEnvOverride;
 }
 
+/** @internal Get formatted token balance */
+export async function tokenBalance(acc: T.ReachAccount, id: string | number) {
+  const { balanceOf, eq } = createReachAPI();
+  const netToken = eq(id, 0) || isNetworkToken(id);
+  const balance = () => (netToken ? balanceOf(acc) : balanceOf(acc, id));
+  return formatCurrency(await balance());
+}
+
 /** @internal Get token data and `acc`'s balance of token (if available) */
 export async function tokenMetadata(
   token: any,
   acc: T.ReachAccount
 ): Promise<T.ReachToken> {
-  const { balanceOf, eq } = createReachAPI();
-  const netToken = isNetworkToken(token) || eq(token, 0);
-  const fetchBalance = () =>
-    netToken ? balanceOf(acc) : balanceOf(acc, token);
+  const { eq } = createReachAPI();
+  const fetchBalance = () => tokenBalance(acc, token);
   const fetchToken = () =>
-    netToken
+    isNetworkToken(token) || eq(token, 0)
       ? makeNetworkToken()
       : acc
           .tokenMetadata(token)

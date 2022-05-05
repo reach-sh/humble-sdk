@@ -1,4 +1,5 @@
-import { noOp, parseAddress, ReachAccount } from "../reach-helpers";
+import { parseAddress, ReachAccount } from "../reach-helpers";
+import { noOp } from "../utils.reach";
 import { stakingBackend } from "../build/backend";
 import {
   ReachTxnOpts,

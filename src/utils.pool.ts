@@ -1,12 +1,8 @@
 import { fetchToken } from "./participants";
 import { isNetworkToken, parseContractError } from "./utils";
+import { noOp } from "./utils.reach";
 import { getPoolAnnouncer, POOL_CREATION_ERR } from "./constants";
-import {
-  ReachAccount,
-  parseAddress,
-  noOp,
-  createReachAPI,
-} from "./reach-helpers";
+import { ReachAccount, parseAddress, createReachAPI } from "./reach-helpers";
 import { ReachTxnOpts, PoolInfo, TokenPair, TransactionResult } from "./types";
 
 type CreatePoolOpts = ReachTxnOpts &

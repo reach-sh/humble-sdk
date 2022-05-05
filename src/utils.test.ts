@@ -56,7 +56,35 @@ describe("HumbleSDK General Utils", () => {
     await expect(short()).resolves.toBe("fallback");
   });
 
-  it("Generates a friendly error based from blockchain response", () => {
+  it("Generates a friendly response from blockchain data", () => {
+    const data = { i: true };
+    const message = "Transaction completed";
+    const poolAddress = "12345";
+    const ctc = null;
+    const resp = Utils.successResult(message, poolAddress, ctc, data);
+
+    expect(resp.succeeded).toStrictEqual(true);
+    expect(resp.contract).toStrictEqual(ctc);
+    expect(resp.data).toStrictEqual(data);
+    expect(resp.message).toStrictEqual(message);
+    expect(resp.poolAddress).toStrictEqual(poolAddress);
+  });
+
+  it("Generates a friendly error response when a blockchain query fails", () => {
+    const data = new Error("This is a txn error message");
+    const message = "Transaction failed";
+    const poolAddress = "12345";
+    const ctc = null;
+    const resp = Utils.errorResult(message, poolAddress, data, ctc);
+
+    expect(resp.succeeded).toStrictEqual(false);
+    expect(resp.contract).toStrictEqual(ctc);
+    expect(resp.data).toStrictEqual(data);
+    expect(resp.message).toStrictEqual(message);
+    expect(resp.poolAddress).toStrictEqual(poolAddress);
+  });
+
+  it("Generates a friendly error string based on blockchain response", () => {
     const f = "Failed: ";
     const p = (v: string) => Utils.parseContractError(f, v);
 

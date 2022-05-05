@@ -1,11 +1,8 @@
 import {
   ReachAccount,
-  fromMaybe,
   createReachAPI,
   parseAddress,
   Maybe,
-  noOp,
-  trimByteString,
   formatCurrency,
   ReachContract,
 } from "../reach-helpers";
@@ -13,6 +10,7 @@ import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { getFeeInfo, getProtocolAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
+import { fromMaybe, noOp, trimByteString } from "../utils.reach";
 
 export type FetchPoolOpts = ReachTxnOpts & {
   /** when true, is a network-to-non-network pool */

@@ -1,31 +1,50 @@
 import * as H from "./utils.reach";
 
 describe("Reach Helpers | Utils", () => {
+  const v1 = 1;
+  const v2 = null;
+
+  it("Wraps a `Maybe` value", () => {
+    const some = H.asMaybe(v1);
+    const none = H.asMaybe(v2);
+    const nonedefined = H.asMaybe(undefined);
+
+    expect(some[0]).toStrictEqual("Some");
+    expect(some[1]).toStrictEqual(v1);
+
+    expect(none[0]).toStrictEqual("None");
+    expect(none[1]).toStrictEqual(v2);
+
+    expect(nonedefined[0]).toStrictEqual("None");
+    expect(nonedefined[1]).toStrictEqual(null);
+  });
+
   it("Unwraps a `Maybe` value", () => {
-    const some: H.Maybe = ["Some", 1];
-    const none: H.Maybe = ["None", null];
-    expect(H.fromMaybe(some)).toStrictEqual(1);
-    expect(H.fromMaybe(none)).toStrictEqual(null);
+    const some = H.asMaybe(v1);
+    const none = H.asMaybe(v2);
+    expect(H.fromMaybe(some)).toStrictEqual(v1);
+    expect(H.fromMaybe(none)).toStrictEqual(v2);
   });
 
   it("Applies conditional formatting when unwrapping a `Maybe`", () => {
-    const some: H.Maybe = ["Some", 1000];
+    const some = H.asMaybe(1000);
     expect(H.fromMaybe(some)).toStrictEqual(1000);
     expect(H.fromMaybe(some, H.formatNumberShort)).toStrictEqual("1K");
   });
 
   it("Returns a fallback when a `Maybe` value is undefined", () => {
-    const some: H.Maybe = ["Some", 1000];
-    const none: H.Maybe = ["None", null];
+    const some = H.asMaybe(1000);
+    const none = H.asMaybe(null);
     const fmt = (v: any) => v;
     expect(H.fromMaybe(some, fmt, "apple")).toStrictEqual(1000);
     expect(H.fromMaybe(none, fmt, "apple")).toStrictEqual("apple");
   });
 
   it("Trims trailing zeros", () => {
-    expect(H.trailing0s('1000')).toStrictEqual('1')
-    expect(H.trailing0s('1000.100')).toStrictEqual('1000.1')
-    expect(H.trailing0s('1000.1001')).toStrictEqual('1000.1001')
+    expect(H.trailing0s("1000")).toStrictEqual("1");
+    expect(H.trailing0s("1000.0000")).toStrictEqual("1000");
+    expect(H.trailing0s("1000.100")).toStrictEqual("1000.1");
+    expect(H.trailing0s("1000.1001")).toStrictEqual("1000.1001");
   });
 
   it("Abbreviates numbers", () => {
@@ -52,11 +71,12 @@ describe("Reach Helpers | Utils", () => {
   });
 
   it("Trims empty bytes", () => {
-    const ctrl = "a";
-    const byteStr = ctrl.padEnd(64, "\0"); // \0 = empty byte character
+    const control = "a";
+    // \0 = empty byte character
+    const byteStr = control.padEnd(64, "\0");
 
-    expect(ctrl).not.toStrictEqual(byteStr);
-    expect(H.trimByteString(ctrl)).toStrictEqual(ctrl);
-    expect(H.trimByteString(byteStr)).toStrictEqual(ctrl);
+    expect(control).not.toStrictEqual(byteStr);
+    expect(H.trimByteString(control)).toStrictEqual(control);
+    expect(H.trimByteString(byteStr)).toStrictEqual(control);
   });
 });

@@ -27,7 +27,7 @@ export {
   calculateOtherAmount,
   calculatePriceImpact,
   calculateTokenSwap,
-  poolIsOverloaded,
+  checkPoolWillOverflow,
 } from "./utils.swap";
 
 // REACH HELPERS
@@ -37,19 +37,25 @@ export {
   parseCurrency,
   formatAddress,
   formatCurrency,
-  noOp,
 } from "./reach-helpers";
 
 // LIQUIDITY PROVIDER and SWAP
 export {
   addLiquidity,
-  fetchFarm,
+  fetchStakingPool,
   withdrawLiquidity,
   swapTokens,
   subscribeToPoolStream,
 } from "./api/index";
 
-export * from "./types"
+export * from "./types";
+export {
+  noOp,
+  trimByteString,
+  formatNumberShort,
+  asMaybe,
+  fromMaybe,
+} from "./utils.reach";
 
 // CONSTANTS
 export { getSlippage, getPoolAnnouncer } from "./constants";
@@ -87,7 +93,7 @@ function getTriumvirContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
   if (valid === "TestNet") return 87295148;
-  // if (valid === "MainNet") return ??? 
+  // if (valid === "MainNet") return ???
 
   throw new Error(`Unrecognized provider "${network}"`);
 }

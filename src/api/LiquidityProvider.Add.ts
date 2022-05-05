@@ -3,10 +3,10 @@ import {
   ReachAccount,
   createReachAPI,
   parseCurrency,
-  noOp,
 } from "../reach-helpers";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { errorResult, parseContractError, successResult } from "../utils";
+import { noOp } from "../utils.reach";
 import { TransactionResult, DepositTxnOpts } from "../types";
 
 type AddLiquidityResult = { lpTokens?: number };
@@ -86,7 +86,7 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
  * @param opts Deposit options
  * @returns [`isValid: boolean`, `validationError?: string`]
  */
-function protectArgs(opts: DepositTxnOpts): [boolean, string] {
+export function protectArgs(opts: DepositTxnOpts): [boolean, string] {
   const { amounts, pool } = opts;
   let valid = true;
   let message = "";

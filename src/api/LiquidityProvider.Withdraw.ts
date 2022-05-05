@@ -1,9 +1,7 @@
 import {
   ReachAccount,
-  fromMaybe,
   createReachAPI,
   parseAddress,
-  noOp,
   formatCurrency,
   ReachContract,
 } from "../reach-helpers";
@@ -11,6 +9,7 @@ import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
 import { TransactionResult, BigNumber, ReachTxnOpts } from "../types";
 import { fetchPool } from "../participants/index";
+import { fromMaybe, noOp } from "../utils.reach";
 
 /** Required options for withdrawing liquidity from a pool */
 export type RequiredWithdrawOpts = ReachTxnOpts & {

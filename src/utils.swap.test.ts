@@ -4,7 +4,7 @@ import {
   calculateOtherAmount,
   calculatePriceImpact,
   calculateTokenSwap,
-  poolIsOverloaded,
+  checkPoolWillOverflow,
 } from "./utils.swap";
 
 initHumbleSDK();
@@ -80,7 +80,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
 
   const M100 = 100_000_000;
   const checkInitialPool = (pool: PoolDetails) => {
-    const [isOverloaded, max] = poolIsOverloaded(pool);
+    const [isOverloaded, max] = checkPoolWillOverflow(pool);
     expect(pool.tokenABalance).toStrictEqual(p1Ato3B.tokenABalance);
     expect(pool.tokenBBalance).toStrictEqual(p1Ato3B.tokenBBalance);
     expect(isOverloaded).toBe(false);
@@ -94,7 +94,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
     pool.tokenADecimals = 9;
     pool.tokenABalance = 1_845_000;
     pool.tokenBBalance = 1_000;
-    const [isOverloaded, max] = poolIsOverloaded(pool);
+    const [isOverloaded, max] = checkPoolWillOverflow(pool);
     expect(isOverloaded).toBe(false);
     expect(max).toBe(pool.tokenBBalance);
   });
@@ -109,7 +109,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
 
     pool.tokenADecimals = 9;
     pool.tokenBBalance = 1_844_000;
-    const [isOverloaded, max] = poolIsOverloaded(pool);
+    const [isOverloaded, max] = checkPoolWillOverflow(pool);
     expect(isOverloaded).toBe(false);
     expect(max).toBe(pool.tokenABalance);
   });
@@ -121,7 +121,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
     pool.tokenADecimals = 9;
     pool.tokenABalance = 1_844_000;
     pool.tokenBBalance = 1_000_000_000;
-    const [isOverloaded, max] = poolIsOverloaded(pool);
+    const [isOverloaded, max] = checkPoolWillOverflow(pool);
 
     expect(pool.tokenABalance).toBeLessThan(M100);
     expect(isOverloaded).toBe(false);
@@ -136,7 +136,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
     pool.tokenBDecimals = 9;
     pool.tokenABalance = 1_000_000_000;
     pool.tokenBBalance = 10_000_000_000;
-    const [isOverloaded, max] = poolIsOverloaded(pool);
+    const [isOverloaded, max] = checkPoolWillOverflow(pool);
     expect(isOverloaded).toBe(false);
     expect(max).toBe(M100);
   });
@@ -150,7 +150,7 @@ describe("HumbleSDK Swap Utils | Protect Pool Overflow", () => {
     pool.tokenABalance = 10_000_000_000;
     pool.tokenBBalance = 10_000_000_000;
 
-    const [isOverloaded, max] = poolIsOverloaded(pool);
+    const [isOverloaded, max] = checkPoolWillOverflow(pool);
     expect(pool.tokenABalance).toBeGreaterThan(M100);
     expect(pool.tokenBBalance).toBeGreaterThan(M100);
     expect(isOverloaded).toBe(true);

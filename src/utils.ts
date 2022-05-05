@@ -91,7 +91,7 @@ export async function withTimeout(
  * @internal
  * `INTERNAL HELPER` | Creates a `TransactionResult` object
  */
-export function errorResult<T extends Error>(
+export function errorResult<T extends any>(
   message: string,
   poolAddress: number | string | null = "",
   data: T,

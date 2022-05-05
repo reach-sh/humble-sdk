@@ -1,11 +1,7 @@
+import { trailing0s } from "./utils.reach";
 import { getComputeSwap } from "./build/backend";
 import { getFeeInfo } from "./constants";
-import {
-  createReachAPI,
-  formatCurrency,
-  parseCurrency,
-  trailing0s,
-} from "./reach-helpers";
+import { createReachAPI, formatCurrency, parseCurrency } from "./reach-helpers";
 import {
   Balances,
   PoolDetails,
@@ -13,8 +9,6 @@ import {
   SwapInfo,
   SwapTxnOpts,
 } from "./types";
-
-const MAX_DECIMALS = 5;
 
 /**
  * Calculate the required input amount for the other half of a token
@@ -142,7 +136,7 @@ export function calculateTokenSwap(opts: SwapTxnOpts): SwapInfo {
 export type OverloadCheck = [isOverloaded: boolean, maxSwapInput: number];
 
 /** Pre-emptively check for number overflow on swap */
-export function poolIsOverloaded(data?: PoolDetails): OverloadCheck {
+export function checkPoolWillOverflow(data?: PoolDetails): OverloadCheck {
   if (!data) return [true, 0];
   const { tokenADecimals, tokenBDecimals, tokenABalance, tokenBBalance } = data;
   const reach = createReachAPI();
@@ -316,7 +310,7 @@ function swapTokenBToA(amtOut: any, pool: PoolDetails): any {
   }
 }
 
-/** Helper: takes a `SwapInfo` object and orders token A/B to match pool */
+/** @internal Takes a `SwapInfo` object and orders token A/B to match pool */
 function alignSwapInfo(
   swap: SwapInfo,
   pool: PoolInfo
@@ -340,8 +334,9 @@ function alignSwapInfo(
   ];
 }
 
-// checks the number amount and prevents any decimals being added than the explicitely described max decimal
+/** @internal checks the number amount and prevents any decimals being added than the explicitely described max decimal */ 
 function getValueWithMaxDecimals(original: string, decimals?: number) {
+  const MAX_DECIMALS = 5;
   const decs =
     decimals === undefined || decimals === null ? MAX_DECIMALS : decimals;
   if (!original) return "0";

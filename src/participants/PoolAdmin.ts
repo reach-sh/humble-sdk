@@ -1,6 +1,7 @@
-import { noOp, tokenMetadata } from "../reach-helpers";
+import { tokenMetadata } from "../reach-helpers";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { isNetworkToken } from "../utils";
+import { noOp } from "../utils.reach";
 import { PoolInfo, ReachTxnOpts, TransactionResult } from "../types";
 import { createPoolFailed, deployPool } from "../utils.pool";
 import { addLiquidity } from "../api/index";
@@ -74,7 +75,7 @@ export async function createLiquidityPool(
       tokenBId,
       tokSymbol: "HMBL2LT",
       lpTokenName: `HUMBLE LP - ${symbolA}/${symbolB}`,
-      onProgress
+      onProgress,
     });
     if (!deployment.succeeded || !deployment.data) return deployment;
 

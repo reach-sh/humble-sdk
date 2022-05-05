@@ -4,7 +4,7 @@ import { formatCurrency, parseCurrency, ReachAccount } from "../reach-helpers";
 import { ASSURANCE_MSG, getSlippage } from "../constants";
 import { errorResult, isNetworkToken } from "../utils";
 import { fetchToken } from "../participants/index";
-import { noOp } from "../utils.reach";
+import { noOp } from "../utils/utils.reach";
 
 export type SwapResult = { amountIn: string; amountOut: string };
 

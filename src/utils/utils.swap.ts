@@ -1,14 +1,18 @@
 import { trailing0s } from "./utils.reach";
-import { getComputeSwap } from "./build/backend";
-import { getFeeInfo } from "./constants";
-import { createReachAPI, formatCurrency, parseCurrency } from "./reach-helpers";
+import { getComputeSwap } from "../build/backend";
+import { getFeeInfo } from "../constants";
+import {
+  createReachAPI,
+  formatCurrency,
+  parseCurrency,
+} from "../reach-helpers";
 import {
   Balances,
   PoolDetails,
   PoolInfo,
   SwapInfo,
   SwapTxnOpts,
-} from "./types";
+} from "../types";
 
 /**
  * Calculate the required input amount for the other half of a token
@@ -334,7 +338,7 @@ function alignSwapInfo(
   ];
 }
 
-/** @internal checks the number amount and prevents any decimals being added than the explicitely described max decimal */ 
+/** @internal checks the number amount and prevents any decimals being added than the explicitely described max decimal */
 function getValueWithMaxDecimals(original: string, decimals?: number) {
   const MAX_DECIMALS = 5;
   const decs =

@@ -1,5 +1,5 @@
 import { parseAddress, ReachAccount } from "../reach-helpers";
-import { noOp } from "../utils.reach";
+import { noOp } from "../utils/utils.reach";
 import { stakingBackend } from "../build/backend";
 import {
   ReachTxnOpts,
@@ -7,7 +7,7 @@ import {
   StakingRewards,
   TransactionResult,
 } from "../types";
-import { createPoolFailed } from "../utils.pool";
+import { createPoolFailed } from "../utils/utils.pool";
 
 /** Transaction options (create staking pool) */
 type CreateFarmTxnOpts = { opts: StakingDeployerOpts } & ReachTxnOpts;

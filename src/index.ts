@@ -126,7 +126,7 @@ export {
   isMaybe,
   asMaybe,
   fromMaybe,
-} from "./utils.reach";
+} from "./utils/utils.reach";
 
 // UTILS | SWAP
 export {
@@ -134,7 +134,7 @@ export {
   calculatePriceImpact,
   calculateTokenSwap,
   checkPoolWillOverflow,
-} from "./utils.swap";
+} from "./utils/utils.swap";
 
 // CONSTANTS
 export { getSlippage, getPoolAnnouncer } from "./constants";

@@ -1,7 +1,7 @@
 import { isNetworkToken, makeNetworkToken } from "../utils";
 import { UNINSTANTIATED } from "../constants";
 import * as T from "./types";
-import { formatNumberShort, trimByteString } from "../utils.reach";
+import { formatNumberShort, trimByteString } from "../utils/utils.reach";
 
 type LoadStdlibFn = { (args: any): any };
 export * from "./types";

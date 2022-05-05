@@ -1,11 +1,11 @@
-import { ChainSymbol, createReachAPI, NETWORKS } from "./reach-helpers";
+import { ChainSymbol, createReachAPI, NETWORKS } from "../reach-helpers";
 import {
   ASSURANCE_MSG,
   MIN_BALANCE_MSG,
   POPUP_BLOCKED_MSG,
   TRANSACTION_CANCELLED_MSG,
-} from "./constants";
-import { TransactionResult } from "./types";
+} from "../constants";
+import { TransactionResult } from "../types";
 
 /**
  * @internal

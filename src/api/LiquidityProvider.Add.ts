@@ -1,7 +1,7 @@
 import { ReachAccount, createReachAPI, parseCurrency } from "../reach-helpers";
 import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { errorResult, parseContractError, successResult } from "../utils";
-import { noOp } from "../utils.reach";
+import { noOp } from "../utils/utils.reach";
 import { TransactionResult, DepositTxnOpts } from "../types";
 
 type AddLiquidityResult = { lpTokens?: number };

@@ -9,7 +9,7 @@ import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
 import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { getFeeInfo, getProtocolAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
-import { fromMaybe, noOp, trimByteString } from "../utils.reach";
+import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
 
 export type FetchPoolOpts = ReachTxnOpts & {
   /** when true, is a network-to-non-network pool */

@@ -1,9 +1,9 @@
 import { createReachAPI, tokenMetadata } from "../reach-helpers";
 import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { errorResult, isNetworkToken, parseContractError } from "../utils";
-import { noOp } from "../utils.reach";
+import { noOp } from "../utils/utils.reach";
 import { PoolInfo, ReachTxnOpts, TransactionResult } from "../types";
-import { deployPool } from "../utils.pool";
+import { deployPool } from "../utils/utils.pool";
 import { addLiquidity } from "../api/index";
 
 type CreatePoolTxnOpts = {

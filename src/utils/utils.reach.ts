@@ -1,4 +1,4 @@
-import { Maybe } from "../src/reach-helpers/types";
+import { Maybe } from "../reach-helpers/index";
 
 export const noOp = () => null;
 
@@ -36,6 +36,8 @@ export function fromMaybe<T extends any>(
   format?: (v: any) => any,
   fallback?: any
 ): T | null {
+  if (!isMaybe(mVal)) return mVal as T;
+
   const fmt = format || ((v: any) => v as T);
   return mVal[0] === "Some" ? fmt(mVal[1]) : fallback || mVal[1];
 }

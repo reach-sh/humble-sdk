@@ -1,4 +1,4 @@
-import { initHumbleSDK } from ".";
+import { initHumbleSDK } from "../index";
 import { PoolDetails } from "./types";
 import {
   calculateOtherAmount,

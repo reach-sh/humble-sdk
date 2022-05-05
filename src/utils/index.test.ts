@@ -1,11 +1,11 @@
-import { initHumbleSDK } from "../src/index";
-import * as Utils from "./utils";
+import { initHumbleSDK } from "../index";
+import * as Utils from "../utils";
 import {
   ASSURANCE_MSG,
   MIN_BALANCE_MSG,
   POPUP_BLOCKED_MSG,
   TRANSACTION_CANCELLED_MSG,
-} from "./constants";
+} from "../constants";
 
 describe("HumbleSDK General Utils", () => {
   it("Formats a number in exponential notation", () => {

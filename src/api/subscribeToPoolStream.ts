@@ -1,5 +1,5 @@
 import { ReachAccount, parseAddress, Maybe } from "../reach-helpers";
-import { fromMaybe, noOp } from "../utils.reach";
+import { fromMaybe, noOp } from "../utils/utils.reach";
 import { announcerBackend } from "../build/backend";
 import { getPoolAnnouncer } from "../constants";
 import { fetchPool } from "../participants/PoolAnnouncer";

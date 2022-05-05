@@ -1,4 +1,4 @@
-import { POOL_CREATION_ERR, TRANSACTION_CANCELLED_MSG } from "./constants";
+import { POOL_CREATION_ERR, TRANSACTION_CANCELLED_MSG } from "../constants";
 import { createPoolFailed } from "./utils.pool";
 
 describe("HumbleSDK | Pool Utils", () => {

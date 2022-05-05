@@ -1,19 +1,19 @@
-import { fetchToken } from "./participants";
+import { fetchToken } from "../participants";
 import {
   errorResult,
   isNetworkToken,
   parseContractError,
   successResult,
-} from "./utils";
+} from "./index";
 import { noOp } from "./utils.reach";
-import { getPoolAnnouncer, POOL_CREATION_ERR } from "./constants";
+import { getPoolAnnouncer, POOL_CREATION_ERR } from "../constants";
 import {
   ReachAccount,
   parseAddress,
   createReachAPI,
   ReachContract,
-} from "./reach-helpers";
-import { ReachTxnOpts, PoolInfo, TokenPair, TransactionResult } from "./types";
+} from "../reach-helpers";
+import { ReachTxnOpts, PoolInfo, TokenPair, TransactionResult } from "../types";
 
 type CreatePoolOpts = ReachTxnOpts &
   TokenPair & {

@@ -1,10 +1,7 @@
-import { Maybe, ReachContract, ReachToken } from "./reach-helpers";
+import { Maybe, ReachContract, BigNumber, ReachToken } from "./reach-helpers";
 
 /** Address */
 export type Address = string;
-
-/** Big Number object from ethers.js */
-export type BigNumber = any;
 
 /**
  * Compute expected Swap output

@@ -21,7 +21,6 @@ export const exponentialFormat = (val: string) => {
 };
 
 /**
- * @internal
  * Assert that `tokenId` is a Network Token (e.g. ALGO, ETH)
  * @param tokenId Token id
  * @returns Boolean (true if token id represents network Token)

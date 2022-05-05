@@ -11,58 +11,6 @@ import {
   setProtocolAddr,
 } from "./constants";
 
-// MAIN EXPORTS
-export { initHumbleSDK, setSlippage };
-
-// DATA & DATA FETCHERS
-export {
-  createLiquidityPool,
-  createStakingPool,
-  fetchPool,
-  fetchToken,
-} from "./participants/index";
-
-// SWAP UTILS
-export {
-  calculateOtherAmount,
-  calculatePriceImpact,
-  calculateTokenSwap,
-  checkPoolWillOverflow,
-} from "./utils.swap";
-
-// REACH HELPERS
-export { isNetworkToken } from "./utils";
-
-// REACH HELPERS
-export {
-  createReachAPI,
-  parseAddress,
-  parseCurrency,
-  formatAddress,
-  formatCurrency,
-} from "./reach-helpers";
-
-// LIQUIDITY PROVIDER and SWAP
-export {
-  addLiquidity,
-  fetchStakingPool,
-  withdrawLiquidity,
-  swapTokens,
-  subscribeToPoolStream,
-} from "./api/index";
-
-export * from "./types";
-export {
-  noOp,
-  trimByteString,
-  formatNumberShort,
-  asMaybe,
-  fromMaybe,
-} from "./utils.reach";
-
-// CONSTANTS
-export { getSlippage, getPoolAnnouncer } from "./constants";
-
 /**
  * Create `stdlib` instance for SDK. Options allow for selective environment
  * overrides. */
@@ -108,3 +56,85 @@ function safeNetwork(val?: NetworkProvider): NetworkProvider {
   const safe = valid.includes(val) ? val : "TestNet";
   return safe;
 }
+
+// MAIN EXPORTS
+export { initHumbleSDK, setSlippage };
+
+// DATA & DATA FETCHERS
+export {
+  createLiquidityPool,
+  createStakingPool,
+  fetchPool,
+  fetchToken,
+} from "./participants/index";
+
+// TYPES
+export * from "./types";
+
+// REACH HELPERS
+export {
+  createReachAPI,
+  parseAddress,
+  parseCurrency,
+  formatAddress,
+  formatCurrency,
+  // REACH TYPES
+  APIFn,
+  BackendModule,
+  BigNumber,
+  ChainSymbol,
+  CtcFn,
+  CtcLabeledFunc,
+  CtcFnGroup,
+  CtcFnSupergroup,
+  InteractFn,
+  NetworkData,
+  NetworkProvider,
+  NetworksMap,
+  ReachToken,
+  ReachAccount,
+  Maybe,
+  ContractView,
+  ReachContract,
+  ReachEvent,
+  ReachEventStream,
+  ReachStdLib,
+  ReachEnvOpts,
+  LoadReachOpts,
+  WalletFallbackOpts,
+  AlgoEnvOverride,
+  SDKOpts,
+} from "./reach-helpers";
+
+// LIQUIDITY PROVIDER and SWAP
+export {
+  addLiquidity,
+  fetchStakingPool,
+  withdrawLiquidity,
+  swapTokens,
+  subscribeToPoolStream,
+} from "./api/index";
+
+// UTILS | GENERAL
+export { isNetworkToken } from "./utils";
+
+// UTILS | REACH
+export {
+  noOp,
+  trimByteString,
+  formatNumberShort,
+  isMaybe,
+  asMaybe,
+  fromMaybe,
+} from "./utils.reach";
+
+// UTILS | SWAP
+export {
+  calculateOtherAmount,
+  calculatePriceImpact,
+  calculateTokenSwap,
+  checkPoolWillOverflow,
+} from "./utils.swap";
+
+// CONSTANTS
+export { getSlippage, getPoolAnnouncer } from "./constants";

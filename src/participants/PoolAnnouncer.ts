@@ -4,10 +4,9 @@ import {
   parseAddress,
   Maybe,
   formatCurrency,
-  ReachContract,
 } from "../reach-helpers";
 import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
-import { poolBackend, poolBackendN2NN } from "../build/backend";
+import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { getFeeInfo, getProtocolAddr } from "../constants";
 import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
 import { fromMaybe, noOp, trimByteString } from "../utils.reach";
@@ -30,16 +29,15 @@ export async function fetchPool(
   poolAddress: string | number,
   opts: FetchPoolOpts = { n2nn: false }
 ): Promise<FetchPoolTxnResult> {
-  const { n2nn = false, onComplete = noOp, onProgress = noOp } = opts;
   const reach = createReachAPI();
+  const { n2nn = false, onComplete = noOp, onProgress = noOp } = opts;
   // backend is determined on whether or not the pool uses the network token
   const theBackend = n2nn ? poolBackendN2NN : poolBackend;
   const ctcInfo = parseAddress(poolAddress);
 
   // Load pool data from view
   onProgress(`Fetching data for pool "${ctcInfo}"`);
-  const ctc: ReachContract<typeof theBackend> =
-    opts.contract || acc.contract(theBackend, ctcInfo);
+  const ctc: PoolContract = opts.contract || acc.contract(theBackend, ctcInfo);
   const view = fromMaybe(await ctc.views.Info());
   if (!view) {
     const message = "invalid pool (no view data)";

@@ -3,11 +3,11 @@ import {
   createReachAPI,
   parseAddress,
   formatCurrency,
-  ReachContract,
+  BigNumber,
 } from "../reach-helpers";
-import { poolBackend, poolBackendN2NN } from "../build/backend";
+import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
-import { TransactionResult, BigNumber, ReachTxnOpts } from "../types";
+import { TransactionResult, ReachTxnOpts } from "../types";
 import { fetchPool } from "../participants/index";
 import { fromMaybe, noOp } from "../utils.reach";
 
@@ -33,8 +33,6 @@ export type WithdrawResult = {
   received: { tokenA: any; tokenB: any };
   mintedLPTokens: string | number;
 };
-
-type PoolCtc = ReachContract<typeof poolBackendN2NN | typeof poolBackend>;
 
 /**
  * Withdraw liquidity from a pool. Requires a reach `networkAccount` instance.
@@ -70,7 +68,7 @@ export async function withdrawLiquidity(
   const amount = inputAmt || (await amountFromPctInput(pct, acc, poolTokenId));
   const backend = n2nn ? poolBackendN2NN : poolBackend;
   const ctc = (opts.contract ||
-    acc.contract(backend, parseAddress(poolAddress))) as PoolCtc;
+    acc.contract(backend, parseAddress(poolAddress))) as PoolContract;
 
   setSigningMonitor(() => onProgress("SIGNING_EVENT"));
 

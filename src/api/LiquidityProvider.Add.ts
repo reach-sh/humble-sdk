@@ -1,10 +1,5 @@
-import {
-  ReachContract,
-  ReachAccount,
-  createReachAPI,
-  parseCurrency,
-} from "../reach-helpers";
-import { poolBackend, poolBackendN2NN } from "../build/backend";
+import { ReachAccount, createReachAPI, parseCurrency } from "../reach-helpers";
+import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { noOp } from "../utils.reach";
 import { TransactionResult, DepositTxnOpts } from "../types";
@@ -25,8 +20,9 @@ type AddLiquidityResult = { lpTokens?: number };
  * @param opts.tokenBDecimals Decimal places for `token B`. Defaults to `6`
  */
 export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
+  const data: AddLiquidityResult = { lpTokens: 0 };
   const [valid, message] = protectArgs(opts);
-  if (!valid) return errorResult(message, null, new Error(message));
+  if (!valid) return errorResult(message, null, data, null);
 
   const {
     amounts,
@@ -36,27 +32,25 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
     onComplete = noOp,
     optInToLPToken = false,
   } = opts;
+  const poolAddress = pool.poolAddress.toString();
   const backend = pool.n2nn ? poolBackendN2NN : poolBackend;
-  const ctc: ReachContract<typeof backend> =
-    contract || acc.contract(backend, pool.poolAddress);
+  const ctc: PoolContract = contract || acc.contract(backend, poolAddress);
   const { Provider } = ctc.apis;
 
   // (OPTIONAL) opt-in to LP token
   const { poolTokenId } = pool;
   if (optInToLPToken && poolTokenId) {
-    onProgress("Checking LP token opt-in");
+    onProgress("Opting-in to LP token");
     try {
       await acc.tokenAccept(poolTokenId.toString());
     } catch (e) {
       const msg = parseContractError(`Token opt-in failed.`, e);
-      const err = e ? (e as Error) : new Error(msg);
-      return errorResult(msg, pool.poolAddress, err, ctc);
+      return errorResult(msg, poolAddress, data, ctc);
     }
   }
 
-  const { poolAddress: poolId, tokenADecimals = 6, tokenBDecimals = 6 } = pool;
-  const poolAddress = poolId.toString();
-  const done = (result: TransactionResult<AddLiquidityResult | Error>) => {
+  const { tokenADecimals = 6, tokenBDecimals = 6 } = pool;
+  const done = (result: TransactionResult<AddLiquidityResult>) => {
     onComplete(result);
     return result;
   };
@@ -67,16 +61,15 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
     const B = parseCurrency(amounts[1], tokenBDecimals);
     const { bigNumberToNumber } = createReachAPI();
     const lpTokens = await Provider.deposit({ A, B });
-    const data: AddLiquidityResult = { lpTokens: bigNumberToNumber(lpTokens) };
+    data.lpTokens = bigNumberToNumber(lpTokens);
 
     return done(successResult("Funds deposited", poolAddress, ctc, data));
   } catch (e) {
-    console.log({ e });
     const parsedMsg = parseContractError(`Deposit failed`, e);
     const msg = `${parsedMsg}: ${JSON.stringify(e, null, 2)}`;
-    const err = e ? (e as Error) : new Error(msg);
+    console.log(parsedMsg, { e });
     onProgress(msg);
-    return done(errorResult(msg, poolAddress, err, ctc));
+    return done(errorResult(msg, poolAddress, { lpTokens: 0 }, ctc));
   }
 }
 

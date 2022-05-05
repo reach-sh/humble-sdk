@@ -1,11 +1,10 @@
 import { fromMaybe, noOp } from "../utils.reach";
-import { stakingBackend } from "../build/backend";
+import { StakerAPI, stakingBackend, StakingContract, StakingContractViews } from "../build/backend";
 import {
   createReachAPI,
   formatCurrency,
   parseCurrency,
   ReachAccount,
-  ReachContract,
   ReachToken,
   tokenMetadata,
 } from "../reach-helpers/index";
@@ -28,14 +27,6 @@ type SDKStakeUpdate = {
 };
 /** Staking Rewards ([`network token rewards`, `rewards token rewards`]) */
 type StakingRewards = [BigNumber, BigNumber];
-/** @internal Staking Contract */
-type StakingContract = ReachContract<typeof stakingBackend>;
-/** @internal Staking Contract `APIs` */
-type StakingContractAPI = StakingContract["apis"];
-/** @internal Staking Contract `Views` */
-type StakingContractViews = StakingContract["views"];
-/** @internal Staking Contract Staker API */
-type StakerAPI = StakingContractAPI["Staker"];
 /** Staking Contract details */
 export type FarmView = {
   /** When farming pool ends */

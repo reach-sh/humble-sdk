@@ -1,20 +1,12 @@
-import { poolBackend, poolBackendN2NN } from "../build/backend";
+import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { Balances, SwapTxnOpts, TransactionResult } from "../types";
-import {
-  formatCurrency,
-  parseCurrency,
-  ReachAccount,
-  ReachContract,
-} from "../reach-helpers";
+import { formatCurrency, parseCurrency, ReachAccount } from "../reach-helpers";
 import { ASSURANCE_MSG, getSlippage } from "../constants";
 import { errorResult, isNetworkToken } from "../utils";
 import { fetchToken } from "../participants/index";
 import { noOp } from "../utils.reach";
 
 export type SwapResult = { amountIn: string; amountOut: string };
-export type PoolContract = ReachContract<
-  typeof poolBackend | typeof poolBackendN2NN
->;
 
 /**
  * Perform a swap between two tokens

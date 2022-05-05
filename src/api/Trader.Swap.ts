@@ -8,11 +8,14 @@ import {
   ReachContract,
 } from "../reach-helpers";
 import { ASSURANCE_MSG, getSlippage } from "../constants";
-import { isNetworkToken } from "../utils";
+import { errorResult, isNetworkToken } from "../utils";
 import { fetchToken } from "../participants/index";
 import { noOp } from "../utils.reach";
 
-type SwapResult = { amountIn: string; amountOut: string };
+export type SwapResult = { amountIn: string; amountOut: string };
+export type PoolContract = ReachContract<
+  typeof poolBackend | typeof poolBackendN2NN
+>;
 
 /**
  * Perform a swap between two tokens
@@ -25,49 +28,48 @@ export async function swapTokens(
   opts: SwapTxnOpts
 ): Promise<TransactionResult<SwapResult>> {
   const { contract, swap, pool, onProgress = noOp, onComplete = noOp } = opts;
-  if (!pool) return onSwapError("", "Pool data is required");
-
-  const { poolAddress } = pool;
-  if (!poolAddress) return onSwapError("", "Valid Pool address is required");
-
-  const addr = parseAddress(poolAddress);
-  if (addr !== parseAddress(pool.poolAddress)) {
-    return onSwapError(poolAddress, "Pool address does not match data");
+  const data: SwapResult = { amountIn: swap.amountA, amountOut: "0" };
+  if (!pool?.poolAddress) {
+    const err = "Pool data is required";
+    return errorResult(err, null, data, null);
   }
 
-  if (swap.tokenAId === undefined || swap.tokenBId === undefined)
-    return onSwapError(poolAddress, "Invalid swap info", {});
+  const { poolAddress, n2nn } = pool;
+  const addr = parseAddress(poolAddress);
+  if (swap.tokenAId === undefined || swap.tokenBId === undefined) {
+    const err = "Invalid swap pair";
+    return errorResult(err, poolAddress, data, null);
+  } else onProgress(`Fetching metadata`);
 
-  const { n2nn } = pool;
   const { tokenBId } = opts.swap;
-  const [aligned, tokenB, optedInB] = await Promise.all([
-    alignTradeAmounts(opts),
+  const [tokenB, optedInB] = await Promise.all([
     fetchToken(acct, tokenBId),
-    !isNetworkToken(tokenBId) && acct.tokenAccepted(tokenBId),
+    isNetworkToken(tokenBId) || acct.tokenAccepted(tokenBId),
   ]);
 
-  if (!optedInB) await acct.tokenAccept(tokenBId);
+  if (!optedInB) {
+    onProgress(`Opting in to ${tokenB?.symbol}`);
+    await acct.tokenAccept(tokenBId);
+  }
 
-  const [aIn, eOut, swapAForB] = aligned;
+  const [aIn, eOut, swapAForB] = alignTradeAmounts(opts);
   const backend = n2nn ? poolBackendN2NN : poolBackend;
-  const ctc: ReachContract<typeof backend> =
-    contract || acct.contract(backend, addr);
+  const ctc: PoolContract = contract || acct.contract(backend, addr);
   const traderAPI = ctc.apis.Trader;
 
   try {
     const expectedOut = swap.amountB;
     onProgress(`Swapping for ${expectedOut} ${tokenB?.symbol}`);
 
-    const amountIn = swap.amountA;
     const swapResult: Balances = swapAForB
       ? await traderAPI.swapAForB(aIn, eOut)
       : await traderAPI.swapBForA(aIn, eOut);
     const out = swapAForB ? swapResult.B : swapResult.A;
     const decs = swapAForB ? pool.tokenBDecimals : pool.tokenADecimals;
-    const amountOut = formatCurrency(out, decs === undefined ? 6 : decs);
+    data.amountOut = formatCurrency(out, decs === undefined ? 6 : decs);
     const txnResult = {
       poolAddress,
-      data: { amountIn, amountOut },
+      data,
       succeeded: true,
       message: "Swap complete",
       contract: ctc,
@@ -75,20 +77,17 @@ export async function swapTokens(
     onComplete(txnResult);
     return txnResult;
   } catch (e) {
-    console.log("Swap Failed", { e });
-    return onSwapError(poolAddress, "The Swap transaction failed", e);
+    const defaultMsg = "Token Swap failed";
+    const msg = swapErrorMessage(e);
+    console.log(defaultMsg, { e });
+    return errorResult(msg, poolAddress, data, null);
   }
 }
 
 /** @internal | Parse txn error into something user friendly */
-function onSwapError(
-  poolAddress: string | number,
-  reason?: string,
-  e: any = {}
-): TransactionResult<any> {
+function swapErrorMessage(e: any) {
   const error = e.toString();
-  const data = { error: e, reason };
-  let message = reason || "";
+  let message = "";
 
   switch (true) {
     case error.includes("logic eval error"):
@@ -108,14 +107,15 @@ function onSwapError(
   }
 
   message = `${ASSURANCE_MSG} ${message}`.trim();
-  return { poolAddress, data, succeeded: false, message };
+  // return errorResult(message, poolAddress, data, null);
+  return message;
 }
 
 /**
  * @internal | Organize trade amounts into expected Token A and Token B
  * @returns [`amountIn`, `expectedOut`, `swapAForB` (true|false)]
  */
-async function alignTradeAmounts(opts: SwapTxnOpts) {
+function alignTradeAmounts(opts: SwapTxnOpts) {
   const { swap, pool } = opts;
   if (!pool?.poolAddress) return [0, 0, false];
 
@@ -135,7 +135,7 @@ async function alignTradeAmounts(opts: SwapTxnOpts) {
 }
 
 /**
- * Calculate minimum expected amount out from a swap, given user's slippage preference.
+ * @internal Calculate minimum expected amount out from a swap, given user's slippage preference.
  * If no slippage was provided to the SDK, it will default to a preference of `0.5`% */
 function minimumReceived(expected: number) {
   return (Number(expected) * (100 - getSlippage())) / 100;

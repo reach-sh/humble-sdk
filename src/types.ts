@@ -1,4 +1,4 @@
-import { ReachContract, ReachToken } from "./reach-helpers";
+import { Maybe, ReachContract, ReachToken } from "./reach-helpers";
 
 /** Address */
 export type Address = string;
@@ -205,7 +205,7 @@ export type PoolContractView = {
   poolBals: Balances;
   protoBals: Balances;
   protoInfo: PoolProtocolInfo;
-  tokA: ["Some", TokenID] | ["None", null];
+  tokA: Maybe<TokenID>;
   tokB: TokenID;
 };
 

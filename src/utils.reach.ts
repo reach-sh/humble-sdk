@@ -10,14 +10,22 @@ function abbrevNumber(numOfGroups: number) {
   return ab[numOfGroups - 1];
 }
 
+/** Assert a value is a `Maybe` value.  */
+export function isMaybe(val: any): boolean {
+  const flags = ["None", "Some"];
+  return Array.isArray(val) && val.length === 2 && flags.includes(val[0]);
+}
+
 /**
  * Wrap a value as a `Maybe` value. Returrns [`"Some"`, `val`] when
  * `val` has a value
  */
 export function asMaybe<T extends any>(val: T): Maybe<T> {
-  return [undefined, null].includes(val as any)
-    ? ["None", null]
-    : ["Some", val];
+  const m = [undefined, null].includes(val as any)
+    ? Object.freeze(["None", null])
+    : Object.freeze(["Some", val]);
+
+  return m as Maybe<T>;
 }
 
 /**

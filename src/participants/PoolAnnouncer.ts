@@ -127,7 +127,7 @@ export async function fetchToken(
 ) {
   const { bigNumberToNumber, eq } = createReachAPI();
   const id = Array.isArray(token) ? fromMaybe(token) : token;
-  const networkToken = id === null || eq(token, 0) || isNetworkToken(id);
+  const networkToken = id === null || eq(id, 0) || isNetworkToken(id);
   if (networkToken) return makeNetworkToken();
 
   try {

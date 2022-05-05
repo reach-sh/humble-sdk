@@ -17,6 +17,8 @@ describe("Reach Helpers | Utils", () => {
 
     expect(nonedefined[0]).toStrictEqual("None");
     expect(nonedefined[1]).toStrictEqual(null);
+
+    expect(() => some.push(1 as never)).toThrow();
   });
 
   it("Unwraps a `Maybe` value", () => {
@@ -24,6 +26,23 @@ describe("Reach Helpers | Utils", () => {
     const none = H.asMaybe(v2);
     expect(H.fromMaybe(some)).toStrictEqual(v1);
     expect(H.fromMaybe(none)).toStrictEqual(v2);
+  });
+
+  it("Asserts a valid `Maybe` value", () => {
+    expect(H.isMaybe(v1)).toStrictEqual(false);
+    expect(H.isMaybe(v2)).toStrictEqual(false);
+
+    const validSome = H.asMaybe(v1);
+    const validNone = H.asMaybe(v2);
+
+    expect(H.isMaybe(validSome)).toStrictEqual(true);
+    expect(H.isMaybe(validNone)).toStrictEqual(true);
+
+    const invalidSome = [...validSome, 23];
+    const invalidNone = [...validNone, 23, "hello there"];
+
+    expect(H.isMaybe(invalidSome)).toStrictEqual(false);
+    expect(H.isMaybe(invalidNone)).toStrictEqual(false);
   });
 
   it("Applies conditional formatting when unwrapping a `Maybe`", () => {

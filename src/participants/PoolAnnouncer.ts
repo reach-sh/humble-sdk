@@ -125,17 +125,14 @@ export async function fetchToken(
   acc: ReachAccount,
   token: string | number | Maybe<string | number>
 ) {
+  const { bigNumberToNumber, eq } = createReachAPI();
   const id = Array.isArray(token) ? fromMaybe(token) : token;
-  if (id === null || isNetworkToken(id)) return makeNetworkToken();
-  if (isNaN(Number(id))) return null;
-
-  // Stdlib will infinitely retry on a failed request. We timeout the
-  // request after 3.5 seconds and return null
+  const networkToken = id === null || eq(token, 0) || isNetworkToken(id);
+  if (networkToken) return makeNetworkToken();
 
   try {
     const data: any = await withTimeout(acc.tokenMetadata(id));
-    const reach = createReachAPI();
-    const decimals = reach.bigNumberToNumber(data.decimals);
+    const decimals = bigNumberToNumber(data.decimals);
 
     return {
       id: parseAddress(id),

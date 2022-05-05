@@ -35,10 +35,9 @@ export async function swapTokens(
     return onSwapError(poolAddress, "Pool address does not match data");
   }
 
-  if (!swap.tokenAId || !swap.tokenBId)
+  if (swap.tokenAId === undefined || swap.tokenBId === undefined)
     return onSwapError(poolAddress, "Invalid swap info", {});
 
-  // onProgress(`Fetching metadata`);
   const { n2nn } = pool;
   const { tokenBId } = opts.swap;
   const [aligned, tokenB, optedInB] = await Promise.all([
@@ -81,7 +80,7 @@ export async function swapTokens(
   }
 }
 
-/** INTERNAL HELPER | Parse txn error into something user friendly */
+/** @internal | Parse txn error into something user friendly */
 function onSwapError(
   poolAddress: string | number,
   reason?: string,
@@ -113,28 +112,25 @@ function onSwapError(
 }
 
 /**
- * INTERNAL HELPER | organize trade amounts into expected Token A and Token B
+ * @internal | Organize trade amounts into expected Token A and Token B
  * @returns [`amountIn`, `expectedOut`, `swapAForB` (true|false)]
  */
 async function alignTradeAmounts(opts: SwapTxnOpts) {
   const { swap, pool } = opts;
-  if (!pool) return [0, 0, false];
+  if (!pool?.poolAddress) return [0, 0, false];
 
-  const { poolAddress, tokenADecimals = 6, tokenBDecimals = 6 } = pool;
-  if (!poolAddress) return [0, 0, false];
-
+  const safe = (i?: number) => (i === undefined ? 6 : i);
+  const { tokenADecimals, tokenBDecimals } = pool;
   const { tokenAId, tokenBId, amountA, amountB } = swap;
   if (!tokenAId || !tokenBId) return [0, 0, false];
 
   // re-arrange tokens to match pool if token order is reversed:
-  // - If user is swapping B-in-pool for A, amtA must be 0
-  // - else for pool-A-to-B, amtB must be 0.
   const swapAForB = tokenAId.toString() === pool.tokenAId.toString();
   const [decimalsA, decimalsB] = swapAForB
     ? [tokenADecimals, tokenBDecimals]
     : [tokenBDecimals, tokenADecimals];
-  const amtIn = parseCurrency(amountA, decimalsA);
-  const out = parseCurrency(minimumReceived(amountB), decimalsB);
+  const amtIn = parseCurrency(amountA, safe(decimalsA));
+  const out = parseCurrency(minimumReceived(amountB), safe(decimalsB));
   return [amtIn, out, swapAForB];
 }
 

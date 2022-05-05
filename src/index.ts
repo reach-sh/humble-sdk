@@ -31,6 +31,9 @@ export {
 } from "./utils.swap";
 
 // REACH HELPERS
+export { isNetworkToken } from "./utils";
+
+// REACH HELPERS
 export {
   createReachAPI,
   parseAddress,

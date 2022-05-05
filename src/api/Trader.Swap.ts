@@ -2,7 +2,6 @@ import { poolBackend, poolBackendN2NN } from "../build/backend";
 import { Balances, SwapTxnOpts, TransactionResult } from "../types";
 import {
   formatCurrency,
-  parseAddress,
   parseCurrency,
   ReachAccount,
   ReachContract,
@@ -28,20 +27,19 @@ export async function swapTokens(
   opts: SwapTxnOpts
 ): Promise<TransactionResult<SwapResult>> {
   const { contract, swap, pool, onProgress = noOp, onComplete = noOp } = opts;
-  const data: SwapResult = { amountIn: swap.amountA, amountOut: "0" };
-  if (!pool?.poolAddress) {
-    const err = "Pool data is required";
-    return errorResult(err, null, data, null);
-  }
-
-  const { poolAddress, n2nn } = pool;
-  const addr = parseAddress(poolAddress);
   if (swap.tokenAId === undefined || swap.tokenBId === undefined) {
     const err = "Invalid swap pair";
-    return errorResult(err, poolAddress, data, null);
-  } else onProgress(`Fetching metadata`);
+    return errorResult(err, null, { amountIn: "0", amountOut: "0" }, null);
+  }
 
-  const { tokenBId } = opts.swap;
+  const data: SwapResult = { amountIn: swap.amountA, amountOut: "0" };
+  if (!pool?.poolAddress) {
+    return errorResult("Pool data is required", null, data, null);
+  }
+
+  onProgress(`Fetching metadata`);
+  const { poolAddress, n2nn } = pool;
+  const { tokenBId } = swap;
   const [tokenB, optedInB] = await Promise.all([
     fetchToken(acct, tokenBId),
     isNetworkToken(tokenBId) || acct.tokenAccepted(tokenBId),
@@ -54,7 +52,7 @@ export async function swapTokens(
 
   const [aIn, eOut, swapAForB] = alignTradeAmounts(opts);
   const backend = n2nn ? poolBackendN2NN : poolBackend;
-  const ctc: PoolContract = contract || acct.contract(backend, addr);
+  const ctc: PoolContract = contract || acct.contract(backend, poolAddress);
   const traderAPI = ctc.apis.Trader;
 
   try {

@@ -2,7 +2,7 @@ import { ReachAccount, parseAddress, Maybe } from "../reach-helpers";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 import { announcerBackend } from "../build/backend";
 import { getPoolAnnouncer } from "../constants";
-import { fetchPool } from "../participants/PoolAnnouncer";
+import { fetchLiquidityPool } from "../participants/PoolAnnouncer";
 import { FetchPoolTxnResult } from "types";
 
 type PoolSubscriptionOpts = {
@@ -45,6 +45,6 @@ export function subscribeToPoolStream(
 
     // Asynchronous fetch and check whether pool has liquidity
     const fetchOpts = { ...opts, n2nn: tokA === "0" };
-    fetchPool(acc, fPoolAddr, fetchOpts).then(onPoolFetched);
+    fetchLiquidityPool(acc, fPoolAddr, fetchOpts).then(onPoolFetched);
   });
 }

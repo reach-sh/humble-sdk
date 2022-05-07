@@ -8,7 +8,7 @@ import {
 import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
 import { TransactionResult, ReachTxnOpts } from "../types";
-import { fetchPool } from "../participants/index";
+import { fetchLiquidityPool } from "../participants/index";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 
 /** Required options for withdrawing liquidity from a pool */
@@ -80,7 +80,7 @@ export async function withdrawLiquidity(
       return errorResult(msg, poolAddress, err, ctc);
     };
     const [withdrawResult, { succeeded, data: poolResult }] = await Promise.all(
-      [ctc.a.Provider.withdraw(amount), fetchPool(acc, poolAddress)]
+      [ctc.a.Provider.withdraw(amount), fetchLiquidityPool(acc, poolAddress)]
     );
     if (!succeeded || !poolResult) return poolNotFound();
 

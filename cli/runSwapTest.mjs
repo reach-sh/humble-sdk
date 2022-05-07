@@ -1,5 +1,5 @@
 import {
-  fetchPool,
+  fetchLiquidityPool,
   swapTokens,
   calculatePriceImpact,
   calculateTokenSwap,
@@ -67,7 +67,7 @@ export async function runSwapTest(acc, opts) {
 async function fetchSwapPool(acc, poolAddress, n2nn) {
   Yellow(`Fetching pool "${poolAddress}"`);
   const opts = { n2nn, onProgress };
-  const res = await fetchPool(acc, poolAddress, opts);
+  const res = await fetchLiquidityPool(acc, poolAddress, opts);
   const { succeeded, data, message, contract } = res;
   if (!succeeded) return exitWithMsgs(message);
 

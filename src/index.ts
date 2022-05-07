@@ -64,7 +64,7 @@ export { initHumbleSDK, setSlippage };
 export {
   createLiquidityPool,
   createStakingPool,
-  fetchPool,
+  fetchLiquidityPool,
   fetchToken,
 } from "./participants/index";
 

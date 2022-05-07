@@ -1,4 +1,4 @@
-import { fetchFarmAndTokens, fetchPool } from "@reach-sh/humble-sdk";
+import { fetchFarmAndTokens, fetchLiquidityPool } from "@reach-sh/humble-sdk";
 import {
   iout,
   exitWithMsgs,

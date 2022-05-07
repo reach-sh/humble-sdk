@@ -28,10 +28,10 @@ The following methods are exported from the SDK:
     - [addLiquidity Parameters](#addliquidity-parameters)
       - [DepositTxnOpts](#deposittxnopts)
     - [addLiquidity Returns](#addliquidity-returns)
-- [fetchPool](#fetchpool)
-    - [fetchPool Example](#fetchpool-example)
-    - [fetchPool Parameters](#fetchpool-parameters)
-    - [fetchPool Returns](#fetchpool-returns)
+- [fetchLiquidityPool](#fetchliquiditypool)
+    - [fetchLiquidityPool Example](#fetchliquiditypool-example)
+    - [fetchLiquidityPool Parameters](#fetchliquiditypool-parameters)
+    - [fetchLiquidityPool Returns](#fetchliquiditypool-returns)
 - [fetchToken](#fetchtoken)
     - [fetchToken Example](#fetchtoken-example)
     - [fetchToken Parameters](#fetchtoken-parameters)
@@ -291,7 +291,7 @@ function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts): Promise<Transact
 Adds liquidity to a `Pool`.
 
 #### addLiquidity Example
-See [`fetchPool`](#fetchpool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
+See [`fetchLiquidityPool`](#fetchliquiditypool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
 ```typescript
 import { addLiquidity } from "@reach-sh/humble-sdk";
 
@@ -343,20 +343,20 @@ type DepositTxnOpts = {
 
 --- 
 
-## fetchPool
+## fetchLiquidityPool
 ```typescript
-function fetchPool(acc: ReachAccount, poolAddress: string | number, opts?: FetchPoolOpts): Promise<FetchPoolTxnResult>;
+function fetchLiquidityPool(acc: ReachAccount, poolAddress: string | number, opts?: FetchPoolOpts): Promise<FetchPoolTxnResult>;
 ```
 Fetch data about a single liquidity pool.
 
-#### fetchPool Example
+#### fetchLiquidityPool Example
 ```typescript
-import { fetchPool } from "@reach-sh/humble-sdk";
+import { fetchLiquidityPool } from "@reach-sh/humble-sdk";
 
 // Get a pool ID or reference to one (see 'subscribeToPoolStream')
 // The following is only an example, and is not a real pool id
 const poolId = 1122334455;
-const { succeeded, data } = await fetchPool(poolId, { n2nn: true });
+const { succeeded, data } = await fetchLiquidityPool(poolId, { n2nn: true });
 if (succeeded) {
     // See 'FetchPoolTxnResult' for everything in 'data'
     const { pool, tokens } = data; 
@@ -379,7 +379,7 @@ if (succeeded) {
 }
 ```
 
-#### fetchPool Parameters
+#### fetchLiquidityPool Parameters
 * `acc: ReachAccount`: **reach** [account abstraction](https://docs.reach.sh/frontend/#ref-frontends-js-acc)
 * `poolAddress: string | number` The application ID (or contract address) of the `Pool` you want to fetch.
 * `opts?: FetchPoolOpts`\
@@ -392,7 +392,7 @@ type FetchPoolOpts = ReachTxnOpts & {
 };
 ```
 
-#### fetchPool Returns
+#### fetchLiquidityPool Returns
 For pool data properties, see [`PoolDetails`](./TYPES.md#pooldetails)
 ```typescript
 type FetchPoolTxnResult = {
@@ -559,7 +559,7 @@ function swapTokens(acct: ReachAccount, opts: SwapTxnOpts): Promise<TransactionR
 Swap one token in a Liquidity Pool for another.
 
 #### swapTokens Example: Swap
-See [`fetchPool`](#fetchpool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
+See [`fetchLiquidityPool`](#fetchliquiditypool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
 ```typescript
 const pool = /* pool source */
 
@@ -652,7 +652,7 @@ export async function withdrawLiquidity(
 Withdraw a percentage of the user's liquidity from a Pool.
 
 #### withdrawLiquidity Example
-See [`fetchPool`](#fetchpool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
+See [`fetchLiquidityPool`](#fetchliquiditypool) or [`subscribeToPoolStream`](#subscribetopoolstream) for pool sources.
 ```typescript
 const percentToWithdraw = 15; // Withdraw 15% of liquidity
 const pool = /* pool source */;

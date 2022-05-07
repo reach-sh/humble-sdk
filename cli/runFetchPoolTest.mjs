@@ -1,4 +1,4 @@
-import { fetchPool } from "@reach-sh/humble-sdk";
+import { fetchLiquidityPool } from "@reach-sh/humble-sdk";
 import {
   iout,
   exitWithMsgs,
@@ -19,6 +19,6 @@ export async function runFetchPoolTest(acc, [info, isN2nn]) {
   if (!addr) return exitWithMsgs("POOL address required but not found");
 
   Yellow(`Fetching single pool "${addr}"...`);
-  iout("Fetched pool", await fetchPool(acc, addr, { onProgress, n2nn }));
+  iout("Fetched pool", await fetchLiquidityPool(acc, addr, { onProgress, n2nn }));
   exitWithMsgs("Test complete! Exiting ...");
 }

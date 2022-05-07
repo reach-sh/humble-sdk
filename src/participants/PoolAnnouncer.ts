@@ -22,6 +22,8 @@ export type FetchPoolOpts = ReachTxnOpts & {
   n2nn: boolean;
 };
 
+export const fetchPool = fetchLiquidityPool
+
 /**
  * Fetch data about a pool
  * @param acc Reach Account instance
@@ -30,7 +32,7 @@ export type FetchPoolOpts = ReachTxnOpts & {
  * @param opts.tokens Pool token IDs
  * @param opts.n2nn Whether pool uses a network token (e.g. `ALGO`). Defaults to `false`. The correct value is required or the pool fetch will fail.
  */
-export async function fetchPool(
+export async function fetchLiquidityPool(
   acc: ReachAccount,
   poolAddress: string | number,
   opts: FetchPoolOpts = { n2nn: false }

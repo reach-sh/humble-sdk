@@ -2,7 +2,7 @@ import {
   addLiquidity,
   calculateOtherAmount,
   createReachAPI,
-  fetchPool,
+  fetchLiquidityPool,
   withdrawLiquidity,
 } from "@reach-sh/humble-sdk";
 import {
@@ -176,7 +176,7 @@ async function fetchLPool(acc, args) {
   //  Fetch pool
   Yellow(`* Fetching pool "${poolAddress}"`);
   const fetchOpts = { n2nn, onProgress: Yellow };
-  const poolResult = await fetchPool(acc, poolAddress, fetchOpts);
+  const poolResult = await fetchLiquidityPool(acc, poolAddress, fetchOpts);
   const { succeeded, message } = poolResult;
   if (!succeeded) return exitWithMsgs(JSON.stringify(message));
   return poolResult;

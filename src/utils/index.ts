@@ -113,7 +113,7 @@ export function successResult<T>(
   message: string,
   poolAddress = "",
   contract: any,
-  data?: T
+  data: T
 ): TransactionResult<T> {
   return {
     succeeded: true,

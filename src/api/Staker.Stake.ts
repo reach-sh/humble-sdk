@@ -24,7 +24,7 @@ type StakerOpts = {
  * @param opts.onProgress Optional callback for txn events/updates
  * @returns
  */
-export async function stakeAmount(acc: ReachAccount, opts: StakerOpts) {
+export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
   const { amountToStake, onProgress = noOp, onComplete = noOp } = opts;
   const farmResult = await fetchFarmAndTokens(acc, opts);
   const { contract, succeeded, data: farmData } = farmResult;
@@ -34,6 +34,7 @@ export async function stakeAmount(acc: ReachAccount, opts: StakerOpts) {
     return errorResult(msg, opts.poolAddress, farmResult.data, contract);
   } else onProgress(`Staking ${farmData.stakeToken.symbol}`);
 
+  const data = { amountStaked: "0", newTotalStaked: "0" };
   const poolAddress = opts.poolAddress?.toString();
   const { decimals, symbol } = farmData.stakeToken;
   const stakerAPI = contract.apis.Staker as StakerAPI;
@@ -42,16 +43,17 @@ export async function stakeAmount(acc: ReachAccount, opts: StakerOpts) {
     const amt = parseCurrency(amountToStake);
     const resp: StakeUpdate = await stakerAPI.stake(amt);
     const message = `Staked ${amountToStake} ${symbol}`;
-    const data = formatStakeRewardsUpdate(resp, decimals);
-    const result = successResult(message, poolAddress, contract, data);
+    const fmt = formatStakeRewardsUpdate(resp, decimals);
 
+    data.amountStaked = fmt.amountStaked;
+    data.newTotalStaked = fmt.newTotalStaked;
+    const result = successResult(message, poolAddress, contract, data);
     onComplete(result);
     return result;
   } catch (error: any) {
-    console.log('"Stake Amount" Error', { error });
     const message = `Staking failed: ${error?.toString()}`;
-    const poolAddress = opts.poolAddress;
-    const result = errorResult(message, poolAddress, error || null, contract);
+    console.log(message, { error });
+    const result = errorResult(message, poolAddress, data, contract);
     onComplete(result);
     return result;
   }

@@ -5,11 +5,17 @@ import {
   Maybe,
   formatCurrency,
 } from "../reach-helpers";
-import { FetchPoolTxnResult, PoolDetails, ReachTxnOpts } from "../types";
+import {
+  FetchPoolData,
+  FetchPoolTxnResult,
+  PoolDetails,
+  ReachTxnOpts,
+  TokenID,
+} from "../types";
 import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { getFeeInfo, getProtocolAddr } from "../constants";
-import { isNetworkToken, makeNetworkToken, withTimeout } from "../utils";
-import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
+import { isNetworkToken, makeNetworkToken, successResult, withTimeout } from "../utils";
+import { fromMaybe, isMaybe, noOp, trimByteString } from "../utils/utils.reach";
 
 export type FetchPoolOpts = ReachTxnOpts & {
   /** when true, is a network-to-non-network pool */
@@ -105,15 +111,9 @@ export async function fetchPool(
   };
 
   const tradeable = reach.gt(A, 0) && reach.gt(B, 0);
-  const result: FetchPoolTxnResult = {
-    poolAddress: ctcInfo,
-    succeeded: true,
-    data: {
-      pool,
-      tradeable,
-      tokens: [tokA, tokB],
-    },
-  };
+  const tokens: FetchPoolData["tokens"] = [tokA, tokB];
+  const data = { pool, tradeable, tokens }
+  const result = successResult("OK", ctcInfo, ctc, data)
   onComplete(result);
   return result;
 }
@@ -121,10 +121,10 @@ export async function fetchPool(
 /** Get info for a token (or `Maybe` Token) */
 export async function fetchToken(
   acc: ReachAccount,
-  token: string | number | Maybe<string | number>
+  token: TokenID | Maybe<TokenID>
 ) {
   const { bigNumberToNumber, eq } = createReachAPI();
-  const id = Array.isArray(token) ? fromMaybe(token) : token;
+  const id = isMaybe(token) ? fromMaybe(token) : (token as TokenID);
   const networkToken = id === null || eq(id, 0) || isNetworkToken(id);
   if (networkToken) return makeNetworkToken();
 

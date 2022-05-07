@@ -1,53 +1,60 @@
 import { fromMaybe, noOp } from "../utils/utils.reach";
-import {
-  stakingBackend,
-  StakingContract,
-  StakingContractViews,
-} from "../build/backend";
+import { StakingContract, StakingContractViews } from "../build/backend";
 import {
   BigNumber,
   createReachAPI,
-  parseCurrency,
+  formatAddress,
+  formatCurrency,
   ReachAccount,
 } from "../reach-helpers/index";
-import {
-  TransactionResult,
-  ReachTxnOpts,
-  StakeUpdate,
-  StakingRewards,
-} from "../types";
+import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
 import { errorResult, successResult } from "../utils";
-import { fetchFarmAndTokens } from "./Staker.Fetch";
-import {
-  SDKStakeUpdate,
-  formatStakeRewardsUpdate,
-} from "../utils/utils.staker";
+import { fetchFarmAndTokens, fetchStakingPool } from "./Staker.Fetch";
+import { fetchToken } from "../participants";
 
 export { fetchFarmAndTokens, fetchStakingPool } from "./Staker.Fetch";
-export { stakeAmount } from "./Staker.Stake";
+export { stakeTokensToFarm } from "./Staker.Stake";
+export { unstakeTokensFromFarm } from "./Staker.Unstake";
+export { harvestStakingRewards } from "./Staker.Harvest";
 
 /**
- * Check user's staked amount in staking pool `farmId`
+ * Check balance of user's stake in pool `poolAddress`
  * @param acc Reach account
  * @param opts Transaction options
  * @param opts.poolAddress Staking farm contract ID
  * @param opts.onComplete Optional callback for consuming txn response
  * @param opts.onProgress Optional callback for txn events/updates
- * @returns Number or BigNumber of user's staking balance
+ * @returns Transaction result with user's staking `balance`
  */
-export async function getStakingBalance(
+export async function checkStakingBalance(
   acc: ReachAccount,
   opts: ReachTxnOpts
-): Promise<any> {
-  const { contract, poolAddress, onComplete = noOp, onProgress = noOp } = opts;
-  const ctc = contract || acc.contract(stakingBackend, poolAddress);
-  const view: StakingContractViews = ctc.views;
-  const address = createReachAPI().formatAddress(acc.getAddress());
+) {
+  // Response data
+  const data = { balance: "0" };
+  const { poolAddress: id, onComplete = noOp, onProgress = noOp } = opts;
+  const poolAddress = id?.toString();
+
+  onProgress("Fetching Farm metadata");
+  const farm = await fetchFarmAndTokens(acc, opts);
+  if (!farm.succeeded) {
+    const msg = farm.message;
+    return errorResult(msg, poolAddress, data, farm.contract);
+  }
 
   onProgress("Fetching staking balance");
-  const staked = fromMaybe(await view?.staked(address));
-  onComplete(staked);
-  return staked;
+  const ctc = farm.contract as StakingContract;
+  const view: StakingContractViews = ctc.views;
+  const rawStaked = await view?.staked(formatAddress(acc));
+  const formatStake = (v: any) => {
+    const { stakeToken } = farm.data;
+    return formatCurrency(v, stakeToken?.decimals);
+  };
+
+  data.balance = fromMaybe(rawStaked, formatStake);
+  const result = successResult("OK", poolAddress, ctc, data);
+  onComplete(result);
+  return result;
 }
 
 /** Options for checking rewards */
@@ -63,116 +70,49 @@ type GetRewardsOpts = { time?: string | number | BigNumber } & ReachTxnOpts;
  * @param opts.poolAddress Staking farm contract ID
  * @param opts.onComplete Optional callback for consuming txn response
  * @param opts.onProgress Optional callback for txn events/updates
- * @returns Number or BigNumber of rewards available to user at `time`
+ * @returns Tuple of `network` and `rewardToken` rewards [`n`, `nn`]
  */
-export async function getRewardsAvailableAt(
+export async function checkRewardsAvailableAt(
   acc: ReachAccount,
   opts: GetRewardsOpts
-): Promise<TransactionResult<StakingRewards | null>> {
-  const { poolAddress: farm, contract } = opts;
-  const poolAddress = farm?.toString();
-  const { formatAddress, bigNumberify, getNetworkTime } = createReachAPI();
+): Promise<TransactionResult<StakingRewards>> {
+  // Response data
+  const { formatAddress, getNetworkTime } = createReachAPI();
+  const data: StakingRewards = ["0", "0"];
+
+  const { poolAddress: poolId, onProgress = noOp } = opts;
   const address = formatAddress(acc.getAddress());
   if (!address) {
-    const data: StakingRewards = [bigNumberify(0), bigNumberify(0)];
     const message = "Invalid address or account supplied";
-    return errorResult(message, poolAddress, data, null);
+    return errorResult(message, poolId, data, null);
   }
 
+  const id = poolId?.toString();
   const time = opts.time || (await getNetworkTime());
-  const ctc: StakingContract =
-    contract || acc.contract(stakingBackend, poolAddress);
-  const data = fromMaybe(
-    await ctc.views.rewardsAvailableAt(address, time)
-  ) as StakingRewards | null;
+  const farm = await fetchStakingPool(acc, { poolAddress: id });
+  if (!farm.succeeded) {
+    const message = "Farm not found";
+    return errorResult(message, poolId, data, null);
+  }
 
-  // compute result
-  const succeeded = Array.isArray(data);
-  const message = succeeded ? "OK" : "Could not fetch rewards";
-  return succeeded
-    ? successResult(message, poolAddress, ctc, data)
-    : errorResult(message, poolAddress, data, ctc);
-}
-
-/**
- * Claim all rewards available to user,
- * @param acc Reach account
- * @param opts Transaction options
- * @param opts.time Block time for checking rewards
- * @param opts.contract Staking farm contract (if available)
- * @param opts.poolAddress Staking farm contract ID
- * @param opts.onComplete Optional callback for consuming txn response
- * @param opts.onProgress Optional callback for txn events/updates
- * @returns Number or BigNumber of rewards available to user at `time`
- */
-export async function claimStakingRewards(
-  acc: ReachAccount,
-  opts: ReachTxnOpts
-) {
-  const id = opts.poolAddress?.toString();
-  const fandTResult = await fetchFarmAndTokens(acc, opts);
-  const { succeeded, contract, message, data: farmAndTokens } = fandTResult;
-  const missingFarm = !farmAndTokens?.farmView || !farmAndTokens?.stakeToken;
-  if (!succeeded || missingFarm || !contract)
-    return errorResult(message as string, id, null, contract);
-
-  const { onProgress = noOp, onComplete = noOp } = opts;
-  const { stakeToken } = farmAndTokens;
+  onProgress("Fetching reward token");
+  const { contract, data: fd } = farm;
+  const rewardToken = await fetchToken(acc, fd.opts.rewardToken1);
   const ctc = contract as StakingContract;
-  const done = (r: any): TransactionResult<SDKStakeUpdate> => {
-    onComplete(r);
-    return r;
-  };
 
-  try {
-    onProgress("Claiming rewards");
-    const resp: StakeUpdate = await ctc.a.Staker.harvest();
-    const data = formatStakeRewardsUpdate(resp, stakeToken?.decimals);
-    return done(successResult("OK", id?.toString(), ctc, data));
-  } catch (error: any) {
-    console.log("Claim Staking Rewards Error", { e: error });
-    const msg = "Rewards were not claimed";
-    return done(errorResult(msg, id?.toString(), error, ctc));
-  }
-}
+  onProgress("Checking rewards");
+  const rewardsAtTime = fromMaybe(
+    await ctc.views.rewardsAvailableAt(address, time)
+  );
 
-/** Options for unstaking from Farm */
-type UnstakeOpts = { amount: number | string } & ReachTxnOpts;
-
-/**
- * Remove (un-stake) an amount from a contract. Reduces rewards entitlement.
- * @param acc Reach account instance
- * @param opts Txn opts
- * @param opts.amountToStake Amount of `stakeToken` user wishes to stake. Plain
- * strings or numbers will be big-numberified: big numbers will cause an error.
- * @param opts.contract Staking farm contract (if available)
- * @param opts.poolAddress Staking farm contract ID
- * @param opts.onComplete Optional callback for consuming txn response
- * @param opts.onProgress Optional callback for txn events/updates
- * @returns
- */
-export async function unstakeAmount(acc: ReachAccount, opts: UnstakeOpts) {
-  const { contract, amount, onProgress = noOp, onComplete = noOp } = opts;
-  if (!opts.poolAddress) {
-    return errorResult("Pool address is required", null, null, null);
+  // error result
+  if (!Array.isArray(rewardsAtTime)) {
+    const message = "Could not fetch rewards";
+    return errorResult(message, id, data, ctc);
   }
 
-  onProgress("Withdrawing stake");
-  const id = opts.poolAddress?.toString();
-  const ctc: StakingContract = contract || acc.contract(stakingBackend, id);
-  const { isBigNumber } = createReachAPI();
-  const amt = isBigNumber(amount) ? amount : parseCurrency(amount);
-
-  try {
-    const update = formatStakeRewardsUpdate(await ctc.a.Staker.withdraw(amt));
-    const msg = `Withdrew ${isBigNumber(amount) ? "stake" : amount}`;
-    const result = successResult(msg, id, ctc, update);
-
-    onComplete(result);
-    return result;
-  } catch (error: any) {
-    console.log("Unstake Amount", { e: error });
-    const msg = "Could not unstake from Pool";
-    return errorResult(msg, id, error, contract);
-  }
+  // Success result
+  data[0] = formatCurrency(rewardsAtTime[0]);
+  data[1] = formatCurrency(rewardsAtTime[1], rewardToken?.decimals);
+  return successResult("OK", id, ctc, data);
 }

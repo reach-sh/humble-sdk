@@ -17,7 +17,7 @@ export type ComputeSwapFn = {
   ): Balances[];
 };
 
-export type TokenID = string | number;
+export type TokenID = string | number | null;
 
 export type SwapTxnOpts = {
   swap: SwapInfo;
@@ -40,9 +40,9 @@ export type TransactionResult<T> = {
   /** The pool address targeted for the txn */
   poolAddress?: string | number;
   /** Any useful data associated about the txn (or any error encountered) */
-  data?: T;
+  data: T;
   /** Optional success or failure message */
-  message?: string;
+  message: string;
   /** Contract instance used for the transaction. Can be reused in subsequent calls. */
   contract?: ReachContract<any>;
 };
@@ -148,6 +148,7 @@ export type FetchPoolTxnResult = TransactionResult<FetchPoolData>;
 
 /** Staking Rewards ([`network token rewards`, `rewards token rewards`]) */
 export type StakingRewards = [BigNumber, BigNumber];
+export type SDKStakingRewards = [string, string];
 
 /** Notification object (Stake updated) */
 export type StakeUpdate = {
@@ -168,29 +169,21 @@ export type StakingRewardsUpdate = {
 /** Options reused in the contract */
 export type StakingDeployerOpts = {
   /** Rewards token (cannot be `network` token e.g. `ALGO`]) */
-  nnRewardToken: TokenID;
+  rewardTokenId: TokenID;
   /** Token to stake for rewards */
-  stakeToken: TokenID;
+  stakeTokenId: TokenID;
   /** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
-  rewardsPerBlock: StakingRewards;
-  /** Length of rewards (blocks) */
-  duration: number;
-};
-
-/** Deployer (creates the farming pool) */
-export type StakingDeployer = {
-  /** Initial contract options */
-  opts: StakingDeployerOpts;
-  /** Notify deployer that contract is live */
-  readyForStakers(): any;
-};
+  totalRewardsPayout: StakingRewards;
+  /** Length of rewards (will be converted into blocks) */
+  lengthInDays: number;
+} & ReachTxnOpts;
 
 /** Staker (stakes tokens for rewards) */
 export type StakerAPI = {
   /** Stake an amount for rewards */
   stake(amt: BigNumber): Promise<StakeUpdate>;
   /** Harvest rewards for stake */
-  harvest(): StakingRewardsUpdate;
+  harvest(): Promise<StakingRewardsUpdate>;
   /** Withdraw stake */
   withdraw(amt: BigNumber): Promise<StakeUpdate>;
 };

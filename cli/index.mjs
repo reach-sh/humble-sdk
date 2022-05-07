@@ -20,6 +20,8 @@ import { runAnnouncerTest } from "./runAnnouncerTest.mjs";
 import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
 import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
+import { runCreateStakingPoolTest } from "./createStaker.mjs";
+import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
 
 // init SDK
 initHumbleSDK({ network: "TestNet" });
@@ -27,11 +29,13 @@ initHumbleSDK({ network: "TestNet" });
 const reach = createReachAPI();
 const options = [
   { title: "List Pools", action: runAnnouncerTest },
-  { title: "Create a Pool", action: runCreatePoolTest },
-  { title: "Add/remove Liquidity", action: runLiquidity },
-  { title: "Swap tokens", action: runSwapTest },
-  { title: "Fetch a Pool", action: runFetchPoolTest },
   { title: "Fetch a Token", action: runFetchTokenTest },
+  { title: "Swap tokens", action: runSwapTest },
+  { title: "Create a Liquidity Pool", action: runCreatePoolTest },
+  { title: "Fetch a Liquidity Pool", action: runFetchPoolTest },
+  { title: "Add/remove Liquidity", action: runLiquidity },
+  { title: "Create a Staking Pool", action: runCreateStakingPoolTest },
+  { title: "Fetch a Staking Pool", action: runFetchFarmTest },
 ];
 
 (async () => {

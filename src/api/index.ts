@@ -7,11 +7,11 @@ export { subscribeToPoolStream } from "./subscribeToPoolStream";
 
 // Staking/Farming
 export {
-  claimStakingRewards,
+  checkRewardsAvailableAt,
+  checkStakingBalance,
   fetchFarmAndTokens,
   fetchStakingPool,
-  getRewardsAvailableAt,
-  getStakingBalance,
-  stakeAmount,
-  unstakeAmount,
+  harvestStakingRewards,
+  stakeTokensToFarm,
+  unstakeTokensFromFarm,
 } from "./Staker.API";

@@ -32,14 +32,16 @@ export async function checkStakingBalance(
 ) {
   // Response data
   const data = { balance: "0" };
-  const { poolAddress: id, onComplete = noOp, onProgress = noOp } = opts;
-  const poolAddress = id?.toString();
+  const { onComplete = noOp, onProgress = noOp } = opts;
+  const [valid, why] = protectArgs(acc, opts);
+  if (!valid) return errorResult(why, opts.poolAddress, data);
 
   onProgress("Fetching Farm metadata");
+  const id = opts.poolAddress?.toString();
   const farm = await fetchFarmAndTokens(acc, opts);
   if (!farm.succeeded) {
     const msg = farm.message;
-    return errorResult(msg, poolAddress, data, farm.contract);
+    return errorResult(msg, id, data, farm.contract);
   }
 
   onProgress("Fetching staking balance");
@@ -52,7 +54,7 @@ export async function checkStakingBalance(
   };
 
   data.balance = fromMaybe(rawStaked, formatStake);
-  const result = successResult("OK", poolAddress, ctc, data);
+  const result = successResult("OK", id, ctc, data);
   onComplete(result);
   return result;
 }
@@ -77,22 +79,18 @@ export async function checkRewardsAvailableAt(
   opts: GetRewardsOpts
 ): Promise<TransactionResult<StakingRewards>> {
   // Response data
-  const { formatAddress, getNetworkTime } = createReachAPI();
   const data: StakingRewards = ["0", "0"];
+  const [valid, why] = protectArgs(acc, opts);
+  if (!valid) return errorResult(why, opts.poolAddress, data);
 
-  const { poolAddress: poolId, onProgress = noOp } = opts;
-  const address = formatAddress(acc.getAddress());
-  if (!address) {
-    const message = "Invalid address or account supplied";
-    return errorResult(message, poolId, data, null);
-  }
-
-  const id = poolId?.toString();
+  const { onProgress = noOp, onComplete = noOp } = opts;
+  const { formatAddress, getNetworkTime } = createReachAPI();
+  const id = opts.poolAddress?.toString();
   const time = opts.time || (await getNetworkTime());
   const farm = await fetchStakingPool(acc, { poolAddress: id });
   if (!farm.succeeded) {
     const message = "Farm not found";
-    return errorResult(message, poolId, data, null);
+    return errorResult(message, id, data, null);
   }
 
   onProgress("Fetching reward token");
@@ -102,7 +100,7 @@ export async function checkRewardsAvailableAt(
 
   onProgress("Checking rewards");
   const rewardsAtTime = fromMaybe(
-    await ctc.views.rewardsAvailableAt(address, time)
+    await ctc.views.rewardsAvailableAt(formatAddress(acc), time)
   );
 
   // error result
@@ -114,5 +112,17 @@ export async function checkRewardsAvailableAt(
   // Success result
   data[0] = formatCurrency(rewardsAtTime[0]);
   data[1] = formatCurrency(rewardsAtTime[1], rewardToken?.decimals);
-  return successResult("OK", id, ctc, data);
+  const result = successResult("OK", id, ctc, data);
+  onComplete(result);
+  return result;
+}
+
+function protectArgs(
+  acc: ReachAccount,
+  opts?: ReachTxnOpts
+): [boolean, string] {
+  if (!acc) return [false, "Account is required"];
+  if (!opts) return [false, "Options are required"];
+  if (!opts.poolAddress) return [false, "Pool address is required"];
+  return [true, ""];
 }

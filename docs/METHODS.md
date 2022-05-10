@@ -345,7 +345,7 @@ type DepositTxnOpts = {
 
 ## fetchLiquidityPool
 ```typescript
-function fetchLiquidityPool(acc: ReachAccount, poolAddress: string | number, opts?: FetchPoolOpts): Promise<FetchPoolTxnResult>;
+function fetchLiquidityPool(acc: ReachAccount, opts?: FetchPoolOpts): Promise<FetchPoolTxnResult>;
 ```
 Fetch data about a single liquidity pool.
 
@@ -355,8 +355,12 @@ import { fetchLiquidityPool } from "@reach-sh/humble-sdk";
 
 // Get a pool ID or reference to one (see 'subscribeToPoolStream')
 // The following is only an example, and is not a real pool id
-const poolId = 1122334455;
-const { succeeded, data } = await fetchLiquidityPool(poolId, { n2nn: true });
+const acc = /* account source */;
+const { succeeded, data } = await fetchLiquidityPool(acc, { 
+    poolAddress: 1122334455,
+    n2nn: true 
+});
+
 if (succeeded) {
     // See 'FetchPoolTxnResult' for everything in 'data'
     const { pool, tokens } = data; 
@@ -389,6 +393,8 @@ type FetchPoolOpts = ReachTxnOpts & {
     // When set to true, this means one of the pool tokens is a network token (e.g. "ALGO" 
     // or "ETH"). The correct value is required for fetching the pool data. 
     n2nn: boolean;
+    // Address of the pool you want to fetch
+    poolAddress: string | number
 };
 ```
 
@@ -410,7 +416,7 @@ type FetchPoolTxnResult = {
         tradeable: boolean;
     };
     // Optional success or failure message 
-    message?: string;
+    message: string;
     // Contract instance used for the transaction. Can be reused in subsequent calls. 
     contract?: ReachContract<typeof poolBackend | typeof poolBackendN2NN>;
 };

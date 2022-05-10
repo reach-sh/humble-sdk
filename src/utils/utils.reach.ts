@@ -33,7 +33,7 @@ export function asMaybe<T extends any>(val: T): Maybe<T> {
  */
 export function fromMaybe<T extends any>(
   mVal: T | Maybe<T>,
-  format = (v: T) => v,
+  format = (v: T): any => v,
   fallback: any = null
 ): T | null {
   if (!isMaybe(mVal)) return format(mVal as T);

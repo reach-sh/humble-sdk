@@ -18,6 +18,7 @@ export function runAnnouncerTest(acc) {
       resetTimer();
     },
     onPoolFetched,
+    onProgress: Yellow
   });
   Blue(`Listening for up to ${LIMIT} pools.`);
   resetTimer();

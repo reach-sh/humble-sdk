@@ -129,17 +129,18 @@ export type SwapInfo = TokenPair & {
   tokenIn?: string | number;
 };
 
+/** A pair of `Token` objects */
+export type ReachTokenPair = [tokA: ReachToken, tokB: ReachToken];
+
 /** High-level information about a pool */
 export type FetchPoolData = {
   /** Pool data */
   pool: PoolDetails | null;
   /** Pool token data */
-  tokens: [tokA: ReachToken, tokB: ReachToken];
+  tokens?: ReachTokenPair;
   /** Whether pool has liquidity and is tradeable */
   tradeable: boolean;
 };
-
-export type FetchPoolTxnResult = TransactionResult<FetchPoolData>;
 
 /**
  * @version v2

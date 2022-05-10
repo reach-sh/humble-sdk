@@ -5,9 +5,9 @@ import {
   formatCurrency,
   BigNumber,
 } from "../reach-helpers";
-import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
+import { PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
-import { TransactionResult, ReachTxnOpts } from "../types";
+import { TransactionResult, ReachTxnOpts, ReachTokenPair } from "../types";
 import { fetchLiquidityPool } from "../participants/index";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 
@@ -16,7 +16,7 @@ export type RequiredWithdrawOpts = ReachTxnOpts & {
   /** Pool liquidity token id */
   poolTokenId: string | number;
   /** When `true`, pool contains network token (e.g. `ALGO` or `ETH`) */
-  n2nn: boolean;
+  n2nn?: boolean;
 };
 
 /** All options for withdrawing liquidity from a pool */
@@ -34,6 +34,13 @@ export type WithdrawResult = {
   mintedLPTokens: string | number;
 };
 
+/** @internal Default data response */
+const NODATA: WithdrawResult = {
+  lpBalance: 0,
+  received: { tokenA: null, tokenB: null },
+  mintedLPTokens: 0,
+};
+
 /**
  * Withdraw liquidity from a pool. Requires a reach `networkAccount` instance.
  * Takes optional `onProgress` and `onComplete` callbacks for handling UI notifications
@@ -47,59 +54,56 @@ export type WithdrawResult = {
 export async function withdrawLiquidity(
   acc: ReachAccount,
   opts: WithdrawOpts
-): Promise<TransactionResult<Error | WithdrawResult>> {
+): Promise<TransactionResult<WithdrawResult>> {
+  const data = { ...NODATA, received: { ...NODATA.received } };
+  const [valid, reason] = validateArgs(acc, opts);
+  if (!valid) return errorResult(reason, null, data);
+
   const {
+    poolAddress: poolId,
     exchangeLPTokens: inputAmt,
     percentToWithdraw: pct,
-    n2nn,
+  } = opts;
+  const poolAddress = parseAddress(poolId).toString();
+  const {
+    n2nn = false,
     poolTokenId,
-    poolAddress: poolId,
     onComplete = noOp,
     onProgress = noOp,
   } = opts;
-  const poolAddress = poolId?.toString();
-  if ((!inputAmt && !pct) || !poolAddress) {
-    const msg = "Invalid options supplied";
-    return errorResult(msg, poolAddress, new Error(msg));
+
+  onProgress(`Fetching Pool metadata`);
+  const lpopts = { poolAddress, n2nn, contract: opts.contract };
+  const lpool = await fetchLiquidityPool(acc, lpopts);
+  if (!lpool.succeeded || !Array.isArray(lpool.data.tokens)) {
+    return errorResult("Pool not found", poolAddress, data, lpool.contract);
   }
 
+  const { data: poolResult, contract } = lpool;
+  const ctc = contract as PoolContract;
   const { setSigningMonitor, balanceOf, bigNumberToNumber } = createReachAPI();
-  onProgress(`Checking user balance of LP Token "${poolAddress}"`);
-  const amount = inputAmt || (await amountFromPctInput(pct, acc, poolTokenId));
-  const backend = n2nn ? poolBackendN2NN : poolBackend;
-  const ctc = (opts.contract ||
-    acc.contract(backend, parseAddress(poolAddress))) as PoolContract;
-
   setSigningMonitor(() => onProgress("SIGNING_EVENT"));
 
   try {
     onProgress(`Withdrawing funds`);
-    const poolNotFound = () => {
-      const msg = "Pool not found";
-      const err = new Error(msg);
-      return errorResult(msg, poolAddress, err, ctc);
+    const amt = inputAmt || (await amountFromPctInput(pct, acc, poolTokenId));
+    const withdrawResult = await ctc.apis.Provider.withdraw(amt);
+    const tokens = poolResult.tokens as ReachTokenPair;
+    data.received = {
+      tokenA: formatCurrency(withdrawResult.A, tokens[0].decimals),
+      tokenB: formatCurrency(withdrawResult.B, tokens[1].decimals),
     };
-    const [withdrawResult, { succeeded, data: poolResult }] = await Promise.all(
-      [ctc.a.Provider.withdraw(amount), fetchLiquidityPool(acc, poolAddress)]
-    );
-    if (!succeeded || !poolResult) return poolNotFound();
 
     onProgress("Fetching updated pool LP token balance");
     const [tokensView, lpBalance] = await Promise.all([
       fromMaybe(await ctc.views.Info()),
       balanceOf(acc, poolTokenId).then(bigNumberToNumber),
     ]);
-    const { tokens } = poolResult;
-    if (!tokensView) return poolNotFound();
 
-    const data: WithdrawResult = {
-      lpBalance,
-      received: {
-        tokenA: formatCurrency(withdrawResult.A, tokens[0].decimals),
-        tokenB: formatCurrency(withdrawResult.B, tokens[1].decimals),
-      },
-      mintedLPTokens: formatCurrency(tokensView.lptBals.B, 0),
-    };
+    if (lpBalance) data.lpBalance = lpBalance;
+    if (tokensView) {
+      data.mintedLPTokens = formatCurrency(tokensView?.lptBals.B, 0);
+    }
 
     const result = successResult("Funds withdrawn", poolAddress, ctc, data);
     onComplete(result);
@@ -107,12 +111,15 @@ export async function withdrawLiquidity(
   } catch (e: any) {
     console.error("HumbleSDK withdraw error", { e });
     const msg = parseContractError("Funds were not withdrawn", e);
-    const err = new Error(`${msg} ${e?.toString()}`);
-    return errorResult(msg, poolAddress, err, ctc);
+    return errorResult(msg, poolAddress, data, ctc);
   }
 }
 
-/** @internal Calculate amount of liquidity pool tokens to exchange for staked tokens */
+/**
+ * @internal
+ * Calculate amount of liquidity pool tokens to exchange for staked tokens.
+ * Used when a user enters a percentage amount (e.g. `5` = `withdraw 5% of liquidity`)
+ */
 async function amountFromPctInput(
   pctInput: any,
   acc: any,
@@ -122,4 +129,21 @@ async function amountFromPctInput(
   const userLiquidity = await balanceOf(acc, parseAddress(poolTokenId));
   const divisor = bigNumberify(100).div(bigNumberify(pctInput));
   return userLiquidity.div(divisor);
+}
+
+/** @internal Ensure correct arguments are supplied */
+function validateArgs(
+  acc?: ReachAccount,
+  opts?: WithdrawOpts
+): [boolean, string] {
+  if (!acc) return [false, "Account is required"];
+  if (!opts) return [false, "Options are required"];
+  if (!opts.poolAddress) return [false, "Pool address is required"];
+  const { exchangeLPTokens, percentToWithdraw, poolTokenId } = opts;
+  if (!exchangeLPTokens && !percentToWithdraw) {
+    return [false, "Withdrawal % or LP token amount is required"];
+  }
+  if (!poolTokenId) return [false, "Pool LP Token ID is required"];
+
+  return [true, ""];
 }

@@ -22,6 +22,8 @@ type AddLiquidityResult = { lpTokens?: number };
 export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
   const data: AddLiquidityResult = { lpTokens: 0 };
   const [valid, message] = protectArgs(opts);
+
+  if (!acc) return errorResult("Account is required", null, data, null);
   if (!valid) return errorResult(message, null, data, null);
 
   const {
@@ -36,6 +38,10 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
   const backend = pool.n2nn ? poolBackendN2NN : poolBackend;
   const ctc: PoolContract = contract || acc.contract(backend, poolAddress);
   const { Provider } = ctc.apis;
+  const done = (result: TransactionResult<AddLiquidityResult>) => {
+    onComplete(result);
+    return result;
+  };
 
   // (OPTIONAL) opt-in to LP token
   const { poolTokenId } = pool;
@@ -50,10 +56,6 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
   }
 
   const { tokenADecimals = 6, tokenBDecimals = 6 } = pool;
-  const done = (result: TransactionResult<AddLiquidityResult>) => {
-    onComplete(result);
-    return result;
-  };
 
   try {
     onProgress(`Depositing funds`);
@@ -80,6 +82,8 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
  * @returns [`isValid: boolean`, `validationError?: string`]
  */
 export function protectArgs(opts: DepositTxnOpts): [boolean, string] {
+  if (!opts) return [false, "No options provided"];
+
   const { amounts, pool } = opts;
   let valid = true;
   let message = "";
@@ -87,6 +91,7 @@ export function protectArgs(opts: DepositTxnOpts): [boolean, string] {
 
   const { poolAddress } = pool;
   if (!poolAddress) return [false, "Invalid pool provided"];
+  if (!Array.isArray(amounts)) return [false, "Invalid amounts provided"];
 
   const [tokAAmt, tokBAmt] = amounts;
   const sum = Number(tokAAmt) + Number(tokBAmt) !== 0;

@@ -24,8 +24,10 @@ describe("Reach Helpers | Utils", () => {
   it("Unwraps a `Maybe` value", () => {
     const some = H.asMaybe(v1);
     const none = H.asMaybe(v2);
+    const control = v2;
     expect(H.fromMaybe(some)).toStrictEqual(v1);
     expect(H.fromMaybe(none)).toStrictEqual(v2);
+    expect(H.fromMaybe(control)).toStrictEqual(v2);
   });
 
   it("Asserts a valid `Maybe` value", () => {

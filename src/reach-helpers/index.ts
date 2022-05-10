@@ -21,8 +21,9 @@ export function createReachAPI() {
 }
 
 /** @reach_helper Format address for `networkAccount` instance */
-export function formatAddress(acc: T.ReachAccount) {
-  return createReachAPI().formatAddress(acc.getAddress());
+export function formatAddress(acc: T.ReachAccount | string) {
+  const { formatAddress: fmt } = createReachAPI();
+  return typeof acc === "string" ? fmt(acc) : fmt(acc.getAddress());
 }
 
 /**

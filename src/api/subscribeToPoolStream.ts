@@ -2,17 +2,22 @@ import { ReachAccount, parseAddress, Maybe } from "../reach-helpers";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 import { announcerBackend } from "../build/backend";
 import { getPoolAnnouncer } from "../constants";
-import { fetchLiquidityPool } from "../participants/PoolAnnouncer";
-import { FetchPoolTxnResult } from "types";
+import {
+  fetchLiquidityPool,
+  FetchPoolOpts,
+} from "../participants/PoolAnnouncer";
+import { FetchPoolData, ReachTxnOpts, TransactionResult } from "types";
 
+/** Options for subscribing to pools */
 type PoolSubscriptionOpts = {
   /** (Optional) called when contract data is received, but BEFORE pool is fetched */
   onPoolReceived?: (...args: any[]) => void;
   /** Called when the pool data has been fetched and formatted */
-  onPoolFetched(data: FetchPoolTxnResult): any;
-};
+  onPoolFetched(data: TransactionResult<FetchPoolData>): any;
+} & ReachTxnOpts;
 
 type PoolRegisterEvent = {
+  /** Actual event data */
   what: [
     /** Pool address */
     poolAddr: string,
@@ -21,6 +26,7 @@ type PoolRegisterEvent = {
     /** Pool `Token B` */
     tokB: any
   ];
+  /** Block time when event was received */
   when: any;
 };
 
@@ -44,7 +50,13 @@ export function subscribeToPoolStream(
     onPoolReceived([fPoolAddr, tokA, parseAddress(tokB)]);
 
     // Asynchronous fetch and check whether pool has liquidity
-    const fetchOpts = { ...opts, n2nn: tokA === "0" };
-    fetchLiquidityPool(acc, fPoolAddr, fetchOpts).then(onPoolFetched);
+    const fetchOpts: FetchPoolOpts = {
+      poolAddress: fPoolAddr,
+      n2nn: tokA === "0",
+      onComplete: opts.onComplete || noOp,
+      onProgress: opts.onProgress || noOp,
+    };
+
+    fetchLiquidityPool(acc, fetchOpts).then(onPoolFetched);
   });
 }

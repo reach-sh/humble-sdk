@@ -25,16 +25,17 @@ type StakerOpts = {
  * @returns
  */
 export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
+  // Response data
+  const data = { amountStaked: "0", newTotalStaked: "0" };
   const { amountToStake, onProgress = noOp, onComplete = noOp } = opts;
   const farmResult = await fetchFarmAndTokens(acc, opts);
   const { contract, succeeded, data: farmData } = farmResult;
   if (!succeeded || !farmData?.stakeToken || !contract) {
     const e = farmResult.message || "Staking token not found";
     const msg = `Staking failed: ${e}`;
-    return errorResult(msg, opts.poolAddress, farmResult.data, contract);
+    return errorResult(msg, opts.poolAddress, data, contract);
   } else onProgress(`Staking ${farmData.stakeToken.symbol}`);
 
-  const data = { amountStaked: "0", newTotalStaked: "0" };
   const poolAddress = opts.poolAddress?.toString();
   const { decimals, symbol } = farmData.stakeToken;
   const stakerAPI = contract.apis.Staker as StakerAPI;

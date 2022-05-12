@@ -25,7 +25,6 @@ export function formatAddress(acc: T.ReachAccount | string) {
   const { formatAddress: fmt } = createReachAPI();
   return typeof acc === "string" ? fmt(acc) : fmt(acc.getAddress());
 }
-
 /**
  * @reach_helper Optionally-abbreviated currency formatter (e.g.
  * `fn(1000)` -> `1000` || `1K` ). Expects `amt` to be in atomic unit for network */

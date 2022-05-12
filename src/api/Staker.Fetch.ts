@@ -2,6 +2,8 @@ import { fromMaybe, noOp } from "../utils/utils.reach";
 import { errorResult, successResult } from "../utils";
 import {
   BigNumber,
+  createReachAPI,
+  formatCurrency,
   ReachAccount,
   ReachContract,
   ReachToken,
@@ -9,6 +11,8 @@ import {
 import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
 import { stakingBackend } from "../build/backend";
 import { fetchToken } from "../participants";
+import { formatRewardsPair } from "../utils/utils.staker";
+import CHAIN_CONSTANTS from "../json";
 
 export type DeployerOpts = {
   /** Number of blocks to run contract */
@@ -65,7 +69,7 @@ type FarmAndTokens = {
  */
 export async function fetchFarmAndTokens(
   acc: ReachAccount,
-  opts: ReachTxnOpts
+  opts: ReachTxnOpts & { formatResult?: boolean }
 ): Promise<TransactionResult<FarmAndTokens>> {
   // Response data
   const data: FarmAndTokens = {
@@ -93,12 +97,15 @@ export async function fetchFarmAndTokens(
   onProgress("Fetching farm tokens");
   const { opts: farmOpts } = farmView;
   const { stakeToken: stakeTokenId, rewardToken1: rewardTokenId } = farmOpts;
-  const [stakeToken, rewardToken] = await Promise.all([
+  const [stakeToken, rewardToken, now] = await Promise.all([
     fetchToken(acc, stakeTokenId),
     fetchToken(acc, rewardTokenId),
+    createReachAPI().getNetworkTime(),
   ]);
 
-  data.farmView = farmView;
+  data.farmView = opts.formatResult
+    ? formatFarmView(farmView, { stakeToken, rewardToken }, poolAddress, now)
+    : farmView;
   data.stakeToken = stakeToken;
   data.rewardToken = rewardToken;
   const msg = "Fetched farm and tokens";
@@ -148,4 +155,58 @@ export async function fetchStakingPool(
     onComplete(result);
     return result;
   }
+}
+
+type SDKFarmView = FarmView & {
+  /** Farm contract ID */
+  poolAddress: string;
+  /** Token metadata */
+  tokens: { rewardToken: ReachToken | null; stakeToken: ReachToken | null };
+  /** Total rewards (contract lifetime) */
+  totalRewards: { network: string; rewardToken: string };
+};
+
+function formatFarmView(
+  d: FarmView,
+  tokens: SDKFarmView["tokens"],
+  poolAddress: string,
+  blockTime: any
+): SDKFarmView {
+  const { rewardToken, stakeToken } = tokens;
+  if ([rewardToken, stakeToken].includes(null)) return d as SDKFarmView;
+
+  const reach = createReachAPI();
+  const { avgBlockDuration } = CHAIN_CONSTANTS[reach.connector];
+  const { id: rId, decimals: rewardDecs } = rewardToken as ReachToken;
+  const blocksDiff = reach.bigNumberToNumber(d.end.sub(blockTime));
+  const end = inDays(blocksDiff * avgBlockDuration);
+  const { duration, rewardsPerBlock } = d.opts;
+  const bigDuration = reach.bigNumberToNumber(
+    reach.mul(duration, avgBlockDuration)
+  );
+
+  return {
+    poolAddress,
+    end,
+    tokens,
+    totalStaked: formatCurrency(d.totalStaked, stakeToken?.decimals),
+    opts: {
+      duration: inDays(bigDuration),
+      rewardToken1: rId,
+      stakeToken: stakeToken?.id,
+      rewardsPerBlock: formatRewardsPair(rewardsPerBlock, rewardDecs),
+    },
+    totalRewards: {
+      network: formatCurrency(reach.mul(rewardsPerBlock[0], duration)),
+      rewardToken: formatCurrency(
+        reach.mul(rewardsPerBlock[1], duration),
+        rewardDecs
+      ),
+    },
+    remainingRewards: formatRewardsPair(d.remainingRewards, rewardDecs),
+  };
+}
+
+function inDays(val: number) {
+  return `${Math.ceil(val / 1000 / (60 * 60 * 24))} days`;
 }

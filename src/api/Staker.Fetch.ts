@@ -1,6 +1,11 @@
 import { fromMaybe, noOp } from "../utils/utils.reach";
 import { errorResult, successResult } from "../utils";
-import { BigNumber, ReachAccount, ReachToken } from "../reach-helpers/index";
+import {
+  BigNumber,
+  ReachAccount,
+  ReachContract,
+  ReachToken,
+} from "../reach-helpers/index";
 import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
 import { stakingBackend } from "../build/backend";
 import { fetchToken } from "../participants";
@@ -122,22 +127,25 @@ export async function fetchStakingPool(
     onProgress = noOp,
   } = opts;
   const poolAddress = id?.toString();
-  const ctc = contract || acc.contract(stakingBackend, poolAddress);
+  const ctc = (contract ||
+    acc.contract(stakingBackend, poolAddress)) as ReachContract<
+    typeof stakingBackend
+  >;
 
   try {
     onProgress("Fetching farm metadata");
     const data = fromMaybe(await ctc.views.Info());
-    const succeeded = Boolean(data);
-    const message = succeeded ? "Fetched farm" : "Farm was not found";
-    const result = succeeded
-      ? successResult(message, poolAddress, ctc, data)
-      : errorResult(message, poolAddress, EMPTY_FV, ctc);
+    const result = data
+      ? successResult("Fetched farm", poolAddress, ctc, data)
+      : errorResult("Farm was not found", poolAddress, EMPTY_FV, ctc);
 
     onComplete(result);
     return result;
   } catch (error: any) {
     console.log("Fetch staking pool err", error);
-    const message = "Farm was not fetched";
-    return errorResult(message, poolAddress, EMPTY_FV, ctc);
+    const msg = "Farm was not fetched";
+    const result = errorResult(msg, poolAddress, EMPTY_FV, ctc);
+    onComplete(result);
+    return result;
   }
 }

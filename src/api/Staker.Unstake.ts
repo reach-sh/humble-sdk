@@ -28,7 +28,10 @@ type UnstakeOpts = { amount: number | string } & ReachTxnOpts;
  * @param opts.onProgress Optional callback for txn events/updates
  * @returns
  */
-export async function unstakeTokensFromFarm(acc: ReachAccount, opts: UnstakeOpts) {
+export async function unstakeTokensFromFarm(
+  acc: ReachAccount,
+  opts: UnstakeOpts
+) {
   const { isBigNumber } = createReachAPI();
   const data: SDKStakeUpdate = { amountStaked: "0", newTotalStaked: "0" };
   const { amount: stk, onProgress = noOp, onComplete = noOp } = opts;
@@ -51,9 +54,10 @@ export async function unstakeTokensFromFarm(acc: ReachAccount, opts: UnstakeOpts
 
   try {
     const ctc: StakingContract = contract;
-    const update = formatStakeRewardsUpdate(await ctc.a.Staker.withdraw(amt));
-    data.amountStaked = update.amountStaked;
-    data.newTotalStaked = update.newTotalStaked;
+    const update = await ctc.a.Staker.withdraw(amt);
+    const fmt = formatStakeRewardsUpdate(update, decimals);
+    data.amountStaked = fmt.amountStaked;
+    data.newTotalStaked = fmt.newTotalStaked;
 
     const msg = `Withdrew ${withdrew} ${symbol}`;
     const result = successResult(msg, id, ctc, update);

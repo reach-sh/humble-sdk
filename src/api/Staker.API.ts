@@ -9,8 +9,7 @@ import {
 } from "../reach-helpers/index";
 import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
 import { errorResult, successResult } from "../utils";
-import { fetchFarmAndTokens, fetchStakingPool } from "./Staker.Fetch";
-import { fetchToken } from "../participants";
+import { fetchFarmAndTokens } from "./Staker.Fetch";
 
 export { fetchFarmAndTokens, fetchStakingPool } from "./Staker.Fetch";
 export { stakeTokensToFarm } from "./Staker.Stake";
@@ -84,21 +83,17 @@ export async function checkRewardsAvailableAt(
   if (!valid) return errorResult(why, opts.poolAddress, data);
 
   const { onProgress = noOp, onComplete = noOp } = opts;
-  const { formatAddress, getNetworkTime } = createReachAPI();
   const id = opts.poolAddress?.toString();
+  const { formatAddress, getNetworkTime } = createReachAPI();
   const time = opts.time || (await getNetworkTime());
-  const farm = await fetchStakingPool(acc, { poolAddress: id });
-  if (!farm.succeeded) {
+  const farmAndTokens = await fetchFarmAndTokens(acc, opts);
+  if (!farmAndTokens.succeeded) {
     const message = "Farm not found";
     return errorResult(message, id, data, null);
   }
 
-  onProgress("Fetching reward token");
-  const { contract, data: fd } = farm;
-  const rewardToken = await fetchToken(acc, fd.opts.rewardToken1);
-  const ctc = contract as StakingContract;
-
   onProgress("Checking rewards");
+  const ctc = farmAndTokens.contract as StakingContract;
   const rewardsAtTime = fromMaybe(
     await ctc.views.rewardsAvailableAt(formatAddress(acc), time)
   );
@@ -110,6 +105,7 @@ export async function checkRewardsAvailableAt(
   }
 
   // Success result
+  const { rewardToken } = farmAndTokens.data;
   data[0] = formatCurrency(rewardsAtTime[0]);
   data[1] = formatCurrency(rewardsAtTime[1], rewardToken?.decimals);
   const result = successResult("OK", id, ctc, data);

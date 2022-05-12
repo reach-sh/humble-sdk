@@ -49,16 +49,16 @@ export async function unstakeTokensFromFarm(
   onProgress("Withdrawing stake");
   const { decimals, symbol } = farmData.stakeToken;
   const id = opts.poolAddress?.toString();
-  const withdrew = isBigNumber(stk) ? formatCurrency(stk, decimals) : stk;
-  const amt = isBigNumber(stk) ? stk : parseCurrency(stk, decimals);
 
   try {
     const ctc: StakingContract = contract;
+    const amt = isBigNumber(stk) ? stk : parseCurrency(stk, decimals);
     const update = await ctc.a.Staker.withdraw(amt);
     const fmt = formatStakeRewardsUpdate(update, decimals);
     data.amountStaked = fmt.amountStaked;
     data.newTotalStaked = fmt.newTotalStaked;
 
+    const withdrew = isBigNumber(stk) ? formatCurrency(stk, decimals) : stk;
     const msg = `Withdrew ${withdrew} ${symbol}`;
     const result = successResult(msg, id, ctc, update);
     onComplete(result);

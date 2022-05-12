@@ -52,10 +52,10 @@ describe("Utils | Staker", () => {
     expect(abrA).toStrictEqual("1K");
     expect(fmtA).toStrictEqual("1000");
 
-    // Assert that network token rewards are always formatted the same
+    // Assert that reward token rewards are always formatted the same
     expect(fmtRewardA).not.toStrictEqual(nnRewards.toString());
     expect(fmtRewardA).not.toStrictEqual(nnAbrA);
-    expect(fmtRewardA).toStrictEqual("1000");
     expect(nnAbrA).toStrictEqual("1K");
+    expect(fmtRewardA).toStrictEqual("1000");
   });
 });

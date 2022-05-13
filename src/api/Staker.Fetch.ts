@@ -160,15 +160,18 @@ export async function fetchStakingPool(
 type SDKFarmView = FarmView & {
   /** Farm contract ID */
   poolAddress: string;
-  /** Token metadata */
-  tokens: { rewardToken: ReachToken | null; stakeToken: ReachToken | null };
   /** Total rewards (contract lifetime) */
   totalRewards: { network: string; rewardToken: string };
 };
 
+type FarmTokens = {
+  rewardToken: ReachToken | null;
+  stakeToken: ReachToken | null;
+};
+
 function formatFarmView(
   d: FarmView,
-  tokens: SDKFarmView["tokens"],
+  tokens: FarmTokens,
   poolAddress: string,
   blockTime: any
 ): SDKFarmView {
@@ -188,7 +191,6 @@ function formatFarmView(
   return {
     poolAddress,
     end,
-    tokens,
     totalStaked: formatCurrency(d.totalStaked, stakeToken?.decimals),
     opts: {
       duration: inDays(bigDuration),

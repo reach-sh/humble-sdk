@@ -37,22 +37,27 @@ export type FarmView = {
   totalStaked: BigNumber;
 };
 
+/** @internal */
 const NO_REWARDS: FarmView["remainingRewards"] = ["0", "0"];
+/** @internal */
 const EMPTY_FV_OPTS: FarmView["opts"] = {
   duration: "0",
   rewardToken1: "0",
   rewardsPerBlock: NO_REWARDS,
   stakeToken: "0",
 };
-const EMPTY_FV: FarmView = {
+/** @internal */
+const EMPTY_FV: SDKFarmView = {
+  poolAddress: "",
   end: "0",
   opts: EMPTY_FV_OPTS,
   remainingRewards: NO_REWARDS,
   totalStaked: "0",
+  totalRewards: { network: "0", rewardToken: "0" },
 };
 
-type FarmAndTokens = {
-  farmView: FarmView;
+export type FarmAndTokens = {
+  farmView: SDKFarmView;
   stakeToken: ReachToken | null;
   rewardToken: ReachToken | null;
 };
@@ -105,7 +110,7 @@ export async function fetchFarmAndTokens(
 
   data.farmView = opts.formatResult
     ? formatFarmView(farmView, { stakeToken, rewardToken }, poolAddress, now)
-    : farmView;
+    : rawSDKFarmView(farmView, poolAddress);
   data.stakeToken = stakeToken;
   data.rewardToken = rewardToken;
   const msg = "Fetched farm and tokens";
@@ -157,18 +162,35 @@ export async function fetchStakingPool(
   }
 }
 
-type SDKFarmView = FarmView & {
+export type SDKFarmView = FarmView & {
   /** Farm contract ID */
   poolAddress: string;
   /** Total rewards (contract lifetime) */
   totalRewards: { network: string; rewardToken: string };
 };
 
-type FarmTokens = {
+/** Pair of tokens from farm data */
+export type FarmTokens = {
   rewardToken: ReachToken | null;
   stakeToken: ReachToken | null;
 };
 
+/** @internal Generate default response data shape */
+function rawSDKFarmView(d: FarmView, poolAddress: string): SDKFarmView {
+  const reach = createReachAPI();
+  const { duration, rewardsPerBlock } = d.opts;
+
+  return {
+    poolAddress,
+    ...d,
+    totalRewards: {
+      network: reach.mul(rewardsPerBlock[0], duration),
+      rewardToken: reach.mul(rewardsPerBlock[1], duration),
+    },
+  };
+}
+
+/** @internal Format BigNumber and byte values for UI */
 function formatFarmView(
   d: FarmView,
   tokens: FarmTokens,
@@ -209,6 +231,8 @@ function formatFarmView(
   };
 }
 
+/** @internal Compute end time for farming pool */
 function inDays(val: number) {
-  return `${Math.ceil(val / 1000 / (60 * 60 * 24))} days`;
+  const endsIn = Math.ceil(val / 1000 / (60 * 60 * 24));
+  return endsIn > 0 ? `${endsIn} day(s)` : "0";
 }

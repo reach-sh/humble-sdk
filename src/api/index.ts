@@ -6,12 +6,4 @@ export { withdrawLiquidity } from "./LiquidityProvider.Withdraw";
 export { subscribeToPoolStream } from "./subscribeToPoolStream";
 
 // Staking/Farming
-export {
-  checkRewardsAvailableAt,
-  checkStakingBalance,
-  fetchFarmAndTokens,
-  fetchStakingPool,
-  harvestStakingRewards,
-  stakeTokensToFarm,
-  unstakeTokensFromFarm,
-} from "./Staker.API";
+export * from "./Staker.API";

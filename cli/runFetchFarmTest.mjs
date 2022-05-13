@@ -26,10 +26,12 @@ export async function runFetchFarmTest(acc) {
 
   Yellow(`Fetching single pool "${addr}"...`);
 
+  const formatPrompt = "Format response? [ y/n ]"
+  const formatResult = (await answerOrDie(formatPrompt)) === "y";
   const result = await fetchFarmAndTokens(acc, {
     poolAddress: addr,
     onProgress,
-    formatResult: true,
+    formatResult,
   });
 
   iout(result.message, result.data);

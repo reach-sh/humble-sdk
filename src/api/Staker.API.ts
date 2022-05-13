@@ -11,7 +11,14 @@ import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
 import { errorResult, successResult } from "../utils";
 import { fetchFarmAndTokens } from "./Staker.Fetch";
 
-export { fetchFarmAndTokens, fetchStakingPool } from "./Staker.Fetch";
+export {
+  fetchFarmAndTokens,
+  fetchStakingPool,
+  FarmTokens,
+  FarmAndTokens,
+  SDKFarmView,
+  FarmView,
+} from "./Staker.Fetch";
 export { stakeTokensToFarm } from "./Staker.Stake";
 export { unstakeTokensFromFarm } from "./Staker.Unstake";
 export { harvestStakingRewards } from "./Staker.Harvest";
@@ -59,7 +66,7 @@ export async function checkStakingBalance(
 }
 
 /** Options for checking rewards */
-type GetRewardsOpts = { time?: string | number | BigNumber } & ReachTxnOpts;
+export type GetRewardsOpts = { time?: string | number | BigNumber } & ReachTxnOpts;
 
 /**
  * Check rewards available to user at blocktime `time`. If not supplied,
@@ -113,6 +120,7 @@ export async function checkRewardsAvailableAt(
   return result;
 }
 
+/** @internal */
 function protectArgs(
   acc: ReachAccount,
   opts?: ReachTxnOpts

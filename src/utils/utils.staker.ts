@@ -27,3 +27,21 @@ export type SDKStakeUpdate = {
   /** New total amount staked in contract */
   newTotalStaked: string;
 };
+
+/**
+ * @internal Optionally-abbreviated rewards currency formatter.
+ * Expects a pair of `amts` to be in atomic unit for network
+ * @param amts [`networkRewards`, `rewardTokenRewards`] amounts as numbers
+ * @param decs Reward token decimal places (for formatting)
+ * @param abbr (Optional) abbreviate formatted values (e.g. `1K` instead of `1000`)
+ */
+export function formatRewardsPair(
+  amts: [any, any],
+  decs?: number,
+  abbr = false
+): [string, string] {
+  return [
+    formatCurrency(amts[0], undefined, abbr),
+    formatCurrency(amts[1], decs, abbr),
+  ];
+}

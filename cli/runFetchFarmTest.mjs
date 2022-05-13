@@ -9,6 +9,10 @@ import {
   fromArgs,
 } from "./utils.mjs";
 
+// Pool IDs
+// 89038727 [ NEW ]
+// 88045040, 88908491
+
 /** Fetch a single staking pool (farm) */
 export async function runFetchFarmTest(acc) {
   console.clear();
@@ -21,10 +25,13 @@ export async function runFetchFarmTest(acc) {
   if (!addr) return exitWithMsgs("POOL address required but not found");
 
   Yellow(`Fetching single pool "${addr}"...`);
-  iout(
-    "Fetched pool",
-    await fetchFarmAndTokens(acc, { poolAddress: addr, onProgress })
-  );
 
+  const result = await fetchFarmAndTokens(acc, {
+    poolAddress: addr,
+    onProgress,
+    formatResult: true,
+  });
+
+  iout(result.message, result.data);
   exitWithMsgs("Test complete! Exiting ...");
 }

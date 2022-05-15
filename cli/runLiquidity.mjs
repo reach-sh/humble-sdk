@@ -171,12 +171,12 @@ async function fetchLPool(acc, args) {
   const n2nnArgs = fromArgs(args, "N2NN");
   const n2nn = n2nnArgs
     ? n2nnArgs === "1"
-    : (await answerOrDie(`Does pool contain ${net}? [ y/n ]`)) === "y";
+    : (await answerOrDie(`Does pool ${poolAddress} contain ${net}? [ y/n ]`)) === "y";
 
   //  Fetch pool
   Yellow(`* Fetching pool "${poolAddress}"`);
-  const fetchOpts = { n2nn, onProgress: Yellow };
-  const poolResult = await fetchLiquidityPool(acc, poolAddress, fetchOpts);
+  const fetchOpts = { poolAddress, n2nn, onProgress: Yellow };
+  const poolResult = await fetchLiquidityPool(acc, fetchOpts);
   const { succeeded, message } = poolResult;
   if (!succeeded) return exitWithMsgs(JSON.stringify(message));
   return poolResult;

@@ -8,7 +8,7 @@ const pools = new Set();
 
 /** Attach to pool announcer and list a subset of pools */
 export function runAnnouncerTest(acc) {
-  console.clear()
+  console.clear();
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
@@ -18,7 +18,6 @@ export function runAnnouncerTest(acc) {
       resetTimer();
     },
     onPoolFetched,
-    onProgress: Yellow
   });
   Blue(`Listening for up to ${LIMIT} pools.`);
   resetTimer();
@@ -28,7 +27,7 @@ export function runAnnouncerTest(acc) {
 async function onPoolFetched({ succeeded, poolAddress, data, message }) {
   if (pools.size >= LIMIT) return;
   if (!succeeded) return Red(message);
-  if (!data.tradeable) return Red("Untradeable pool" + poolAddress);
+  if (!data.tradeable) return Red("Untradeable pool " + poolAddress);
 
   pools.add(poolAddress);
   Blue(`\t * Got "${poolAddress}" (${pools.size} of ${LIMIT})`);

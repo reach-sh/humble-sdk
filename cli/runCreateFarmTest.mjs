@@ -13,10 +13,8 @@ import {
   Yellow,
 } from "./utils.mjs";
 
-const ALGO_BLOCKS_PER_DAY = 19200; // (86400 secs / 4.5)  blocks a day
-const ALGO_BLOCKS_PER_HR = ALGO_BLOCKS_PER_DAY / 24; // 800 blocks a day
-
-export async function runCreateStakingPoolTest(acc) {
+/** Create a Staking pool for farming liquidity incentives */
+export async function runCreateFarmTest(acc) {
   console.clear();
   Blue(`Running STAKING-POOL-CREATE`);
   const reach = createReachAPI();
@@ -24,8 +22,7 @@ export async function runCreateStakingPoolTest(acc) {
   //   Duration
   Yellow("How long should the farm run?");
   let prompt = "Enter duration in days:";
-  const numDays = Number(await answerOrDie(prompt));
-  const duration = numDays * ALGO_BLOCKS_PER_DAY;
+  const days = Number(await answerOrDie(prompt));
 
   //   Reward token
   Yellow("What REWARD token will users get?");
@@ -57,10 +54,11 @@ export async function runCreateStakingPoolTest(acc) {
   const result = await createStakingPool(acc, {
     onProgress: Yellow,
     opts: {
-      lengthInDays: numDays,
+      stakingDuration: { days },
       rewardTokenId: rewardTokenId,
       totalRewardsPayout: [nrt, nnrt],
       stakeTokenId: stakeTokenId,
+      graceDuration: { days: 4 },
     },
   });
 

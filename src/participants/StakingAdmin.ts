@@ -9,6 +9,7 @@ import {
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
+import { convertToBlocks } from "../json";
 
 /** Transaction options (create staking pool) */
 type CreateFarmTxnOpts = { opts: StakingDeployerOpts } & ReachTxnOpts;
@@ -21,13 +22,10 @@ type CreateFarmTxnResult = {
   amountsDeposited?: StakingRewards;
 };
 
-/* Number of algo blocks written per day (86400 secs / 4.5) */
-export const ALGO_BLOCKS_PER_DAY = 19200;
-/* Number of algo blocks written per day (800 blocks) */
-export const ALGO_BLOCKS_PER_HR = ALGO_BLOCKS_PER_DAY / 24;
+/** @internal Required fields  */
 const requiredFields = [
   "rewardTokenId",
-  "lengthInDays",
+  "stakingDuration",
   "stakeTokenId",
   "totalRewardsPayout",
 ];
@@ -43,7 +41,7 @@ export async function createStakingPool(
   //    validate args
   const required = [
     opts.rewardTokenId,
-    opts.lengthInDays,
+    opts.stakingDuration,
     opts.stakeTokenId,
     opts.totalRewardsPayout,
   ];
@@ -71,17 +69,12 @@ async function deployFarmContract(
   acc: ReachAccount,
   opts: StakingDeployerOpts
 ): Promise<TransactionResult<CreateFarmTxnResult>> {
-  /** Response data */
-  const data: CreateFarmTxnResult = {
-    amountsDeposited: [0, 0] as StakingRewards,
-    poolAddress: "",
-  };
   const { onProgress = noOp, onComplete = noOp, ...rest } = opts;
+  const duration = convertToBlocks(rest.stakingDuration);
   const ctc = acc.contract(stakingBackend);
   const [nrt, nnrt] = rest.totalRewardsPayout.map(Number);
-  const nrtPerDay = nrt / rest.lengthInDays / ALGO_BLOCKS_PER_DAY;
-  const nnrtPerDay = nnrt / rest.lengthInDays / ALGO_BLOCKS_PER_DAY;
-  const duration = rest.lengthInDays * ALGO_BLOCKS_PER_DAY;
+  const networkRewardsPerDay = nrt / duration;
+  const rewardsPerDay = nnrt / duration;
 
   onProgress("Fetching reward token metadata");
   const rToken = await fetchToken(acc, rest.rewardTokenId);
@@ -92,31 +85,38 @@ async function deployFarmContract(
     stakeToken: rest.stakeTokenId,
     rewardToken1: rest.rewardTokenId,
     rewardsPerBlock: [
-      parseCurrency(nrtPerDay),
-      parseCurrency(nnrtPerDay, rToken?.decimals),
+      parseCurrency(networkRewardsPerDay),
+      parseCurrency(rewardsPerDay, rToken?.decimals),
     ],
+    startDelay: convertToBlocks(rest.startDelay),
+    graceDuration: convertToBlocks(rest.graceDuration),
+  };
+
+  /** Response data */
+  const data: CreateFarmTxnResult = {
+    amountsDeposited: [0, 0] as StakingRewards,
+    poolAddress: "",
   };
 
   try {
     onProgress("Deploying contract");
-    return (async () => {
-      await new Promise((resolve) =>
-        ctc.participants.Deployer({
-          opts: deployerOpts,
-          async readyForStakers() {
-            data.poolAddress = parseAddress(await ctc.getInfo());
-            data.amountsDeposited = rest.totalRewardsPayout;
-            resolve(true);
-          },
-        })
-      );
 
-      const result = successResult("OK", data.poolAddress, ctc, data);
-      onComplete(result);
-      return result;
-    })();
+    await new Promise((resolve) =>
+      ctc.participants.Deployer({
+        opts: deployerOpts,
+        async readyForStakers() {
+          data.poolAddress = parseAddress(await ctc.getInfo());
+          data.amountsDeposited = rest.totalRewardsPayout;
+          resolve(true);
+        },
+      })
+    );
+
+    const result = successResult("Farm created", data.poolAddress, ctc, data);
+    onComplete(result);
+    return result;
   } catch (error: any) {
-    const msg = parseContractError("Deploy Pool error", error);
+    const msg = parseContractError("Deploy Farm error", error);
     console.log(msg, { error });
     return errorResult(msg, null, data);
   }

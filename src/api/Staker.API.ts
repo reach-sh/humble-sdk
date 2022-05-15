@@ -2,7 +2,6 @@ import { fromMaybe, noOp } from "../utils/utils.reach";
 import { StakingContract, StakingContractViews } from "../build/backend";
 import {
   BigNumber,
-  createReachAPI,
   formatAddress,
   formatCurrency,
   ReachAccount,
@@ -66,7 +65,9 @@ export async function checkStakingBalance(
 }
 
 /** Options for checking rewards */
-export type GetRewardsOpts = { time?: string | number | BigNumber } & ReachTxnOpts;
+export type GetRewardsOpts = {
+  time?: string | number | BigNumber;
+} & ReachTxnOpts;
 
 /**
  * Check rewards available to user at blocktime `time`. If not supplied,
@@ -91,8 +92,6 @@ export async function checkRewardsAvailableAt(
 
   const { onProgress = noOp, onComplete = noOp } = opts;
   const id = opts.poolAddress?.toString();
-  const { formatAddress, getNetworkTime } = createReachAPI();
-  const time = opts.time || (await getNetworkTime());
   const farmAndTokens = await fetchFarmAndTokens(acc, opts);
   if (!farmAndTokens.succeeded) {
     const message = "Farm not found";
@@ -102,7 +101,9 @@ export async function checkRewardsAvailableAt(
   onProgress("Checking rewards");
   const ctc = farmAndTokens.contract as StakingContract;
   const rewardsAtTime = fromMaybe(
-    await ctc.views.rewardsAvailableAt(formatAddress(acc), time)
+    await (opts.time
+      ? ctc.views.rewardsAvailableAt(formatAddress(acc), opts.time)
+      : ctc.views.rewardsAvailable(formatAddress(acc)))
   );
 
   // error result
@@ -123,7 +124,7 @@ export async function checkRewardsAvailableAt(
 /** @internal */
 function protectArgs(
   acc: ReachAccount,
-  opts?: ReachTxnOpts
+  opts?: GetRewardsOpts
 ): [boolean, string] {
   if (!acc) return [false, "Account is required"];
   if (!opts) return [false, "Options are required"];

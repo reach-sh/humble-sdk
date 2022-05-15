@@ -167,6 +167,8 @@ export type StakingRewardsUpdate = {
   totalRemaining: StakingRewards;
 };
 
+export type Duration = { hours?: number; days?: number };
+
 /** Options reused in the contract */
 export type StakingDeployerOpts = {
   /** Rewards token (cannot be `network` token e.g. `ALGO`]) */
@@ -175,8 +177,12 @@ export type StakingDeployerOpts = {
   stakeTokenId: TokenID;
   /** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
   totalRewardsPayout: StakingRewards;
-  /** Length of rewards (will be converted into blocks) */
-  lengthInDays: number;
+  /** Length of rewards (`{ "hours": number, "days": number }`) */
+  stakingDuration: Duration;
+  /** Delay before staking can begin */
+  startDelay?: Duration;
+  /** Delay before stakers can no longer withdraw */
+  graceDuration?: Duration;
 } & ReachTxnOpts;
 
 /** Staker (stakes tokens for rewards) */

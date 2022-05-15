@@ -20,7 +20,7 @@ import { runAnnouncerTest } from "./runAnnouncerTest.mjs";
 import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
 import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
-import { runCreateStakingPoolTest } from "./createStaker.mjs";
+import { runCreateFarmTest } from "./runCreateFarmTest.mjs";
 import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
 
 // init SDK
@@ -34,8 +34,8 @@ const options = [
   { title: "Create a Liquidity Pool", action: runCreatePoolTest },
   { title: "Fetch a Liquidity Pool", action: runFetchPoolTest },
   { title: "Add/remove Liquidity", action: runLiquidity },
-  { title: "Create a Staking Pool", action: runCreateStakingPoolTest },
-  { title: "Fetch a Staking Pool", action: runFetchFarmTest },
+  { title: "Create a Farm", action: runCreateFarmTest },
+  { title: "Fetch a Farm", action: runFetchFarmTest },
 ];
 
 (async () => {

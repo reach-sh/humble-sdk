@@ -366,7 +366,7 @@ if (succeeded) {
     const { pool, tokens } = data; 
     console.log(pool); /* outputs ->
     {
-        "poolAddress": 1122334455,
+        "poolAddress": "1122334455",
         "poolTokenId": 76797026,
         "mintedLiquidityTokens": 11858542,
         "n2nn": true,

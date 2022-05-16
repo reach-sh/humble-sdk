@@ -139,10 +139,8 @@ export async function fetchStakingPool(
     onProgress = noOp,
   } = opts;
   const poolAddress = id?.toString();
-  const ctc = (contract ||
-    acc.contract(stakingBackend, poolAddress)) as ReachContract<
-    typeof stakingBackend
-  >;
+  let ctc = contract as ReachContract<typeof stakingBackend>;
+  if (!ctc) ctc = acc.contract(stakingBackend, poolAddress);
 
   try {
     onProgress("Fetching farm metadata");

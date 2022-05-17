@@ -231,4 +231,7 @@ export type SDKOpts = {
   network?: NetworkProvider;
   /** Slippage Tolerance: defaults to 0.5% */
   slippageTolerance?: number;
+  // The id and address of a custom triumvirate to use instead of the default (only works on testnet)
+  customTriumvirateId?: string;
+  customTriumvirateAddress?: string;
 } & ReachEnvOpts;

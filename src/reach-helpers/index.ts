@@ -1,5 +1,5 @@
 import { isNetworkToken, makeNetworkToken } from "../utils";
-import { UNINSTANTIATED } from "../constants";
+import { getNetworkProvider, UNINSTANTIATED } from "../constants";
 import * as T from "./types";
 import { formatNumberShort, trimByteString } from "../utils/utils.reach";
 
@@ -108,15 +108,54 @@ function buildProviderEnv(
   return env as T.AlgoEnvOverride;
 }
 
-/** @internal Get formatted token balance */
+/** Get formatted token balance */
 export async function tokenBalance(acc: T.ReachAccount, id: string | number) {
-  const { balanceOf, eq } = createReachAPI();
-  const netToken = eq(id, 0) || isNetworkToken(id);
-  const balance = () => (netToken ? balanceOf(acc) : balanceOf(acc, id));
-  return formatCurrency(await balance());
+  const reach = createReachAPI();
+  if (["0", 0, null].includes(id)) {
+    return formatCurrency(await reach.balanceOf(acc));
+  }
+
+  const assetURL = `${await indexerBaseURL()}/assets/${id}`;
+  const address = reach.formatAddress(acc);
+  const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
+  const [{ asset }, bal] = await Promise.all([
+    fetch(assetURL).then((res) => res.json()),
+    fetch(balURL).then((res) => res.json()),
+  ]);
+
+  if (!asset?.params || !bal?.["asset-holding"]) return "0";
+
+  const { decimals } = asset.params;
+  const { amount } = bal["asset-holding"];
+  return formatCurrency(amount, decimals);
+}
+/** @internal Generate URL for fetching token balance  */
+function balanceBaseURL() {
+  const net = getNetworkProvider();
+  return trimURL(`https://${net.toLowerCase()}-api.algonode.cloud/v2/`);
 }
 
-/** @internal Get token data and `acc`'s balance of token (if available) */
+/** @internal Generate Algo Indexer URL if available  */
+async function indexerBaseURL() {
+  try {
+    const reach = createReachAPI();
+    const { indexer } = await reach.getProvider();
+    if (!indexer) return "";
+
+    const url = indexer.c?.bc?.bc?.baseURL?.href;
+    return url ? `${trimURL(url)}/v2` : "";
+  } catch {
+    const network = getNetworkProvider();
+    const prefix = network === "MainNet" ? "" : `.${network.toLowerCase()}`;
+    return trimURL(`https://algoindexer${prefix}.algoexplorerapi.io/v2`);
+  }
+}
+
+function trimURL(url: string) {
+  return url.replace(/\/$/, "");
+}
+
+/** Get token data and `acc`'s balance of token (if available) */
 export async function tokenMetadata(
   token: any,
   acc: T.ReachAccount

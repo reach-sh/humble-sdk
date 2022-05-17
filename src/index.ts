@@ -78,6 +78,8 @@ export {
   parseCurrency,
   formatAddress,
   formatCurrency,
+  tokenBalance,
+  tokenMetadata,
   // REACH TYPES
   APIFn,
   BackendModule,

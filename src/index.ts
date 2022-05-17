@@ -70,6 +70,7 @@ export {
 
 // TYPES
 export * from "./types";
+export { convertToBlocks, blockConstants } from "./json";
 
 // REACH HELPERS
 export {

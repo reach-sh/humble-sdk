@@ -28,14 +28,16 @@ function initHumbleSDK(opts: SDKOpts = {}) {
 
 /** @internal Set SDK options for operation */
 function setSDKOpts(opts: SDKOpts) {
+  let customAnnouncerId = opts.customTriumvirateId
+  let customAnnouncerAddress = opts.customTriumvirateAddress
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
-  setPoolAnnouncer(getTriumvirContract(opts.network));
+  setPoolAnnouncer(opts.network === "TestNet" && customAnnouncerId ? customAnnouncerId : getTriumvirContract(opts.network));
   // User slippage tolerance
   setSlippage(opts.slippageTolerance || 0.5);
   // User network (testnet/mainnet) preference
   const network = safeNetwork(opts.network);
   setNetworkProvider(network);
-  setProtocolAddr(network);
+  setProtocolAddr(network, customAnnouncerAddress);
   setInitialized(true);
 }
 

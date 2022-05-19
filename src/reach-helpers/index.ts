@@ -50,6 +50,7 @@ export function loadReach(
   const { provider = "TestNet", chain = "ALGO", providerEnv } = opts;
   reach = loadStdlibFn({
     REACH_CONNECTOR_MODE: chain,
+    REACH_NO_WARN: 'Y',
   });
 
   if (opts.walletFallback) {
@@ -109,25 +110,24 @@ function buildProviderEnv(
 }
 
 /** Get formatted token balance */
-export async function tokenBalance(acc: T.ReachAccount, id: string | number) {
+export async function tokenBalance(acc: T.ReachAccount, id: string | number, bigNumber=false) {
   const reach = createReachAPI();
-  if (["0", 0, null].includes(id)) {
-    return formatCurrency(await reach.balanceOf(acc));
-  }
+  let networkToken = false
+  if (["0", 0, null].includes(id)) networkToken = true
 
   const assetURL = `${await indexerBaseURL()}/assets/${id}`;
   const address = reach.formatAddress(acc);
-  const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
+  const balURL = networkToken ? `${balanceBaseURL()}/accounts/${address}?exclude=all` : `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
   const [{ asset }, bal] = await Promise.all([
     fetch(assetURL).then((res) => res.json()),
     fetch(balURL).then((res) => res.json()),
   ]);
 
-  if (!asset?.params || !bal?.["asset-holding"]) return "0";
+  if (!asset?.params || !bal?.["asset-holding"]) return bigNumber ? parseCurrency(0) : "0";
 
   const { decimals } = asset.params;
-  const { amount } = bal["asset-holding"];
-  return formatCurrency(amount, decimals);
+  const { amount } = networkToken ? bal : bal["asset-holding"];
+  return bigNumber ? parseCurrency(amount) : formatCurrency(amount, decimals);
 }
 /** @internal Generate URL for fetching token balance  */
 function balanceBaseURL() {

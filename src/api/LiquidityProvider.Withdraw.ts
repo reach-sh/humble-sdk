@@ -4,6 +4,7 @@ import {
   parseAddress,
   formatCurrency,
   BigNumber,
+  tokenBalance,
 } from "../reach-helpers";
 import { PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
@@ -81,7 +82,7 @@ export async function withdrawLiquidity(
 
   const { data: poolResult, contract } = lpool;
   const ctc = contract as PoolContract;
-  const { setSigningMonitor, balanceOf, bigNumberToNumber } = createReachAPI();
+  const { setSigningMonitor, bigNumberToNumber } = createReachAPI();
   setSigningMonitor(() => onProgress("SIGNING_EVENT"));
 
   try {
@@ -97,10 +98,10 @@ export async function withdrawLiquidity(
     onProgress("Fetching updated pool LP token balance");
     const [tokensView, lpBalance] = await Promise.all([
       fromMaybe(await ctc.views.Info()),
-      balanceOf(acc, poolTokenId).then(bigNumberToNumber),
+      tokenBalance(acc, poolTokenId).then(bigNumberToNumber),
     ]);
 
-    if (lpBalance) data.lpBalance = lpBalance;
+    if (lpBalance) data.lpBalance = Number(lpBalance);
     if (tokensView) {
       data.mintedLPTokens = formatCurrency(tokensView?.lptBals.B, 0);
     }
@@ -125,8 +126,8 @@ async function amountFromPctInput(
   acc: any,
   poolTokenId: any
 ): Promise<BigNumber> {
-  const { bigNumberify, balanceOf } = createReachAPI();
-  const userLiquidity = await balanceOf(acc, parseAddress(poolTokenId));
+  const { bigNumberify } = createReachAPI();
+  const userLiquidity = await tokenBalance(acc, parseAddress(poolTokenId), true);
   const divisor = bigNumberify(100).div(bigNumberify(pctInput));
   return userLiquidity.div(divisor);
 }

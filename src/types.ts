@@ -183,6 +183,8 @@ export type StakingDeployerOpts = {
   startDelay?: Duration;
   /** Delay before stakers can no longer withdraw */
   graceDuration?: Duration;
+  /** The account that will deposit ALGO into the farm */
+  rewarder0?: Address;
 } & ReachTxnOpts;
 
 /** Staker (stakes tokens for rewards) */

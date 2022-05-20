@@ -5,14 +5,14 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-modules --unhandled-rejections=strict ./index.mjs"
+    "test": "node --experimental-modules --unhandled-rejections=strict ./index.mjs KEY='side harbor gadget kidney usual month extra invest subject turn drift add survey armor frog riot uncover pill inmate chief depart brave bounce able pitch'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@reach-sh/humble-sdk": "file:..",
-    "@reach-sh/stdlib": "^0.1.10-rc.3",
+    "@reach-sh/stdlib": "^0.1.10-rc.6",
     "algosdk": "^1.15.0",
     "enquirer": "^2.3.6"
   }

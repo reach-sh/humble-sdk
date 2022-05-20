@@ -44,6 +44,7 @@ const options = [
   Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
   Yellow(`Getting account ...`);
   const args = process.argv.slice(2);
+  console.log(args)
   const acc = await getAccountFromArgs(args);
   Green(`Connected ${reach.formatAddress(acc)}\n`);
 

@@ -28,6 +28,7 @@ const requiredFields = [
   "stakingDuration",
   "stakeTokenId",
   "totalRewardsPayout",
+  "startDelay",
 ];
 
 /** Create a staking contract for earning yield from liquidity tokens */
@@ -44,10 +45,12 @@ export async function createStakingPool(
     opts.stakingDuration,
     opts.stakeTokenId,
     opts.totalRewardsPayout,
+    opts.startDelay,
   ];
+  console.log(opts)
   const missing = required
     .reduce((agg, curr, i) => {
-      if (!curr) agg.push(requiredFields[i]);
+      if (!curr === undefined) agg.push(requiredFields[i]);
       return agg;
     }, [] as string[])
     .join(", ");
@@ -58,7 +61,7 @@ export async function createStakingPool(
 
   //    deploy and fund contract
   onProgress(`Creating staking pool`);
-  const deployment = await deployFarmContract(acc, opts);
+  const deployment = await deployFarmContract(acc, stakingOpts);
   if (deployment.message) onProgress(deployment.message);
   onComplete(deployment);
   return deployment;
@@ -67,9 +70,9 @@ export async function createStakingPool(
 /** @internal Deploy staking pool contract */
 async function deployFarmContract(
   acc: ReachAccount,
-  opts: StakingDeployerOpts
+  opts: CreateFarmTxnOpts
 ): Promise<TransactionResult<CreateFarmTxnResult>> {
-  const { onProgress = noOp, onComplete = noOp, ...rest } = opts;
+  const { onProgress = noOp, onComplete = noOp, opts: rest } = opts;
   const duration = convertToBlocks(rest.stakingDuration);
   const ctc = acc.contract(stakingBackend);
   const [nrt, nnrt] = rest.totalRewardsPayout.map(Number);
@@ -90,6 +93,7 @@ async function deployFarmContract(
     ],
     startDelay: convertToBlocks(rest.startDelay),
     graceDuration: convertToBlocks(rest.graceDuration),
+    Rewarder0: rest.rewarder0,
   };
 
   /** Response data */
@@ -100,18 +104,13 @@ async function deployFarmContract(
 
   try {
     onProgress("Deploying contract");
-
-    await new Promise((resolve) =>
-      ctc.participants.Deployer({
-        opts: deployerOpts,
-        async readyForStakers() {
-          data.poolAddress = parseAddress(await ctc.getInfo());
-          data.amountsDeposited = rest.totalRewardsPayout;
-          resolve(true);
-        },
-      })
-    );
-
+    let resolveReadyForStakers: any = null;
+    ctc.participants.Deployer({
+      opts: deployerOpts,
+      readyForStakers: () => resolveReadyForStakers(),
+    })
+    data.poolAddress = parseAddress(await ctc.getInfo());
+    data.amountsDeposited = rest.totalRewardsPayout;
     const result = successResult("Farm created", data.poolAddress, ctc, data);
     onComplete(result);
     return result;

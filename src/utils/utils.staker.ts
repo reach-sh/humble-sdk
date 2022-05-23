@@ -1,5 +1,5 @@
 import { formatCurrency } from "../reach-helpers/index";
-import { StakeUpdate } from "../types";
+import { RewardsPair, StakeUpdate } from "../types";
 
 /**
  * @internal Format response from staking in a farm
@@ -36,7 +36,7 @@ export type SDKStakeUpdate = {
  * @param abbr (Optional) abbreviate formatted values (e.g. `1K` instead of `1000`)
  */
 export function formatRewardsPair(
-  amts: [any, any],
+  amts: RewardsPair,
   decs?: number,
   abbr = false
 ): [string, string] {

@@ -9,7 +9,7 @@ import {
 import {
   FetchPoolData,
   PoolDetails,
-  ReachTxnOpts,
+  PoolFetchOpts,
   TokenID,
   TransactionResult,
 } from "../types";
@@ -24,10 +24,9 @@ import {
 } from "../utils";
 import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
 
-export type FetchPoolOpts = ReachTxnOpts & {
+export type FetchPoolOpts = PoolFetchOpts & {
   /** when true, is a network-to-non-network pool */
   n2nn: boolean;
-  poolAddress: string;
 };
 /** ALIAS | Fetch data about a pool */
 export const fetchPool = fetchLiquidityPool;

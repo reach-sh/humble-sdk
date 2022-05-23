@@ -22,6 +22,7 @@ import { runLiquidity } from "./runLiquidity.mjs";
 import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
 import { runCreateFarmTest } from "./runCreateFarmTest.mjs";
 import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
+import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 
 // init SDK
 initHumbleSDK({ network: "TestNet" });
@@ -36,6 +37,7 @@ const options = [
   { title: "Add/remove Liquidity", action: runLiquidity },
   { title: "Create a Farm", action: runCreateFarmTest },
   { title: "Fetch a Farm", action: runFetchFarmTest },
+  { title: "Check Staking rewards", action: runCheckRewardsTest },
 ];
 
 (async () => {

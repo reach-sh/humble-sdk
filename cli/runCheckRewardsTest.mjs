@@ -1,4 +1,8 @@
-import { checkRewardsAvailableAt, fetchFarmAndTokens, fetchLiquidityPool } from "@reach-sh/humble-sdk";
+import {
+  checkRewardsAvailableAt,
+  fetchFarmAndTokens,
+  fetchLiquidityPool,
+} from "@reach-sh/humble-sdk";
 import {
   iout,
   exitWithMsgs,
@@ -26,12 +30,9 @@ export async function runCheckRewardsTest(acc) {
 
   Yellow(`Fetching single pool "${addr}"...`);
 
-  const formatPrompt = "Format response? [ y/n ]"
-  const formatResult = (await answerOrDie(formatPrompt)) === "y";
   const result = await checkRewardsAvailableAt(acc, {
     poolAddress: addr,
     onProgress,
-    formatResult,
   });
 
   iout(result.message, result.data);

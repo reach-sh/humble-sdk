@@ -98,7 +98,7 @@ export async function withdrawLiquidity(
     onProgress("Fetching updated pool LP token balance");
     const [tokensView, lpBalance] = await Promise.all([
       fromMaybe(await ctc.views.Info()),
-      tokenBalance(acc, poolTokenId).then(bigNumberToNumber),
+      tokenBalance(acc, poolTokenId, true).then(bigNumberToNumber),
     ]);
 
     if (lpBalance) data.lpBalance = Number(lpBalance);

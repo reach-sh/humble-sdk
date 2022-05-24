@@ -63,7 +63,7 @@ export async function harvestStakingRewards(
     onComplete(result);
     return result;
   } catch (error: any) {
-    const msg = "Rewards were not claimed";
+    const msg = `Claiming failed: ${error?.toString()}`;
     console.log(msg, { e: error });
     const result = errorResult(msg, id, data, ctc);
     onComplete(result);

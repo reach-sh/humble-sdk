@@ -1,14 +1,25 @@
 import { fromMaybe, noOp } from "../utils/utils.reach";
-import { StakingContract, StakingContractViews } from "../build/backend";
+import {
+  stakingBackend,
+  StakingContract,
+  StakingContractViews,
+} from "../build/backend";
 import {
   BigNumber,
+  createReachAPI,
   formatAddress,
   formatCurrency,
   ReachAccount,
 } from "../reach-helpers/index";
-import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
+import {
+  TransactionResult,
+  StakingRewards,
+  RewardsPair,
+  PoolFetchOpts,
+} from "../types";
 import { errorResult, successResult } from "../utils";
-import { fetchFarmAndTokens } from "./Staker.Fetch";
+import { fetchFarmToken } from "./Staker.Fetch";
+import { formatRewardsPair } from "../utils/utils.staker";
 
 export {
   fetchFarmAndTokens,
@@ -22,6 +33,8 @@ export { stakeTokensToFarm } from "./Staker.Stake";
 export { unstakeTokensFromFarm } from "./Staker.Unstake";
 export { harvestStakingRewards } from "./Staker.Harvest";
 
+type CheckStakeBalanceOpts = PoolFetchOpts & { stakeTokenDecimals?: number };
+
 /**
  * Check balance of user's stake in pool `poolAddress`
  * @param acc Reach account
@@ -33,7 +46,7 @@ export { harvestStakingRewards } from "./Staker.Harvest";
  */
 export async function checkStakingBalance(
   acc: ReachAccount,
-  opts: ReachTxnOpts
+  opts: CheckStakeBalanceOpts
 ) {
   // Response data
   const data = { balance: "0" };
@@ -41,25 +54,23 @@ export async function checkStakingBalance(
   const [valid, why] = protectArgs(acc, opts);
   if (!valid) return errorResult(why, opts.poolAddress, data);
 
-  onProgress("Fetching Farm metadata");
-  const id = opts.poolAddress?.toString();
-  const farm = await fetchFarmAndTokens(acc, opts);
-  if (!farm.succeeded) {
-    const msg = farm.message;
-    return errorResult(msg, id, data, farm.contract);
-  }
-
   onProgress("Fetching staking balance");
-  const ctc = farm.contract as StakingContract;
+  const ctc = (opts.contract ||
+    acc.contract(stakingBackend, opts.poolAddress)) as StakingContract;
   const view: StakingContractViews = ctc.views;
   const rawStaked = await view?.staked(formatAddress(acc));
-  const formatStake = (v: any) => {
-    const { stakeToken } = farm.data;
-    return formatCurrency(v, stakeToken?.decimals);
-  };
+  const poolAddress = opts.poolAddress.toString();
 
-  data.balance = fromMaybe(rawStaked, formatStake);
-  const result = successResult("OK", id, ctc, data);
+  let decimals: number;
+  if (!opts.stakeTokenDecimals || isNaN(Number(opts.stakeTokenDecimals))) {
+    const reach = createReachAPI();
+    const info = fromMaybe(await view.Info());
+    const { decimals: d } = await acc.tokenMetadata(info?.opts.stakeToken);
+    if (d) decimals = reach.bigNumberToNumber(d);
+  } else decimals = opts.stakeTokenDecimals;
+
+  data.balance = fromMaybe(rawStaked, (v: any) => formatCurrency(v, decimals));
+  const result = successResult("OK", poolAddress, ctc, data);
   onComplete(result);
   return result;
 }
@@ -67,7 +78,8 @@ export async function checkStakingBalance(
 /** Options for checking rewards */
 export type GetRewardsOpts = {
   time?: string | number | BigNumber;
-} & ReachTxnOpts;
+  rewardTokenDecimals?: number;
+} & PoolFetchOpts;
 
 /**
  * Check rewards available to user at blocktime `time`. If not supplied,
@@ -88,23 +100,20 @@ export async function checkRewardsAvailableAt(
   // Response data
   const data: StakingRewards = ["0", "0"];
   const [valid, why] = protectArgs(acc, opts);
-  if (!valid) return errorResult(why, opts.poolAddress, data);
+  if (!valid || !opts.poolAddress)
+    return errorResult(why, opts.poolAddress, data);
 
-  const { onProgress = noOp, onComplete = noOp } = opts;
+  const { contract, onProgress = noOp, onComplete = noOp } = opts;
   const id = opts.poolAddress?.toString();
-  const farmAndTokens = await fetchFarmAndTokens(acc, opts);
-  if (!farmAndTokens.succeeded) {
-    const message = "Farm not found";
-    return errorResult(message, id, data, null);
-  }
+  const ctc = (contract || acc.contract(stakingBackend, id)) as StakingContract;
 
   onProgress("Checking rewards");
-  const ctc = farmAndTokens.contract as StakingContract;
+  // const ctc = farmAndTokens.contract as StakingContract;
   const rewardsAtTime = fromMaybe(
     await (opts.time
       ? ctc.views.rewardsAvailableAt(formatAddress(acc), opts.time)
       : ctc.views.rewardsAvailable(formatAddress(acc)))
-  );
+  ) as RewardsPair;
 
   // error result
   if (!Array.isArray(rewardsAtTime)) {
@@ -113,10 +122,15 @@ export async function checkRewardsAvailableAt(
   }
 
   // Success result
-  const { rewardToken } = farmAndTokens.data;
-  data[0] = formatCurrency(rewardsAtTime[0]);
-  data[1] = formatCurrency(rewardsAtTime[1], rewardToken?.decimals);
-  const result = successResult("OK", id, ctc, data);
+  let rTokenDecimals = opts.rewardTokenDecimals;
+  if (isNaN(Number(opts.rewardTokenDecimals))) {
+    const tokenType = "reward";
+    const rToken = await fetchFarmToken(acc, { contract: ctc, tokenType });
+    rTokenDecimals = rToken?.decimals;
+  }
+
+  const fRewards = formatRewardsPair(rewardsAtTime, rTokenDecimals);
+  const result = successResult("OK", id, ctc, fRewards);
   onComplete(result);
   return result;
 }

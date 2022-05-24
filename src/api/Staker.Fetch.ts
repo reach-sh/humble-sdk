@@ -8,11 +8,17 @@ import {
   ReachContract,
   ReachToken,
 } from "../reach-helpers/index";
-import { TransactionResult, ReachTxnOpts, StakingRewards } from "../types";
-import { stakingBackend } from "../build/backend";
+import {
+  TransactionResult,
+  StakingRewards,
+  PoolFetchOpts,
+  ReachTxnOpts,
+} from "../types";
+import { stakingBackend, StakingContract } from "../build/backend";
 import { fetchToken } from "../participants";
 import { formatRewardsPair } from "../utils/utils.staker";
 import CHAIN_CONSTANTS from "../json";
+import { checkStakingBalance } from "./Staker.API";
 
 export type DeployerOpts = {
   /** Number of blocks to run contract */
@@ -23,6 +29,15 @@ export type DeployerOpts = {
   rewardsPerBlock: StakingRewards;
   /** Token to stake in exchange for `rewardToken1`  */
   stakeToken: BigNumber;
+  /** Amount of time to wait before issuing rewards  */
+  startDelay?: BigNumber;
+  /** Length of withdraw-only period before contract is closed */
+  graceDuration?: BigNumber;
+};
+
+/** Staking Pool fetch opts */
+export type FetchStakingPoolOpts = PoolFetchOpts & {
+  formatResult?: boolean;
 };
 
 /** Staking Contract details */
@@ -60,6 +75,7 @@ export type FarmAndTokens = {
   farmView: SDKFarmView;
   stakeToken: ReachToken | null;
   rewardToken: ReachToken | null;
+  userStaked: string;
 };
 
 /**
@@ -74,13 +90,14 @@ export type FarmAndTokens = {
  */
 export async function fetchFarmAndTokens(
   acc: ReachAccount,
-  opts: ReachTxnOpts & { formatResult?: boolean }
+  opts: FetchStakingPoolOpts
 ): Promise<TransactionResult<FarmAndTokens>> {
   // Response data
   const data: FarmAndTokens = {
     stakeToken: null,
     rewardToken: null,
     farmView: EMPTY_FV,
+    userStaked: "0",
   };
 
   const { poolAddress: farmId, onProgress = noOp, onComplete = noOp } = opts;
@@ -90,7 +107,8 @@ export async function fetchFarmAndTokens(
     return errorResult(message, poolAddress, data, null);
   }
 
-  const farmResult = await fetchStakingPool(acc, opts);
+  const ffOpts = { ...opts, poolAddress, formatResult: false };
+  const farmResult = await fetchStakingPool(acc, ffOpts);
   const { contract, succeeded, data: farmView } = farmResult;
 
   // If fetch failed, just ... just get out of here
@@ -100,19 +118,24 @@ export async function fetchFarmAndTokens(
   }
 
   onProgress("Fetching farm tokens");
-  const { opts: farmOpts } = farmView;
-  const { stakeToken: stakeTokenId, rewardToken1: rewardTokenId } = farmOpts;
-  const [stakeToken, rewardToken, now] = await Promise.all([
-    fetchToken(acc, stakeTokenId),
-    fetchToken(acc, rewardTokenId),
+  const [{ stakeToken, rewardToken }, now] = await Promise.all([
+    fetchFarmTokens(acc, { contract }),
     createReachAPI().getNetworkTime(),
   ]);
+
+  const stakedResult = await checkStakingBalance(acc, {
+    contract,
+    poolAddress,
+    onProgress,
+    stakeTokenDecimals: stakeToken?.decimals,
+  });
 
   data.farmView = opts.formatResult
     ? formatFarmView(farmView, { stakeToken, rewardToken }, poolAddress, now)
     : rawSDKFarmView(farmView, poolAddress);
   data.stakeToken = stakeToken;
   data.rewardToken = rewardToken;
+  data.userStaked = stakedResult.data.balance;
   const msg = "Fetched farm and tokens";
   const result = successResult(msg, poolAddress, contract, data);
   onComplete(result);
@@ -130,7 +153,7 @@ export async function fetchFarmAndTokens(
  */
 export async function fetchStakingPool(
   acc: ReachAccount,
-  opts: ReachTxnOpts
+  opts: FetchStakingPoolOpts
 ): Promise<TransactionResult<FarmView>> {
   const {
     contract,
@@ -149,6 +172,15 @@ export async function fetchStakingPool(
       ? successResult("Fetched farm", poolAddress, ctc, data)
       : errorResult("Farm was not found", poolAddress, EMPTY_FV, ctc);
 
+    if (result.succeeded && opts.formatResult) {
+      onProgress("Fetching Token metadata");
+      const [tokens, now] = await Promise.all([
+        fetchFarmTokens(acc, { contract: ctc, poolAddress }),
+        createReachAPI().getNetworkTime(),
+      ]);
+      result.data = formatFarmView(result.data, tokens, poolAddress, now);
+    } else result.data = rawSDKFarmView(result.data, poolAddress);
+
     onComplete(result);
     return result;
   } catch (error: any) {
@@ -158,6 +190,46 @@ export async function fetchStakingPool(
     onComplete(result);
     return result;
   }
+}
+
+type FetchFarmTokenOpts = ReachTxnOpts & {
+  contract?: StakingContract | null;
+  tokenType?: "stake" | "reward";
+};
+
+/** Fetch farm's stake or reward token */
+export async function fetchFarmToken(
+  acc: ReachAccount,
+  opts: FetchFarmTokenOpts
+) {
+  const { tokenType = "stake", contract, poolAddress } = opts;
+  if (!contract && !poolAddress)
+    throw new Error(
+      "Contract and pool address are required to fetch farm token"
+    );
+
+  const ctc = contract || acc.contract(stakingBackend, poolAddress);
+  const info = fromMaybe(await ctc.views.Info()) as FarmView;
+  if (!info) return null;
+
+  const { stakeToken, rewardToken1 } = info.opts;
+  const id = tokenType === "stake" ? stakeToken : rewardToken1;
+  return fetchToken(acc, id);
+}
+
+/** Fetch farm's stake or reward token */
+export async function fetchFarmTokens(
+  acc: ReachAccount,
+  opts: ReachTxnOpts & { contract?: StakingContract | null }
+) {
+  const { contract, poolAddress } = opts;
+  const ctc = contract || acc.contract(stakingBackend, poolAddress);
+  const [stakeToken, rewardToken] = await Promise.all([
+    fetchFarmToken(acc, { tokenType: "stake", contract: ctc }),
+    fetchFarmToken(acc, { tokenType: "reward", contract: ctc }),
+  ]);
+
+  return { stakeToken, rewardToken };
 }
 
 export type SDKFarmView = FarmView & {
@@ -201,22 +273,23 @@ function formatFarmView(
   const reach = createReachAPI();
   const { avgBlockDuration } = CHAIN_CONSTANTS[reach.connector];
   const { id: rId, decimals: rewardDecs } = rewardToken as ReachToken;
-  const blocksDiff = reach.bigNumberToNumber(d.end.sub(blockTime));
-  const end = inDays(blocksDiff * avgBlockDuration);
+  const small = (val: BigNumber) => reach.bigNumberToNumber(val);
+  const blocksDiff = small(d.end.sub(blockTime));
   const { duration, rewardsPerBlock } = d.opts;
-  const bigDuration = reach.bigNumberToNumber(
-    reach.mul(duration, avgBlockDuration)
-  );
 
   return {
     poolAddress,
-    end,
+    end: inDays(blocksDiff * avgBlockDuration),
     totalStaked: formatCurrency(d.totalStaked, stakeToken?.decimals),
     opts: {
-      duration: inDays(bigDuration),
+      duration: inDays(small(reach.mul(duration, avgBlockDuration))),
       rewardToken1: rId,
       stakeToken: stakeToken?.id,
       rewardsPerBlock: formatRewardsPair(rewardsPerBlock, rewardDecs),
+      graceDuration: inDays(
+        small(reach.mul(d.opts.graceDuration, avgBlockDuration))
+      ),
+      startDelay: inDays(small(reach.mul(d.opts.startDelay, avgBlockDuration))),
     },
     totalRewards: {
       network: formatCurrency(reach.mul(rewardsPerBlock[0], duration)),

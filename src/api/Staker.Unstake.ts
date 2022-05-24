@@ -68,8 +68,10 @@ export async function unstakeTokensFromFarm(
     onComplete(result);
     return result;
   } catch (error: any) {
-    const msg = "Could not unstake from Pool";
+    const msg = `Unstaking failed: ${error?.toString()}`;
     console.log(msg, { e: error });
-    return errorResult(msg, id, data, ctc);
+    const result = errorResult(msg, id, data, ctc);
+    onComplete(result)
+    return result
   }
 }

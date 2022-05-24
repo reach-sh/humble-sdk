@@ -113,7 +113,7 @@ async function getNetworkTokenBalance(address: string, bigNumber=false) {
   const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`
   const result = await fetch(URL).then((res) => res.json())
   const { amount } = result;
-  return bigNumber ? parseCurrency(amount) : formatCurrency(amount, 6);
+  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
 }
 
 /** Get formatted token balance */
@@ -133,7 +133,7 @@ export async function tokenBalance(acc: T.ReachAccount, id: string | number, big
 
   const { decimals } = asset.params;
   const { amount } = bal["asset-holding"];
-  return bigNumber ? parseCurrency(amount) : formatCurrency(amount, decimals);
+  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, decimals);
 }
 /** @internal Generate URL for fetching token balance  */
 function balanceBaseURL() {

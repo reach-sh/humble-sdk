@@ -11,7 +11,6 @@ import {
 import {
   TransactionResult,
   StakingRewards,
-  RewardsPair,
   PoolFetchOpts,
   ReachTxnOpts,
 } from "../types";
@@ -19,7 +18,7 @@ import { stakingBackend, StakingContract } from "../build/backend";
 import { fetchToken } from "../participants";
 import { formatRewardsPair } from "../utils/utils.staker";
 import CHAIN_CONSTANTS from "../json";
-import { checkRewardsAvailableAt } from "./Staker.API";
+import { checkStakingBalance } from "./Staker.API";
 
 export type DeployerOpts = {
   /** Number of blocks to run contract */
@@ -76,7 +75,7 @@ export type FarmAndTokens = {
   farmView: SDKFarmView;
   stakeToken: ReachToken | null;
   rewardToken: ReachToken | null;
-  rewardsAvailable: RewardsPair;
+  userStaked: string;
 };
 
 /**
@@ -98,7 +97,7 @@ export async function fetchFarmAndTokens(
     stakeToken: null,
     rewardToken: null,
     farmView: EMPTY_FV,
-    rewardsAvailable: ["0", "0"],
+    userStaked: "0",
   };
 
   const { poolAddress: farmId, onProgress = noOp, onComplete = noOp } = opts;
@@ -124,10 +123,11 @@ export async function fetchFarmAndTokens(
     createReachAPI().getNetworkTime(),
   ]);
 
-  const rewardsResult = await checkRewardsAvailableAt(acc, {
+  const stakedResult = await checkStakingBalance(acc, {
     contract,
     poolAddress,
     onProgress,
+    stakeTokenDecimals: stakeToken?.decimals,
   });
 
   data.farmView = opts.formatResult
@@ -135,7 +135,7 @@ export async function fetchFarmAndTokens(
     : rawSDKFarmView(farmView, poolAddress);
   data.stakeToken = stakeToken;
   data.rewardToken = rewardToken;
-  data.rewardsAvailable = rewardsResult.data;
+  data.userStaked = stakedResult.data.balance;
   const msg = "Fetched farm and tokens";
   const result = successResult(msg, poolAddress, contract, data);
   onComplete(result);

@@ -6,8 +6,10 @@ Types are listed below.\
 
 ---
 
-## Table of contents
-- [Table of contents](#table-of-contents)
+## TYPES
+- [TYPES](#types)
+- [Duration](#duration)
+- [TokenID](#tokenid)
 - [PoolDetails](#pooldetails)
 - [PoolInfo](#poolinfo)
 - [ReachTxnOpts](#reachtxnopts)
@@ -16,6 +18,20 @@ Types are listed below.\
 - [Token](#token)
 - [TransactionResult](#transactionresult)
 
+--- 
+
+## Duration 
+An object that can be used to describe a time interval
+```typescript
+type Duration = { hours?: number; days?: number }
+```
+--- 
+
+## TokenID 
+A representation of a token ID. 
+```typescript
+type TokenID = string | number;
+```
 --- 
 
 ## PoolDetails 
@@ -36,7 +52,7 @@ type PoolDetails = PoolInfo & {
     tokenBFees?: string | number;
 }
 ```
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#types--table-of-contents)
 
 ---
 
@@ -60,7 +76,7 @@ type PoolInfo = {
     poolTokenId?: string | number;
 }
 ```
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#types--table-of-contents)
 
 ---
 
@@ -82,7 +98,7 @@ type ReachTxnOpts = {
     onProgress?: (msg: string) => void;
 }
 ```
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#types--table-of-contents)
 
 ---
 
@@ -94,7 +110,7 @@ type SwapTxnOpts = {
     pool?: PoolDetails;
 } & ReachTxnOpts;
 ```
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#types--table-of-contents)
 
 ---
 
@@ -109,7 +125,7 @@ type type SwapInfo = {
     tokenIn?: string | number;
 }
 ```
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#types--table-of-contents)
 
 ---
 
@@ -125,7 +141,7 @@ type Token = {
     decimals: number;
 }
 ```
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#types--table-of-contents)
 
 ---
 
@@ -146,7 +162,7 @@ type TransactionResult = {
 }
 ```
 
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#types--table-of-contents)
 
 ---
 

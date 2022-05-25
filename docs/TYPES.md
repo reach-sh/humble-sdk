@@ -6,8 +6,8 @@ Types are listed below.\
 
 ---
 
-## TYPES
-- [TYPES](#types)
+## TYPE DEFINITIONS
+- [TYPE DEFINITIONS](#type-definitions)
 - [Duration](#duration)
 - [TokenID](#tokenid)
 - [PoolDetails](#pooldetails)
@@ -52,7 +52,7 @@ type PoolDetails = PoolInfo & {
     tokenBFees?: string | number;
 }
 ```
-^[**Back to contents**](#types--table-of-contents)
+^[**Back to contents**](#type-definitions)
 
 ---
 
@@ -76,7 +76,7 @@ type PoolInfo = {
     poolTokenId?: string | number;
 }
 ```
-^[**Back to contents**](#types--table-of-contents)
+^[**Back to contents**](#type-definitions)
 
 ---
 
@@ -98,7 +98,7 @@ type ReachTxnOpts = {
     onProgress?: (msg: string) => void;
 }
 ```
-^[**Back to contents**](#types--table-of-contents)
+^[**Back to contents**](#type-definitions)
 
 ---
 
@@ -110,7 +110,7 @@ type SwapTxnOpts = {
     pool?: PoolDetails;
 } & ReachTxnOpts;
 ```
-^[**Back to contents**](#types--table-of-contents)
+^[**Back to contents**](#type-definitions)
 
 ---
 
@@ -125,7 +125,7 @@ type type SwapInfo = {
     tokenIn?: string | number;
 }
 ```
-^[**Back to contents**](#types--table-of-contents)
+^[**Back to contents**](#type-definitions)
 
 ---
 
@@ -141,7 +141,7 @@ type Token = {
     decimals: number;
 }
 ```
-^[**Back to contents**](#types--table-of-contents)
+^[**Back to contents**](#type-definitions)
 
 ---
 
@@ -162,7 +162,7 @@ type TransactionResult = {
 }
 ```
 
-^[**Back to contents**](#types--table-of-contents)
+^[**Back to contents**](#type-definitions)
 
 ---
 

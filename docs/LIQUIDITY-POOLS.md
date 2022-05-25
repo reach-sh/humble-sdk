@@ -40,7 +40,7 @@ Swapping is in a separate document.
 ## createLiquidityPool
 ```typescript
 async function createLiquidityPool(
-  acc: any,
+  acc: ReachAccount,
   opts: CreatePoolTxnOpts
 ): Promise<TransactionResult<PoolInfo>> 
 ```

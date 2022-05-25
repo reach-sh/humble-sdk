@@ -74,7 +74,7 @@ type SDKOpts = {
 }
 ```
 
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#shared-methods)
 
 --- 
 
@@ -174,7 +174,7 @@ type FetchPoolTxnResult = {
 }
 ```
 
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#shared-methods)
 
 --- 
 
@@ -206,7 +206,7 @@ console.log(await fetchToken(acc, tokenId)); /* -> {
 #### fetchToken Returns
 * [`Token`](#token) **Token** data
 
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#shared-methods)
 
 ---
 
@@ -222,7 +222,7 @@ Defaults to `0.5` if none is explicitly set.
 #### getSlippage Returns
 * `number` **Slippage setting*
 
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#shared-methods)
 
 --- 
 
@@ -246,7 +246,7 @@ console.log(getSlippage()); // 0.5
 #### setSlippage Parameters
 * `slippage: number` Slippage value. Defaults to `0.5`
 
-^[**Back to contents**](#table-of-contents)
+^[**Back to contents**](#shared-methods)
 
 --- 
 

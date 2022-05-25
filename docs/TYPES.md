@@ -6,10 +6,11 @@ Types are listed below.\
 
 ---
 
-## TYPE DEFINITIONS
-- [TYPE DEFINITIONS](#type-definitions)
+## Type Definitions
+- [Type Definitions](#type-definitions)
 - [Duration](#duration)
 - [TokenID](#tokenid)
+- [ReachAccount](#reachaccount)
 - [PoolDetails](#pooldetails)
 - [PoolInfo](#poolinfo)
 - [ReachTxnOpts](#reachtxnopts)
@@ -32,6 +33,35 @@ A representation of a token ID.
 ```typescript
 type TokenID = string | number;
 ```
+--- 
+
+## ReachAccount 
+
+A **reach** [account abstraction](https://docs.reach.sh/frontend/#ref-frontends-js-acc). This object is created by the [**Reach standard library**](https://www.npmjs.com/package/@reach-sh/stdlib); the typedef below is only used as a reference. 
+
+```typescript
+interface ReachAccount {
+  networkAccount: { addr?: string; address?: string; [x: string]: any };
+  /** @deprecated - Use `reachAccount.contract(backend)` instead */
+  attach<T extends BackendModule>(
+    backend: T,
+    contractInfo: any | Promise<any>
+  ): ReachContract<T>;
+  /** @deprecated - Use `reachAccount.contract(backend)` instead */
+  deploy<T extends BackendModule>(backend: T | Promise<any>): ReachContract<T>;
+  contract<T extends BackendModule>(
+    backend: T,
+    contractInfo?: any
+  ): ReachContract<T>;
+  getAddress(): string;
+  setDebugLabel(label: string): ReachAccount;
+  tokenAccept(tokenId: string | number): Promise<void>;
+  tokenAccepted(tokenId: string | number): Promise<boolean>;
+  tokenMetadata(tokenId: string | number): Promise<{ [x: string]: any }>;
+  stdlib: ReachStdLib;
+}
+```
+
 --- 
 
 ## PoolDetails 

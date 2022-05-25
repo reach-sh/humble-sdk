@@ -7,7 +7,7 @@ Methods are listed below, along with usage examples where possible.\
 ---
 
 # Swapping
-Functions for (or relating) to swapping tokens.
+Swapping utility functions.
 - [Swapping](#swapping)
   - [calculatePriceImpact](#calculatepriceimpact)
       - [calculatePriceImpact Example](#calculatepriceimpact-example)
@@ -107,9 +107,13 @@ const { data, message, succeeded } = await swapTokens(acc, swapOpts);
 ```
 
 #### swapTokens Example: Price Impact
-(Optional) Calculate price impact to ensure the best price. Price impact is inversely proportional to expected swap output:
-the higher the price impact, the smaller the swap output.\
-This calculation doesn't affect the swap operation and is only included for illustration.
+(Optional) Calculate price impact to ensure the best price. Price impact is inversely proportional to expected swap output. In other words,
+the higher the price impact, the smaller the swap output.
+> 💡 **Why would I need this?**\
+> Because, simply, `Higher impact === lower trade quality.`\
+> A very high value returned by `calculatePriceImpact` might be because of low pool liquidity. The **HumbleSwap** UI flags trades that with a >5% trade impact.
+
+This is only included for illustration. Price impact calculation is separate from swapping, and doesn't affect it unless you *make it* do so.
 ```typescript
 const pool = /* pool source */
 const { tokenAId, tokenBId } = pool;

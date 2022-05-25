@@ -17,7 +17,7 @@ Methods are listed below, along with usage examples where possible.\
 ## createStakingPool
 ```typescript
 async function createStakingPool(
-  acc: any,
+  acc: ReachAccount,
   stakingOpts: CreateFarmTxnOpts
 ): Promise<TransactionResult<CreateFarmTxnResult>>
 ```

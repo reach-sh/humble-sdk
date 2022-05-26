@@ -60,6 +60,11 @@ export type ReachTxnOpts = {
 };
 
 /** Options for interacting with a `Pool` contract */
+export type PoolFetchOpts = ReachTxnOpts & {
+  poolAddress: string | number;
+};
+
+/** Options for interacting with a `Pool` contract */
 export type PoolTxnOpts = ReachTxnOpts & {
   /** When true, indicates this pool uses a network token (e.g. ALGO or ETH) */
   n2nn?: boolean;
@@ -196,6 +201,8 @@ export type StakerAPI = {
   /** Withdraw stake */
   withdraw(amt: BigNumber): Promise<StakeUpdate>;
 };
+
+export type RewardsPair = [any, any];
 
 export type Balances = { A: any; B: any };
 

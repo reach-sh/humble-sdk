@@ -1,18 +1,20 @@
 [![logo][logo]](./index.md)
 
-- [Installing the SDK](#installing-the-sdk)
-  - [Option 1. NPM (recommended)](#option-1-npm-recommended)
-  - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
-- [Importing SDK Functions](#importing-sdk-functions)
-- [Functions (methods)](#functions-methods)
-- [Types](#types)
-- [SDK Contents](#sdk-contents)
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).
 
 ---
 
 ## Installing the SDK
+- [Installing the SDK](#installing-the-sdk)
+  - [Option 1. NPM (recommended)](#option-1-npm-recommended)
+  - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
+- [Importing SDK Functions](#importing-sdk-functions)
+- [Type definitions](#type-definitions)
+- [SDK Contents](#sdk-contents)
+- [All Sections](#all-sections)
+
+---
 
 ### Option 1. NPM (recommended)
 The fastest way is to use `npm`:
@@ -42,7 +44,7 @@ $. npm run build
 
 4. As a **FINAL STEP**, copy or move the new `lib/` directory into your project and access it like any other JS module.
 
-> **Important note:** If you follow this method, be sure to swap out `import ... from "@reach-sh/humble-sdk"` with the path to your `lib/` build output. 
+> **Very important:** If you follow this method, be sure to swap out `import ... from "@reach-sh/humble-sdk"` with the path to your `lib/` build output.
 
 ---
 
@@ -61,15 +63,10 @@ import { initHumbleSDK } from "@reach-sh/humble-sdk";
 initHumbleSDK();
 ```
 
----
-
-## Functions (methods)
-See a full list of methods [**here**](./METHODS.md)
-
 --- 
 
-## Types
-See a full list of types [**here**](./TYPES.md)
+## Type definitions
+Shared/recurring typescript defs are [**here**](./TYPES.md)
 
 --- 
 
@@ -81,6 +78,17 @@ This SDK contains:
 
 Some input parameters will require objects created by reach's Javascript standard library (`stdlib`). The SDK allows you to access its `stdlib` instance, so you may not need to install or instantiate reach yourself. You should ideally be familiar with reach, as well as reach concepts.
 
+
 ---
+
+## All Sections
+- [Shared methods](./METHODS.md)
+- [Swapping](./SWAPPING.md)
+- [Liquidity Pools](./LIQUIDITY-POOLS.md)
+- [Farming/Staking Pools](./FARMING.md)
+- [Types](./FARMING.md)
+
+---
+
 
 [logo]: ./logo-white.svg

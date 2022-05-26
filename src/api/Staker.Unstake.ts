@@ -1,21 +1,21 @@
 import { noOp } from "../utils/utils.reach";
-import { StakingContract } from "../build/backend";
+import { stakingBackend, StakingContract } from "../build/backend";
 import {
   createReachAPI,
   formatCurrency,
   parseCurrency,
   ReachAccount,
 } from "../reach-helpers/index";
-import { ReachTxnOpts } from "../types";
+import { PoolFetchOpts } from "../types";
 import { errorResult, successResult } from "../utils";
 import {
   formatStakeRewardsUpdate,
   SDKStakeUpdate,
 } from "../utils/utils.staker";
-import { fetchFarmAndTokens } from "./Staker.Fetch";
+import { fetchFarmToken } from "./Staker.Fetch";
 
 /** Options for unstaking from Farm */
-type UnstakeOpts = { amount: number | string } & ReachTxnOpts;
+type UnstakeOpts = { amount: number | string } & PoolFetchOpts;
 
 /**
  * Remove (un-stake) an amount from a contract. Reduces rewards entitlement.
@@ -40,18 +40,25 @@ export async function unstakeTokensFromFarm(
   }
 
   const farmId = opts.poolAddress.toString();
-  const farmAndTokens = await fetchFarmAndTokens(acc, opts);
-  const { contract, data: farmData, succeeded, message } = farmAndTokens;
-  if (!farmData?.stakeToken || !succeeded || !contract) {
-    return errorResult(message as string, farmId, data, null);
-  }
+  const ctc: StakingContract =
+    opts.contract || acc.contract(stakingBackend, farmId);
 
   onProgress("Withdrawing stake");
-  const { decimals, symbol } = farmData.stakeToken;
+
+  const stakeToken = await fetchFarmToken(acc, {
+    contract: ctc,
+    poolAddress: farmId,
+    tokenType: "stake",
+  });
+
+  if (!stakeToken) {
+    return errorResult("Stake token not found", farmId, data, ctc);
+  }
+
+  const { decimals, symbol } = stakeToken;
   const id = opts.poolAddress?.toString();
 
   try {
-    const ctc: StakingContract = contract;
     const amt = isBigNumber(stk) ? stk : parseCurrency(stk, decimals);
     const update = await ctc.a.Staker.withdraw(amt);
     const fmt = formatStakeRewardsUpdate(update, decimals);
@@ -61,8 +68,10 @@ export async function unstakeTokensFromFarm(
     onComplete(result);
     return result;
   } catch (error: any) {
-    const msg = "Could not unstake from Pool";
+    const msg = `Unstaking failed: ${error?.toString()}`;
     console.log(msg, { e: error });
-    return errorResult(msg, id, data, contract);
+    const result = errorResult(msg, id, data, ctc);
+    onComplete(result)
+    return result
   }
 }

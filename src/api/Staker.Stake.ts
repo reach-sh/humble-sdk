@@ -1,16 +1,13 @@
 import { noOp } from "../utils/utils.reach";
-import { StakerAPI } from "../build/backend";
+import { StakerAPI, stakingBackend } from "../build/backend";
 import { parseCurrency, ReachAccount } from "../reach-helpers/index";
-import { ReachTxnOpts, StakeUpdate } from "../types";
+import { PoolFetchOpts, StakeUpdate } from "../types";
 import { errorResult, successResult } from "../utils";
 import { formatStakeRewardsUpdate } from "../utils/utils.staker";
-import { fetchFarmAndTokens } from "./Staker.Fetch";
+import { fetchFarmToken } from "./Staker.Fetch";
 
 /** Options for staking */
-type StakerOpts = {
-  poolAddress: string | number;
-  amountToStake: string | number;
-} & ReachTxnOpts;
+type StakerOpts = { amountToStake: string | number } & PoolFetchOpts;
 
 /**
  * Stake an amount in a contract for a share in the reward
@@ -28,16 +25,26 @@ export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
   // Response data
   const data = { amountStaked: "0", newTotalStaked: "0" };
   const { amountToStake, onProgress = noOp, onComplete = noOp } = opts;
-  const farmResult = await fetchFarmAndTokens(acc, opts);
-  const { contract, succeeded, data: farmData } = farmResult;
-  if (!succeeded || !farmData?.stakeToken || !contract) {
-    const e = farmResult.message || "Staking token not found";
+
+  if (!opts.contract && !opts.poolAddress)
+    throw new Error("Pool address or attached contract is required");
+
+  const contract =
+    opts.contract || acc.contract(stakingBackend, opts.poolAddress);
+  const stakeToken = await fetchFarmToken(acc, {
+    poolAddress: opts.poolAddress,
+    contract: contract,
+    tokenType: "stake",
+  });
+
+  if (!stakeToken) {
+    const e = "Staking token not found";
     const msg = `Staking failed: ${e}`;
     return errorResult(msg, opts.poolAddress, data, contract);
-  } else onProgress(`Staking ${farmData.stakeToken.symbol}`);
+  } else onProgress(`Staking ${stakeToken.symbol}`);
 
   const poolAddress = opts.poolAddress?.toString();
-  const { decimals, symbol } = farmData.stakeToken;
+  const { decimals, symbol } = stakeToken;
   const stakerAPI = contract.apis.Staker as StakerAPI;
 
   try {

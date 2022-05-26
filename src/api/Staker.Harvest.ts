@@ -1,13 +1,13 @@
 import { noOp } from "../utils/utils.reach";
-import { StakingContract } from "../build/backend";
+import { stakingBackend, StakingContract } from "../build/backend";
 import { formatCurrency, ReachAccount } from "../reach-helpers/index";
 import {
-  ReachTxnOpts,
+  PoolFetchOpts,
   StakingRewardsUpdate,
   SDKStakingRewards,
 } from "../types";
 import { errorResult, successResult } from "../utils";
-import { fetchFarmAndTokens } from "./Staker.Fetch";
+import { fetchFarmToken } from "./Staker.Fetch";
 
 /** Formatted Contract response-object */
 type SDKRewardsUpdate = {
@@ -30,7 +30,7 @@ type SDKRewardsUpdate = {
  */
 export async function harvestStakingRewards(
   acc: ReachAccount,
-  opts: ReachTxnOpts
+  opts: PoolFetchOpts & { rewardTokenDecimals?: number }
 ) {
   // Response data
   const data: SDKRewardsUpdate = {
@@ -38,31 +38,34 @@ export async function harvestStakingRewards(
     totalRemaining: ["0", "0"],
   };
 
-  const fandTResult = await fetchFarmAndTokens(acc, opts);
-  const { succeeded, contract, message, data: ftData } = fandTResult;
-  const missingData = !ftData?.farmView || !ftData?.rewardToken;
-  const id = opts.poolAddress?.toString();
-  if (!succeeded || missingData || !contract)
-    return errorResult(message, id, data, contract);
-
   const { onProgress = noOp, onComplete = noOp } = opts;
-  const { rewardToken } = ftData;
-  const ctc = contract as StakingContract;
+  const id = opts.poolAddress.toString();
+  const ctc = (opts.contract ||
+    acc.contract(stakingBackend, id)) as StakingContract;
 
   try {
     onProgress("Claiming rewards");
     const resp: StakingRewardsUpdate = await ctc.a.Staker.harvest();
-    const fmt = formatStakeHarvestUpdate(resp, rewardToken?.decimals);
+    let rDecimals = opts.rewardTokenDecimals;
+    if (isNaN(Number(rDecimals))) {
+      onProgress("Fetching reward token metadata");
+      const rToken = await fetchFarmToken(acc, {
+        tokenType: "reward",
+        contract: ctc,
+      });
+      rDecimals = rToken?.decimals;
+    }
 
+    const fmt = formatStakeHarvestUpdate(resp, rDecimals);
     data.totalRemaining = fmt.totalRemaining;
     data.userReceived = fmt.userReceived;
-    const result = successResult("OK", id?.toString(), ctc, data);
+    const result = successResult("OK", id, ctc, data);
     onComplete(result);
     return result;
   } catch (error: any) {
-    const msg = "Rewards were not claimed";
+    const msg = `Claiming failed: ${error?.toString()}`;
     console.log(msg, { e: error });
-    const result = errorResult(msg, id?.toString(), data, ctc);
+    const result = errorResult(msg, id, data, ctc);
     onComplete(result);
     return result;
   }

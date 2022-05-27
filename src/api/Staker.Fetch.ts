@@ -120,7 +120,10 @@ export async function fetchFarmAndTokens(
   }
 
   onProgress("Fetching farm tokens");
-  const { stakeToken, rewardToken } = await fetchFarmTokens(acc, { contract })
+  const [{ stakeToken, rewardToken }, now] = await Promise.all([
+    fetchFarmTokens(acc, { contract }),
+    createReachAPI().getNetworkTime(),
+  ]);
 
   const stakedResult = await checkStakingBalance(acc, {
     contract,
@@ -130,7 +133,7 @@ export async function fetchFarmAndTokens(
   });
 
   data.farmView = opts.formatResult
-    ? formatFarmView(farmView, { stakeToken, rewardToken }, poolAddress)
+    ? formatFarmView(farmView, { stakeToken, rewardToken }, poolAddress, now)
     : rawSDKFarmView(farmView, poolAddress);
   data.stakeToken = stakeToken;
   data.rewardToken = rewardToken;
@@ -173,8 +176,11 @@ export async function fetchStakingPool(
 
     if (result.succeeded && opts.formatResult) {
       onProgress("Fetching Token metadata");
-      const tokens = await fetchFarmTokens(acc, { contract: ctc, poolAddress })
-      result.data = formatFarmView(result.data, tokens, poolAddress);
+      const [tokens, now] = await Promise.all([
+        fetchFarmTokens(acc, { contract: ctc, poolAddress }),
+        createReachAPI().getNetworkTime(),
+      ]);
+      result.data = formatFarmView(result.data, tokens, poolAddress, now);
     } else result.data = rawSDKFarmView(result.data, poolAddress);
 
     onComplete(result);
@@ -262,6 +268,7 @@ function formatFarmView(
   d: FarmView,
   tokens: FarmTokens,
   poolAddress: string,
+  currentBlock: number,
 ): SDKFarmView {
   const { rewardToken, stakeToken } = tokens;
   if ([rewardToken, stakeToken].includes(null)) return d as SDKFarmView;
@@ -270,7 +277,8 @@ function formatFarmView(
   const { avgBlockDuration } = CHAIN_CONSTANTS[reach.connector];
   const { id: rId, decimals: rewardDecs } = rewardToken as ReachToken;
   const { rewardsPerBlock, start, end, Rewarder0 } = d.opts;
-  const blocksDiff = end - start;
+  const duration = end - start;
+  const blocksDiff = end - currentBlock;
   
 
   return {
@@ -286,9 +294,9 @@ function formatFarmView(
       Rewarder0
     },
     totalRewards: {
-      network: formatCurrency(reach.mul(rewardsPerBlock[0], blocksDiff)),
+      network: formatCurrency(reach.mul(rewardsPerBlock[0], duration)),
       rewardToken: formatCurrency(
-        reach.mul(rewardsPerBlock[1], blocksDiff),
+        reach.mul(rewardsPerBlock[1], duration),
         rewardDecs
       ),
     },

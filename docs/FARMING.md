@@ -27,7 +27,6 @@ Create a **reward token farm**. Users can stake a token that you specify in orde
 ```typescript
 type CreateFarmTxnOpts = { opts: StakingDeployerOpts } & ReachTxnOpts;
 
-type Duration = { hours?: number; days?: number }
 
 type StakingDeployerOpts = {
   /** Rewards token (cannot be `network` token e.g. `ALGO`]) */
@@ -36,12 +35,12 @@ type StakingDeployerOpts = {
   stakeTokenId: TokenID;
   /** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
   totalRewardsPayout: StakingRewards;
-  /** Length of rewards (`{ "hours": number, "days": number }`) */
-  stakingDuration: Duration;
-  /** Delay before staking can begin */
-  startDelay?: Duration;
-  /** Delay before stakers can no longer withdraw */
-  graceDuration?: Duration;
+  /** Block at which the farm will start distributing rewards */
+  startBlock: number;
+  /** Block at which the farm will stop distributing rewards */
+  endBlock: number;
+  /** The account that will deposit ALGO into the farm */
+  rewarder0?: Address;
 };
 ```
 

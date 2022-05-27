@@ -1,5 +1,4 @@
 import { getBlockchain } from "../constants";
-import { Duration } from "../types";
 import { default as ALGO } from "./ALGO.json";
 import { default as ETH } from "./ETH.json";
 
@@ -20,13 +19,23 @@ type ChainConstants = Record<string, ChainDescription> & typeof CHAIN_CONSTANTS;
 
 export default CHAIN_CONSTANTS as ChainConstants;
 
-/** Convert a duration of days and/or hours into its equivalent Block-length */
-export function convertToBlocks(duration: Duration = { days: 0 }) {
+/** Convert a duration of hours into its equivalent Block-length */
+export function convertToBlocks(duration: number) {
   const { BLOCKS_PER_HR } = blockConstants();
-  const { days = 0, hours = 0 } = duration;
-  const daysToHours = Number(days) * 24;
-  const totalHours = Number(hours) + daysToHours;
+  const hours = duration;
+  const totalHours = Number(hours);
   return Math.ceil(totalHours * BLOCKS_PER_HR);
+}
+
+export async function convertDateToBlocks(date: Date, currentBlock: number) {
+  // does not convert the dates to UTC
+  // This is because it's only using the dates to get the number of hours between two dates
+  // Whether the dates are in UTC or in a timezone that number of hours will be the same
+  const currentDate = new Date()
+  const hoursFromCurrentDate = (date.getTime() - currentDate.getTime()) / (60 * 60 * 1000)
+  const blocksTillInputDate = convertToBlocks(hoursFromCurrentDate)
+  const inputDateAsBlocks = currentBlock + blocksTillInputDate
+  return inputDateAsBlocks
 }
 
 /** Block-length numerical constants for the selected blockchain */

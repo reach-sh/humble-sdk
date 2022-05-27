@@ -10,7 +10,7 @@ import {
   formatAddress,
   formatCurrency,
   ReachAccount,
-} from "../reach-helpers/index";
+} from "../reach-helpers";
 import {
   TransactionResult,
   StakingRewards,

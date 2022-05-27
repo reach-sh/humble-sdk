@@ -8,7 +8,6 @@ Types are listed below.\
 
 ## Type Definitions
 - [Type Definitions](#type-definitions)
-- [Duration](#duration)
 - [TokenID](#tokenid)
 - [ReachAccount](#reachaccount)
 - [PoolDetails](#pooldetails)
@@ -19,13 +18,6 @@ Types are listed below.\
 - [Token](#token)
 - [TransactionResult](#transactionresult)
 
---- 
-
-## Duration 
-An object that can be used to describe a time interval. At least one key is required.
-```typescript
-type Duration = { hours?: number; days?: number }
-```
 --- 
 
 ## TokenID 

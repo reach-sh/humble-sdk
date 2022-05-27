@@ -32,7 +32,7 @@ let HUMBLE_ADDR: string;
  * @internal Set account address (not App ID!) of Triumvirate contract for current network */
 export function setProtocolAddr(prov: NetworkProvider, override?: string) {
   const a = [
-    "FPRCYM4XMNK6JPBBY6V7CX6JLPGCOXZM32JML7LX7GFSYFREHAIOAPBZ6I",
+    "YNKCECPOYM3ZLFOHKZTG466GYCAGXKWRWA4G5C6BFLXNDHBUAZ73XATU2U",
     "???",
   ];
   if (prov === "TestNet") HUMBLE_ADDR = override ? override : a[0];

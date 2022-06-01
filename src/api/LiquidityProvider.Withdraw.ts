@@ -111,7 +111,7 @@ export async function withdrawLiquidity(
     return result;
   } catch (e: any) {
     console.error("HumbleSDK withdraw error", { e });
-    const msg = parseContractError("Funds were not withdrawn", e);
+    const msg = parseContractError("Funds were not withdrawn.", e);
     return errorResult(msg, poolAddress, data, ctc);
   }
 }

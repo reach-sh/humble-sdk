@@ -7,7 +7,7 @@ import {
   ReachAccount,
 } from "../reach-helpers/index";
 import { PoolFetchOpts } from "../types";
-import { errorResult, successResult } from "../utils";
+import { errorResult, parseContractError, successResult } from "../utils";
 import {
   formatStakeRewardsUpdate,
   SDKStakeUpdate,
@@ -68,7 +68,7 @@ export async function unstakeTokensFromFarm(
     onComplete(result);
     return result;
   } catch (error: any) {
-    const msg = `Unstaking failed: ${error?.toString()}`;
+    const msg = parseContractError(`Unstaking failed.`, error);
     console.log(msg, { e: error });
     const result = errorResult(msg, id, data, ctc);
     onComplete(result)

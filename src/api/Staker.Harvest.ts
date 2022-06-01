@@ -6,7 +6,7 @@ import {
   StakingRewardsUpdate,
   SDKStakingRewards,
 } from "../types";
-import { errorResult, successResult } from "../utils";
+import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchFarmToken } from "./Staker.Fetch";
 
 /** Formatted Contract response-object */
@@ -63,7 +63,7 @@ export async function harvestStakingRewards(
     onComplete(result);
     return result;
   } catch (error: any) {
-    const msg = `Claiming failed: ${error?.toString()}`;
+    const msg = parseContractError(`Claiming failed.`, error);
     console.log(msg, { e: error });
     const result = errorResult(msg, id, data, ctc);
     onComplete(result);

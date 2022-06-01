@@ -5,14 +5,14 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-modules --unhandled-rejections=strict ./index.mjs KEY='scatter act gospel coast elevator about flee negative crack iron lyrics disagree verb flat rigid paper solve wink you insane cancel same among absent decide'"
+    "test": "node --experimental-modules --unhandled-rejections=strict ./index.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@reach-sh/humble-sdk": "file:..",
-    "@reach-sh/stdlib": "^0.1.10-rc.6",
+    "@reach-sh/stdlib": "0.1.10-rc.6",
     "algosdk": "^1.15.0",
     "enquirer": "^2.3.6"
   }

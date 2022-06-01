@@ -19,10 +19,10 @@ export async function runCreateFarmTest(acc) {
   Blue(`Running STAKING-POOL-CREATE`);
   const reach = createReachAPI();
 
-  //   Duration
-  Yellow("How long should the farm run?");
-  let prompt = "Enter duration in days:";
-  const days = Number(await answerOrDie(prompt));
+  //   Starting Date
+  Yellow("When should the farm start distributing rewards?");
+  let prompt = "Enter a date like 5/26/22:";
+  const startDate = await answerOrDie(prompt);
 
   //   Reward token
   Yellow("What REWARD token will users get?");
@@ -47,18 +47,31 @@ export async function runCreateFarmTest(acc) {
   prompt = `Enter TOTAL ${rewardsToken.symbol} to earn in pool:`;
   const nnrt = Number(await answerOrDie(prompt));
 
+  //   Ending date
+  Yellow("When should the farm stop distributing rewards?");
+  prompt = "Enter a date like 5/26/22:";
+  const endDate = await answerOrDie(prompt);
+
+  //   ALGO provider address
+  Yellow("Will a separate account be adding the ALGO rewards? If so, what is it's address? (this will default to your address if a different one isn't submitted)");
+  prompt = "Enter the address or leave blank to use ALGOs in your account:";
+  const rewarder = await answerOrDie(prompt);
+  console.log({rewarder})
+
   Blue(`Cost: ${nrt} ${reach.connector} and ${nnrt} ${rewardsToken.symbol}`);
   const createPool = (await answerOrDie("Continue? (y/n)")) === "y";
   if (!createPool) exitWithMsgs("Exiting");
 
   const result = await createStakingPool(acc, {
+    onComplete: Green,
     onProgress: Yellow,
     opts: {
-      stakingDuration: { days },
       rewardTokenId: rewardTokenId,
-      totalRewardsPayout: [nrt, nnrt],
       stakeTokenId: stakeTokenId,
-      graceDuration: { days: 4 },
+      totalRewardsPayout: [nrt, nnrt],
+      startBlock: startDate,
+      endBlock: endDate,
+      rewarder0: rewarder === '' ? reach.formatAddress(acc.getAddress()) : rewarder,
     },
   });
 

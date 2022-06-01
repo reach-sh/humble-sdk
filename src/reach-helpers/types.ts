@@ -125,13 +125,13 @@ export type ReachEvent<T extends any> = { when: any; what: T };
 
 /** `ReachEvent` is an `Event` emitted from a contract `EventStream` */
 export type ReachEventStream<T> = {
-  [k in keyof T]: {
+  Register: {
     next(): Promise<ReachEvent<any>>;
     seek(t: BigNumber): void;
     seekNow(): Promise<void>;
     lastTime(): Promise<BigNumber>;
     monitor(handler: (e: ReachEvent<any>) => void): Promise<void>;
-  };
+  } & {[k in keyof T]: any};
 };
 
 /** StdLib Helper Interface */

@@ -116,14 +116,13 @@ async function deployFarmContract(
     }));
     data.poolAddress = parseAddress(await ctc.getInfo());
     data.amountsDeposited = rest.totalRewardsPayout;
+    await pReadyForRewarder;
     if (rest.rewarder0 === formatAddress(acc)) {
-      await pReadyForRewarder;
       try {
         await ctc.a.Setup.fund()
       } catch (error: any) {
         throw new Error(error);
       }
-      
     }
     const result = successResult("Farm created", data.poolAddress, ctc, data);
     onComplete(result);

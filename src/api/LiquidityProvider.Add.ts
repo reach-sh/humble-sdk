@@ -67,9 +67,8 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
 
     return done(successResult("Funds deposited", poolAddress, ctc, data));
   } catch (e) {
-    const parsedMsg = parseContractError(`Deposit failed`, e);
-    const msg = `${parsedMsg}: ${JSON.stringify(e, null, 2)}`;
-    console.log(parsedMsg, { e });
+    const msg = parseContractError(`Deposit failed.`, e);
+    console.log(msg, { e });
     onProgress(msg);
     return done(errorResult(msg, poolAddress, { lpTokens: 0 }, ctc));
   }

@@ -2,7 +2,7 @@ import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { Balances, SwapTxnOpts, TransactionResult } from "../types";
 import { formatCurrency, parseCurrency, ReachAccount } from "../reach-helpers";
 import { ASSURANCE_MSG, getSlippage } from "../constants";
-import { errorResult, isNetworkToken } from "../utils";
+import { errorResult, isNetworkToken, parseContractError } from "../utils";
 import { fetchToken } from "../participants/index";
 import { noOp } from "../utils/utils.reach";
 
@@ -67,15 +67,15 @@ export async function swapTokens(
     onComplete(txnResult);
     return txnResult;
   } catch (e) {
-    const defaultMsg = "Token Swap failed";
-    const msg = swapErrorMessage(e);
+    const defaultMsg = "Token Swap failed.";
+    const msg = swapErrorMessage(defaultMsg, e);
     console.log(defaultMsg, { e });
     return errorResult(msg, poolAddress, data, null);
   }
 }
 
 /** @internal | Parse txn error into something user friendly */
-function swapErrorMessage(e: any) {
+function swapErrorMessage(failureMsg: string, e: any) {
   const error = e.toString();
   let message = "";
 
@@ -85,20 +85,17 @@ function swapErrorMessage(e: any) {
     case error.includes("expectedOut > 0"): {
       message = `Slippage error: the amount returned would have been below the 
       minimum you were expected to receive.`;
-      break;
+      return `${ASSURANCE_MSG} ${message}`.trim();
     }
     case e.toString().includes("balance(tokA) > 0"): {
       message = `You can't swap more tokens than are in the pool. Try lowering the amount.`;
-      break;
+      return `${ASSURANCE_MSG} ${message}`.trim();
     }
 
     default:
-      break;
+      return parseContractError(failureMsg, e)
   }
 
-  message = `${ASSURANCE_MSG} ${message}`.trim();
-  // return errorResult(message, poolAddress, data, null);
-  return message;
 }
 
 /**

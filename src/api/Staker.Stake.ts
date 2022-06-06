@@ -2,7 +2,7 @@ import { noOp } from "../utils/utils.reach";
 import { StakerAPI, stakingBackend } from "../build/backend";
 import { parseCurrency, ReachAccount } from "../reach-helpers/index";
 import { PoolFetchOpts, StakeUpdate } from "../types";
-import { errorResult, successResult } from "../utils";
+import { errorResult, parseContractError, successResult } from "../utils";
 import { formatStakeRewardsUpdate } from "../utils/utils.staker";
 import { fetchFarmToken } from "./Staker.Fetch";
 
@@ -59,9 +59,9 @@ export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
     onComplete(result);
     return result;
   } catch (error: any) {
-    const message = `Staking failed: ${error?.toString()}`;
-    console.log(message, { error });
-    const result = errorResult(message, poolAddress, data, contract);
+    const msg = parseContractError(`Staking failed.`, error);
+    console.log(msg, { error });
+    const result = errorResult(msg, poolAddress, data, contract);
     onComplete(result);
     return result;
   }

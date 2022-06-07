@@ -45,6 +45,8 @@ export type FetchStakingPoolOpts = PoolFetchOpts & {
 export type FarmView = {
   /** When farming pool ends */
   end?: BigNumber;
+  /** When farming pool begins */
+  start?: BigNumber;
   /** Initial values submitted by contract creator */
   opts: DeployerOpts;
   /** Amount of rewards left in contract [`network`, `nonNetwork`] */
@@ -278,12 +280,14 @@ function formatFarmView(
   const { id: rId, decimals: rewardDecs } = rewardToken as ReachToken;
   const { rewardsPerBlock, start, end, Rewarder0 } = d.opts;
   const duration = end - start;
-  const blocksDiff = end - currentBlock;
+  const endBlocksDiff = end - currentBlock;
+  const startBlocksDiff = start - currentBlock;
   
 
   return {
     poolAddress,
-    end: inDays(blocksDiff * avgBlockDuration),
+    start: inDays(startBlocksDiff * avgBlockDuration),
+    end: inDays(endBlocksDiff * avgBlockDuration),
     totalStaked: formatCurrency(d.totalStaked, stakeToken?.decimals),
     opts: {
       rewardToken1: rId,

@@ -63,7 +63,7 @@ export function parseContractError(failureMsg: string, e: any) {
       return `${failureMsg} ${ASSURANCE_MSG} ${MIN_BALANCE_MSG}`;
 
     default:
-      return failureMsg;
+      return `${error}`;
   }
 }
 

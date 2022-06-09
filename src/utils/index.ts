@@ -4,6 +4,7 @@ import {
   MIN_BALANCE_MSG,
   POPUP_BLOCKED_MSG,
   TRANSACTION_CANCELLED_MSG,
+  TRANSACTION_DIDNT_LOAD,
 } from "../constants";
 import { TransactionResult } from "../types";
 
@@ -58,6 +59,9 @@ export function parseContractError(failureMsg: string, e: any) {
     case error.includes("Operation cancelled"):
     case error.includes("The User has rejected the transaction request"):
       return `${TRANSACTION_CANCELLED_MSG}`;
+
+    case error.includes("Window not loaded"):
+      return `${TRANSACTION_DIDNT_LOAD}`;
 
     case error.includes("overspend") || error.includes("below min"):
       return `${failureMsg} ${ASSURANCE_MSG} ${MIN_BALANCE_MSG}`;

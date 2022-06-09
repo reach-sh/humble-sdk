@@ -82,7 +82,8 @@ function swapErrorMessage(failureMsg: string, e: any) {
   switch (true) {
     case error.includes("logic eval error"):
     case error.includes("amtOut >= expectedOut"):
-    case error.includes("expectedOut > 0"): {
+    case error.includes("expectedOut > 0"): 
+    case error.includes("slippage"): {
       message = `Slippage error: the amount returned would have been below the 
       minimum you were expected to receive.`;
       return `${ASSURANCE_MSG} ${message}`.trim();

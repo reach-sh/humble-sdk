@@ -34,7 +34,7 @@ let HUMBLE_ADDR: string;
 export function setProtocolAddr(prov: NetworkProvider, override?: string) {
   const a = [
     "YNKCECPOYM3ZLFOHKZTG466GYCAGXKWRWA4G5C6BFLXNDHBUAZ73XATU2U",
-    "???",
+    "RKUC34RZOMK26ZOD4J2OFY3UILORX5AAMIX24L5MWAUUF6DVJVBJYQSABQ",
   ];
   if (prov === "TestNet") HUMBLE_ADDR = override ? override : a[0];
   if (prov === "MainNet") HUMBLE_ADDR = a[1];

@@ -82,6 +82,13 @@ export type FarmAndTokens = {
   userStaked: string;
 };
 
+export declare type FarmAndTokensDefined = {
+  farmView: SDKFarmView;
+  stakeToken: ReachToken;
+  rewardToken: ReachToken;
+  userStaked: string;
+};
+
 /**
  * Fetch `staking` and (non-network) `reward` tokens for a farm
  * @param acc Reach account instance

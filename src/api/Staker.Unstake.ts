@@ -60,8 +60,8 @@ export async function unstakeTokensFromFarm(
 
   try {
     const amt = isBigNumber(stk) ? stk : parseCurrency(stk, decimals);
-    const update = await ctc.a.Staker.withdraw(amt);
-    const fmt = formatStakeRewardsUpdate(update, decimals);
+    const update = await ctc.a.Staker.withdrawAndHarvest(amt);
+    const fmt = formatStakeRewardsUpdate(update[0], decimals);
     const withdrew = isBigNumber(stk) ? formatCurrency(stk, decimals) : stk;
     const msg = `Withdrew ${withdrew} ${symbol}`;
     const result = successResult(msg, id, ctc, fmt);

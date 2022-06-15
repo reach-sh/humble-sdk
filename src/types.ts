@@ -17,6 +17,14 @@ export type ComputeSwapFn = {
   ): Balances[];
 };
 
+export type ComputeMintFn = {
+  (
+    addBalances: Balances,
+    poolBalances: Balances,
+    lptBalances: Balances,
+  ): BigNumber;
+};
+
 export type TokenID = string | number | null;
 
 export type SwapTxnOpts = {

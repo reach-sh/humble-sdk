@@ -10,6 +10,7 @@ import {
 initHumbleSDK();
 
 const tokenIds = { tokenAId: 456, tokenBId: 123 };
+const tokenIdsB = { tokenAId: 222, tokenBId: 111 }
 const swap = { ...tokenIds, amountA: 10, amountB: 0 };
 const p1Ato3B: PoolDetails = {
   ...tokenIds,
@@ -18,6 +19,15 @@ const p1Ato3B: PoolDetails = {
   tokenADecimals: 3,
   tokenBBalance: 3000,
   tokenBDecimals: 3,
+};
+
+const p2A6toB1: PoolDetails = {
+  ...tokenIdsB,
+  poolAddress: 1,
+  tokenABalance: 5051.454374,
+  tokenADecimals: 6,
+  tokenBBalance: 631556.4,
+  tokenBDecimals: 1,
 };
 
 describe("HumbleSDK Swap Utils", () => {
@@ -68,7 +78,23 @@ describe("HumbleSDK Swap Utils", () => {
     const [a, b] = [Number(amountA), Number(amountB)];
 
     expect(a).toStrictEqual(modswap.amountA);
-    expect(b).toStrictEqual(0.99);
+    expect(b).toStrictEqual(0.996);
+    expect(b).toBeLessThan(1);
+  });
+
+  it("Calculates the expected output for a A-to-B swap (with fees) between a 6 and 1 decimal token", () => {
+    const modswap = {
+      tokenAId: tokenIdsB.tokenBId,
+      tokenBId: tokenIdsB.tokenAId,
+      amountA: 3,
+      amountB: 0,
+    };
+    const opts = { swap: modswap, pool: p2A6toB1 };
+    const { amountA, amountB } = calculateTokenSwap(opts);
+    const [a, b] = [Number(amountA), Number(amountB)];
+
+    expect(a).toStrictEqual(modswap.amountA);
+    expect(b).toStrictEqual(0.023923);
     expect(b).toBeLessThan(1);
   });
 });
@@ -175,7 +201,7 @@ describe("HumbleSDK Swap Utils | Spot swap test", () => {
     expect(a).toStrictEqual(modswap.amountA);
     expect(b).toBeGreaterThan(4.9);
     // Check difference between result and 4.9 is no greater than 0.05
-    expect(b).toBeCloseTo(4.9, 1);
+    expect(b).toBeCloseTo(4.960273, 0.06027299999999958);
     expect(b).toBeLessThan(5);
   });
 });

@@ -356,7 +356,7 @@ function getValueWithMaxDecimals(original: string, decimals?: number) {
   }
 
   if (decIndex > -1) {
-    value = value.substring(0, decIndex) + value.substring(decIndex, decs + 1);
+    value = value.substring(0, decIndex) + value.substring(decIndex, decIndex + decs + 1);
   }
 
   if (decs === 0 && value) value = Math.floor(Number(value)).toString();

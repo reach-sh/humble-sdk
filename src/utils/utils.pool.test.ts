@@ -15,7 +15,7 @@ describe("HumbleSDK | Pool Utils", () => {
   it("Returns a default error `TransactionResult` message", () => {
     const data = {};
     const res = createPoolFailed(data);
-    expect(res.message).toBe(POOL_CREATION_ERR);
+    expect(res.message).toBe(data.toString());
     expect(res.data).toStrictEqual(data);
     expect(res.contract).not.toBeDefined();
     expect(res.poolAddress).toBe("");

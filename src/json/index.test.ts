@@ -21,16 +21,16 @@ describe("Chain Constants", () => {
     const bloxPerDay = bloxPerHr * 24;
     let days = 0;
     let hours = 0;
-    expect(convertToBlocks({ days })).toStrictEqual(0);
-    expect(convertToBlocks({ hours })).toStrictEqual(0);
+    expect(convertToBlocks(days*24)).toStrictEqual(0);
+    expect(convertToBlocks(hours)).toStrictEqual(0);
 
     hours = 1;
     days = 1;
     const sum = bloxPerHr * hours + bloxPerDay * days;
     const c = Math.ceil;
-    expect(convertToBlocks({ hours })).toStrictEqual(c(bloxPerHr * hours));
-    expect(convertToBlocks({ days })).toStrictEqual(c(bloxPerDay * days));
-    expect(convertToBlocks({ hours, days })).toStrictEqual(c(sum));
+    expect(convertToBlocks(hours)).toStrictEqual(c(bloxPerHr * hours));
+    expect(convertToBlocks(days * 24)).toStrictEqual(c(bloxPerDay * days));
+    expect(convertToBlocks(hours + days * 24)).toStrictEqual(c(sum));
   });
 });
 

@@ -81,7 +81,7 @@ describe.only("Liquidity Provider > Add", () => {
     const acc = { ...MockAccount, tokenAccept: jest.fn() };
     const spy = jest
       .spyOn(acc, "tokenAccept")
-      .mockImplementation(() => Promise.reject(false));
+      .mockImplementation(() => Promise.reject("Token opt-in failed."));
 
     const result = await addLiquidity(acc, opts);
     expect(spy).toHaveBeenCalled();

@@ -35,10 +35,10 @@ type StakingDeployerOpts = {
   stakeTokenId: TokenID;
   /** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
   totalRewardsPayout: StakingRewards;
-  /** Block at which the farm will start distributing rewards */
-  startBlock: number;
-  /** Block at which the farm will stop distributing rewards */
-  endBlock: number;
+  /** A string date is passed in as startBlock and is converted into the start block inside the createStakingPool process*/
+  startBlock: string;
+  /** A string date is passed in as endBlock and is converted into the start block inside the createStakingPool process*/
+  endBlock: string;
   /** The account that will deposit ALGO into the farm */
   rewarder0?: Address;
 };
@@ -48,11 +48,17 @@ type StakingDeployerOpts = {
 ```typescript
 import { createStakingPool } from "@reach-sh/humble-sdk";
 
+const startTime = new Date().toString()
+const endTime = startTime
+endTime.setDate(endTime.getDate() + 7)
 // Options for calling "createStakingPool"
 const createOpts = {
-    tokenAmounts: [100, 200] as [number, number],
-    tokenIds: [112233, 446688] as [any, any],
-
+    rewardTokenId: 1111111,
+    stakeTokenId: 1111111
+    totalRewardsPayout: [100, 200] as [number, number],
+    startBlock: startTime
+    endBlock: endTime,
+    rewarder0: 'GSL7AJYYYAVZOJVJWSU6KSZMEYU4K7ZFPX3XYTLDBCNWBX32NXCD2KTWVM'
     // progress bar updated
     onProgress(msg: string) {
       if (msg === 'SIGNING_EVENT') {
@@ -79,24 +85,14 @@ const { poolAddress, tokenAId, tokenBId, poolTokenId } = data;
 ```
 
 #### createStakingPool Returns
-`PoolInfo` about the new pool.
+`CreateFarmTxnResult` about the new staking pool.
 ```typescript
-type PoolInfo = {
-  /** `Token A` id. Use '0' for network token  */
-  tokenAId: string | number;
-  /** `Token B` id */
-  tokenBId: string | number;
-  /** Pool contract address (or Algorand application ID) */
-  poolAddress: string | number;
-  /** Number of decimal places for `Token A`. Defaults to `6` */
-  tokenADecimals?: number;
-  /** Number of decimal places for `Token B`. Defaults to `6` */
-  tokenBDecimals?: number;
-  /** When true, indicates this pool uses a network token (e.g. ALGO or ETH) */
-  n2nn?: boolean;
-  /** ID for pool liquidity token */
-  poolTokenId?: ResourceIdentifier;
-}
+type CreateFarmTxnResult = {
+  /** App id of new staking pool */
+  poolAddress?: string;
+  /** User-deposited amounts in contract */
+  amountsDeposited?: StakingRewards;
+};
 ```
 
 

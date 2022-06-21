@@ -37,7 +37,7 @@ type StakingDeployerOpts = {
   totalRewardsPayout: StakingRewards;
   /** A string date is passed in as startBlock and is converted into the start block inside the createStakingPool process*/
   startBlock: string;
-  /** A string date is passed in as endBlock and is converted into the start block inside the createStakingPool process*/
+  /** A string date is passed in as endBlock and is converted into the end block inside the createStakingPool process*/
   endBlock: string;
   /** The account that will deposit ALGO into the farm */
   rewarder0?: Address;
@@ -84,8 +84,8 @@ const { poolAddress, tokenAId, tokenBId, poolTokenId } = data;
 // do something with 'data'
 ```
 
-#### createStakingPool Returns
-`CreateFarmTxnResult` about the new staking pool.
+#### createStakingPool Returns a
+`CreateFarmTxnResult` with details about the new staking pool.
 ```typescript
 type CreateFarmTxnResult = {
   /** App id of new staking pool */

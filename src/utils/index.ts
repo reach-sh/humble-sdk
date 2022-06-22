@@ -1,11 +1,19 @@
-import { ChainSymbol, createReachAPI, NETWORKS } from "./reach-helpers";
+import { ChainSymbol, createReachAPI, NETWORKS } from "../reach-helpers";
 import {
   ASSURANCE_MSG,
   MIN_BALANCE_MSG,
   POPUP_BLOCKED_MSG,
   TRANSACTION_CANCELLED_MSG,
-} from "./constants";
+  TRANSACTION_DIDNT_LOAD,
+} from "../constants";
+import { TransactionResult } from "../types";
 
+/**
+ * @internal
+ * Format a value using exponential notation
+ * @param val Value
+ * @returns Formatted value `1e-N`
+ */
 export const exponentialFormat = (val: string) => {
   if ((val.split(".")[1] || "").length > 7) {
     return Number.parseFloat(val).toExponential(1);
@@ -13,11 +21,18 @@ export const exponentialFormat = (val: string) => {
   return val;
 };
 
+/**
+ * Assert that `tokenId` is a Network Token (e.g. ALGO, ETH)
+ * @param tokenId Token id
+ * @returns Boolean (true if token id represents network Token)
+ */
 export function isNetworkToken(tokenId: string | number) {
-  return [0, "0"].includes(tokenId);
+  return [0, "0", null].includes(tokenId);
 }
 
-/** Create a Network `Token` representation for the current chain  */
+/**
+ * @internal
+ * Create a Network `Token` representation for the current chain  */
 export function makeNetworkToken() {
   const { connector } = createReachAPI();
   return {
@@ -31,7 +46,9 @@ export function makeNetworkToken() {
   };
 }
 
-/** Turn blockchain error messages into something more user-friendly */
+/**
+ * @internal
+ * Turn blockchain error messages into something more user-friendly */
 export function parseContractError(failureMsg: string, e: any) {
   const error = e.toString();
 
@@ -43,15 +60,21 @@ export function parseContractError(failureMsg: string, e: any) {
     case error.includes("The User has rejected the transaction request"):
       return `${TRANSACTION_CANCELLED_MSG}`;
 
+    case error.includes("Window not loaded"):
+      return `${TRANSACTION_DIDNT_LOAD}`;
+
     case error.includes("overspend") || error.includes("below min"):
       return `${failureMsg} ${ASSURANCE_MSG} ${MIN_BALANCE_MSG}`;
 
     default:
-      return failureMsg;
+      return `${error}`;
   }
 }
 
-// HELPER | cancel request if it takes longer than `timeout` (default 3.5s)
+/**
+ * @internal
+ * HELPER | cancel request if it takes longer than `timeout` (default 3.5s)
+ */
 export async function withTimeout(
   request: Promise<any> | (() => Promise<any>),
   fallback = null,
@@ -65,4 +88,42 @@ export async function withTimeout(
 
     resolve(d);
   });
+}
+
+/**
+ * @internal
+ * `INTERNAL HELPER` | Creates a `TransactionResult` object
+ */
+export function errorResult<T extends any>(
+  message: string,
+  poolAddress: number | string | null = "",
+  data: T,
+  contract?: any | null
+): TransactionResult<T> {
+  return {
+    succeeded: false,
+    poolAddress: poolAddress || "",
+    message,
+    contract,
+    data,
+  };
+}
+
+/**
+ * @internal
+ * `INTERNAL HELPER` | Creates a `TransactionResult` object
+ */
+export function successResult<T>(
+  message: string,
+  poolAddress = "",
+  contract: any,
+  data: T
+): TransactionResult<T> {
+  return {
+    succeeded: true,
+    poolAddress,
+    message,
+    contract,
+    data,
+  };
 }

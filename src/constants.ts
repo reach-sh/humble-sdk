@@ -1,46 +1,57 @@
+import { NetworkProvider } from "./reach-helpers";
+import { PoolProtocolInfo } from "./types";
+
 // Application constants (or long-lived values)
 export const UNINSTANTIATED = `HumbleSDK is not instantiated!`;
 export const ASSURANCE_MSG = `Your funds were not moved.`;
 export const MIN_BALANCE_MSG = `Transaction would drop account below minimum required balance.`;
 export const POPUP_BLOCKED_MSG = `Your browser is blocking popups; please disable this blocker before retrying.`;
 export const TRANSACTION_CANCELLED_MSG = `Transaction Cancelled.`;
+export const TRANSACTION_DIDNT_LOAD = `Sorry, the transaction window didn't load due to some connection issues. Please try again.`;
+export const POOL_CREATION_ERR = `Pool creation failed.`;
 // Fees
 export const FLOAT = 0.0001;
 
-export function getFeeInfo() {
+/** @internal Get protocol fee info for all pools */
+export function getFeeInfo(): PoolProtocolInfo {
   const LIQUIDITY_PROVIDER_FEE = 25;
   const HUMBLE_DAO_FEE = 5;
   const TOTAL_FEE = 30;
 
   return {
-    fee: HUMBLE_DAO_FEE,
     lpFee: LIQUIDITY_PROVIDER_FEE,
+    protoAddr: getProtocolAddr(),
+    protoFee: HUMBLE_DAO_FEE,
     totFee: TOTAL_FEE,
-    addr: getHumbleAddr(),
+    locked: false,
   };
 }
 
+/** @internal account address (not App ID!) of Triumvirate contract */
 let HUMBLE_ADDR: string;
-export function setHumbleAddr(prov: "TestNet" | "MainNet") {
+/**
+ * @internal Set account address (not App ID!) of Triumvirate contract for current network */
+export function setProtocolAddr(prov: NetworkProvider, override?: string) {
   const a = [
-    "35KJV5W6CW2TQKGDGQD5FGMSJGLYARPSKD6JB7ZX5SADTCHNFI3WUN44PI",
-    "U57LB3YXAVYAER4BWQLNRQZHI2TJWXSDJGOUI5OYJWORUYEAL6SPZGOWZI",
+    "YNKCECPOYM3ZLFOHKZTG466GYCAGXKWRWA4G5C6BFLXNDHBUAZ73XATU2U",
+    "RKUC34RZOMK26ZOD4J2OFY3UILORX5AAMIX24L5MWAUUF6DVJVBJYQSABQ",
   ];
-  if (prov === "TestNet") HUMBLE_ADDR = a[0];
+  if (prov === "TestNet") HUMBLE_ADDR = override ? override : a[0];
   if (prov === "MainNet") HUMBLE_ADDR = a[1];
 }
-
-export function getHumbleAddr() {
+/** @internal get account address (not App ID!) of Triumvirate contract */
+export function getProtocolAddr() {
   return HUMBLE_ADDR;
 }
 
+/** @internal Triumvirate contract app id */
 let POOL_ANNOUNCER_ADDRESS: string | number | undefined;
-/** Set address of Pool announcer contract */
+/** @internal Set app id of Triumvirate contract */
 export function setPoolAnnouncer(address: string | number) {
   POOL_ANNOUNCER_ADDRESS = address;
 }
 
-/** Get address of Pool announcer contract. */
+/** Get app id of Triumvirate contract. */
 export function getPoolAnnouncer() {
   return POOL_ANNOUNCER_ADDRESS;
 }
@@ -53,28 +64,41 @@ export function setSlippage(slippage = 0.5) {
   SLIPPAGE = slippage;
 }
 
-/**
- * Get user's slippage tolerance (in-memory only) */
+/** Get user's slippage tolerance (in-memory only) */
 export function getSlippage() {
   return SLIPPAGE;
 }
 
+/** @internal */
 let NETWORK_PROVIDER: string;
-/** SDK user's network preference */
+/** SDK user's provider preference (TestNet/MainNet) */
 export function getNetworkProvider() {
   return NETWORK_PROVIDER;
 }
-
+/** @internal */
 export function setNetworkProvider(provider: string) {
   NETWORK_PROVIDER = provider;
 }
 
-/** When 'true', SDK is ready for use */
+/** @internal */
+let BLOCKCHAIN: string;
+/** SDK user's blockchain (consensus network) preference */
+export function getBlockchain() {
+  if (!BLOCKCHAIN) setBlockchain("ALGO");
+  return BLOCKCHAIN;
+}
+
+/** @internal */
+export function setBlockchain(provider: string) {
+  BLOCKCHAIN = provider;
+}
+
+/** @internal When 'true', SDK is ready for use */
 let INITIALIZED = false;
 export function checkInitialized() {
   return INITIALIZED;
 }
-
+/** @internal */
 export function setInitialized(init = false) {
   INITIALIZED = init;
 }

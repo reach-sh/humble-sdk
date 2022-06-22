@@ -1,4 +1,31 @@
-import { ReachContract } from "./reach-helpers";
+import { Maybe, ReachContract, BigNumber, ReachToken } from "./reach-helpers";
+
+/** Address */
+export type Address = string;
+
+/**
+ * Compute expected Swap output
+ * @returns Tuple, first object is `swap result`, and second object is
+ * `protocol fees` from swap
+ */
+export type ComputeSwapFn = {
+  (
+    aForB: boolean,
+    normalIn: Balances,
+    poolBalances: Balances,
+    protocolInfo: PoolProtocolInfo
+  ): Balances[];
+};
+
+export type ComputeMintFn = {
+  (
+    addBalances: Balances,
+    poolBalances: Balances,
+    lptBalances: Balances,
+  ): BigNumber;
+};
+
+export type TokenID = string | number | null;
 
 export type SwapTxnOpts = {
   swap: SwapInfo;
@@ -15,15 +42,15 @@ export type SDKToken = {
 };
 
 /** Result from SDK function */
-export type TransactionResult = {
+export type TransactionResult<T> = {
   /** Whether the transaction succeeded or failed */
   succeeded: boolean;
   /** The pool address targeted for the txn */
   poolAddress?: string | number;
   /** Any useful data associated about the txn (or any error encountered) */
-  data?: any;
+  data: T;
   /** Optional success or failure message */
-  message?: string;
+  message: string;
   /** Contract instance used for the transaction. Can be reused in subsequent calls. */
   contract?: ReachContract<any>;
 };
@@ -41,6 +68,11 @@ export type ReachTxnOpts = {
 };
 
 /** Options for interacting with a `Pool` contract */
+export type PoolFetchOpts = ReachTxnOpts & {
+  poolAddress: string | number;
+};
+
+/** Options for interacting with a `Pool` contract */
 export type PoolTxnOpts = ReachTxnOpts & {
   /** When true, indicates this pool uses a network token (e.g. ALGO or ETH) */
   n2nn?: boolean;
@@ -48,17 +80,17 @@ export type PoolTxnOpts = ReachTxnOpts & {
 
 export type ResourceIdentifier = string | number | Promise<string | number>;
 
+export type TokenPair = {
+  /** `Token A` id. Use '0' for network token  */
+  tokenAId: string | number;
+  /** `Token B` id */
+  tokenBId: string | number;
+};
+
 /** Basic, high-level info about a `Liquidity Pool` */
-export type PoolInfo = {
+export type PoolInfo = TokenPair & {
   /** Pool contract address (or Algorand application ID) */
   poolAddress: string | number;
-  /**
-   * Pool's `Token A` id (order is important!)\
-   * Will be '0' for network-to-non-network (`n2nn`) pools
-   */
-  tokenAId: string | number;
-  /** Pool's `Token B` id (order is important!) */
-  tokenBId: string | number;
   /** Number of decimal places for `Token A`. Defaults to `6` */
   tokenADecimals?: number;
   /** Number of decimal places for `Token B`. Defaults to `6` */
@@ -104,33 +136,96 @@ export type DepositTxnOpts = {
   optInToLPToken?: boolean;
 } & ReachTxnOpts;
 
-export type SwapInfo = {
+export type SwapInfo = TokenPair & {
   amountA?: any;
   amountB?: any;
-  tokenAId: string | number;
-  tokenBId: string | number;
   tokenIn?: string | number;
 };
 
+/** A pair of `Token` objects */
+export type ReachTokenPair = [tokA: ReachToken, tokB: ReachToken];
+
 /** High-level information about a pool */
-type FetchPoolData = {
+export type FetchPoolData = {
   /** Pool data */
   pool: PoolDetails | null;
   /** Pool token data */
-  tokens: [tokA: any, tokB: any];
+  tokens?: ReachTokenPair;
   /** Whether pool has liquidity and is tradeable */
   tradeable: boolean;
 };
 
-export type FetchPoolTxnResult = {
-  /** Whether the transaction succeeded or failed */
-  succeeded: boolean;
-  /** The pool address targeted for the txn */
-  poolAddress?: string | number;
-  /** Any useful data associated about the txn (or any error encountered) */
-  data: FetchPoolData;
-  /** Optional success or failure message */
-  message?: string;
-  /** Contract instance used for the transaction. Can be reused in subsequent calls. */
-  contract?: ReachContract<any>;
+/**
+ * @version v2
+ * Reach `v.0.1.10x` + HUMBLE FARMING
+ */
+
+/** Staking Rewards ([`network token rewards`, `rewards token rewards`]) */
+export type StakingRewards = [BigNumber, BigNumber];
+export type SDKStakingRewards = [string, string];
+
+/** Notification object (Stake updated) */
+export type StakeUpdate = {
+  /** New total amount staked by user */
+  newUserStaked: BigNumber;
+  /** New total amount staked in contract */
+  newEveryoneStaked: BigNumber;
+};
+
+/** Notification object (Rewards updated) */
+export type StakingRewardsUpdate = {
+  /** Rewards issued to user ([`networkAmt`, `nonNetworkAmt`]) */
+  userReceived: StakingRewards;
+  /** Contract rewards balance ([`networkAmt`, `nonNetworkAmt`]) */
+  totalRemaining: StakingRewards;
+};
+
+/** Options reused in the contract */
+export type StakingDeployerOpts = {
+  /** Rewards token (cannot be `network` token e.g. `ALGO`]) */
+  rewardTokenId: TokenID;
+  /** Token to stake for rewards */
+  stakeTokenId: TokenID;
+  /** Contract rewards ([`networkAmt`, `nonNetworkAmt`]) */
+  totalRewardsPayout: StakingRewards;
+  /** Block at which the farm will start distributing rewards */
+  startBlock: string;
+  /** Block at which the farm will stop distributing rewards */
+  endBlock: string;
+  /** The account that will deposit ALGO into the farm */
+  rewarder0?: Address;
+} & ReachTxnOpts;
+
+/** Staker (stakes tokens for rewards) */
+export type StakerAPI = {
+  /** Stake an amount for rewards */
+  stake(amt: BigNumber): Promise<StakeUpdate>;
+  /** Harvest rewards for stake */
+  harvest(): Promise<StakingRewardsUpdate>;
+  /** Withdraw stake */
+  withdraw(amt: BigNumber): Promise<StakeUpdate>;
+};
+
+export type RewardsPair = [any, any];
+
+export type Balances = { A: any; B: any };
+
+/** Reach contract `Pool` view (v2) */
+export type PoolContractView = {
+  liquidityToken: TokenID;
+  lptBals: Balances;
+  poolBals: Balances;
+  protoBals: Balances;
+  protoInfo: PoolProtocolInfo;
+  tokA: Maybe<TokenID>;
+  tokB: TokenID;
+};
+
+/** Reach contract `Pool` Protocol info (v2) */
+export type PoolProtocolInfo = {
+  locked?: boolean;
+  lpFee?: number;
+  protoAddr: Address;
+  protoFee: number;
+  totFee: number;
 };

@@ -1,4 +1,4 @@
-# HumbleSDK 
+# HumbleSDK v2.0.0
 
 <header>
   <img src="./logo-white.svg" width="80" height="auto">
@@ -6,8 +6,9 @@
 
 A Javascript library for interacting with the [HumbleSwap DEx](https://app.humble.sh).
 
-- [HumbleSDK](#humblesdk)
+- [HumbleSDK v2.0.0](#humblesdk-v200)
   - [Documentation](#documentation)
+  - [v2 Changes](#v2-changes)
   - [Installing the SDK](#installing-the-sdk)
     - [Option 1. NPM (recommended)](#option-1-npm-recommended)
     - [Option 2. Cloning the repo directly](#option-2-cloning-the-repo-directly)
@@ -22,6 +23,11 @@ Documentation has moved [here](https://reach-sh.github.io/humble-sdk/).
 
 --- 
 
+## v2 Changes 
+`v2` introduces a few changes and adds new functionality, including staking pools. Some functions may have been renamed: review changes in our [changelog](./CHANGELOG.md), and view our [documentation](https://reach-sh.github.io/humble-sdk/) for additional info.
+
+--- 
+
 ## Installing the SDK
 ### Option 1. NPM (recommended)
 The fastest way is to use `npm`:
@@ -33,18 +39,24 @@ $. npm i -s @reach-sh/humble-sdk
 To get started without NPM, you can clone and build the SDK from the repository. 
 ```bash
 # Clone the repository 
-$. git clone # ...
+$. git clone https://github.com/reach-sh/humble-sdk.git
 
 # Enter the directory with the repo (replace with path to your repository clone)
+$. cd path/to/humble-sdk 
+
 # and install dependencies (there aren't a lot)
-$. cd path/to/humble-sdk && npm install
+$. npm install
 
 # Build the SDK. Will output to a ./lib directory in the same folder as the 
 # package.json file. This takes seconds and doesn't output anything to your terminal.
 $. npm run build
 ``` 
 You will know it is complete when your (terminal's) typing prompt reappears.\
-Then, as a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module.
+Then, as a **FINAL STEP**, copy or move the new `lib/` directory into your project. This will allow you to access it like any other JS module:
+
+```typescript
+import { initHumbleSDK } from "path/to/lib";
+```
 
 ---
 

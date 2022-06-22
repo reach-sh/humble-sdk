@@ -1,29 +1,33 @@
-import { UNINSTANTIATED } from "./../constants";
+import { isNetworkToken, makeNetworkToken } from "../utils";
+import { getNetworkProvider, UNINSTANTIATED } from "../constants";
 import * as T from "./types";
-import { trimByteString, formatNumberShort } from "./utils/helpers";
+import { formatNumberShort, trimByteString } from "../utils/utils.reach";
 
 type LoadStdlibFn = { (args: any): any };
 export * from "./types";
-export * from "./utils/helpers";
 export const NETWORKS: T.NetworksMap = {
   ALGO: { name: "Algorand", abbr: "ALGO", decimals: 6 },
   ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 },
 };
-/** `@reach-helper` `StdLib` instance */
+/**
+ * @internal
+ * @reach_helper `StdLib` instance */
 let reach: T.ReachStdLib;
 
-/** `@reach-helper` Global default reach object */
+/** @reach_helper Global default reach object */
 export function createReachAPI() {
   if (!reach) throw new Error(UNINSTANTIATED);
   return reach;
 }
 
-/** `@reach-helper` Format address for `networkAccount` instance */
-export function formatAddress(acc: T.ReachAccount) {
-  return createReachAPI().formatAddress(acc.getAddress());
+/** @reach_helper Format address for `networkAccount` instance */
+export function formatAddress(acc: T.ReachAccount | string) {
+  const { formatAddress: fmt } = createReachAPI();
+  return typeof acc === "string" ? fmt(acc) : fmt(acc.getAddress());
 }
-
-/** `@reach-helper` Optionally-abbreviated currency formatter (e.g. `fn(1000)` -> `1000` || `1K` ). Expects `amt` to be in atomic unit for network */
+/**
+ * @reach_helper Optionally-abbreviated currency formatter (e.g.
+ * `fn(1000)` -> `1000` || `1K` ). Expects `amt` to be in atomic unit for network */
 export function formatCurrency(amt: any, decs?: number, abbr = false): string {
   const { formatWithDecimals } = createReachAPI();
   const decimals = parseNetworkDecimals(Number(decs));
@@ -31,18 +35,9 @@ export function formatCurrency(amt: any, decs?: number, abbr = false): string {
   return abbr ? formatNumberShort(reachFmt) : reachFmt;
 }
 
-/** `@reach-helper` Optionally opt-in in to assets */
-export async function optInToAsset(acc: T.ReachAccount, tokenId: any) {
-  if (await acc.tokenAccepted(tokenId)) return Promise.resolve(true);
-
-  return acc
-    .tokenAccept(tokenId)
-    .then(() => true)
-    .catch(() => false);
-}
-
 /**
- * `@reach-helper` Initialize the stdlib instance. Note: this will NOT configure
+ * @internal
+ * @reach_helper Initialize the stdlib instance. Note: this will NOT configure
  * a wallet fallback: you can handle that later with other helper functions.
  */
 export function loadReach(
@@ -51,16 +46,48 @@ export function loadReach(
 ) {
   if (reach?.connector) return reach;
 
-  const { provider = "TestNet", chain = "ALGO", providerEnv } = opts;
-  const REACH_CONNECTOR_MODE = chain;
-
   // Instantiate Reach stdlib
-  reach = loadStdlibFn({ REACH_CONNECTOR_MODE });
-  reach.setProviderByEnv(loadProviderEnv(provider, providerEnv));
+  const { provider = "TestNet", chain = "ALGO", providerEnv } = opts;
+  reach = loadStdlibFn({
+    REACH_CONNECTOR_MODE: chain,
+    REACH_NO_WARN: 'Y',
+  });
+
+  if (opts.walletFallback) {
+    reach.setWalletFallback(
+      reach.walletFallback({
+        providerEnv: buildProviderEnv(provider, providerEnv),
+        ...opts.walletFallback,
+      })
+    );
+  } else reach.setProviderByEnv(buildProviderEnv(provider, providerEnv));
+
   return reach;
 }
 
-function loadProviderEnv(
+/**
+ * @reach_helper
+ * Parses a contract address for Algorand or other chains
+ * @param {string|number} ctc string|number contract address
+ * @returns string|number contract address
+ */
+export function parseAddress(ctc: any) {
+  const { isBigNumber, bigNumberToNumber } = createReachAPI();
+  const addr = isBigNumber(ctc) ? bigNumberToNumber(ctc) : ctc;
+  if (reach.connector === "ALGO") return parseInt(addr);
+
+  const pit = addr.toString().trim().replace(/\0.*$/g, "");
+  return pit.startsWith("0x") ? pit : `0x${pit}`;
+}
+
+/** @reach_helper Convert `val` to atomic units for the current network */
+export function parseCurrency(val: any, dec?: number) {
+  const decimals = parseNetworkDecimals(Number(dec));
+  return createReachAPI().parseCurrency(val, decimals);
+}
+
+/** @internal */
+function buildProviderEnv(
   provider: T.NetworkProvider,
   overrides: Partial<T.AlgoEnvOverride> = {}
 ): T.AlgoEnvOverride {
@@ -82,64 +109,87 @@ function loadProviderEnv(
   return env as T.AlgoEnvOverride;
 }
 
-/**
- * Parses a contract address for Algorand or other chains
- * @param {string|number} ctc string|number contract address
- * @returns string|number contract address
- */
-export function parseAddress(ctc: any) {
-  const { isBigNumber, bigNumberToNumber } = createReachAPI();
-  const addr = isBigNumber(ctc) ? bigNumberToNumber(ctc) : ctc;
-  if (reach.connector === "ALGO") return parseInt(addr);
-
-  const pit = addr.toString().trim().replace(/\0.*$/g, "");
-  return pit.startsWith("0x") ? pit : `0x${pit}`;
+async function getNetworkTokenBalance(address: string, bigNumber=false) {
+  const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`
+  const result = await fetch(URL).then((res) => res.json())
+  const { amount } = result;
+  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
 }
 
-/** `@reach-helper` Convert `val` to atomic units for the current network */
-export function parseCurrency(val: any, dec?: number) {
-  const decimals = parseNetworkDecimals(Number(dec));
-  return createReachAPI().parseCurrency(val, decimals);
+/** Get formatted token balance */
+export async function tokenBalance(acc: T.ReachAccount, id: string | number, bigNumber=false) {
+  const reach = createReachAPI();
+  const address = reach.formatAddress(acc);
+  if (["0", 0, null].includes(id)) return await getNetworkTokenBalance(address, bigNumber)
+
+  const assetURL = `${await indexerBaseURL()}/assets/${id}`;
+  const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
+  const [{ asset }, bal] = await Promise.all([
+    fetch(assetURL).then((res) => res.json()),
+    fetch(balURL).then((res) => res.json()),
+  ]);
+
+  if (!asset?.params || !bal?.["asset-holding"]) return bigNumber ? parseCurrency(0) : "0";
+
+  const { decimals } = asset.params;
+  const { amount } = bal["asset-holding"];
+  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, decimals);
+}
+/** @internal Generate URL for fetching token balance  */
+function balanceBaseURL() {
+  const net = getNetworkProvider();
+  return trimURL(`https://${net.toLowerCase()}-api.algonode.cloud/v2/`);
 }
 
-/** `@reach-helper` Get token data and `acc`'s balance of token (if available) */
+/** @internal Generate Algo Indexer URL if available  */
+async function indexerBaseURL() {
+  try {
+    const reach = createReachAPI();
+    const { indexer } = await reach.getProvider();
+    if (!indexer) return "";
+
+    const url = indexer.c?.bc?.bc?.baseURL?.href;
+    return url ? `${trimURL(url)}/v2` : "";
+  } catch {
+    const network = getNetworkProvider();
+    const prefix = network === "MainNet" ? "" : `.${network.toLowerCase()}`;
+    return trimURL(`https://algoindexer${prefix}.algoexplorerapi.io/v2`);
+  }
+}
+
+function trimURL(url: string) {
+  return url.replace(/\/$/, "");
+}
+
+/** Get token data and `acc`'s balance of token (if available) */
 export async function tokenMetadata(
   token: any,
   acc: T.ReachAccount
 ): Promise<T.ReachToken> {
-  const { balanceOf } = createReachAPI();
-  const fetchBalance = () => withTimeout(balanceOf(acc, token));
+  const { eq } = createReachAPI();
+  const fetchBalance = () => tokenBalance(acc, token);
   const fetchToken = () =>
-    withTimeout(
-      acc.tokenMetadata(token).then((md) => formatReachToken(token, 0, md)),
-      null
-    );
-  const [metadata, bal] = await Promise.all([fetchToken(), fetchBalance()]);
+    isNetworkToken(token) || eq(token, 0)
+      ? makeNetworkToken()
+      : acc
+          .tokenMetadata(token)
+          .catch(() => Promise.resolve(null))
+          .then((md) => formatReachToken(token, 0, md));
 
-  if (!metadata) throw new Error(`Token "${token}" not found`);
+  const [metadata, bal] = await Promise.allSettled([
+    fetchToken(),
+    fetchBalance(),
+  ]);
 
-  return formatReachToken(token, bal, metadata);
+  if (metadata.status === "rejected" || metadata.value === null) {
+    return Promise.reject(new Error(`Token "${token}" not found`));
+  }
+
+  const userBal = bal.status === "rejected" ? 0 : bal.value;
+  return formatReachToken(token, userBal, metadata.value);
 }
 
-/* INTERNAL */
-
-// HELPER | cancel request if it takes too long
-export async function withTimeout(
-  request: Promise<any> | (() => Promise<any>),
-  fallback = null,
-  timeout = 3500
-) {
-  return new Promise(async (resolve) => {
-    const call = typeof request === "function";
-    const cancel = () => resolve(fallback);
-    setTimeout(cancel, timeout);
-    const d = call ? await request() : await request;
-
-    resolve(d);
-  });
-}
-
-/** `@reach-helper` Format token metadata from `tokenMetadata` API request */
+/** @internal Format token metadata from `tokenMetadata` API request */
 function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
   const id = parseAddress(tokenId);
   const fallbackName = `Asset #${id}`;
@@ -156,7 +206,7 @@ function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
     verified: data.verified || false,
   };
 }
-
+/** @internal  */
 function parseNetworkDecimals(decimals?: number) {
   const key = createReachAPI().connector as T.ChainSymbol;
   return isNaN(Number(decimals)) ? NETWORKS[key].decimals || 0 : decimals;

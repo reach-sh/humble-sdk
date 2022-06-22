@@ -1,7 +1,5 @@
-export type APIFn<T extends BackendModule> = {
-  [fn in keyof T]: (...args: any[]) => Promise<any>;
-} & {
-  [fnGroup in keyof T]: CtcLabeledFunc<any>;
+export type APIFn<T> = {
+  [fn in keyof T]: UnwrapAPI<T[fn]>;
 };
 
 export type BackendModule = Record<string, any>;
@@ -22,6 +20,11 @@ export type CtcLabeledFunc<T extends any> =
 /** Reach Contract Method (function) grouping */
 export type CtcFnGroup<T> = {
   [k in keyof T]: CtcFn;
+};
+
+/** Reach Contract Method (function) grouping */
+export type CtcFnSupergroup<T> = {
+  [k in keyof T]: CtcFnGroup<T[k]>;
 };
 
 export type InteractFn<T extends BackendModule> = {
@@ -73,6 +76,24 @@ export type ReachAccount = { [x: string]: any } & {
   stdlib: ReachStdLib;
 };
 
+export type Maybe<T> = ["Some", T] | ["None", null];
+
+/** Reach contract View representation */
+type CtcViewGroup<T extends BackendModule> =
+  | ReturnType<T["_getViews"]>["infos"];
+export type ContractView<T extends BackendModule> = {
+  [k in keyof CtcViewGroup<T>]: (
+    ...a: any[]
+  ) => Promise<
+    Maybe<Unwrap<ReturnType<ReturnType<T["_getViews"]>["infos"][k]["decode"]>>>
+  >;
+};
+
+type Unwrap<T> = T extends Promise<infer A> ? A : T;
+type UnwrapAPI<T> = T extends (...a: any[]) => Promise<undefined>
+  ? (...a: any[]) => Promise<any>
+  : CtcFnGroup<T>;
+
 /** Reach contract representation */
 export type ReachContract<T extends BackendModule> = {
   /** Get contract address */
@@ -88,13 +109,13 @@ export type ReachContract<T extends BackendModule> = {
   /** Reach Contract `Participant` member */
   participants: InteractFn<T["_Participants"]>;
   /** Reach Contract `View` member */
-  v: CtcLabeledFunc<any>;
+  v: ContractView<T>;
   /** Reach Contract `View` member */
-  views: CtcLabeledFunc<any>;
+  views: ContractView<T>;
   /** Reach Contract `Events` member */
-  e: ReachEventStream;
+  e: ReachEventStream<ReturnType<T["_getEvents"]>>;
   /** Reach Contract `Events` member */
-  events: ReachEventStream;
+  events: ReachEventStream<ReturnType<T["_getEvents"]>>;
   /** @deprecated Get contract `Views`. Use `ctc.views` or `ctc.v` */
   getViews(): CtcLabeledFunc<any>;
 };
@@ -103,14 +124,14 @@ export type ReachContract<T extends BackendModule> = {
 export type ReachEvent<T extends any> = { when: any; what: T };
 
 /** `ReachEvent` is an `Event` emitted from a contract `EventStream` */
-export type ReachEventStream = {
-  [name: string]: {
+export type ReachEventStream<T> = {
+  Register: {
     next(): Promise<ReachEvent<any>>;
     seek(t: BigNumber): void;
     seekNow(): Promise<void>;
     lastTime(): Promise<BigNumber>;
     monitor(handler: (e: ReachEvent<any>) => void): Promise<void>;
-  };
+  } & {[k in keyof T]: any};
 };
 
 /** StdLib Helper Interface */
@@ -174,10 +195,23 @@ export type ReachStdLib = {
 } & { [x: string]: any };
 
 /** Options passed into `loadStdlib` */
+export type ReachEnvOpts = {
+  /** Provider Environment override (for using a custom provider with reach stdlib) */
+  providerEnv?: AlgoEnvOverride;
+  /** Wallet fallback (optional) */
+  walletFallback?: WalletFallbackOpts;
+};
+
+/** Options passed into `loadStdlib` */
 export type LoadReachOpts = {
   chain?: ChainSymbol;
   provider?: NetworkProvider;
-  providerEnv?: AlgoEnvOverride;
+} & ReachEnvOpts;
+
+/** Algorand wallet fallback options */
+export type WalletFallbackOpts = {
+  MyAlgoConnect?: any;
+  WalletConnect?: any;
 };
 
 /** Algorand node override options */
@@ -194,9 +228,10 @@ export type AlgoEnvOverride = {
 /** Configuration options for the SDK */
 export type SDKOpts = {
   /** (Optional) Network Provider (`TestNet` or `MainNet`). Defaults to `TestNet` */
-  network?: "TestNet" | "MainNet";
+  network?: NetworkProvider;
   /** Slippage Tolerance: defaults to 0.5% */
   slippageTolerance?: number;
-  /** Provider Environment override (for using a custom provider with reach stdlib) */
-  providerEnv?: AlgoEnvOverride;
-};
+  // The id and address of a custom triumvirate to use instead of the default (only works on testnet)
+  customTriumvirateId?: string;
+  customTriumvirateAddress?: string;
+} & ReachEnvOpts;

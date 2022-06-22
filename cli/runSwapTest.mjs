@@ -1,5 +1,9 @@
-import { fetchPool, performSwap } from "../lib/index.js";
-import { calculatePriceImpact, calculateTokenSwap } from "../lib/index.js";
+import {
+  fetchLiquidityPool,
+  swapTokens,
+  calculatePriceImpact,
+  calculateTokenSwap,
+} from "@reach-sh/humble-sdk";
 import {
   exitWithMsgs,
   Blue,
@@ -9,27 +13,31 @@ import {
   onProgress,
   Red,
   iout,
+  answerOrDie,
 } from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);
 
 /** Swap between two tokens in the command line */
-export async function runSwapTest(
-  acc,
-  [tokenAId, amountA, tokenBId, poolAddress]
-) {
+export async function runSwapTest(acc, opts) {
+  console.clear();
   const args = process.argv.slice(2);
-  if (!poolAddress)
-    exitWithMsgs("Pool address flag POOL required but not found");
-
+  const [tokA, inputA, tokB, poolCtc] = opts || [];
+  const poolAddress = poolCtc || (await answerOrDie("Enter pool address"));
   Blue(`Running SWAP test on pool "${poolAddress}"`);
 
+  // Check if its a network to non-network pool
+  const isNetworkPrompt = "Does the pool contain ALGO or ETH? (true or false)";
+  const n2nn = await answerOrDie(isNetworkPrompt);
+
   // Fetch pool (delegate logging)
-  const n2nn = [tokenAId, tokenBId].some(isNetworkToken);
-  const { pool, contract } = await fetchSwapPool(acc, poolAddress, n2nn);
+  const { data: poolData, contract }  = await fetchLiquidityPool(acc, { poolAddress, onProgress, n2nn: n2nn === 'true' });
+  const pool = poolData.pool
+
+  const amountA = inputA || (await answerOrDie(`How much of tokenA are you swapping?`));
 
   // Calculate price impact
-  let swap = { amountA, tokenAId, tokenBId };
+  let swap = { amountA, tokenAId: pool.tokenAId, tokenBId: pool.tokenBId };
   const calcOpts = { pool, swap };
   const impact = calculatePriceImpact(swap.amountA, calcOpts);
   if (Number(impact) < 3) Green(`* Price impact: ${impact}`);
@@ -41,7 +49,7 @@ export async function runSwapTest(
 
   // Perform swap
   Yellow(`Swapping in pool "${poolAddress}" ... `);
-  const { data, message, succeeded } = await performSwap(acc, {
+  const { data, message, succeeded } = await swapTokens(acc, {
     poolAddress,
     contract,
     swap,
@@ -61,7 +69,7 @@ export async function runSwapTest(
 async function fetchSwapPool(acc, poolAddress, n2nn) {
   Yellow(`Fetching pool "${poolAddress}"`);
   const opts = { n2nn, onProgress };
-  const res = await fetchPool(acc, poolAddress, opts);
+  const res = await fetchLiquidityPool(acc, poolAddress, opts);
   const { succeeded, data, message, contract } = res;
   if (!succeeded) return exitWithMsgs(message);
 

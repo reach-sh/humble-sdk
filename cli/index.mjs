@@ -2,7 +2,8 @@ import {
   initHumbleSDK,
   getPoolAnnouncer,
   createReachAPI,
-} from "../lib/index.js";
+} from "@reach-sh/humble-sdk";
+import { loadStdlib } from "@reach-sh/stdlib";
 import {
   Blue,
   Green,
@@ -11,67 +12,52 @@ import {
   getAccountFromArgs,
   iout,
   exitWithMsgs,
+  answerOrDie,
 } from "./utils.mjs";
-import { loadStdlib } from "@reach-sh/stdlib";
 import { runFetchPoolTest } from "./runFetchPoolTest.mjs";
 import { runFetchTokenTest } from "./runFetchTokenTest.mjs";
 import { runAnnouncerTest } from "./runAnnouncerTest.mjs";
 import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
+import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
+import { runCreateFarmTest } from "./runCreateFarmTest.mjs";
+import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
+import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 
 // init SDK
-initHumbleSDK();
+initHumbleSDK({ network: "TestNet" });
+
 const reach = createReachAPI();
+const options = [
+  { title: "List Pools", action: runAnnouncerTest },
+  { title: "Fetch a Token", action: runFetchTokenTest },
+  { title: "Swap tokens", action: runSwapTest },
+  { title: "Create a Liquidity Pool", action: runCreatePoolTest },
+  { title: "Fetch a Liquidity Pool", action: runFetchPoolTest },
+  { title: "Add/remove Liquidity", action: runLiquidity },
+  { title: "Create a Farm", action: runCreateFarmTest },
+  { title: "Fetch a Farm", action: runFetchFarmTest },
+  { title: "Check Staking rewards", action: runCheckRewardsTest },
+];
 
 (async () => {
+  console.clear();
+
   Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
-  Yellow(`Creating account ...`);
+  Yellow(`Getting account ...`);
   const args = process.argv.slice(2);
   const acc = await getAccountFromArgs(args);
-  Green(`Connected ${reach.formatAddress(acc)}`);
+  Green(`Connected ${reach.formatAddress(acc)}\n`);
 
-  /* "Swap" requires a list of commands to be present */
-  const swapArgs = getSwapArgs(args);
-  const [poolAddress, n2nn] = [
-    fromArgs(args, "POOL"),
-    Boolean(fromArgs(args, "N2NN")),
-  ];
-
-  /* Check for LIQUIDITY (deposit/withdraw) flags in cli args */
-  const [tokenIn, amountIn, tokenOut] = swapArgs;
-  const liquidityArgs = [...swapArgs, fromArgs(args, "ACTION")];
-  const tokenId = fromArgs(args, "TOKEN");
-
-  switch (true) {
-    case liquidityArgs.every(Boolean): {
-      const action = liquidityArgs[liquidityArgs.length - 1];
-      const lqOpts = { action, amountIn, poolAddress, tokenIn, tokenOut };
-      return runLiquidity(acc, lqOpts);
-    }
-
-    /* Check for SWAP flags */
-    case swapArgs.every(Boolean):
-      return runSwapTest(acc, [...swapArgs, poolAddress]);
-
-    /* Check for TOKEN flag in cli args */
-    case Boolean(tokenId):
-      return runFetchTokenTest(acc, tokenId);
-
-    /* Check for POOL flag in cli args */
-    case Boolean(poolAddress):
-      return runFetchPoolTest(acc, [poolAddress, n2nn]);
-
-    /* Default to listing pools */
-    default:
-      return runAnnouncerTest(acc);
+  Yellow(`Select an option:\n`);
+  options.map(({ title }, i) => Blue(`${i + 1}. ${title}`));
+  console.log();
+  const sIndex = await answerOrDie("Enter number for selection:");
+  const index = Number(sIndex) - 1;
+  if (index >= options.length || index < 0) {
+    return exitWithMsgs("Exit: Invalid option selected");
   }
-})();
 
-/** Checks for SWAP flags */
-function getSwapArgs(args) {
-  return [
-    fromArgs(args, "TOKA"),
-    fromArgs(args, "AMTA"),
-    fromArgs(args, "TOKB"),
-  ];
-}
+  const { action } = options[index];
+  return action(acc);
+})();

@@ -9,10 +9,12 @@
     "noEmit": false,
     "declaration": true,
     "noUnusedLocals": true,
+    "stripInternal": true,
     "noUnusedParameters": true,
     "useDefineForClassFields": true,
     "module": "commonJs",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "outDir": "./lib/",
@@ -26,6 +28,8 @@
     "./node_modules",
     "./lib",
     "./cli",
+    "./src/utils.ts",
+    "./src/participants/PoolAdmin.ts",
     "./**/*.test.*",
   ]
 }

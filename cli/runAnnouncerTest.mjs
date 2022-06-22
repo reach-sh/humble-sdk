@@ -1,4 +1,4 @@
-import { subscribeToPoolStream } from "../lib/index.js";
+import { subscribeToPoolStream, getPoolAnnouncer } from "@reach-sh/humble-sdk";
 import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
 
 let exitTimeout;
@@ -8,12 +8,13 @@ const pools = new Set();
 
 /** Attach to pool announcer and list a subset of pools */
 export function runAnnouncerTest(acc) {
-  Blue(`Running ANNOUNCER`);
+  console.clear();
+  Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
     onPoolReceived: (msg) => {
       Blue("* Received [poolId, tokenA, tokenB]");
-      Green(`\t ${msg}`);
+      Green(`\t ${JSON.stringify(msg)}`);
       resetTimer();
     },
     onPoolFetched,
@@ -26,9 +27,11 @@ export function runAnnouncerTest(acc) {
 async function onPoolFetched({ succeeded, poolAddress, data, message }) {
   if (pools.size >= LIMIT) return;
   if (!succeeded) return Red(message);
+  if (!data.tradeable) return Red("Untradeable pool " + poolAddress);
 
   pools.add(poolAddress);
-  iout(`\t * Fetched "${poolAddress}" (${pools.size} of ${LIMIT})`, data.pool);
+  Blue(`\t * Got "${poolAddress}" (${pools.size} of ${LIMIT})`);
+  iout(poolAddress, data.pool);
   resetTimer();
 }
 

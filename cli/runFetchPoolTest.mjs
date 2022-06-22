@@ -1,12 +1,29 @@
-import { fetchPool } from "../lib/index.js";
-import { iout, exitWithMsgs, Blue, Yellow, onProgress } from "./utils.mjs";
+import { fetchLiquidityPool } from "@reach-sh/humble-sdk";
+import {
+  iout,
+  exitWithMsgs,
+  Blue,
+  Yellow,
+  onProgress,
+  answerOrDie,
+  fromArgs,
+} from "./utils.mjs";
 
 /** Fetch a single pool */
-export async function runFetchPoolTest(acc, [addr, n2nn]) {
-  Blue(`Running POOL-FETCH`);
-  if (!addr) return exitWithMsgs("POOL address required but not found");
+export async function runFetchPoolTest(acc) {
+  console.clear();
+  Blue(`Running LIQUIDITY-POOL-FETCH`);
+  const addr =
+    fromArgs(process.argv.slice(2), "POOL") ||
+    (await answerOrDie("Enter pool address:"));
+
+  const isNetworkPrompt = "Does the pool contain ALGO or ETH? (true or false)";
+  const n2nn = await answerOrDie(isNetworkPrompt);
 
   Yellow(`Fetching single pool "${addr}"...`);
-  iout("Fetched pool", await fetchPool(acc, addr, { onProgress, n2nn }));
+  iout(
+    "Fetched pool",
+    await fetchLiquidityPool(acc, { poolAddress: addr, onProgress, n2nn: n2nn === 'true' })
+  );
   exitWithMsgs("Test complete! Exiting ...");
 }

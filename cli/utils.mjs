@@ -1,4 +1,5 @@
 import { createReachAPI } from "../lib/index.js";
+import Enquirer from "enquirer";
 import algosdk from "algosdk";
 import { loadStdlib } from "@reach-sh/stdlib";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
@@ -18,6 +19,30 @@ export const fmt = (x) => {
   const stdlib = createReachAPI();
   return stdlib.formatCurrency(x, stdlib.connector == "ALGO" ? 6 : 18);
 };
+
+// Prompt cli user for a response, or exit
+export async function answerOrDie(question, validator) {
+  const validate = validator || ((x) => x);
+  const promptOpts = (p) => ({
+    type: "input",
+    message: `${p} ("exit" to exit)\n`,
+    name: "ans",
+  });
+  const query = async (p) => (await Enquirer.prompt([promptOpts(p)])).ans;
+  let answer = undefined;
+  do {
+    try {
+      answer = validate(await query(question));
+    } catch (err) {
+      console.log(err);
+      question = `Invalid response: please retry > `;
+    }
+  } while (answer === undefined);
+
+  return answer === "exit"
+    ? exitWithMsgs("Application exit from prompt ...")
+    : answer;
+}
 
 export async function createAlgoAccount(secret) {
   const reach = createReachAPI();

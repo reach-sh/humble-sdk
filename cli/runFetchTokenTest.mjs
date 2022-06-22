@@ -1,12 +1,27 @@
-import { fetchToken } from "../lib/index.js";
-import { exitWithMsgs, Blue, Yellow, fromArgs, iout } from "./utils.mjs";
+import { fetchToken } from "@reach-sh/humble-sdk";
+import {
+  exitWithMsgs,
+  Blue,
+  Yellow,
+  fromArgs,
+  iout,
+  answerOrDie,
+} from "./utils.mjs";
 
 /** Fetch and display data for a single token */
-export async function runFetchTokenTest(acc, tokenId) {
+export async function runFetchTokenTest(acc, id) {
+  console.clear();
   Blue(`Running TOKEN`);
-  if (!tokenId) return exitWithMsgs("TOKEN id required but not found");
+  const tokenId = id || (await answerOrDie("Enter token id:"));
 
   Yellow(`Fetching Token "${tokenId}"...`);
-  iout("Fetched token", await fetchToken(acc, tokenId));
-  exitWithMsgs("Test complete! Exiting ...");
+  await fetchToken(acc, tokenId)
+    .then((token) => {
+      iout("Fetched token", token);
+      exitWithMsgs("Test complete! Exiting ...");
+    })
+    .catch((e) => {
+      console.log({ e });
+      exitWithMsgs("Token was not fetched");
+    });
 }

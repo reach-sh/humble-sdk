@@ -1,8 +1,6 @@
-export const noOp = () => null;
+import { Maybe } from "../reach-helpers/index";
 
-export const isBrowser = new Function(
-  "try { return this === window } catch(e) { return false; }"
-);
+export const noOp = () => null;
 
 // Generate a number abbreviation
 function abbrevNumber(numOfGroups: number) {
@@ -12,21 +10,43 @@ function abbrevNumber(numOfGroups: number) {
   return ab[numOfGroups - 1];
 }
 
+/** Assert a value is a `Maybe` value.  */
+export function isMaybe(val?: any): boolean {
+  const flags = ["None", "Some"];
+  return Array.isArray(val) && val.length === 2 && flags.includes(val[0]);
+}
+
+/**
+ * Wrap a value as a `Maybe` value. Returrns [`"Some"`, `val`] when
+ * `val` has a value
+ */
+export function asMaybe<T extends any>(val: T): Maybe<T> {
+  const m = [undefined, null].includes(val as any)
+    ? Object.freeze(["None", null])
+    : Object.freeze(["Some", val]);
+
+  return m as Maybe<T>;
+}
+
 /**
  * Unwrap a `Maybe` value. When `mVal[0]` is `"Some"`, `mVal[1]` has a value
  */
-export type Maybe = [val: "Some" | "None", v?: any | null];
-export function fromMaybe(
-  mVal: Maybe,
-  format?: (v: any) => any,
-  fallback?: any
-): any | null {
-  const fmt = format || ((v: any) => v);
-  return mVal[0] === "Some" ? fmt(mVal[1]) : fallback || mVal[1];
+export function fromMaybe<T extends any>(
+  mVal: T | Maybe<T>,
+  format = (v: T): any => v,
+  fallback: any = null
+): T | null {
+  if (!isMaybe(mVal)) return format(mVal as T);
+
+  const [flag, value] = mVal as Maybe<T>;
+  if (flag === "Some") return format(value);
+  return fallback || value;
 }
 
-/** Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
-export function formatNumberShort(val: string | number | bigint, round = 2) {
+/**
+ * @internal
+ * Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
+export function formatNumberShort(val: any, round = 2) {
   if (isNaN(Number(val))) return "";
 
   const parts = val.toString().split(".");
@@ -57,6 +77,7 @@ export function formatNumberShort(val: string | number | bigint, round = 2) {
 }
 
 /**
+ * @internal
  * Strip `\u0000` characters from byte string
  * @param {stringn} str String with empty `\0000` characters to remove
  * @returns
@@ -65,7 +86,11 @@ export function trimByteString(str: string = ""): string {
   return str.replace(/\0/g, "");
 }
 
+export function trailing0s(val: string) {
+  return val.replace(/0*$/, "").replace(/\.$/, "");
+}
+
 function trimDecimals(val: string) {
   if (val.replace(/0*/, "") === "") return "";
-  return `.${val.replace(/0$/, "")}`;
+  return `.${trailing0s(val)}`;
 }

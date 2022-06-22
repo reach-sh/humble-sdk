@@ -48,17 +48,17 @@ type StakingDeployerOpts = {
 ```typescript
 import { createStakingPool } from "@reach-sh/humble-sdk";
 
-const startTime = new Date().toString()
+const startTime = new Date()
 const endTime = startTime
 endTime.setDate(endTime.getDate() + 7)
 // Options for calling "createStakingPool"
 const createOpts = {
     rewardTokenId: 1111111,
-    stakeTokenId: 1111111
+    stakeTokenId: 1111111,
     totalRewardsPayout: [100, 200] as [number, number],
-    startBlock: startTime
-    endBlock: endTime,
-    rewarder0: 'GSL7AJYYYAVZOJVJWSU6KSZMEYU4K7ZFPX3XYTLDBCNWBX32NXCD2KTWVM'
+    startBlock: startTime.toString(),
+    endBlock: endTime.toString(),
+    rewarder0: 'GSL7AJYYYAVZOJVJWSU6KSZMEYU4K7ZFPX3XYTLDBCNWBX32NXCD2KTWVM',
     // progress bar updated
     onProgress(msg: string) {
       if (msg === 'SIGNING_EVENT') {

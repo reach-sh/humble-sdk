@@ -26,6 +26,7 @@ export async function runSwapTest(acc, opts) {
   const poolAddress = poolCtc || (await answerOrDie("Enter pool address"));
   Blue(`Running SWAP test on pool "${poolAddress}"`);
 
+  // Check if its a network to non-network pool
   const isNetworkPrompt = "Does the pool contain ALGO or ETH? (true or false)";
   const n2nn = await answerOrDie(isNetworkPrompt);
 
@@ -33,7 +34,7 @@ export async function runSwapTest(acc, opts) {
   const { data: poolData, contract }  = await fetchLiquidityPool(acc, { poolAddress, onProgress, n2nn: n2nn === 'true' });
   const pool = poolData.pool
 
-  const amountA = inputA || (await answerOrDie(`How much are you swapping of token A?`));
+  const amountA = inputA || (await answerOrDie(`How much of tokenA are you swapping?`));
 
   // Calculate price impact
   let swap = { amountA, tokenAId: pool.tokenAId, tokenBId: pool.tokenBId };

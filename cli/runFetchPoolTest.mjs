@@ -17,13 +17,13 @@ export async function runFetchPoolTest(acc) {
     fromArgs(process.argv.slice(2), "POOL") ||
     (await answerOrDie("Enter pool address:"));
 
-  const isNetworkPrompt = "Does the pool contain ALGO or ETH?";
+  const isNetworkPrompt = "Does the pool contain ALGO or ETH? (true or false)";
   const n2nn = await answerOrDie(isNetworkPrompt);
 
   Yellow(`Fetching single pool "${addr}"...`);
   iout(
     "Fetched pool",
-    await fetchLiquidityPool(acc, { poolAddress: addr, onProgress, n2nn })
+    await fetchLiquidityPool(acc, { poolAddress: addr, onProgress, n2nn: n2nn === 'true' })
   );
   exitWithMsgs("Test complete! Exiting ...");
 }

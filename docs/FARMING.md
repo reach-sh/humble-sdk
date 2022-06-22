@@ -95,7 +95,7 @@ type CreateFarmTxnResult = {
 };
 ```
 
-
+Documentation on staking, unstaking, and claim rewards functions are currently in progress; stay tuned.
 
 ---
 

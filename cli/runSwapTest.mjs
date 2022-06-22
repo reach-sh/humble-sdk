@@ -26,16 +26,17 @@ export async function runSwapTest(acc, opts) {
   const poolAddress = poolCtc || (await answerOrDie("Enter pool address"));
   Blue(`Running SWAP test on pool "${poolAddress}"`);
 
-  const tokenAId = tokA || (await answerOrDie("Enter token A Id:"));
-  const amountA = inputA || (await answerOrDie("How much are you putting in?"));
-  const tokenBId = tokB || (await answerOrDie("Enter token B Id:"));
+  const isNetworkPrompt = "Does the pool contain ALGO or ETH? (true or false)";
+  const n2nn = await answerOrDie(isNetworkPrompt);
 
   // Fetch pool (delegate logging)
-  const n2nn = [tokenAId, tokenBId].some(isNetworkToken);
-  const { pool, contract } = await fetchSwapPool(acc, poolAddress, n2nn);
+  const { data: poolData, contract }  = await fetchLiquidityPool(acc, { poolAddress, onProgress, n2nn: n2nn === 'true' });
+  const pool = poolData.pool
+
+  const amountA = inputA || (await answerOrDie(`How much are you swapping of token A?`));
 
   // Calculate price impact
-  let swap = { amountA, tokenAId, tokenBId };
+  let swap = { amountA, tokenAId: pool.tokenAId, tokenBId: pool.tokenBId };
   const calcOpts = { pool, swap };
   const impact = calculatePriceImpact(swap.amountA, calcOpts);
   if (Number(impact) < 3) Green(`* Price impact: ${impact}`);

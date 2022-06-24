@@ -272,8 +272,8 @@ function rawSDKFarmView(d: FarmView, poolAddress: string): SDKFarmView {
   };
 }
 
-/** @internal Format BigNumber and byte values for UI */
-function formatFarmView(
+/** Format BigNumber and byte values for UI */
+export function formatFarmView(
   d: FarmView,
   tokens: FarmTokens,
   poolAddress: string,

@@ -9,13 +9,18 @@ import {
 import { FetchPoolData, ReachTxnOpts, TransactionResult } from "types";
 
 /** Options for subscribing to pools */
-type PoolSubscriptionOpts = {
+export type PoolSubscriptionOpts = {
   /** (Optional) called when contract data is received, but BEFORE pool is fetched */
   onPoolReceived?: (...args: any[]) => void;
   /** Called when the pool data has been fetched and formatted */
-  onPoolFetched(data: TransactionResult<FetchPoolData>): any;
+  onPoolFetched?: (data: TransactionResult<FetchPoolData>) => any;
+  /** Optionally fetch token data */
+  includeTokens?: boolean;
+  /** Start-time (exclude notifications prior to this time) */
+  startFrom?: number;
 } & ReachTxnOpts;
 
+/** @internal */
 type PoolRegisterEvent = {
   /** Actual event data */
   what: [
@@ -41,6 +46,8 @@ export function subscribeToPoolStream(
   const ctc = acc.contract(announcerBackend, announcerInfo);
   const { onPoolReceived = noOp, onPoolFetched } = opts;
 
+  if (opts.startFrom) ctc.events.Register.seek(opts.startFrom);
+
   // if the pool is using the network token, then we know the first token
   // from the response will be null when unwrapped
   return ctc.events.Register.monitor(({ what }: PoolRegisterEvent) => {
@@ -49,12 +56,15 @@ export function subscribeToPoolStream(
     const tokA = fromMaybe(maybeTokA, parseAddress, "0");
     onPoolReceived([fPoolAddr, tokA, parseAddress(tokB)]);
 
+    if (!onPoolFetched) return;
+
     // Asynchronous fetch and check whether pool has liquidity
     const fetchOpts: FetchPoolOpts = {
       poolAddress: fPoolAddr,
       n2nn: tokA === "0",
       onComplete: opts.onComplete || noOp,
       onProgress: opts.onProgress || noOp,
+      includeTokens: opts.includeTokens,
     };
 
     fetchLiquidityPool(acc, fetchOpts).then(onPoolFetched);

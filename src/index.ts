@@ -61,7 +61,7 @@ function getFarmAnnouncerContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
   if (valid === "TestNet") return 97832257;
-  if (valid === "MainNet") return '???';
+  if (valid === "MainNet") return 793452919;
 
   throw new Error(`Unrecognized provider "${network}"`);
 }

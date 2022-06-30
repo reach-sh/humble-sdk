@@ -5,7 +5,7 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-modules --unhandled-rejections=strict ./index.mjs"
+    "test": "node --experimental-modules --unhandled-rejections=strict ./index.mjs --KEY='scatter act gospel coast elevator about flee negative crack iron lyrics disagree verb flat rigid paper solve wink you insane cancel same among absent decide'"
   },
   "keywords": [],
   "author": "",

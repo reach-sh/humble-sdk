@@ -56,6 +56,17 @@ export function getPoolAnnouncer() {
   return POOL_ANNOUNCER_ADDRESS;
 }
 
+/** @internal farm announcer contract app id */
+let FARM_ANNOUNCER_ADDRESS: string | number | undefined;
+/** @internal Set app id of farm announcer contract */
+export function setFarmAnnouncer(address: string | number) {
+  return FARM_ANNOUNCER_ADDRESS = address;
+}
+
+export function getFarmAnnouncer() {
+  return FARM_ANNOUNCER_ADDRESS;
+}
+
 /** SDK user's slippage preference */
 let SLIPPAGE = 0.5;
 /**

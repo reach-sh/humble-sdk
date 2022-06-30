@@ -17,6 +17,7 @@ import {
 import { runFetchPoolTest } from "./runFetchPoolTest.mjs";
 import { runFetchTokenTest } from "./runFetchTokenTest.mjs";
 import { runAnnouncerTest } from "./runAnnouncerTest.mjs";
+import { runFarmAnnouncerTest } from "./runFarmAnnouncerTest.mjs";
 import { runSwapTest } from "./runSwapTest.mjs";
 import { runLiquidity } from "./runLiquidity.mjs";
 import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
@@ -30,6 +31,7 @@ initHumbleSDK({ network: "TestNet" });
 const reach = createReachAPI();
 const options = [
   { title: "List Pools", action: runAnnouncerTest },
+  { title: "List Farms", action: runFarmAnnouncerTest },
   { title: "Fetch a Token", action: runFetchTokenTest },
   { title: "Swap tokens", action: runSwapTest },
   { title: "Create a Liquidity Pool", action: runCreatePoolTest },

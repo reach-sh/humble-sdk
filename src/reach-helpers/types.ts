@@ -125,7 +125,7 @@ export type ReachEvent<T extends any> = { when: any; what: T };
 
 /** `ReachEvent` is an `Event` emitted from a contract `EventStream` */
 export type ReachEventStream<T> = {
-  Register: {
+  [x: string]: {
     next(): Promise<ReachEvent<any>>;
     seek(t: BigNumber): void;
     seekNow(): Promise<void>;
@@ -234,4 +234,5 @@ export type SDKOpts = {
   // The id and address of a custom triumvirate to use instead of the default (only works on testnet)
   customTriumvirateId?: string;
   customTriumvirateAddress?: string;
+  customFarmAnnouncerAddress?: string;
 } & ReachEnvOpts;

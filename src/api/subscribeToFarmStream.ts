@@ -36,16 +36,15 @@ type StaticFarmDataUnformatted = {
   stakedTokenTotalSupply: BigNumber
 }
 
+type FormattedRewardsPerBlock = { asDefaultNetworkToken: string; asRewardToken: string }
+
 type StaticFarmDataFormatted = {
   ctcInfo: string,
   startBlock: number,
   endBlock: number,
   rewardTokenId: string,
-  rewardsPerBlock: [ 
-    string, 
-    string 
-  ],
-  stakedTokenId: string,
+  rewardsPerBlock: FormattedRewardsPerBlock,
+  stakedTokenId?: string,
   pairTokenAId: string,
   pairTokenASymbol: string,
   pairTokenBId: string,
@@ -82,31 +81,32 @@ export function subscribeToFarmStream(
   const { onFarmFetched, format = false } = opts;
 
   return ctc.events.Announce.monitor(({ what }: FarmRegisterEvent) => {
-    let farmData = what[1]
+    let farmData: StaticFarmDataUnformatted | StaticFarmDataFormatted = what[1]
     if (format) {
       const { bigNumberToNumber } = createReachAPI();
+      const stakedTokenPoolId = bigNumberToNumber(farmData.stakedTokenPoolId).toString()
       farmData = {
         ctcInfo: bigNumberToNumber(farmData.ctcInfo).toString(),
         startBlock: bigNumberToNumber(farmData.startBlock),
         endBlock: bigNumberToNumber(farmData.endBlock),
         rewardTokenId: bigNumberToNumber(farmData.rewardTokenId).toString(),
-        rewardsPerBlock: [ 
-          formatCurrency(farmData.rewardsPerBlock[0], 6), 
-          formatCurrency(farmData.rewardsPerBlock[1], farmData.rewardTokenDecimals)
-        ],
+        rewardsPerBlock: { 
+          asDefaultNetworkToken: formatCurrency(farmData.rewardsPerBlock[0], 6), 
+          asRewardToken: formatCurrency(farmData.rewardsPerBlock[1], farmData.rewardTokenDecimals)
+        },
         stakedTokenId: bigNumberToNumber(farmData.stakedTokenId).toString(),
-        pairTokenAId: fromMaybe(farmData.pairTokenAId, bigNumberToNumber, "0").toString(),
+        pairTokenAId: stakedTokenPoolId === '0' ? '' : fromMaybe(farmData.pairTokenAId, bigNumberToNumber, "0").toString(),
         pairTokenASymbol: farmData.pairTokenASymbol.split('\u0000')[0],
-        pairTokenBId: bigNumberToNumber(farmData.pairTokenBId).toString(),
+        pairTokenBId: stakedTokenPoolId === '0' ? '' : bigNumberToNumber(farmData.pairTokenBId).toString(),
         pairTokenBSymbol: farmData.pairTokenBSymbol.split('\u0000')[0],
         rewardTokenDecimals: bigNumberToNumber(farmData.rewardTokenDecimals),
         rewardTokenSymbol: farmData.rewardTokenSymbol.split('\u0000')[0],
         stakedTokenDecimals: bigNumberToNumber(farmData.stakedTokenDecimals),
-        stakedTokenPoolId: bigNumberToNumber(farmData.stakedTokenPoolId).toString(),
+        stakedTokenPoolId: stakedTokenPoolId === '0' ? undefined : stakedTokenPoolId,
         stakedTokenSymbol: farmData.stakedTokenSymbol.split('\u0000')[0],
         stakedTokenTotalSupply: formatCurrency(farmData.stakedTokenTotalSupply, bigNumberToNumber(farmData.stakedTokenDecimals))
       }
-    }
+    } 
     onFarmFetched(successResult('Farm fetched', '', ctc, farmData));
   });
 }

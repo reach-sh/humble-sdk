@@ -21,7 +21,6 @@ export function runFarmAnnouncerTest(acc) {
 
 /** HELPER | When a pool is received, fetch details and reset the timer */
 async function onFarmFetched({ succeeded, poolAddress, data, message }) {
-  console.log(succeeded, poolAddress, data, message)
   if (!succeeded) return Red(message);
 
   Blue(`\t * Got "${data.ctcInfo}"`);

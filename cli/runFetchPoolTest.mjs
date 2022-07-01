@@ -23,7 +23,12 @@ export async function runFetchPoolTest(acc) {
   Yellow(`Fetching single pool "${addr}"...`);
   iout(
     "Fetched pool",
-    await fetchLiquidityPool(acc, { poolAddress: addr, onProgress, n2nn: n2nn === 'true' })
+    await fetchLiquidityPool(acc, {
+      includeTokens: true,
+      poolAddress: addr,
+      onProgress,
+      n2nn: n2nn === "true",
+    })
   );
   exitWithMsgs("Test complete! Exiting ...");
 }

@@ -74,8 +74,12 @@ export async function withdrawLiquidity(
   } = opts;
 
   onProgress(`Fetching Pool metadata`);
-  const lpopts = { poolAddress, n2nn, contract: opts.contract };
-  const lpool = await fetchLiquidityPool(acc, lpopts);
+  const lpool = await fetchLiquidityPool(acc, {
+    poolAddress,
+    n2nn,
+    contract: opts.contract,
+    includeTokens: true,
+  });
   if (!lpool.succeeded || !Array.isArray(lpool.data.tokens)) {
     return errorResult("Pool not found", poolAddress, data, lpool.contract);
   }
@@ -127,7 +131,11 @@ async function amountFromPctInput(
   poolTokenId: any
 ): Promise<BigNumber> {
   const { bigNumberify } = createReachAPI();
-  const userLiquidity = await tokenBalance(acc, parseAddress(poolTokenId), true);
+  const userLiquidity = await tokenBalance(
+    acc,
+    parseAddress(poolTokenId),
+    true
+  );
   const divisor = bigNumberify(100).div(bigNumberify(pctInput));
   return userLiquidity.div(divisor);
 }

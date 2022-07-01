@@ -5,6 +5,7 @@ import {
   Maybe,
   formatCurrency,
   formatAddress,
+  ReachToken,
 } from "../reach-helpers";
 import {
   FetchPoolData,
@@ -27,6 +28,8 @@ import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
 export type FetchPoolOpts = PoolFetchOpts & {
   /** when true, is a network-to-non-network pool */
   n2nn: boolean;
+  /** (Optional) `TokenA` and `TokenB`. Required if `opts.includeTokens` is `false` */
+  tokens?: [ReachToken, ReachToken];
 };
 /** ALIAS | Fetch data about a pool */
 export const fetchPool = fetchLiquidityPool;
@@ -49,6 +52,8 @@ export async function fetchLiquidityPool(
     n2nn = false,
     onComplete = noOp,
     onProgress = noOp,
+    includeTokens,
+    tokens = [],
   } = opts || { n2nn: false };
   // backend is determined on whether or not the pool uses the network token
   const backend = () => (n2nn ? poolBackendN2NN : poolBackend);
@@ -61,6 +66,10 @@ export async function fetchLiquidityPool(
 
   // Load pool data from view
   if (!poolAddress) return fail("Pool address is required");
+  if (!includeTokens && tokens.length === 0) {
+    return fail("Token data is required when 'includeTokens' is false");
+  }
+
   const ctcInfo = parseAddress(poolAddress);
   onProgress(`Fetching data for pool "${ctcInfo}"`);
   const ctc: PoolContract = opts.contract || acc.contract(backend(), ctcInfo);
@@ -84,10 +93,10 @@ export async function fetchLiquidityPool(
   if (!valid) return fail("invalid pool (protocol mismatch)");
 
   onProgress(`Fetching tokens for pool "${ctcInfo}"`);
-  const [tokA, tokB] = await Promise.all([
-    fetchToken(acc, tokenAId),
-    fetchToken(acc, tokenBId),
-  ]);
+  const [tokA, tokB] = includeTokens
+    ? await Promise.all([fetchToken(acc, tokenAId), fetchToken(acc, tokenBId)])
+    : tokens;
+
   if (tokA === null || tokB === null) {
     return fail("invalid pool (one or more tokens were not found)");
   }
@@ -117,8 +126,11 @@ export async function fetchLiquidityPool(
   };
 
   const tradeable: boolean = reach.gt(aBal, 0) && reach.gt(bBal, 0);
-  const tokens: FetchPoolData["tokens"] = [tokA, tokB];
-  const data = { pool, tradeable, tokens };
+  const data: FetchPoolData = {
+    pool,
+    tradeable,
+    tokens: [tokA, tokB] as FetchPoolData["tokens"],
+  };
   const result = successResult("OK", ctcInfo, ctc, data);
   onComplete(result);
   return result;

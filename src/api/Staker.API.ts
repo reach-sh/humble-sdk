@@ -24,6 +24,7 @@ import { formatRewardsPair } from "../utils/utils.staker";
 export {
   fetchFarmAndTokens,
   fetchStakingPool,
+  formatFarmView,
   FarmTokens,
   FarmAndTokens,
   SDKFarmView,

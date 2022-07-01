@@ -70,6 +70,7 @@ export type ReachTxnOpts = {
 /** Options for interacting with a `Pool` contract */
 export type PoolFetchOpts = ReachTxnOpts & {
   poolAddress: string | number;
+  includeTokens?: boolean
 };
 
 /** Options for interacting with a `Pool` contract */

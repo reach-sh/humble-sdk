@@ -156,6 +156,49 @@ export type FetchPoolData = {
   tradeable: boolean;
 };
 
+export type StaticFarmDataUnformatted = {
+  ctcInfo: BigNumber,
+  startBlock: BigNumber,
+  endBlock: BigNumber,
+  rewardTokenId: BigNumber,
+  rewardsPerBlock: [ 
+    BigNumber, 
+    BigNumber 
+  ],
+  stakedTokenId: BigNumber,
+  pairTokenAId: Maybe<BigNumber>,
+  pairTokenASymbol: string,
+  pairTokenBId: BigNumber,
+  pairTokenBSymbol: string,
+  rewardTokenDecimals: BigNumber,
+  rewardTokenSymbol: string,
+  stakedTokenDecimals: BigNumber,
+  stakedTokenPoolId: BigNumber,
+  stakedTokenSymbol: string,
+  stakedTokenTotalSupply: BigNumber
+}
+
+export type FormattedRewardsPerBlock = { asDefaultNetworkToken: string; asRewardToken: string }
+
+export type StaticFarmDataFormatted = {
+  ctcInfo: string,
+  startBlock: number,
+  endBlock: number,
+  rewardTokenId: string,
+  rewardsPerBlock: FormattedRewardsPerBlock,
+  stakedTokenId: string,
+  pairTokenAId: string,
+  pairTokenASymbol: string,
+  pairTokenBId: string,
+  pairTokenBSymbol: string,
+  rewardTokenDecimals: number,
+  rewardTokenSymbol: string,
+  stakedTokenDecimals: number,
+  stakedTokenPoolId?: string,
+  stakedTokenSymbol: string,
+  stakedTokenTotalSupply: string
+}
+
 /**
  * @version v2
  * Reach `v.0.1.10x` + HUMBLE FARMING

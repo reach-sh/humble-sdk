@@ -5,6 +5,7 @@ export { addLiquidity } from "./LiquidityProvider.Add";
 export { withdrawLiquidity } from "./LiquidityProvider.Withdraw";
 export { subscribeToPoolStream } from "./subscribeToPoolStream";
 export { subscribeToFarmStream } from "./subscribeToFarmStream";
+export { announceFarm } from "./FarmStream.Announce";
 
 // Staking/Farming
 export * from "./Staker.API";

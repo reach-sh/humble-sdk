@@ -1,8 +1,8 @@
-import { ReachAccount, Maybe, BigNumber, createReachAPI, formatCurrency } from "../reach-helpers";
+import { ReachAccount, createReachAPI, formatCurrency } from "../reach-helpers";
 import { fromMaybe } from "../utils/utils.reach";
 import { farmAnnouncerBackend } from "../build/backend";
 import { getFarmAnnouncer } from "../constants";
-import {  ReachTxnOpts, TransactionResult } from "types";
+import {  ReachTxnOpts, StaticFarmDataFormatted, StaticFarmDataUnformatted, TransactionResult } from "types";
 import { successResult } from "../utils";
 
 /** Options for subscribing to farms */
@@ -13,51 +13,7 @@ type FarmSubscriptionOpts = {
   format?: boolean
 } & ReachTxnOpts;
 
-
-type StaticFarmDataUnformatted = {
-  ctcInfo: BigNumber,
-  startBlock: BigNumber,
-  endBlock: BigNumber,
-  rewardTokenId: BigNumber,
-  rewardsPerBlock: [ 
-    BigNumber, 
-    BigNumber 
-  ],
-  stakedTokenId: BigNumber,
-  pairTokenAId: Maybe<any>,
-  pairTokenASymbol: string,
-  pairTokenBId: BigNumber,
-  pairTokenBSymbol: string,
-  rewardTokenDecimals: BigNumber,
-  rewardTokenSymbol: string,
-  stakedTokenDecimals: BigNumber,
-  stakedTokenPoolId: BigNumber,
-  stakedTokenSymbol: string,
-  stakedTokenTotalSupply: BigNumber
-}
-
-type FormattedRewardsPerBlock = { asDefaultNetworkToken: string; asRewardToken: string }
-
-type StaticFarmDataFormatted = {
-  ctcInfo: string,
-  startBlock: number,
-  endBlock: number,
-  rewardTokenId: string,
-  rewardsPerBlock: FormattedRewardsPerBlock,
-  stakedTokenId?: string,
-  pairTokenAId: string,
-  pairTokenASymbol: string,
-  pairTokenBId: string,
-  pairTokenBSymbol: string,
-  rewardTokenDecimals: number,
-  rewardTokenSymbol: string,
-  stakedTokenDecimals: number,
-  stakedTokenPoolId: string,
-  stakedTokenSymbol: string,
-  stakedTokenTotalSupply: string
-}
-
-// TODO fix params for this
+/** Result of monitoring the farm stream */
 type FarmRegisterEvent = {
   /** Actual event data */
   what: [

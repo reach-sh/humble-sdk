@@ -40,6 +40,9 @@ export type PoolContract = ReachContract<
 >;
 
 /** Staking Contract */
+export type FarmAnnouncerContract = ReachContract<typeof farmAnnouncerBackend>;
+
+/** Staking Contract */
 export type StakingContract = ReachContract<typeof stakingBackend>;
 
 /** Staking Contract `APIs` */

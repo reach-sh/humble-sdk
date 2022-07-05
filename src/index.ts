@@ -34,9 +34,9 @@ function setSDKOpts(opts: SDKOpts) {
   let customFarmAnnouncerAddress = opts.customFarmAnnouncerAddress
 
   // Announcer for listing farms
-  setFarmAnnouncer(opts.network === "TestNet" && customAnnouncerId ? customAnnouncerId : getFarmAnnouncerContract(opts.network))
+  setFarmAnnouncer(opts.network === "TestNet" && customFarmAnnouncerAddress ? customFarmAnnouncerAddress : getFarmAnnouncerContract(opts.network))
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
-  setPoolAnnouncer(opts.network === "TestNet" && customFarmAnnouncerAddress ? customFarmAnnouncerAddress : getTriumvirContract(opts.network));
+  setPoolAnnouncer(opts.network === "TestNet" && customAnnouncerId ? customAnnouncerId : getTriumvirContract(opts.network));
   // User slippage tolerance
   setSlippage(opts.slippageTolerance || 0.5);
   // User network (testnet/mainnet) preference

@@ -1,8 +1,13 @@
-import { subscribeToPoolStream, getPoolAnnouncer } from "@reach-sh/humble-sdk";
+import {
+  fetchLiquidityPool,
+  subscribeToPoolStream,
+  getPoolAnnouncer,
+  createReachAPI,
+} from "@reach-sh/humble-sdk";
 import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
 
 let exitTimeout;
-const LIMIT = 10;
+const LIMIT = 3;
 const TIMEOUT = 15;
 const pools = new Set();
 
@@ -12,10 +17,13 @@ export function runAnnouncerTest(acc) {
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
+    includeTokens: true,
     onPoolReceived: (msg) => {
-      Blue("* Received [poolId, tokenA, tokenB]");
-      Green(`\t ${JSON.stringify(msg)}`);
-      resetTimer();
+      if (msg[2] === 470842789) return listenTo(msg[0], acc);
+
+      //   Blue("* Received [poolId, tokenA, tokenB]");
+      //   Green(`\t ${JSON.stringify(msg)}`);
+      //   resetTimer();
     },
     onPoolFetched,
   });
@@ -23,15 +31,57 @@ export function runAnnouncerTest(acc) {
   resetTimer();
 }
 
+async function listenTo(poolId, acc) {
+  console.log(poolId);
+  process.exit();
+
+  const res = await fetchLiquidityPool(acc, {
+    includeTokens: true,
+    poolAddress: poolId,
+    n2nn: true,
+  });
+
+  const stdlib = createReachAPI();
+  const { contract } = res;
+  const big = stdlib.bigNumberify(21958514);
+  contract.events.Harvest.seek(big);
+  contract.events.Harvest.monitor(({ when, what }) => {
+    Blue("\tHarvest");
+    console.log(what);
+  });
+  contract.events.Withdraw.seek(big);
+  contract.events.Withdraw.monitor(({ when, what }) => {
+    Blue("\tWithdraw");
+    console.log(what);
+  });
+  contract.events.Deposit.seek(big);
+  contract.events.Deposit.monitor(({ when, what }) => {
+    Blue("\tDeposit");
+    console.log(what);
+  });
+  contract.events.Swap.seek(big);
+  contract.events.Swap.monitor(({ when, what }) => {
+    Blue("\tSwap");
+    console.log(what);
+  });
+}
+
 /** HELPER | When a pool is received, fetch details and reset the timer */
-async function onPoolFetched({ succeeded, poolAddress, data, message }) {
+async function onPoolFetched({
+  contract,
+  succeeded,
+  poolAddress,
+  data,
+  message,
+}) {
   if (pools.size >= LIMIT) return;
   if (!succeeded) return Red(message);
   if (!data.tradeable) return Red("Untradeable pool " + poolAddress);
 
   pools.add(poolAddress);
   Blue(`\t * Got "${poolAddress}" (${pools.size} of ${LIMIT})`);
-  iout(poolAddress, data.pool);
+  iout(poolAddress, data);
+  iout("\tABI", contract.getABI());
   resetTimer();
 }
 

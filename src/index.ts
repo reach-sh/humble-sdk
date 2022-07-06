@@ -9,6 +9,7 @@ import {
   setSlippage,
   setNetworkProvider,
   setProtocolAddr,
+  setFarmAnnouncer,
 } from "./constants";
 
 /**
@@ -30,6 +31,10 @@ function initHumbleSDK(opts: SDKOpts = {}) {
 function setSDKOpts(opts: SDKOpts) {
   let customAnnouncerId = opts.customTriumvirateId
   let customAnnouncerAddress = opts.customTriumvirateAddress
+  let customFarmAnnouncerAddress = opts.customFarmAnnouncerAddress
+
+  // Announcer for listing farms
+  setFarmAnnouncer(opts.network === "TestNet" && customFarmAnnouncerAddress ? customFarmAnnouncerAddress : getFarmAnnouncerContract(opts.network))
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
   setPoolAnnouncer(opts.network === "TestNet" && customAnnouncerId ? customAnnouncerId : getTriumvirContract(opts.network));
   // User slippage tolerance
@@ -47,6 +52,16 @@ function getTriumvirContract(network: NetworkProvider = "TestNet") {
   // V2 Triumvirate
   if (valid === "TestNet") return 92391728;
   if (valid === "MainNet") return 771884869;
+
+  throw new Error(`Unrecognized provider "${network}"`);
+}
+
+/** @internal Get Pool data source for Testnet/Mainnet */
+function getFarmAnnouncerContract(network: NetworkProvider = "TestNet") {
+  const valid = safeNetwork(network);
+  // V2 Triumvirate
+  if (valid === "TestNet") return 97832257;
+  if (valid === "MainNet") return 793452919;
 
   throw new Error(`Unrecognized provider "${network}"`);
 }
@@ -136,4 +151,4 @@ export {
 } from "./utils/utils.swap";
 
 // CONSTANTS
-export { getSlippage, getPoolAnnouncer } from "./constants";
+export { getSlippage, getPoolAnnouncer, getFarmAnnouncer } from "./constants";

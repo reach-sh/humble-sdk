@@ -4,6 +4,7 @@ import * as PoolBackendN2NN from "./index.net_tok.js";
 import * as TriumvirateBackend from "./index.triumvirate.js";
 import * as StakingBackend from "./staker.main.js";
 import * as LibBackend from "./index.main.js";
+import * as FarmAnnouncerBackend from "./farmAnnouncer.large.js";
 import { ReachContract } from "../reach-helpers/types.js";
 import { ComputeSwapFn, ComputeMintFn } from "../types";
 
@@ -12,6 +13,7 @@ export const poolBackendN2NN = PoolBackendN2NN;
 export const announcerBackend = TriumvirateBackend;
 export const stakingBackend = StakingBackend;
 export const libBackend = LibBackend;
+export const farmAnnouncerBackend = FarmAnnouncerBackend;
 
 /**
  * Get a function for calculating the expected output of a swap.
@@ -36,6 +38,9 @@ export function getComputeMint(stdlib: any): ComputeMintFn {
 export type PoolContract = ReachContract<
   typeof poolBackend | typeof poolBackendN2NN
 >;
+
+/** Staking Contract */
+export type FarmAnnouncerContract = ReachContract<typeof farmAnnouncerBackend>;
 
 /** Staking Contract */
 export type StakingContract = ReachContract<typeof stakingBackend>;

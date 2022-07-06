@@ -10,20 +10,37 @@ import {
   Blue,
   Green,
   Yellow,
+  fromArgs,
   getAccountFromArgs,
 } from "./utils.mjs";
 
 const tokensById = {}
 const poolIds = new Set()
 
+// Examples:
+// $ node createTokenMetadata.mjs
+// $ node createTokenMetadata.mjs env=local
+// $ node createTokenMetadata.mjs env=mainnet
+// $ node createTokenMetadata.mjs env=testnet
 
-// If trying to access testnet.humbleswap.com, overwrite the triumvirate id and the address
-// 'XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE', customTriumvirateId: 93443561 
+const arg = fromArgs(process.argv.slice(2), "env")
+const env = ['local', 'mainnet', 'testnet'].includes(arg) ? arg : 'local'
 
-// If Mainnet, just pass MainNet
-// Default => TestNet for dev.humbleswap.com
+const localOpts = { network: "TestNet" }  // dev.humbleswap.com
+const mainetOpts = { network: "MainNet" }
+const testnetOpts = { 
+  network: "TestNet",
+  customTriumvirateId: 93443561,
+  customTriumvirateAddress: 'XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE'
+} // testnet.humbleswap.com
 
-initHumbleSDK({ network: "TestNet" });
+const opts = {
+  testnet: testnetOpts, 
+  mainnet: mainetOpts, 
+  local: localOpts
+}[env]
+
+initHumbleSDK(opts);
 const reach = createReachAPI();
 
 (async () => {
@@ -45,11 +62,11 @@ const reach = createReachAPI();
   })
 })()
 
-const makeOnPoolFetched = (acc) => async ({data, succeeded}) => {
-  const poolAddress = data.pool.poolAddress.toString()
+const makeOnPoolFetched = (acc) => async ({data, succeeded, poolAddress}) => {
+  if (poolAddress) {
+    poolIds.delete(poolAddress.toString())
+  }
   if (succeeded) {
-    poolIds.delete(poolAddress)
-
     const poolTok = await fetchToken(acc, data.pool.poolTokenId)
 
     const [tokA, tokB] = data.tokens
@@ -62,7 +79,7 @@ const makeOnPoolFetched = (acc) => async ({data, succeeded}) => {
     // Convert and export
     const jsonData = JSON.stringify(tokensById)
     fs.writeFile(
-        'tokenMetadata.json',
+        `${env}-tokenMetadata.json`,
         jsonData,
         'utf-8',
         onEndScript

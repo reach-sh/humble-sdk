@@ -7,7 +7,7 @@ type LoadStdlibFn = { (args: any): any };
 export * from "./types";
 export const NETWORKS: T.NetworksMap = {
   ALGO: { name: "Algorand", abbr: "ALGO", decimals: 6 },
-  ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 },
+  ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 }
 };
 /**
  * @internal
@@ -48,20 +48,24 @@ export function loadReach(
 
   // Instantiate Reach stdlib
   const { provider = "TestNet", chain = "ALGO", providerEnv } = opts;
-  reach = loadStdlibFn({
-    REACH_CONNECTOR_MODE: chain,
-    REACH_NO_WARN: 'Y',
-  });
 
-  if (opts.walletFallback) {
-    reach.setWalletFallback(
-      reach.walletFallback({
-        providerEnv: buildProviderEnv(provider, providerEnv),
-        ...opts.walletFallback,
-      })
-    );
-  } else reach.setProviderByEnv(buildProviderEnv(provider, providerEnv));
+  if (/(-devnet|-live|-browser)/.test(provider || "TestNet")) {
+    reach = loadStdlibFn(provider);
+  } else {
+    reach = loadStdlibFn({
+      REACH_CONNECTOR_MODE: chain,
+      REACH_NO_WARN: "Y"
+    });
 
+    if (opts.walletFallback) {
+      reach.setWalletFallback(
+        reach.walletFallback({
+          providerEnv: buildProviderEnv(provider, providerEnv),
+          ...opts.walletFallback
+        })
+      );
+    } else reach.setProviderByEnv(buildProviderEnv(provider, providerEnv));
+  }
   return reach;
 }
 
@@ -103,37 +107,45 @@ function buildProviderEnv(
     ALGO_INDEXER_PORT: "",
     REACH_ISOLATED_NETWORK: "no",
 
-    ...overrides,
+    ...overrides
   };
 
   return env as T.AlgoEnvOverride;
 }
 
-async function getNetworkTokenBalance(address: string, bigNumber=false) {
-  const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`
-  const result = await fetch(URL).then((res) => res.json())
+async function getNetworkTokenBalance(address: string, bigNumber = false) {
+  const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`;
+  const result = await fetch(URL).then((res) => res.json());
   const { amount } = result;
   return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
 }
 
 /** Get formatted token balance */
-export async function tokenBalance(acc: T.ReachAccount, id: string | number, bigNumber=false) {
+export async function tokenBalance(
+  acc: T.ReachAccount,
+  id: string | number,
+  bigNumber = false
+) {
   const reach = createReachAPI();
   const address = reach.formatAddress(acc);
-  if (["0", 0, null].includes(id)) return await getNetworkTokenBalance(address, bigNumber)
+  if (["0", 0, null].includes(id))
+    return await getNetworkTokenBalance(address, bigNumber);
 
   const assetURL = `${await indexerBaseURL()}/assets/${id}`;
   const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
   const [{ asset }, bal] = await Promise.all([
     fetch(assetURL).then((res) => res.json()),
-    fetch(balURL).then((res) => res.json()),
+    fetch(balURL).then((res) => res.json())
   ]);
 
-  if (!asset?.params || !bal?.["asset-holding"]) return bigNumber ? parseCurrency(0) : "0";
+  if (!asset?.params || !bal?.["asset-holding"])
+    return bigNumber ? parseCurrency(0) : "0";
 
   const { decimals } = asset.params;
   const { amount } = bal["asset-holding"];
-  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, decimals);
+  return bigNumber
+    ? parseCurrency(amount, 0)
+    : formatCurrency(amount, decimals);
 }
 /** @internal Generate URL for fetching token balance  */
 function balanceBaseURL() {
@@ -178,7 +190,7 @@ export async function tokenMetadata(
 
   const [metadata, bal] = await Promise.allSettled([
     fetchToken(),
-    fetchBalance(),
+    fetchBalance()
   ]);
 
   if (metadata.status === "rejected" || metadata.value === null) {
@@ -203,7 +215,7 @@ function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
     amount,
     supply: data.supply,
     decimals: data.decimals,
-    verified: data.verified || false,
+    verified: data.verified || false
   };
 }
 /** @internal  */

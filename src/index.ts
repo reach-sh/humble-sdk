@@ -50,7 +50,7 @@ function setSDKOpts(opts: SDKOpts) {
 function getTriumvirContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
-  if (valid === "TestNet") return 92391728;
+  if (valid === "TestNet") return 92391728; // This is Develop triumvirate
   if (valid === "MainNet") return 771884869;
 
   throw new Error(`Unrecognized provider "${network}"`);

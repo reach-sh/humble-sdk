@@ -79,7 +79,7 @@ const makeOnPoolFetched = (acc) => async ({data, succeeded, poolAddress}) => {
     // Convert and export
     const jsonData = JSON.stringify(tokensById)
     fs.writeFile(
-        `${env}-tokenMetadata.json`,
+        `${env}-token-metadata.json`,
         jsonData,
         'utf-8',
         onEndScript

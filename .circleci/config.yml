@@ -1,0 +1,9 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.0.2
+workflows:
+  test:
+    jobs:
+      - node/test:
+          run-command: 'test:ci'
+          test-results-for: jest

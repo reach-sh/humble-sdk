@@ -34,9 +34,9 @@ function setSDKOpts(opts: SDKOpts) {
   let customFarmAnnouncerAddress = opts.customFarmAnnouncerAddress
 
   // Announcer for listing farms
-  setFarmAnnouncer(opts.network === "TestNet" && customFarmAnnouncerAddress ? customFarmAnnouncerAddress : getFarmAnnouncerContract(opts.network))
+  setFarmAnnouncer(opts.network !== "MainNet" && customFarmAnnouncerAddress ? customFarmAnnouncerAddress : getFarmAnnouncerContract(opts.network))
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
-  setPoolAnnouncer(opts.network === "TestNet" && customAnnouncerId ? customAnnouncerId : getTriumvirContract(opts.network));
+  setPoolAnnouncer(opts.network !== "MainNet" && customAnnouncerId ? customAnnouncerId : getTriumvirContract(opts.network));
   // User slippage tolerance
   setSlippage(opts.slippageTolerance || 0.5);
   // User network (testnet/mainnet) preference
@@ -50,6 +50,7 @@ function setSDKOpts(opts: SDKOpts) {
 function getTriumvirContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
+  if (valid === "ALGO-devnet") return 781
   if (valid === "TestNet") return 92391728; // This is Develop triumvirate
   if (valid === "MainNet") return 771884869;
 
@@ -60,6 +61,7 @@ function getTriumvirContract(network: NetworkProvider = "TestNet") {
 function getFarmAnnouncerContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
+  if (valid === "ALGO-devnet") return 785
   if (valid === "TestNet") return 97832257;
   if (valid === "MainNet") return 793452919;
 
@@ -68,7 +70,7 @@ function getFarmAnnouncerContract(network: NetworkProvider = "TestNet") {
 
 /** @internal Ensure `network` param from user is a recognized value */
 function safeNetwork(val?: NetworkProvider): NetworkProvider {
-  const valid: NetworkProvider[] = ["TestNet", "MainNet"];
+  const valid: NetworkProvider[] = ["TestNet", "MainNet", "ALGO-devnet"];
   if (!val) return valid[0];
   const safe = valid.includes(val) ? val : "TestNet";
   return safe;

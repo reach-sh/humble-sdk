@@ -39,7 +39,7 @@ export type NetworkData = {
   decimals?: number;
 };
 
-export type NetworkProvider = ("TestNet" | "BetaNet" | "MainNet") & string;
+export type NetworkProvider = ("TestNet" | "BetaNet" | "MainNet" | "ALGO-devnet") & string;
 
 export type NetworksMap = Record<ChainSymbol, NetworkData>;
 

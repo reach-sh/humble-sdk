@@ -50,7 +50,6 @@ function setSDKOpts(opts: SDKOpts) {
 function getTriumvirContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
-  if (valid === "ALGO-devnet") return 781
   if (valid === "TestNet") return 92391728; // This is Develop triumvirate
   if (valid === "MainNet") return 771884869;
 
@@ -61,7 +60,6 @@ function getTriumvirContract(network: NetworkProvider = "TestNet") {
 function getFarmAnnouncerContract(network: NetworkProvider = "TestNet") {
   const valid = safeNetwork(network);
   // V2 Triumvirate
-  if (valid === "ALGO-devnet") return 785
   if (valid === "TestNet") return 97832257;
   if (valid === "MainNet") return 793452919;
 

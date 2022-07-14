@@ -18,7 +18,9 @@ import { fetchToken } from "./PoolAnnouncer";
 import { calculateRewardsPerBlock } from "./calculateRewardsPerBlock";
 
 /** Transaction options (create staking pool) */
-type CreateFarmTxnOpts = { opts: StakingDeployerOpts } & ReachTxnOpts;
+type CreateFarmTxnOpts = {
+  opts: StakingDeployerOpts & { rewardTokenDecimals?: number };
+} & ReachTxnOpts;
 
 /** Transaction result (create staking pool) */
 type CreateFarmTxnResult = {
@@ -80,8 +82,24 @@ async function deployFarmContract(
 ): Promise<TransactionResult<CreateFarmTxnResult>> {
   const { onProgress = noOp, onComplete = noOp, opts: rest } = opts;
   const reach = createReachAPI();
-  const { networkRewardsPerDay, rewardsPerDay, startBlock, endBlock } =
-    await calculateRewardsPerBlock(opts.opts);
+  const [networkRewards, totalReward] = rest.totalRewardsPayout;
+  const { stakeTokenId, rewardTokenId } = rest;
+  const rewardTokenDecimals =
+    rest.rewardTokenDecimals === undefined
+      ? (await fetchToken(acc, rewardTokenId))?.decimals
+      : rest.rewardTokenDecimals;
+  const { networkRewardsPerBlock: networkRewardsPerDay, rewardsPerBlock: rewardsPerDay, startBlock, endBlock } =
+    await calculateRewardsPerBlock({
+      endDateTime: rest.endBlock,
+      startDateTime: rest.startBlock,
+      stakeTokenId: stakeTokenId?.toString(),
+      rewardTokenId: rewardTokenId?.toString(),
+      rewardTokenDecimals,
+      networkRewards,
+      networkRewardsFunder: rest.rewarder0,
+      totalReward
+    });
+
   const ctc = acc.contract(stakingBackend);
 
   onProgress("Fetching reward token metadata");

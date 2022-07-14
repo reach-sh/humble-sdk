@@ -79,6 +79,8 @@ export { initHumbleSDK, setSlippage };
 
 // DATA & DATA FETCHERS
 export {
+  calculateRewardsPerBlock,
+  checkRewardsImbalance,
   createLiquidityPool,
   createStakingPool,
   fetchLiquidityPool,

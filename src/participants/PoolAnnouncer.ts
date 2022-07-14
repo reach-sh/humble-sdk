@@ -21,7 +21,6 @@ import {
   isNetworkToken,
   makeNetworkToken,
   successResult,
-  withTimeout,
 } from "../utils";
 import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
 
@@ -150,7 +149,7 @@ export async function fetchToken(
 
   try {
     const { bigNumberToNumber } = createReachAPI();
-    const data: any = await withTimeout(acc.tokenMetadata(id));
+    const data: any = await acc.tokenMetadata(id);
     const decimals = data.decimals && bigNumberToNumber(data.decimals);
 
     return {

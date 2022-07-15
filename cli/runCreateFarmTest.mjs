@@ -63,7 +63,6 @@ export async function runCreateFarmTest(acc) {
   );
   prompt = "Enter the address or leave blank to use ALGOs in your account:";
   const rewarder = await answerOrDie(prompt);
-  console.log({ rewarder });
 
   Blue(`Cost: ${nrt} ${reach.connector} and ${nnrt} ${rewardsToken.symbol}`);
   const createPool = (await answerOrDie("Continue? (y/n)")) === "y";

@@ -1,16 +1,21 @@
+import { utils } from "ethers";
+import { announceFarm, fetchFarmAndTokens } from "@reach-sh/humble-sdk";
 import {
+  calculateRewardsPerBlock,
+  checkRewardsImbalance,
   createReachAPI,
   createStakingPool,
   fetchToken,
-  parseAddress,
+  parseAddress
 } from "@reach-sh/humble-sdk";
 import {
   answerOrDie,
   Blue,
   exitWithMsgs,
+  fromArgs,
   Green,
   iout,
-  Yellow,
+  Yellow
 } from "./utils.mjs";
 
 /** Create a Staking pool for farming liquidity incentives */
@@ -53,14 +58,33 @@ export async function runCreateFarmTest(acc) {
   const endDate = await answerOrDie(prompt);
 
   //   ALGO provider address
-  Yellow("Will a separate account be adding the ALGO rewards? If so, what is it's address? (this will default to your address if a different one isn't submitted)");
+  Yellow(
+    "Will a separate account be adding the ALGO rewards? If so, what is it's address? (this will default to your address if a different one isn't submitted)"
+  );
   prompt = "Enter the address or leave blank to use ALGOs in your account:";
   const rewarder = await answerOrDie(prompt);
-  console.log({rewarder})
+  console.log({ rewarder });
 
   Blue(`Cost: ${nrt} ${reach.connector} and ${nnrt} ${rewardsToken.symbol}`);
   const createPool = (await answerOrDie("Continue? (y/n)")) === "y";
   if (!createPool) exitWithMsgs("Exiting");
+
+  const formData = {
+    endDateTime: endDate,
+    networkRewards: nrt,
+    networkRewardsFunder: rewarder || reach.formatAddress(acc.getAddress()),
+    rewardTokenDecimals: rewardsToken.decimals,
+    rewardTokenId,
+    stakeTokenId,
+    startDateTime: startDate,
+    totalReward: nnrt
+  };
+
+  const check = await checkRewardsImbalance(formData);
+  if (check.imbalance) {
+    const e = "Rewards mismatch!";
+    return iout("Calculated rewards", { ...check, expectedToPay: nnrt });
+  }
 
   const result = await createStakingPool(acc, {
     onComplete: Green,
@@ -71,8 +95,8 @@ export async function runCreateFarmTest(acc) {
       totalRewardsPayout: [nrt, nnrt],
       startBlock: startDate,
       endBlock: endDate,
-      rewarder0: rewarder === '' ? reach.formatAddress(acc.getAddress()) : rewarder,
-    },
+      rewarder0: formData.networkRewardsFunder
+    }
   });
 
   console.log({ result });

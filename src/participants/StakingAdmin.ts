@@ -15,7 +15,7 @@ import {
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
-import { calculateRewardsPerBlock } from "./calculateRewardsPerBlock";
+import { checkRewardsImbalance } from "./calculateRewardsPerBlock";
 
 /** Transaction options (create staking pool) */
 type CreateFarmTxnOpts = {
@@ -88,17 +88,37 @@ async function deployFarmContract(
     rest.rewardTokenDecimals === undefined
       ? (await fetchToken(acc, rewardTokenId))?.decimals
       : rest.rewardTokenDecimals;
-  const { networkRewardsPerBlock: networkRewardsPerDay, rewardsPerBlock: rewardsPerDay, startBlock, endBlock } =
-    await calculateRewardsPerBlock({
-      endDateTime: rest.endBlock,
-      startDateTime: rest.startBlock,
-      stakeTokenId: stakeTokenId?.toString(),
-      rewardTokenId: rewardTokenId?.toString(),
-      rewardTokenDecimals,
-      networkRewards,
-      networkRewardsFunder: rest.rewarder0,
-      totalReward
+  const {
+    networkRewardsPerBlock: networkRewardsPerDay,
+    rewardsPerBlock: rewardsPerDay,
+    startBlock,
+    endBlock,
+    imbalance,
+    totalRewards
+  } = await checkRewardsImbalance({
+    endDateTime: rest.endBlock,
+    startDateTime: rest.startBlock,
+    stakeTokenId: stakeTokenId?.toString(),
+    rewardTokenId: rewardTokenId?.toString(),
+    rewardTokenDecimals,
+    networkRewards,
+    networkRewardsFunder: rest.rewarder0,
+    totalReward
+  });
+
+  // Prevent creation if user expects to pay significantly less
+  // than the actual cost over the farm's block-duration.
+  if (imbalance) {
+    const expected = `expected ${networkRewards}, ${totalReward}`;
+    const got = `got ${totalRewards[0]}, ${totalRewards[1]}`;
+    const msg = `
+    Rewards cost does not match input: ${expected}, ${got}
+    `;
+    return errorResult(msg, null, {
+      amountsDeposited: [0, 0] as StakingRewards,
+      poolAddress: ""
     });
+  }
 
   const ctc = acc.contract(stakingBackend);
 

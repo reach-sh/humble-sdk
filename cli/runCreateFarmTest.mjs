@@ -15,6 +15,7 @@ import {
   fromArgs,
   Green,
   iout,
+  Red,
   Yellow
 } from "./utils.mjs";
 
@@ -81,9 +82,12 @@ export async function runCreateFarmTest(acc) {
 
   const check = await checkRewardsImbalance(formData);
   if (check.imbalance) {
-    const e = "Rewards mismatch!";
+    const e = "Rewards imbalance! Cost is less than 95% of your budget!";
+    Red(e);
     return iout("Calculated rewards", { ...check, expectedToPay: nnrt });
   }
+
+  Blue(JSON.stringify(check, null, 2));
 
   const result = await createStakingPool(acc, {
     onComplete: Green,

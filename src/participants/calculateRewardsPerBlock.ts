@@ -1,6 +1,7 @@
-import { createReachAPI, NETWORKS } from "../reach-helpers";
+import { ChainSymbol, createReachAPI, NETWORKS } from "../reach-helpers";
 import { convertDateToBlocks } from "../json";
 import { getValueWithMaxDecimals } from "../utils/utils.swap";
+import { getBlockchain } from "../constants";
 
 type RewardsFormData = {
   endDateTime: string;
@@ -14,13 +15,17 @@ type RewardsFormData = {
 };
 
 /**
+ * @internal
  * Calculate the start/end block of a farm, as well as expected rewards payout per day
  * @param opts Staking Deployer opts
  * @returns Network and non-network rewards; start and end block for farm
  */
-export async function calculateRewardsPerBlock(opts: Partial<RewardsFormData>) {
-  const reach = createReachAPI();
-  const chain = reach.connector as keyof typeof NETWORKS;
+export function calculateRewardsPerBlock(
+  opts: Partial<RewardsFormData>,
+  currentNetworkTime: number
+) {
+  getBlockchain();
+  const chain = getBlockchain() as ChainSymbol;
   const defaultDecimals = NETWORKS[chain].decimals;
   const data = {
     networkRewardsPerBlock: 0,
@@ -42,7 +47,6 @@ export async function calculateRewardsPerBlock(opts: Partial<RewardsFormData>) {
   }
 
   const totalRewardsPayout = [networkRewards || "0", totalReward];
-  const currentNetworkTime = Number(await reach.getNetworkTime());
   data.startBlock = convertDateToBlocks(
     new Date(startDateTime),
     currentNetworkTime
@@ -70,9 +74,15 @@ export async function calculateRewardsPerBlock(opts: Partial<RewardsFormData>) {
   return data;
 }
 
-/** Assert sum of `rewardsPerBlock` is less than 99% of original expected */
-const isImbalanced = (rewardsPerBlock: number, originalRewardTotal: string) => {
-  const precision = 0.99;
+/**
+ * Assert sum of `rewardsPerBlock` is less than 95% of original expected. This should
+ * cover most tokens with 2 or more decimals
+ */
+export const isImbalanced = (
+  rewardsPerBlock: number,
+  originalRewardTotal: string
+) => {
+  const precision = 0.95;
   return rewardsPerBlock / Number(originalRewardTotal) < precision;
 };
 
@@ -84,7 +94,8 @@ const isImbalanced = (rewardsPerBlock: number, originalRewardTotal: string) => {
 export async function checkRewardsImbalance(
   opts: Partial<RewardsFormData> = {}
 ) {
-  const data = await calculateRewardsPerBlock(opts);
+  const reach = createReachAPI();
+  const data = calculateRewardsPerBlock(opts, await reach.getNetworkTime());
   const [networkRewardsPerBlock, rewardsPerBlock] = data.totalRewards;
   const [networkRewardsImbalanced, rewardsImbalanced] = [
     isImbalanced(networkRewardsPerBlock, opts.networkRewards || "0"),

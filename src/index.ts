@@ -34,9 +34,9 @@ function setSDKOpts(opts: SDKOpts) {
   let customFarmAnnouncerAddress = opts.customFarmAnnouncerAddress
 
   // Announcer for listing farms
-  setFarmAnnouncer(opts.network === "TestNet" && customFarmAnnouncerAddress ? customFarmAnnouncerAddress : getFarmAnnouncerContract(opts.network))
+  setFarmAnnouncer(opts.network !== "MainNet" && customFarmAnnouncerAddress ? customFarmAnnouncerAddress : getFarmAnnouncerContract(opts.network))
   // Announcer for listing pools (default: HumbleSwap testnet announcer)
-  setPoolAnnouncer(opts.network === "TestNet" && customAnnouncerId ? customAnnouncerId : getTriumvirContract(opts.network));
+  setPoolAnnouncer(opts.network !== "MainNet" && customAnnouncerId ? customAnnouncerId : getTriumvirContract(opts.network));
   // User slippage tolerance
   setSlippage(opts.slippageTolerance || 0.5);
   // User network (testnet/mainnet) preference
@@ -68,7 +68,7 @@ function getFarmAnnouncerContract(network: NetworkProvider = "TestNet") {
 
 /** @internal Ensure `network` param from user is a recognized value */
 function safeNetwork(val?: NetworkProvider): NetworkProvider {
-  const valid: NetworkProvider[] = ["TestNet", "MainNet"];
+  const valid: NetworkProvider[] = ["TestNet", "MainNet", "ALGO-devnet"];
   if (!val) return valid[0];
   const safe = valid.includes(val) ? val : "TestNet";
   return safe;

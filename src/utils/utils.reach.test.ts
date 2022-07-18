@@ -68,38 +68,7 @@ describe("Reach Helpers | Utils", () => {
     expect(H.trailing0s("1000.1001")).toStrictEqual("1000.1001");
   });
 
-  it("Abbreviates single-digit or decimal numbers with rounding", () => {
-    // Single digit - Rounding
-    expect(H.formatNumberShort(".999999", 1)).toStrictEqual("1");
-    expect(H.formatNumberShort("0.899994", 1)).toStrictEqual("0.9");
-    expect(H.formatNumberShort("0.989994", 2)).toStrictEqual("0.99");
-    expect(H.formatNumberShort("0.998994", 3)).toStrictEqual("0.999");
-    expect(H.formatNumberShort("0.9997994", 4)).toStrictEqual("0.9998");
-  });
-
-  it("Abbreviates single-digit or decimal numbers without rounding", () => {
-    // Single digit - No rounding
-    expect(H.formatNumberShort(1)).toStrictEqual("1");
-    expect(H.formatNumberShort(1.1111111)).toStrictEqual("1.11");
-    expect(H.formatNumberShort(1.1111911, 3)).toStrictEqual("1.111");
-    expect(H.formatNumberShort(1.1111111, 5)).toStrictEqual("1.11111");
-  });
-
-  it("Abbreviates sub-thousand numbers with/without rounding", () => {
-    // Tens
-    expect(H.formatNumberShort(10)).toStrictEqual("10");
-    expect(H.formatNumberShort(10.899994)).toStrictEqual("10.9");
-    expect(H.formatNumberShort(10.989994, 3)).toStrictEqual("10.99");
-    expect(H.formatNumberShort(10.998994, 5)).toStrictEqual("10.99899");
-
-    // Hundreds
-    expect(H.formatNumberShort(100)).toStrictEqual("100");
-    expect(H.formatNumberShort(100.899994)).toStrictEqual("100.9");
-    expect(H.formatNumberShort(100.989994, 3)).toStrictEqual("100.99");
-    expect(H.formatNumberShort(100.998994, 5)).toStrictEqual("100.99899");
-  });
-
-  it("Abbreviates large numbers", () => {
+  it("Abbreviates numbers", () => {
     const k = 1000;
     const k1 = 1111;
     const m1 = k * 1000;
@@ -109,11 +78,16 @@ describe("Reach Helpers | Utils", () => {
     const b10 = m1 * 10000;
     const b100 = m1 * 100000;
 
+    expect(H.formatNumberShort(1)).toStrictEqual("1");
+    expect(H.formatNumberShort(1.1)).toStrictEqual("1.1");
+
     // Check decimals
     expect(H.formatNumberShort(k)).toStrictEqual("1K");
     expect(H.formatNumberShort(k1, 1)).toStrictEqual("1.1K");
     expect(H.formatNumberShort(k1, 2)).toStrictEqual("1.11K");
     expect(H.formatNumberShort(k1, 3)).toStrictEqual("1.111K");
+
+    // Assert no decimals when only trailing zeros
     expect(H.formatNumberShort(m1, 2)).toStrictEqual("1M");
     expect(H.formatNumberShort(b1, 2)).toStrictEqual("1B");
 
@@ -124,13 +98,6 @@ describe("Reach Helpers | Utils", () => {
     expect(H.formatNumberShort(b1)).toStrictEqual("1B");
     expect(H.formatNumberShort(b10)).toStrictEqual("10B");
     expect(H.formatNumberShort(b100)).toStrictEqual("100B");
-
-    // Assert no decimals when only trailing zeros
-    expect(H.formatNumberShort(m1, 2)).toStrictEqual("1M");
-
-    expect(H.formatNumberShort(b1, 2)).toStrictEqual("1B");
-    expect(H.formatNumberShort(b1 * k, 2)).toStrictEqual("1T");
-    expect(H.formatNumberShort(b1 * k + 0.5555, 2)).toStrictEqual("1T");
   });
 
   it("Trims empty bytes", () => {

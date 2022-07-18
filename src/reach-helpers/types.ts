@@ -39,7 +39,7 @@ export type NetworkData = {
   decimals?: number;
 };
 
-export type NetworkProvider = ("TestNet" | "BetaNet" | "MainNet") & string;
+export type NetworkProvider = ("TestNet" | "BetaNet" | "MainNet" | "ALGO-devnet") & string;
 
 export type NetworksMap = Record<ChainSymbol, NetworkData>;
 
@@ -191,6 +191,7 @@ export type ReachStdLib = {
    * @version 0.1.8-rc-6
    * - Make http requests at least `ms` milliseconds apart. Not supported on all networks */
   setMinMillisBetweenRequests(ms: number): void;
+  customHttpEventHandler(h: (e: any) => Promise<void>): void
   // bigNumberToNumber: (amt: any) => number;
 } & { [x: string]: any };
 

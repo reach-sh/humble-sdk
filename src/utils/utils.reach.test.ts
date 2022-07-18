@@ -71,8 +71,12 @@ describe("Reach Helpers | Utils", () => {
   it("Abbreviates numbers", () => {
     const k = 1000;
     const k1 = 1111;
-    const m = k * 1000;
-    const b = m * 1000;
+    const m1 = k * 1000;
+    const m10 = k * 10000;
+    const m100 = k * 100000;
+    const b1 = m1 * 1000;
+    const b10 = m1 * 10000;
+    const b100 = m1 * 100000;
 
     expect(H.formatNumberShort(1)).toStrictEqual("1");
     expect(H.formatNumberShort(1.1)).toStrictEqual("1.1");
@@ -84,11 +88,16 @@ describe("Reach Helpers | Utils", () => {
     expect(H.formatNumberShort(k1, 3)).toStrictEqual("1.111K");
 
     // Assert no decimals when only trailing zeros
-    expect(H.formatNumberShort(m)).toStrictEqual("1M");
-    expect(H.formatNumberShort(m, 2)).toStrictEqual("1M");
+    expect(H.formatNumberShort(m1, 2)).toStrictEqual("1M");
+    expect(H.formatNumberShort(b1, 2)).toStrictEqual("1B");
 
-    expect(H.formatNumberShort(b)).toStrictEqual("1B");
-    expect(H.formatNumberShort(b, 2)).toStrictEqual("1B");
+    // Assert shortening covers the whole range of the notation
+    expect(H.formatNumberShort(m1)).toStrictEqual("1M");
+    expect(H.formatNumberShort(m10)).toStrictEqual("10M");
+    expect(H.formatNumberShort(m100)).toStrictEqual("100M");
+    expect(H.formatNumberShort(b1)).toStrictEqual("1B");
+    expect(H.formatNumberShort(b10)).toStrictEqual("10B");
+    expect(H.formatNumberShort(b100)).toStrictEqual("100B");
   });
 
   it("Trims empty bytes", () => {

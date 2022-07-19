@@ -12,6 +12,7 @@ export function runAnnouncerTest(acc) {
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
+    includeTokens: true,
     onPoolReceived: (msg) => {
       Blue("* Received [poolId, tokenA, tokenB]");
       Green(`\t ${JSON.stringify(msg)}`);
@@ -26,7 +27,7 @@ export function runAnnouncerTest(acc) {
 
 /** HELPER | When a pool is received, fetch details and reset the timer */
 async function onPoolFetched({ succeeded, poolAddress, data, message }) {
-  if (pools.size >= LIMIT) return;
+  if (pools.size >= LIMIT) return stopTest();
   if (!succeeded) return Red(message);
   if (!data.tradeable) return Red("Untradeable pool " + poolAddress);
 
@@ -46,5 +47,5 @@ function resetTimer() {
 /** End CLI */
 function stopTest() {
   clearTimeout(exitTimeout);
-  exitWithMsgs("Timer stopped. Exiting ...");
+  exitWithMsgs(`Timer stopped: fetched ${pools.size} pools. Exiting ...`);
 }

@@ -51,7 +51,9 @@ export function formatNumberShort(val: any, round = 2) {
 
   const parts = val.toString().split(".");
   const ints = parts[0].length;
-  if (!ints) return Number(val).toFixed(3);
+  if (!ints || ints < 4) {
+    return trailing0s(parseFloat(val).toFixed(round));
+  }
 
   // Get number of vals before first 'comma'
   const abbrLength = ints % 3 === 0 ? 3 : ints % 3;

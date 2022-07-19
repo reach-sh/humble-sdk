@@ -339,7 +339,7 @@ function alignSwapInfo(
 }
 
 /** @internal checks the number amount and prevents any decimals being added than the explicitely described max decimal */
-function getValueWithMaxDecimals(original: string, decimals?: number) {
+export function getValueWithMaxDecimals(original: string, decimals?: number) {
   const MAX_DECIMALS = 5;
   const decs =
     decimals === undefined || decimals === null ? MAX_DECIMALS : decimals;

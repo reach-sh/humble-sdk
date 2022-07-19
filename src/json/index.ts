@@ -27,15 +27,16 @@ export function convertToBlocks(duration: number) {
   return Math.ceil(totalHours * BLOCKS_PER_HR);
 }
 
-export async function convertDateToBlocks(date: Date, currentBlock: number) {
+export function convertDateToBlocks(date: Date, currentBlock: number) {
   // does not convert the dates to UTC
   // This is because it's only using the dates to get the number of hours between two dates
   // Whether the dates are in UTC or in a timezone that number of hours will be the same
-  const currentDate = new Date()
-  const hoursFromCurrentDate = (date.getTime() - currentDate.getTime()) / (60 * 60 * 1000)
-  const blocksTillInputDate = convertToBlocks(hoursFromCurrentDate)
-  const inputDateAsBlocks = currentBlock + blocksTillInputDate
-  return inputDateAsBlocks
+  const currentDate = new Date();
+  const hoursFromCurrentDate =
+    (date.getTime() - currentDate.getTime()) / (60 * 60 * 1000);
+  const blocksTillInputDate = convertToBlocks(hoursFromCurrentDate);
+  const inputDateAsBlocks = currentBlock + blocksTillInputDate;
+  return inputDateAsBlocks;
 }
 
 /** Block-length numerical constants for the selected blockchain */
@@ -52,6 +53,6 @@ export function blockConstants(network = getBlockchain()) {
     /* Number of algo blocks written per day (86400 secs / 4.5) */
     BLOCKS_PER_DAY,
     /* Number of algo blocks written per day (800 blocks) */
-    BLOCKS_PER_HR,
+    BLOCKS_PER_HR
   };
 }

@@ -95,7 +95,7 @@ export async function checkRewardsImbalance(
   opts: Partial<RewardsFormData> = {}
 ) {
   const reach = createReachAPI();
-  const data = calculateRewardsPerBlock(opts, await reach.getNetworkTime());
+  const data = calculateRewardsPerBlock(opts, Number(await reach.getNetworkTime()));
   const [networkRewardsPerBlock, rewardsPerBlock] = data.totalRewards;
   const [networkRewardsImbalanced, rewardsImbalanced] = [
     isImbalanced(networkRewardsPerBlock, opts.networkRewards || "0"),

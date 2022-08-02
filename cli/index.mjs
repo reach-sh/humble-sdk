@@ -1,7 +1,7 @@
 import {
   initHumbleSDK,
   getPoolAnnouncer,
-  createReachAPI,
+  createReachAPI
 } from "@reach-sh/humble-sdk";
 import { loadStdlib } from "@reach-sh/stdlib";
 import {
@@ -12,7 +12,7 @@ import {
   getAccountFromArgs,
   iout,
   exitWithMsgs,
-  answerOrDie,
+  answerOrDie
 } from "./utils.mjs";
 import { runFetchPoolTest } from "./runFetchPoolTest.mjs";
 import { runFetchTokenTest } from "./runFetchTokenTest.mjs";
@@ -26,7 +26,13 @@ import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
 import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 
 // init SDK
-initHumbleSDK({ network: "TestNet" });
+initHumbleSDK({
+  network: "TestNet",
+  customFarmAnnouncerAddress: 100474119,
+  customAnnouncerId: 93443561,
+  customAnnouncerAddress:
+    "XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE"
+});
 
 const reach = createReachAPI();
 const options = [
@@ -39,7 +45,7 @@ const options = [
   { title: "Add/remove Liquidity", action: runLiquidity },
   { title: "Create a Farm", action: runCreateFarmTest },
   { title: "Fetch a Farm", action: runFetchFarmTest },
-  { title: "Check Staking rewards", action: runCheckRewardsTest },
+  { title: "Check Staking rewards", action: runCheckRewardsTest }
 ];
 
 (async () => {

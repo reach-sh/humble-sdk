@@ -69,7 +69,7 @@ export async function createStakingPool(
 
   const stakeToken = await fetchToken(acc, opts.stakeTokenId);
   if (stakeToken?.symbol !== "HMBL2LT") {
-    return errorResult("Staking token is not a HMBL2LT token", null, data);
+    return errorResult("Staking token is not a Liquidity Pool token", null, data);
   }
 
   //    deploy and fund contract

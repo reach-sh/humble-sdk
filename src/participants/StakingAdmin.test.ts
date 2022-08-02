@@ -36,6 +36,6 @@ describe.only("Create Staking Pool", () => {
     const result = await createStakingPool(MockAccount, stakingOpts);
     expect(result).toBeDefined();
     expect(result.succeeded).toBe(false);
-    expect(result.message).toBe("Staking token is not a HMBL2LT token");
+    expect(result.message).toBe("Staking token is not a Liquidity Pool token");
   });
 });

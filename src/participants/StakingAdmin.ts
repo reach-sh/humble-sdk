@@ -3,7 +3,7 @@ import {
   formatAddress,
   parseAddress,
   parseCurrency,
-  ReachAccount
+  ReachAccount,
 } from "../reach-helpers";
 import { noOp } from "../utils/utils.reach";
 import { stakingBackend } from "../build/backend";
@@ -11,7 +11,7 @@ import {
   ReachTxnOpts,
   StakingDeployerOpts,
   StakingRewards,
-  TransactionResult
+  TransactionResult,
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
@@ -36,7 +36,7 @@ const requiredFields = [
   "stakeTokenId",
   "totalRewardsPayout",
   "startBlock",
-  "endBlock"
+  "endBlock",
 ];
 
 /** Create a staking contract for earning yield from liquidity tokens */
@@ -53,7 +53,7 @@ export async function createStakingPool(
     opts.stakeTokenId,
     opts.totalRewardsPayout,
     opts.startBlock,
-    opts.endBlock
+    opts.endBlock,
   ];
 
   const missing = required
@@ -65,6 +65,11 @@ export async function createStakingPool(
 
   if (required.some((f) => !f)) {
     return errorResult(`Missing fields "${missing}"`, null, data);
+  }
+
+  const stakeToken = await fetchToken(acc, opts.stakeTokenId);
+  if (stakeToken?.symbol !== "HMBL2LT") {
+    return errorResult("Staking token is not a Liquidity Pool token", null, data);
   }
 
   //    deploy and fund contract
@@ -94,7 +99,7 @@ async function deployFarmContract(
     startBlock,
     endBlock,
     imbalance,
-    totalRewards
+    totalRewards,
   } = await checkRewardsImbalance({
     endDateTime: rest.endBlock,
     startDateTime: rest.startBlock,
@@ -103,7 +108,7 @@ async function deployFarmContract(
     rewardTokenDecimals,
     networkRewards,
     networkRewardsFunder: rest.rewarder0,
-    totalReward
+    totalReward,
   });
 
   // Prevent creation if user expects to pay significantly less
@@ -116,7 +121,7 @@ async function deployFarmContract(
     `;
     return errorResult(msg, null, {
       amountsDeposited: [0, 0] as StakingRewards,
-      poolAddress: ""
+      poolAddress: "",
     });
   }
 
@@ -131,17 +136,17 @@ async function deployFarmContract(
     stakeToken: rest.stakeTokenId,
     rewardsPerBlock: [
       parseCurrency(networkRewardsPerDay),
-      parseCurrency(rewardsPerDay, rToken?.decimals)
+      parseCurrency(rewardsPerDay, rToken?.decimals),
     ],
     start: startBlock,
     end: endBlock,
-    Rewarder0: rest.rewarder0
+    Rewarder0: rest.rewarder0,
   };
 
   /** Response data */
   const data: CreateFarmTxnResult = {
     amountsDeposited: [0, 0] as StakingRewards,
-    poolAddress: ""
+    poolAddress: "",
   };
 
   try {
@@ -152,7 +157,7 @@ async function deployFarmContract(
       ctc.p.Deployer({
         opts: deployerOpts,
         readyForRewarder: () => resolveReadyForRewarder(),
-        readyForStakers: () => {}
+        readyForStakers: () => {},
       })
     );
     data.poolAddress = parseAddress(await ctc.getInfo());

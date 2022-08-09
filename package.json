@@ -11,7 +11,8 @@
   "scripts": {
     "test": "jest --watchAll --testTimeout=300000 --detectOpenHandles",
     "test:ci": "jest --testTimeout=300000",
-    "build": "rm -rf lib/ && tsc"
+    "build": "rm -rf lib/ && tsc",
+    "beta": "npm publish --tag beta"
   },
   "repository": {
     "type": "git",

@@ -225,7 +225,7 @@ const acc = await stdlib.createAccount();
 subscribeToFarmStream(acc, {
     // This gets called as soon as the farm data has been
     // fetched. If the attempt failed, 'result.succeeded' will be false.
-    onFarmFetched: (data: ) => {
+    onFarmFetched: (data: TransactionResult<StaticFarmDataFormatted>) => {
         const { succeeded, poolAddress, data, message } = data;
         if (succeeded) // ...
     },
@@ -255,14 +255,48 @@ type FarmSubscriptionOpts = {
 
 #### subscribeToFarmStream Returns
 
-- `TransactionResult`\
+- `TransactionResult<StaticFarmDataUnformatted>`\
 
 ```typescript
-export type TransactionResult<T> = {
+export type TransactionResult<StaticFarmDataUnformatted> = {
   /** Whether the transaction succeeded or failed */
   succeeded: boolean;
   /** Any useful data associated about the txn (or any error encountered) */
-  data: T;
+  data: {
+    // The contract ID for the farm
+    ctcInfo: BigNumber;
+    // The block at which the farm starts distributing rewards
+    startBlock: BigNumber;
+    // The block at which the farm stops distributing rewards
+    endBlock: BigNumber;
+    // The amount of ALGO (rewardsPerBlock[0]) and the reward
+    // token (rewardsPerBlock[1]) distributed per block
+    rewardsPerBlock: [BigNumber, BigNumber];
+    // The ID of token A for the staked liquidity token
+    pairTokenAId: Maybe<BigNumber>;
+    // The symbol of token A for the staked liquidity token
+    pairTokenASymbol: string;
+    // The ID of token B for the staked liquidity token
+    pairTokenBId: BigNumber;
+    // The symbol of token B for the staked liquidity token
+    pairTokenBSymbol: string;
+    // The ID for the reward token
+    rewardTokenId: BigNumber;
+    // The decimals for the reward token
+    rewardTokenDecimals: BigNumber;
+    // The symbol for the reward token
+    rewardTokenSymbol: string;
+    // The ID for the staked token
+    stakedTokenId: BigNumber;
+    // The decimals for the staked token
+    stakedTokenDecimals: BigNumber;
+    // The symbol for the staked token
+    stakedTokenSymbol: string;
+    // The pool ID that corresponds to the staked liquidity token
+    stakedTokenPoolId: BigNumber;
+    // The total supply of the staked token
+    stakedTokenTotalSupply: BigNumber;
+  };
   /** Optional success or failure message */
   message: string;
   /** Contract instance used for the transaction. Can be reused in subsequent calls. */
@@ -270,82 +304,51 @@ export type TransactionResult<T> = {
 };
 ```
 
-- `StaticFarmDataUnformatted`\
-
-```typescript
-export type StaticFarmDataUnformatted = {
-  // The contract ID for the farm
-  ctcInfo: BigNumber;
-  // The block at which the farm starts distributing rewards
-  startBlock: BigNumber;
-  // The block at which the farm stops distributing rewards
-  endBlock: BigNumber;
-  // The amount of ALGO (rewardsPerBlock[0]) and the reward
-  // token (rewardsPerBlock[1]) distributed per block
-  rewardsPerBlock: [BigNumber, BigNumber];
-  // The ID of token A for the staked liquidity token
-  pairTokenAId: Maybe<BigNumber>;
-  // The symbol of token A for the staked liquidity token
-  pairTokenASymbol: string;
-  // The ID of token B for the staked liquidity token
-  pairTokenBId: BigNumber;
-  // The symbol of token B for the staked liquidity token
-  pairTokenBSymbol: string;
-  // The ID for the reward token
-  rewardTokenId: BigNumber;
-  // The decimals for the reward token
-  rewardTokenDecimals: BigNumber;
-  // The symbol for the reward token
-  rewardTokenSymbol: string;
-  // The ID for the staked token
-  stakedTokenId: BigNumber;
-  // The decimals for the staked token
-  stakedTokenDecimals: BigNumber;
-  // The symbol for the staked token
-  stakedTokenSymbol: string;
-  // The pool ID that corresponds to the staked liquidity token
-  stakedTokenPoolId: BigNumber;
-  // The total supply of the staked token
-  stakedTokenTotalSupply: BigNumber;
-};
-```
-
-- `StaticFarmDataFormatted`\
+- `TransactionResult<StaticFarmDataFormatted>`\
 
 ```typescript
 export type StaticFarmDataFormatted = {
-  // The contract ID for the farm
-  ctcInfo: string;
-  // The block at which the farm starts distributing rewards
-  startBlock: number;
-  // The block at which the farm stops distributing rewards
-  endBlock: number;
-  // The amount of ALGO and the reward token distributed per block
-  rewardsPerBlock: FormattedRewardsPerBlock;
-  // The ID of token A for the staked liquidity token
-  pairTokenAId: string;
-  // The symbol of token A for the staked liquidity token
-  pairTokenASymbol: string;
-  // The ID of token B for the staked liquidity token
-  pairTokenBId: string;
-  // The symbol of token B for the staked liquidity token
-  pairTokenBSymbol: string;
-  // The ID for the reward token
-  rewardTokenId: string;
-  // The decimals for the reward token
-  rewardTokenDecimals: number;
-  // The symbol for the reward token
-  rewardTokenSymbol: string;
-  // The ID for the staked token
-  stakedTokenId: string;
-  // The decimals for the staked token
-  stakedTokenDecimals: number;
-  // The symbol for the staked token
-  stakedTokenSymbol: string;
-  // The pool ID that corresponds to the staked liquidity token
-  stakedTokenPoolId?: string;
-  // The total supply of the staked token
-  stakedTokenTotalSupply: string;
+  /** Whether the transaction succeeded or failed */
+  succeeded: boolean;
+  /** Any useful data associated about the txn (or any error encountered) */
+  data: {
+    // The contract ID for the farm
+    ctcInfo: string;
+    // The block at which the farm starts distributing rewards
+    startBlock: number;
+    // The block at which the farm stops distributing rewards
+    endBlock: number;
+    // The amount of ALGO and the reward token distributed per block
+    rewardsPerBlock: FormattedRewardsPerBlock;
+    // The ID of token A for the staked liquidity token
+    pairTokenAId: string;
+    // The symbol of token A for the staked liquidity token
+    pairTokenASymbol: string;
+    // The ID of token B for the staked liquidity token
+    pairTokenBId: string;
+    // The symbol of token B for the staked liquidity token
+    pairTokenBSymbol: string;
+    // The ID for the reward token
+    rewardTokenId: string;
+    // The decimals for the reward token
+    rewardTokenDecimals: number;
+    // The symbol for the reward token
+    rewardTokenSymbol: string;
+    // The ID for the staked token
+    stakedTokenId: string;
+    // The decimals for the staked token
+    stakedTokenDecimals: number;
+    // The symbol for the staked token
+    stakedTokenSymbol: string;
+    // The pool ID that corresponds to the staked liquidity token
+    stakedTokenPoolId?: string;
+    // The total supply of the staked token
+    stakedTokenTotalSupply: string;
+  };
+  /** Optional success or failure message */
+  message: string;
+  /** Contract instance used for the transaction. Can be reused in subsequent calls. */
+  contract?: ReachContract<any>;
 };
 ```
 

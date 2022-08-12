@@ -4,22 +4,22 @@ import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
 let exitTimeout;
 const LIMIT = 10;
 const TIMEOUT = 15;
-const pools = new Set();
+const farms = new Set();
 
-/** Attach to pool announcer and list a subset of pools */
+/** Attach to farm announcer and list a subset of pools */
 export function runFarmAnnouncerTest(acc) {
   console.clear();
   Blue(`Running ANNOUNCER ${getFarmAnnouncer()}`);
-  Yellow(`Attaching pool listener ...`);
+  Yellow(`Attaching Farm listener ...`);
   subscribeToFarmStream(acc, {
     onFarmFetched,
-    format: true,
+    format: true
   });
-  Blue(`Listening for up to ${LIMIT} pools.`);
+  Blue(`Listening for up to ${LIMIT} farms.`);
   resetTimer();
 }
 
-/** HELPER | When a pool is received, fetch details and reset the timer */
+/** HELPER | When a farm is received, fetch details and reset the timer */
 async function onFarmFetched({ succeeded, poolAddress, data, message }) {
   if (!succeeded) return Red(message);
 

@@ -95,7 +95,7 @@ async function renderFarmData(acc, result) {
     stakedTokenAmt: "0",
     stakedTokenDecimals: stakeToken.decimals,
     stakedTokenId: stakeToken.id,
-    stakedTokenPoolId: pool.poolAddress,
+    stakedTokenPoolId: pool.poolAddress.toString(),
     stakedTokenSymbol: stakeToken.symbol,
     stakedTokenTotalSupply: Number(stakeToken.supply),
     totalReward: {

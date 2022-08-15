@@ -26,9 +26,9 @@ export async function runFetchFarmTest(acc) {
 
   const addr =
     fromArgs(process.argv.slice(2), "POOL") ||
-    (await answerOrDie("Enter pool address:"));
+    (await answerOrDie("Enter Farm ID:"));
 
-  if (!addr) return exitWithMsgs("POOL address required but not found");
+  if (!addr) return exitWithMsgs("FARM address required but not found");
 
   Yellow(`Fetching single pool "${addr}"...`);
 

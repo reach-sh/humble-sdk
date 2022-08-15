@@ -24,6 +24,7 @@ import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
 import { runCreateFarmTest } from "./runCreateFarmTest.mjs";
 import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
 import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
+import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
 
 // init SDK
 initHumbleSDK({
@@ -45,6 +46,7 @@ const options = [
   { title: "Add/remove Liquidity", action: runLiquidity },
   { title: "Create a Farm", action: runCreateFarmTest },
   { title: "Fetch a Farm", action: runFetchFarmTest },
+  { title: "Announce a Farm", action: runAnnounceFarmTest },
   { title: "Check Staking rewards", action: runCheckRewardsTest }
 ];
 

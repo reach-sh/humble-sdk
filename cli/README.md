@@ -29,7 +29,15 @@ Once that's done, install some dependencies in here:
 $. npm i
 ```
 
-Now you can run one of a few tests: see below.
+Now you can see the full list of available actions with:
+```bash
+$. npm run test
+```
+
+See additional info below.
+
+---
+
 
 ## DEx Functionality Tests
 All tests run against **Algorand TestNet**. You can change this by passing a custom `providerEnv` property into 

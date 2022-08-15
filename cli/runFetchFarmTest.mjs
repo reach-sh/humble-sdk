@@ -1,8 +1,10 @@
+import axios from "axios";
 import {
   fetchFarmAndTokens,
   fetchLiquidityPool,
-  fetchStakingPool,
+  fetchStakingPool
 } from "@reach-sh/humble-sdk";
+import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
   iout,
   exitWithMsgs,
@@ -10,7 +12,7 @@ import {
   Yellow,
   onProgress,
   answerOrDie,
-  fromArgs,
+  fromArgs
 } from "./utils.mjs";
 
 // Pool IDs
@@ -24,9 +26,9 @@ export async function runFetchFarmTest(acc) {
 
   const addr =
     fromArgs(process.argv.slice(2), "POOL") ||
-    (await answerOrDie("Enter pool address:"));
+    (await answerOrDie("Enter Farm ID:"));
 
-  if (!addr) return exitWithMsgs("POOL address required but not found");
+  if (!addr) return exitWithMsgs("FARM address required but not found");
 
   Yellow(`Fetching single pool "${addr}"...`);
 
@@ -39,6 +41,75 @@ export async function runFetchFarmTest(acc) {
   const result = withTokens
     ? await fetchFarmAndTokens(acc, opts)
     : await fetchStakingPool(acc, opts);
+
+  if (withTokens) {
+    const qq = "Render old UI format [MainNet farms only]? (y/n)";
+    const formatForUI = await answerOrDie(qq, yesno);
+    if (formatForUI) return renderFarmData(acc, result);
+  }
+
   iout(result.message, result.data);
   exitWithMsgs("Test complete! Exiting ...");
+}
+
+const getBalanceTokenLink = () =>
+  `https://indexer.algoexplorerapi.io/stats/v2/accounts/rich-list?limit=1&asset-id=`;
+const fetchPrimaryStakeTokenBalance = async (assetId) => {
+  const asset = await axios
+    .get(`${getBalanceTokenLink()}${assetId}`)
+    .then((res) => res.data);
+  return Array.isArray(asset.accounts) ? asset.accounts[0]?.balance || 0 : 0;
+};
+
+async function renderFarmData(acc, result) {
+  const { farmView, rewardToken, stakeToken } = result.data;
+  const poolID = await answerOrDie("Enter Liquidity Pool address");
+  const n2nn = await answerOrDie("Does this pool contain ALGO?", yesno);
+  if (!poolID) return exitWithMsgs("No pool address supplied");
+
+  const { succeeded, data } = await fetchLiquidityPool(acc, {
+    includeTokens: true,
+    poolAddress: poolID,
+    n2nn
+  });
+
+  if (!succeeded) return exitWithMsgs(`Pool #${poolID} not found`);
+
+  if (data.pool.poolTokenId.toString() !== stakeToken.id.toString()) {
+    return exitWithMsgs("Pool Liquidity Token does not match Farm Stake Token");
+  }
+
+  const { pool, tokens } = data;
+  const UIFormat = {
+    contractId: farmView.poolAddress,
+    startBlock: farmView.start,
+    endBlock: farmView.end,
+    pairTokenAId: tokens[0].id,
+    pairTokenASymbol: tokens[0].symbol,
+    pairTokenBId: tokens[1].id,
+    pairTokenBSymbol: tokens[1].symbol,
+    remainingRewardA: farmView.remainingRewards[0],
+    remainingRewardB: farmView.remainingRewards[1],
+    rewardsPerBlock: {
+      asDefaultNetworkToken: farmView.opts.rewardsPerBlock[0],
+      asRewardToken: farmView.opts.rewardsPerBlock[0]
+    },
+    rewardTokenDecimals: rewardToken.decimals,
+    rewardTokenId: rewardToken.id,
+    rewardTokenSymbol: rewardToken.symbol,
+    stakedTokenAmt: "0",
+    stakedTokenDecimals: stakeToken.decimals,
+    stakedTokenId: stakeToken.id,
+    stakedTokenPoolId: pool.poolAddress.toString(),
+    stakedTokenSymbol: stakeToken.symbol,
+    stakedTokenTotalSupply: Number(stakeToken.supply),
+    totalReward: {
+      A: farmView.totalRewards.network,
+      B: farmView.totalRewards.rewardToken
+    },
+    totalStaked: farmView.totalStaked,
+    primaryStakeTokenBalance: await fetchPrimaryStakeTokenBalance(stakeToken.id)
+  };
+
+  return iout("Done", UIFormat);
 }

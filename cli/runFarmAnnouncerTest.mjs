@@ -4,7 +4,6 @@ import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
 let exitTimeout;
 const LIMIT = 10;
 const TIMEOUT = 15;
-const farms = new Set();
 
 /** Attach to farm announcer and list a subset of pools */
 export function runFarmAnnouncerTest(acc) {

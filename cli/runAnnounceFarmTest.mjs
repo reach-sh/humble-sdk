@@ -48,7 +48,7 @@ export async function runAnnounceFarmTest(acc) {
   Green(JSON.stringify(farmResult.data, null, 2));
   Yellow(`Announcing farm id ${farmId} ...`);
 
-  const poolId = await answerOrDie("Enter Liquidity Pool Address (if known)");
+  const poolId = await answerOrDie("Enter Liquidity Pool Address:");
   if (!poolId) {
     return exitWithMsgs("Check for pool ID using pools.json from s3");
   }
@@ -73,6 +73,10 @@ export async function runAnnounceFarmTest(acc) {
     poolAddress: farmId,
     contract: farmContract
   });
+
+  if (pool.pool.poolTokenId.toString() !== stakeToken.id.toString()) {
+    return exitWithMsgs("Pool Liquidity Token does not match Farm Stake Token");
+  }
 
   const stakeTokenRaw = await acc.tokenMetadata(stakeToken.id);
   const staticFarmData = {

@@ -43,7 +43,8 @@ export async function runFetchFarmTest(acc) {
     : await fetchStakingPool(acc, opts);
 
   if (withTokens) {
-    const formatForUI = await answerOrDie("Render old UI format? (y/n)", yesno);
+    const qq = "Render old UI format [MainNet farms only]? (y/n)";
+    const formatForUI = await answerOrDie(qq, yesno);
     if (formatForUI) return renderFarmData(acc, result);
   }
 
@@ -73,6 +74,10 @@ async function renderFarmData(acc, result) {
   });
 
   if (!succeeded) return exitWithMsgs(`Pool #${poolID} not found`);
+
+  if (data.pool.poolTokenId.toString() !== stakeToken.id.toString()) {
+    return exitWithMsgs("Pool Liquidity Token does not match Farm Stake Token");
+  }
 
   const { pool, tokens } = data;
   const UIFormat = {

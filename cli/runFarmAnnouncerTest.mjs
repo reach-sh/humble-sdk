@@ -1,27 +1,42 @@
 import { subscribeToFarmStream, getFarmAnnouncer } from "@reach-sh/humble-sdk";
-import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
+import { yesno } from "@reach-sh/stdlib/ask.mjs";
+import {
+  exitWithMsgs,
+  Blue,
+  Red,
+  Yellow,
+  iout,
+  answerOrDie
+} from "./utils.mjs";
 
 let exitTimeout;
 const LIMIT = 10;
 const TIMEOUT = 15;
 
 /** Attach to farm announcer and list a subset of pools */
-export function runFarmAnnouncerTest(acc) {
+export async function runFarmAnnouncerTest(acc) {
   console.clear();
   Blue(`Running ANNOUNCER ${getFarmAnnouncer()}`);
   Yellow(`Attaching Farm listener ...`);
+
+  const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
   subscribeToFarmStream(acc, {
     onFarmFetched,
-    format: true
+    format: true,
+    seekNow,
+    onProgress: seekNow ? Yellow : undefined
   });
   Blue(`Listening for up to ${LIMIT} farms.`);
   resetTimer();
 }
 
+let farmsFetched = 0;
+
 /** HELPER | When a farm is received, fetch details and reset the timer */
 async function onFarmFetched({ succeeded, poolAddress, data, message }) {
   if (!succeeded) return Red(message);
 
+  farmsFetched += 1;
   Blue(`\t * Got "${data.ctcInfo}"`);
   iout(data.ctcInfo, data);
   resetTimer();
@@ -37,5 +52,7 @@ function resetTimer() {
 /** End CLI */
 function stopTest() {
   clearTimeout(exitTimeout);
-  exitWithMsgs("Timer stopped. Exiting ...");
+  const fetched = farmsFetched;
+  farmsFetched = 0;
+  exitWithMsgs(`Timer stopped: got ${fetched} farms. Exiting ...`);
 }

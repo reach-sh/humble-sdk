@@ -25,10 +25,15 @@ import { runCreateFarmTest } from "./runCreateFarmTest.mjs";
 import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
 import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
+import dotenv from "dotenv";
+
+dotenv.config({ path: "./.env" });
 
 // init SDK
+const TK = process.env.ALGONODE_TOKEN;
 initHumbleSDK({
   network: "TestNet",
+  providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK },
   customFarmAnnouncerAddress: 100474119,
   customAnnouncerId: 93443561,
   customAnnouncerAddress:

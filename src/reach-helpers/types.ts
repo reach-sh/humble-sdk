@@ -218,11 +218,11 @@ export type WalletFallbackOpts = {
 /** Algorand node override options */
 export type AlgoEnvOverride = {
   ALGO_INDEXER_PORT?: string;
-  ALGO_INDEXER_SERVER: string;
-  ALGO_INDEXER_TOKEN: string;
+  ALGO_INDEXER_SERVER?: string;
+  ALGO_INDEXER_TOKEN?: string;
   ALGO_PORT?: string;
-  ALGO_SERVER: string;
-  ALGO_TOKEN: string;
+  ALGO_SERVER?: string;
+  ALGO_TOKEN?: string;
   REACH_ISOLATED_NETWORK?: string;
 };
 

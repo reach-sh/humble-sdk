@@ -102,20 +102,16 @@ function buildProviderEnv(
   const network = provider.toLowerCase();
   const server = `https://${network}-api.${domain}`;
   const indexer = `https://${network}-idx.${domain}`;
-  const AGN_TOKEN = process.env.ALGONODE_TOKEN;
-  if (!AGN_TOKEN) throw new Error("AlgoNode token not found")
-  const env = {
+  const env: T.AlgoEnvOverride = {
     ALGO_SERVER: server,
     ALGO_PORT: "",
     ALGO_INDEXER_SERVER: indexer,
     ALGO_INDEXER_PORT: "",
     REACH_ISOLATED_NETWORK: "no",
-    ALGO_TOKEN: AGN_TOKEN,
-    ALGO_INDEXER_TOKEN: AGN_TOKEN,
     ...overrides
   };
 
-  return env as T.AlgoEnvOverride;
+  return env;
 }
 
 function getBaseURLHeaders() {

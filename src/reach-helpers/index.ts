@@ -7,7 +7,7 @@ type LoadStdlibFn = { (args: any): any };
 export * from "./types";
 export const NETWORKS: T.NetworksMap = {
   ALGO: { name: "Algorand", abbr: "ALGO", decimals: 6 },
-  ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 },
+  ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 }
 };
 /**
  * @internal
@@ -51,19 +51,19 @@ export function loadReach(
   if (/(-devnet|-live|-browser)/.test(provider || "TestNet")) {
     reach = loadStdlibFn({
       REACH_CONNECTOR_MODE: provider,
-      REACH_NO_WARN: "Y",
+      REACH_NO_WARN: "Y"
     });
   } else {
     reach = loadStdlibFn({
       REACH_CONNECTOR_MODE: chain,
-      REACH_NO_WARN: "Y",
+      REACH_NO_WARN: "Y"
     });
 
     if (opts.walletFallback) {
       reach.setWalletFallback(
         reach.walletFallback({
           providerEnv: buildProviderEnv(provider, providerEnv),
-          ...opts.walletFallback,
+          ...opts.walletFallback
         })
       );
     } else reach.setProviderByEnv(buildProviderEnv(provider, providerEnv));
@@ -99,7 +99,7 @@ function buildProviderEnv(
   overrides: Partial<T.AlgoEnvOverride> = {}
 ): T.AlgoEnvOverride {
   let domain = "algonode.cloud";
-  const network = provider.toLowerCase();
+  const network = provider === "MainNet" ? "humble" : provider.toLowerCase();
 
   const server = `https://${network}-api.${domain}`;
   const indexer = `https://${network}-idx.${domain}`;
@@ -110,7 +110,7 @@ function buildProviderEnv(
     ALGO_INDEXER_PORT: "",
     REACH_ISOLATED_NETWORK: "no",
 
-    ...overrides,
+    ...overrides
   };
 
   return env as T.AlgoEnvOverride;
@@ -118,27 +118,32 @@ function buildProviderEnv(
 
 function getBaseURLHeaders() {
   const net = getNetworkProvider();
-  if (net === 'ALGO-devnet') return {
-    headers: {
-      'X-Algo-API-Token': 'c87f5580d7a866317b4bfe9e8b8d1dda955636ccebfa88c12b414db208dd9705',
-    },
-  }
-  return {}
+  if (net === "ALGO-devnet")
+    return {
+      headers: {
+        "X-Algo-API-Token":
+          "c87f5580d7a866317b4bfe9e8b8d1dda955636ccebfa88c12b414db208dd9705"
+      }
+    };
+  return {};
 }
 
 function getIndexerURLHeaders() {
   const net = getNetworkProvider();
-  if (net === 'ALGO-devnet') return {
-    headers: {
-      'X-Indexer-API-Token': 'reach-devnet',
-    },
-  }
-  return {}
+  if (net === "ALGO-devnet")
+    return {
+      headers: {
+        "X-Indexer-API-Token": "reach-devnet"
+      }
+    };
+  return {};
 }
 
 async function getNetworkTokenBalance(address: string, bigNumber = false) {
   const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`;
-  const result = await fetch(URL, getBaseURLHeaders()).then((res) => res.json());
+  const result = await fetch(URL, getBaseURLHeaders()).then((res) =>
+    res.json()
+  );
   const { amount } = result;
   return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
 }
@@ -158,7 +163,7 @@ export async function tokenBalance(
   const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
   const [{ asset }, bal] = await Promise.all([
     fetch(assetURL, getIndexerURLHeaders()).then((res) => res.json()),
-    fetch(balURL, getBaseURLHeaders()).then((res) => res.json()),
+    fetch(balURL, getBaseURLHeaders()).then((res) => res.json())
   ]);
 
   if (!asset?.params || !bal?.["asset-holding"])
@@ -173,14 +178,14 @@ export async function tokenBalance(
 /** @internal Generate URL for fetching token balance  */
 function balanceBaseURL() {
   const net = getNetworkProvider();
-  if (net !== 'TestNet' && net !== 'MainNet') return 'http://localhost:4180/v2'
+  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:4180/v2";
   return trimURL(`https://${net.toLowerCase()}-api.algonode.cloud/v2/`);
 }
 
 /** @internal Generate Algo Indexer URL if available  */
 async function indexerBaseURL() {
   const net = getNetworkProvider();
-  if (net !== 'TestNet' && net !== 'MainNet') return 'http://localhost:8980/v2'
+  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:8980/v2";
   try {
     const reach = createReachAPI();
     const { indexer } = await reach.getProvider();
@@ -217,7 +222,7 @@ export async function tokenMetadata(
 
   const [metadata, bal] = await Promise.allSettled([
     fetchToken(),
-    fetchBalance(),
+    fetchBalance()
   ]);
 
   if (metadata.status === "rejected" || metadata.value === null) {
@@ -242,7 +247,7 @@ function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
     amount,
     supply: data.supply,
     decimals: data.decimals,
-    verified: data.verified || false,
+    verified: data.verified || false
   };
 }
 /** @internal  */

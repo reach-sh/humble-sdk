@@ -1,5 +1,14 @@
 import { subscribeToPoolStream, getPoolAnnouncer } from "@reach-sh/humble-sdk";
-import { exitWithMsgs, Blue, Red, Yellow, iout, Green } from "./utils.mjs";
+import { yesno } from "@reach-sh/stdlib/ask.mjs";
+import {
+  exitWithMsgs,
+  Blue,
+  Red,
+  Yellow,
+  iout,
+  Green,
+  answerOrDie
+} from "./utils.mjs";
 
 let exitTimeout;
 const LIMIT = 10;
@@ -7,19 +16,21 @@ const TIMEOUT = 15;
 const pools = new Set();
 
 /** Attach to pool announcer and list a subset of pools */
-export function runAnnouncerTest(acc) {
+export async function runAnnouncerTest(acc) {
   console.clear();
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
+  const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
+
   subscribeToPoolStream(acc, {
-    includeTokens: true,
     onPoolReceived: (msg) => {
       Blue("* Received [poolId, tokenA, tokenB]");
       Green(`\t ${JSON.stringify(msg)}`);
       resetTimer();
     },
     onPoolFetched,
-    includeTokens: true,
+    seekNow,
+    includeTokens: true
   });
   Blue(`Listening for up to ${LIMIT} pools.`);
   resetTimer();

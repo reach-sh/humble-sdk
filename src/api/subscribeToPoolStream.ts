@@ -4,7 +4,7 @@ import { announcerBackend } from "../build/backend";
 import { getPoolAnnouncer } from "../constants";
 import {
   fetchLiquidityPool,
-  FetchPoolOpts,
+  FetchPoolOpts
 } from "../participants/PoolAnnouncer";
 import { FetchPoolData, ReachTxnOpts, TransactionResult } from "types";
 
@@ -16,8 +16,10 @@ export type PoolSubscriptionOpts = {
   onPoolFetched?: (data: TransactionResult<FetchPoolData>) => any;
   /** Optionally fetch token data */
   includeTokens?: boolean;
-  /** Start-time (exclude notifications prior to this time) */
+  /** Exclude notifications prior to this block time */
   startFrom?: number;
+  /** Exclude notifications prior to "now" when true */
+  seekNow?: boolean;
 } & ReachTxnOpts;
 
 /** @internal */
@@ -36,7 +38,7 @@ type PoolRegisterEvent = {
 };
 
 /** Passively attach `acc` to a Pool Listener to discover new pools */
-export function subscribeToPoolStream(
+export async function subscribeToPoolStream(
   acc: ReachAccount,
   opts: PoolSubscriptionOpts = { onPoolFetched: noOp }
 ) {
@@ -44,9 +46,12 @@ export function subscribeToPoolStream(
   if (!announcerInfo) throw new Error("Announcer is not set");
 
   const ctc = acc.contract(announcerBackend, announcerInfo);
-  const { onPoolReceived = noOp, onPoolFetched } = opts;
+  const { onPoolReceived = noOp, onProgress = noOp, onPoolFetched } = opts;
 
-  if (opts.startFrom) ctc.events.Register.seek(opts.startFrom);
+  if (opts.seekNow) {
+    onProgress("WARN: Listener will only report new pools");
+    await ctc.events.Register.seekNow();
+  } else if (opts.startFrom) ctc.events.Register.seek(opts.startFrom);
 
   // if the pool is using the network token, then we know the first token
   // from the response will be null when unwrapped
@@ -64,7 +69,7 @@ export function subscribeToPoolStream(
       n2nn: tokA === "0",
       onComplete: opts.onComplete || noOp,
       onProgress: opts.onProgress || noOp,
-      includeTokens: opts.includeTokens,
+      includeTokens: opts.includeTokens
     };
 
     fetchLiquidityPool(acc, fetchOpts).then(onPoolFetched);

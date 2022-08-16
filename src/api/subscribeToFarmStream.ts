@@ -1,5 +1,5 @@
 import { ReachAccount, createReachAPI, formatCurrency } from "../reach-helpers";
-import { fromMaybe } from "../utils/utils.reach";
+import { fromMaybe, noOp } from "../utils/utils.reach";
 import { farmAnnouncerBackend } from "../build/backend";
 import { getFarmAnnouncer } from "../constants";
 import {  ReachTxnOpts, StaticFarmDataFormatted, StaticFarmDataUnformatted, TransactionResult } from "types";
@@ -11,6 +11,8 @@ type FarmSubscriptionOpts = {
   onFarmFetched(data: TransactionResult<StaticFarmDataUnformatted | StaticFarmDataFormatted>): any;
   /** boolean to determine whether the farm data should be formatted or left unformatted */
   format?: boolean
+  /** When `true`, only report farms created after subscription */
+  seekNow?: boolean
 } & ReachTxnOpts;
 
 /** Result of monitoring the farm stream */
@@ -26,7 +28,7 @@ type FarmRegisterEvent = {
 };
 
 /** Passively attach `acc` to a Farm Listener to discover new farm */
-export function subscribeToFarmStream(
+export async function subscribeToFarmStream(
   acc: ReachAccount,
   opts: FarmSubscriptionOpts
 ) {
@@ -34,8 +36,12 @@ export function subscribeToFarmStream(
   if (!announcerInfo) throw new Error("Farm announcer is not set");
 
   const ctc = acc.contract(farmAnnouncerBackend, announcerInfo);
-  const { onFarmFetched, format = false } = opts;
-
+  const { onFarmFetched, onProgress = noOp, format = false } = opts;
+  if (opts.seekNow) {
+    onProgress("WARN: Listener will only report new farms");
+    await ctc.events.Announce.seekNow();
+  } 
+  
   return ctc.events.Announce.monitor(({ what }: FarmRegisterEvent) => {
     let farmData: StaticFarmDataUnformatted | StaticFarmDataFormatted = what[1]
     if (format) {

@@ -1,5 +1,10 @@
 import { loadStdlib } from "@reach-sh/stdlib";
 import { loadReach, NetworkProvider, SDKOpts } from "./reach-helpers";
+import dotenv from "dotenv";
+import { join } from "path";
+
+const dotenvPath = join(__dirname, `../.env`)
+dotenv.config({ path: dotenvPath })
 
 // CONSTANTS
 import {

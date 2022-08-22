@@ -1,4 +1,5 @@
 import { fetchLiquidityPool } from "@reach-sh/humble-sdk";
+import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
   iout,
   exitWithMsgs,
@@ -17,8 +18,8 @@ export async function runFetchPoolTest(acc) {
     fromArgs(process.argv.slice(2), "POOL") ||
     (await answerOrDie("Enter pool address:"));
 
-  const isNetworkPrompt = "Does the pool contain ALGO or ETH? (true or false)";
-  const n2nn = await answerOrDie(isNetworkPrompt);
+  const isNetworkPrompt = "Does the pool contain ALGO or ETH? (y/n)";
+  const n2nn = await answerOrDie(isNetworkPrompt, yesno);
 
   Yellow(`Fetching single pool "${addr}"...`);
   iout(
@@ -27,7 +28,7 @@ export async function runFetchPoolTest(acc) {
       includeTokens: true,
       poolAddress: addr,
       onProgress,
-      n2nn: n2nn === "true",
+      n2nn,
     })
   );
   exitWithMsgs("Test complete! Exiting ...");

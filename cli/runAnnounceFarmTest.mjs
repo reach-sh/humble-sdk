@@ -25,8 +25,13 @@ const LIMIT = 100;
 const TIMEOUT = 15;
 const pools = new Set();
 
-// "farmAddress": 835160254 ALGO/VEST
-// "poolAddress": 777747637,
+/* 
+  Announced 08/18
+=====================
+farm, pool
+835260005, 778031658
+ */
+
 
 /** Attach to pool announcer and list a subset of pools */
 export async function runAnnounceFarmTest(acc) {
@@ -44,9 +49,8 @@ export async function runAnnounceFarmTest(acc) {
     return exitWithMsgs(`Farm id ${farmId} not found`);
   }
 
-  Blue(`Fetched farm id ${farmId}`);
   Green(JSON.stringify(farmResult.data, null, 2));
-  Yellow(`Announcing farm id ${farmId} ...`);
+  Blue(`Fetched farm id ${farmId}`);
 
   const poolId = await answerOrDie("Enter Liquidity Pool Address:");
   if (!poolId) {
@@ -97,6 +101,10 @@ export async function runAnnounceFarmTest(acc) {
     stakedTokenTotalSupply: stakeTokenRaw.supply,
     startBlock: farm.opts.start
   };
+
+  iout("Ready to announce", staticFarmData);
+  const continues = await answerOrDie("Continue? (y/n)", yesno);
+  if (!continues) return exitWithMsgs("Exiting ...");
 
   Yellow("Announcing Farm ...");
   const result = await announceFarm(acc, { staticFarmData });

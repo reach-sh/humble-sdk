@@ -25,6 +25,7 @@ import { runCreateFarmTest } from "./runCreateFarmTest.mjs";
 import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
 import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
+import { runStakeToFarmTest } from "./runStakeToFarmTest.mjs";
 import dotenv from "dotenv";
 
 dotenv.config({ path: "./.env" });
@@ -52,7 +53,8 @@ const options = [
   { title: "Create a Farm", action: runCreateFarmTest },
   { title: "Fetch a Farm", action: runFetchFarmTest },
   { title: "Announce a Farm", action: runAnnounceFarmTest },
-  { title: "Check Staking rewards", action: runCheckRewardsTest }
+  { title: "Check Staking rewards", action: runCheckRewardsTest },
+  { title: "Stake Funds in farm", action: runStakeToFarmTest }
 ];
 
 (async () => {

@@ -27,6 +27,7 @@ import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
 import { runStakeToFarmTest } from "./runStakeToFarmTest.mjs";
 import dotenv from "dotenv";
+import { runPoolReport } from "./runPoolReportTest.mjs";
 
 dotenv.config({ path: "./.env" });
 
@@ -44,6 +45,7 @@ initHumbleSDK({
 const reach = createReachAPI();
 const options = [
   { title: "List Pools", action: runAnnouncerTest },
+  { title: "List Pools (Report)", action: runPoolReport },
   { title: "List Farms", action: runFarmAnnouncerTest },
   { title: "Fetch a Token", action: runFetchTokenTest },
   { title: "Swap tokens", action: runSwapTest },

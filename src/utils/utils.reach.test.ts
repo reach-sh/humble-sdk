@@ -1,3 +1,9 @@
+import {
+  initHumbleSDK,
+  createReachAPI,
+  fetchToken,
+  peraTokenMetadata
+} from "../index";
 import * as H from "./utils.reach";
 
 describe("Reach Helpers | Utils", () => {
@@ -139,5 +145,24 @@ describe("Reach Helpers | Utils", () => {
     expect(control).not.toStrictEqual(byteStr);
     expect(H.trimByteString(control)).toStrictEqual(control);
     expect(H.trimByteString(byteStr)).toStrictEqual(control);
+  });
+
+  it("Fetches a verified token (USDC - 10458941) from testnet", async () => {
+    expect.assertions(6);
+    initHumbleSDK({ network: "TestNet" });
+    const tokenId = 10458941; // USDC
+    const stdlib = createReachAPI();
+    const acc = await stdlib.createAccount();
+    const [reachToken, peraToken] = await Promise.all([
+      fetchToken(acc, tokenId),
+      peraTokenMetadata(tokenId, acc)
+    ]);
+
+    expect(reachToken?.id).toStrictEqual(peraToken?.id);
+    expect(reachToken?.name).toStrictEqual(peraToken?.name);
+    expect(reachToken?.decimals).toStrictEqual(peraToken?.decimals);
+    expect(reachToken?.url).toStrictEqual(peraToken?.url);
+    expect(peraToken.verificationTier).toStrictEqual("verified");
+    expect(peraToken.verified).toStrictEqual(true);
   });
 });

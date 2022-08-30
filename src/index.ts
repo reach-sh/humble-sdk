@@ -98,6 +98,7 @@ export {
   parseCurrency,
   formatAddress,
   formatCurrency,
+  peraTokenMetadata,
   tokenBalance,
   tokenMetadata,
   // REACH TYPES

@@ -39,9 +39,21 @@ export type NetworkData = {
   decimals?: number;
 };
 
-export type NetworkProvider = ("TestNet" | "BetaNet" | "MainNet" | "ALGO-devnet") & string;
+export type NetworkProvider = (
+  | "TestNet"
+  | "BetaNet"
+  | "MainNet"
+  | "ALGO-devnet"
+) &
+  string;
 
 export type NetworksMap = Record<ChainSymbol, NetworkData>;
+
+export type TokenVerificationTier =
+  | "verified"
+  | "trusted"
+  | "suspicious"
+  | "unverified";
 
 export type ReachToken = {
   id: number | string;
@@ -52,6 +64,7 @@ export type ReachToken = {
   symbol: string | ChainSymbol;
   url: string;
   verified?: boolean;
+  verificationTier?: TokenVerificationTier;
 };
 
 /** A reach-connected Network Account representation */
@@ -131,7 +144,7 @@ export type ReachEventStream<T> = {
     seekNow(): Promise<void>;
     lastTime(): Promise<BigNumber>;
     monitor(handler: (e: ReachEvent<any>) => void): Promise<void>;
-  } & {[k in keyof T]: any};
+  } & { [k in keyof T]: any };
 };
 
 /** StdLib Helper Interface */
@@ -191,7 +204,7 @@ export type ReachStdLib = {
    * @version 0.1.8-rc-6
    * - Make http requests at least `ms` milliseconds apart. Not supported on all networks */
   setMinMillisBetweenRequests(ms: number): void;
-  customHttpEventHandler(h: (e: any) => Promise<void>): void
+  customHttpEventHandler(h: (e: any) => Promise<void>): void;
   // bigNumberToNumber: (amt: any) => number;
 } & { [x: string]: any };
 

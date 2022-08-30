@@ -22,7 +22,10 @@ describe("HumbleSDK General Utils", () => {
   });
 
   it("Asserts a network token has an ID of 0", () => {
+    // @ts-expect-error
     expect(Utils.isNetworkToken(undefined)).toBe(false);
+    // @ts-expect-error
+    expect(Utils.isNetworkToken(null)).toBe(true);
     expect(Utils.isNetworkToken(1234)).toBe(false);
     expect(Utils.isNetworkToken("")).toBe(false);
     expect(Utils.isNetworkToken("0")).toBe(true);

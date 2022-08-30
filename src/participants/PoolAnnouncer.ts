@@ -5,14 +5,14 @@ import {
   Maybe,
   formatCurrency,
   formatAddress,
-  ReachToken,
+  ReachToken
 } from "../reach-helpers";
 import {
   FetchPoolData,
   PoolDetails,
   PoolFetchOpts,
   TokenID,
-  TransactionResult,
+  TransactionResult
 } from "../types";
 import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { getFeeInfo, getProtocolAddr } from "../constants";
@@ -20,7 +20,7 @@ import {
   errorResult,
   isNetworkToken,
   makeNetworkToken,
-  successResult,
+  successResult
 } from "../utils";
 import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
 
@@ -52,7 +52,7 @@ export async function fetchLiquidityPool(
     onComplete = noOp,
     onProgress = noOp,
     includeTokens,
-    tokens = [],
+    tokens = []
   } = opts || { n2nn: false };
   // backend is determined on whether or not the pool uses the network token
   const backend = () => (n2nn ? poolBackendN2NN : poolBackend);
@@ -82,7 +82,7 @@ export async function fetchLiquidityPool(
     protoBals,
     protoInfo,
     liquidityToken,
-    lptBals,
+    lptBals
   } = view;
 
   // Pool's humble address must match the internal one
@@ -96,7 +96,7 @@ export async function fetchLiquidityPool(
     ? await Promise.all([fetchToken(acc, tokenAId), fetchToken(acc, tokenBId)])
     : tokens;
 
-  if (tokA === null || tokB === null) {
+  if (!tokA || !tokB) {
     return fail("invalid pool (one or more tokens were not found)");
   }
 
@@ -121,14 +121,14 @@ export async function fetchLiquidityPool(
     tokenBBalance: formatCurrency(bBal, tokB?.decimals),
     tokenBFees: formatCurrency(totalFees(pBBal), tokB?.decimals),
     tokenBId: tokB?.id,
-    tokenBDecimals: tokB?.decimals,
+    tokenBDecimals: tokB?.decimals
   };
 
   const tradeable: boolean = reach.gt(aBal, 0) && reach.gt(bBal, 0);
   const data: FetchPoolData = {
     pool,
     tradeable,
-    tokens: [tokA, tokB] as FetchPoolData["tokens"],
+    tokens: [tokA, tokB] as FetchPoolData["tokens"]
   };
   const result = successResult("OK", ctcInfo, ctc, data);
   onComplete(result);
@@ -143,7 +143,7 @@ export async function fetchLiquidityPool(
 export async function fetchToken(
   acc: ReachAccount,
   token: TokenID | Maybe<TokenID>
-) {
+): Promise<ReachToken | null> {
   const id = fromMaybe(token);
   if (id === null || isNetworkToken(id)) return makeNetworkToken();
 

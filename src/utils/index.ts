@@ -1,10 +1,15 @@
-import { ChainSymbol, createReachAPI, NETWORKS } from "../reach-helpers";
+import {
+  ChainSymbol,
+  createReachAPI,
+  NETWORKS,
+  ReachToken
+} from "../reach-helpers";
 import {
   ASSURANCE_MSG,
   MIN_BALANCE_MSG,
   POPUP_BLOCKED_MSG,
   TRANSACTION_CANCELLED_MSG,
-  TRANSACTION_DIDNT_LOAD,
+  TRANSACTION_DIDNT_LOAD
 } from "../constants";
 import { TransactionResult } from "../types";
 
@@ -33,7 +38,7 @@ export function isNetworkToken(tokenId: string | number) {
 /**
  * @internal
  * Create a Network `Token` representation for the current chain  */
-export function makeNetworkToken() {
+export function makeNetworkToken(): ReachToken {
   const { connector } = createReachAPI();
   return {
     /** ID has to be a string here or db will treat it as value 'false' */
@@ -43,6 +48,8 @@ export function makeNetworkToken() {
     url: "",
     decimals: NETWORKS[connector as ChainSymbol].decimals as number,
     supply: "0",
+    verified: true,
+    verificationTier: "trusted"
   };
 }
 
@@ -77,7 +84,7 @@ export function parseContractError(failureMsg: string, e: any) {
  */
 export async function withTimeout(
   request: Promise<any> | (() => Promise<any>),
-  fallback = null,
+  fallback: any = null,
   timeout = 3500
 ) {
   return new Promise(async (resolve) => {
@@ -105,7 +112,7 @@ export function errorResult<T extends any>(
     poolAddress: poolAddress || "",
     message,
     contract,
-    data,
+    data
   };
 }
 
@@ -124,6 +131,6 @@ export function successResult<T>(
     poolAddress,
     message,
     contract,
-    data,
+    data
   };
 }

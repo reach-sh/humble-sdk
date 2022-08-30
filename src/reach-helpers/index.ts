@@ -1,5 +1,10 @@
+import axios, { AxiosResponse } from "axios";
 import { isNetworkToken, makeNetworkToken } from "../utils";
-import { getNetworkProvider, UNINSTANTIATED } from "../constants";
+import {
+  getBlockchain,
+  getNetworkProvider,
+  UNINSTANTIATED
+} from "../constants";
 import * as T from "./types";
 import { formatNumberShort, trimByteString } from "../utils/utils.reach";
 
@@ -137,11 +142,11 @@ function getIndexerURLHeaders() {
   return {};
 }
 
+const axiosResponse = (res: AxiosResponse<any, any>) => res.data;
+
 async function getNetworkTokenBalance(address: string, bigNumber = false) {
   const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`;
-  const result = await fetch(URL, getBaseURLHeaders()).then((res) =>
-    res.json()
-  );
+  const result = await axios.get(URL, getBaseURLHeaders()).then(axiosResponse);
   const { amount } = result;
   return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
 }
@@ -160,8 +165,8 @@ export async function tokenBalance(
   const assetURL = `${await indexerBaseURL()}/assets/${id}`;
   const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
   const [{ asset }, bal] = await Promise.all([
-    fetch(assetURL, getIndexerURLHeaders()).then((res) => res.json()),
-    fetch(balURL, getBaseURLHeaders()).then((res) => res.json())
+    axios.get(assetURL, getIndexerURLHeaders()).then(axiosResponse),
+    axios.get(balURL, getBaseURLHeaders()).then(axiosResponse)
   ]);
 
   if (!asset?.params || !bal?.["asset-holding"])
@@ -200,6 +205,34 @@ async function indexerBaseURL() {
 
 function trimURL(url: string) {
   return url.replace(/\/$/, "");
+}
+
+/** (ALGORAND only) Get token data and `acc`'s balance of token (if available) */
+export async function peraTokenMetadata(
+  id: any,
+  acc: T.ReachAccount,
+  withBalance?: boolean
+): Promise<T.ReachToken> {
+  if (getBlockchain() !== "ALGO") return tokenMetadata(id, acc, withBalance);
+
+  const provider = getNetworkProvider().toLowerCase();
+  const balance = () => (withBalance ? tokenBalance(acc, id) : 0);
+  const peraToken = async () => {
+    const url = `https://${provider}.api.perawallet.app/v1/assets/${id}/`;
+    return isNetworkToken(id) || id?._hex === "0x00"
+      ? Promise.resolve(makeNetworkToken())
+      : axios
+          .get(url)
+          .catch(() => Promise.resolve(null))
+          .then((md) => (md?.data ? peraToReachToken(md?.data) : null));
+  };
+  const [metadata, bal] = await Promise.allSettled([peraToken(), balance()]);
+  if (metadata.status === "rejected" || metadata.value === null) {
+    return Promise.reject(new Error(`Token "${id}" not found`));
+  }
+
+  const userBal = bal.status === "rejected" ? 0 : bal.value;
+  return peraToReachToken(metadata.value, userBal);
 }
 
 /** Get token data and `acc`'s balance of token (if available) */
@@ -245,7 +278,49 @@ function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
     amount,
     supply: data.supply,
     decimals: data.decimals,
-    verified: data.verified || false
+    verified: data.verified || false,
+    verificationTier:
+      data.verification_tier || data.verificationTier || "unverified"
+  };
+}
+
+type PeraAssetPartial = {
+  asset_id: number;
+  fraction_decimals: 0;
+  is_verified: true;
+  logo: string;
+  name: string;
+  project_url: string;
+  total_supply: number;
+  total: string;
+  unit_name: string;
+  url: string;
+  verification_tier: T.TokenVerificationTier;
+};
+/** @internal Format token metadata from `Pera Wallet` API request */
+function peraToReachToken(
+  raw: PeraAssetPartial | T.ReachToken,
+  amount = 0
+): T.ReachToken {
+  if ((raw as T.ReachToken).verificationTier) {
+    return { ...raw, amount } as T.ReachToken;
+  }
+
+  const data = raw as PeraAssetPartial;
+  const id = data.asset_id;
+  const fallbackName = `Asset #${id}`;
+  const symbol = data.unit_name || `#${id}`;
+
+  return {
+    id,
+    name: data.name || fallbackName,
+    symbol,
+    amount,
+    decimals: data.fraction_decimals,
+    supply: data.total || data.total_supply.toString(),
+    url: data.url || data.project_url || data.logo,
+    verified: data.is_verified || false,
+    verificationTier: data.verification_tier
   };
 }
 /** @internal  */

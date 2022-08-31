@@ -181,7 +181,7 @@ export async function tokenBalance(
 
   const { amount } = bal["asset-holding"];
   let decimals = tokenDecimals;
-  if (!decimals) {
+  if (decimals === undefined) {
     const assetURL = `${await indexerBaseURL()}/assets/${id}`;
     const { asset } = await axios
       .get(assetURL, getIndexerURLHeaders())

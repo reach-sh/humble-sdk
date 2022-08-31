@@ -123,6 +123,8 @@ export {
   ReachEventStream,
   ReachStdLib,
   ReachEnvOpts,
+  TokenBalanceOpts,
+  TokenVerificationTier,
   LoadReachOpts,
   WalletFallbackOpts,
   AlgoEnvOverride,

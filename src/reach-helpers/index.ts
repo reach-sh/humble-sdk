@@ -143,37 +143,55 @@ function getIndexerURLHeaders() {
 }
 
 const axiosResponse = (res: AxiosResponse<any, any>) => res.data;
+const axiosError = () => null;
 
 async function getNetworkTokenBalance(address: string, bigNumber = false) {
   const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`;
-  const result = await axios.get(URL, getBaseURLHeaders()).then(axiosResponse);
+  const result = await axios
+    .get(URL, getBaseURLHeaders())
+    .then(axiosResponse)
+    .catch(() => ({ amount: 0 }));
   const { amount } = result;
   return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
 }
 
+export type TokenBalanceOpts = {
+  id: string | number;
+  bigNumber?: boolean;
+  tokenDecimals?: number;
+};
+
 /** Get formatted token balance */
 export async function tokenBalance(
   acc: T.ReachAccount,
-  id: string | number,
-  bigNumber = false
+  opts: TokenBalanceOpts
 ) {
+  const { id, bigNumber = false, tokenDecimals } = opts;
   const reach = createReachAPI();
   const address = reach.formatAddress(acc);
   if (["0", 0, null].includes(id))
-    return await getNetworkTokenBalance(address, bigNumber);
+    return getNetworkTokenBalance(address, bigNumber);
 
-  const assetURL = `${await indexerBaseURL()}/assets/${id}`;
   const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
-  const [{ asset }, bal] = await Promise.all([
-    axios.get(assetURL, getIndexerURLHeaders()).then(axiosResponse),
-    axios.get(balURL, getBaseURLHeaders()).then(axiosResponse)
-  ]);
+  const bal = await axios
+    .get(balURL, getBaseURLHeaders())
+    .then(axiosResponse)
+    .catch(axiosError);
+  if (!bal?.["asset-holding"]) return bigNumber ? parseCurrency(0) : "0";
 
-  if (!asset?.params || !bal?.["asset-holding"])
-    return bigNumber ? parseCurrency(0) : "0";
-
-  const { decimals } = asset.params;
   const { amount } = bal["asset-holding"];
+  let decimals = tokenDecimals;
+  if (decimals === undefined) {
+    const assetURL = `${await indexerBaseURL()}/assets/${id}`;
+    const { asset } = await axios
+      .get(assetURL, getIndexerURLHeaders())
+      .then(axiosResponse)
+      .catch(axiosError);
+
+    if (!asset?.params) return bigNumber ? parseCurrency(0) : "0";
+    decimals = asset.params.decimals;
+  }
+
   return bigNumber
     ? parseCurrency(amount, 0)
     : formatCurrency(amount, decimals);
@@ -216,7 +234,7 @@ export async function peraTokenMetadata(
   if (getBlockchain() !== "ALGO") return tokenMetadata(id, acc, withBalance);
 
   const provider = getNetworkProvider().toLowerCase();
-  const balance = () => (withBalance ? tokenBalance(acc, id) : 0);
+  const balance = () => (withBalance ? tokenBalance(acc, { id }) : 0);
   const peraToken = async () => {
     const url = `https://${provider}.api.perawallet.app/v1/assets/${id}/`;
     return isNetworkToken(id) || id?._hex === "0x00"
@@ -226,13 +244,12 @@ export async function peraTokenMetadata(
           .catch(() => Promise.resolve(null))
           .then((md) => (md?.data ? peraToReachToken(md?.data) : null));
   };
-  const [metadata, bal] = await Promise.allSettled([peraToken(), balance()]);
-  if (metadata.status === "rejected" || metadata.value === null) {
+  const metadata = await peraToken();
+  if (metadata === null)
     return Promise.reject(new Error(`Token "${id}" not found`));
-  }
-
-  const userBal = bal.status === "rejected" ? 0 : bal.value;
-  return peraToReachToken(metadata.value, userBal);
+  return withBalance
+    ? peraToReachToken(metadata, await balance())
+    : peraToReachToken(metadata, 0);
 }
 
 /** Get token data and `acc`'s balance of token (if available) */
@@ -242,7 +259,8 @@ export async function tokenMetadata(
   withBalance?: boolean
 ): Promise<T.ReachToken> {
   const { eq } = createReachAPI();
-  const fetchBalance = () => (withBalance ? tokenBalance(acc, token) : 0);
+  const fetchBalance = () =>
+    withBalance ? tokenBalance(acc, { id: token }) : 0;
   const fetchToken = () =>
     isNetworkToken(token) || eq(token, 0)
       ? makeNetworkToken()

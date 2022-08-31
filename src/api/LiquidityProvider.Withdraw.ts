@@ -4,7 +4,7 @@ import {
   parseAddress,
   formatCurrency,
   BigNumber,
-  tokenBalance,
+  tokenBalance
 } from "../reach-helpers";
 import { PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
@@ -39,7 +39,7 @@ export type WithdrawResult = {
 const NODATA: WithdrawResult = {
   lpBalance: 0,
   received: { tokenA: null, tokenB: null },
-  mintedLPTokens: 0,
+  mintedLPTokens: 0
 };
 
 /**
@@ -63,14 +63,14 @@ export async function withdrawLiquidity(
   const {
     poolAddress: poolId,
     exchangeLPTokens: inputAmt,
-    percentToWithdraw: pct,
+    percentToWithdraw: pct
   } = opts;
   const poolAddress = parseAddress(poolId).toString();
   const {
     n2nn = false,
     poolTokenId,
     onComplete = noOp,
-    onProgress = noOp,
+    onProgress = noOp
   } = opts;
 
   onProgress(`Fetching Pool metadata`);
@@ -78,7 +78,7 @@ export async function withdrawLiquidity(
     poolAddress,
     n2nn,
     contract: opts.contract,
-    includeTokens: true,
+    includeTokens: true
   });
   if (!lpool.succeeded || !Array.isArray(lpool.data.tokens)) {
     return errorResult("Pool not found", poolAddress, data, lpool.contract);
@@ -96,13 +96,14 @@ export async function withdrawLiquidity(
     const tokens = poolResult.tokens as ReachTokenPair;
     data.received = {
       tokenA: formatCurrency(withdrawResult.A, tokens[0].decimals),
-      tokenB: formatCurrency(withdrawResult.B, tokens[1].decimals),
+      tokenB: formatCurrency(withdrawResult.B, tokens[1].decimals)
     };
 
     onProgress("Fetching updated pool LP token balance");
+    const balOpts = { id: poolTokenId, bigNumber: true, decimals: 6 };
     const [tokensView, lpBalance] = await Promise.all([
       fromMaybe(await ctc.views.Info()),
-      tokenBalance(acc, poolTokenId, true).then(bigNumberToNumber),
+      tokenBalance(acc, balOpts).then(bigNumberToNumber)
     ]);
 
     if (lpBalance) data.lpBalance = Number(lpBalance);
@@ -131,11 +132,12 @@ async function amountFromPctInput(
   poolTokenId: any
 ): Promise<BigNumber> {
   const { bigNumberify } = createReachAPI();
-  const userLiquidity = await tokenBalance(
-    acc,
-    parseAddress(poolTokenId),
-    true
-  );
+  const balOpts = {
+    id: parseAddress(poolTokenId),
+    bigNumber: true,
+    decimals: 6
+  };
+  const userLiquidity = await tokenBalance(acc, balOpts);
   const divisor = bigNumberify(100).div(bigNumberify(pctInput));
   return userLiquidity.div(divisor);
 }

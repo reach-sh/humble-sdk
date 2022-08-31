@@ -4,7 +4,8 @@ import {
   parseAddress,
   formatCurrency,
   BigNumber,
-  tokenBalance
+  tokenBalance,
+  TokenBalanceOpts
 } from "../reach-helpers";
 import { PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
@@ -100,7 +101,11 @@ export async function withdrawLiquidity(
     };
 
     onProgress("Fetching updated pool LP token balance");
-    const balOpts = { id: poolTokenId, bigNumber: true, decimals: 6 };
+    const balOpts: TokenBalanceOpts = {
+      id: poolTokenId,
+      bigNumber: true,
+      tokenDecimals: 6
+    };
     const [tokensView, lpBalance] = await Promise.all([
       fromMaybe(await ctc.views.Info()),
       tokenBalance(acc, balOpts).then(bigNumberToNumber)
@@ -132,10 +137,10 @@ async function amountFromPctInput(
   poolTokenId: any
 ): Promise<BigNumber> {
   const { bigNumberify } = createReachAPI();
-  const balOpts = {
+  const balOpts: TokenBalanceOpts = {
     id: parseAddress(poolTokenId),
     bigNumber: true,
-    decimals: 6
+    tokenDecimals: 6
   };
   const userLiquidity = await tokenBalance(acc, balOpts);
   const divisor = bigNumberify(100).div(bigNumberify(pctInput));

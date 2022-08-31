@@ -259,7 +259,8 @@ export async function tokenMetadata(
   withBalance?: boolean
 ): Promise<T.ReachToken> {
   const { eq } = createReachAPI();
-  const fetchBalance = () => (withBalance ? tokenBalance(acc, token) : 0);
+  const fetchBalance = () =>
+    withBalance ? tokenBalance(acc, { id: token }) : 0;
   const fetchToken = () =>
     isNetworkToken(token) || eq(token, 0)
       ? makeNetworkToken()

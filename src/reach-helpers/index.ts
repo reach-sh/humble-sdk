@@ -97,6 +97,14 @@ export function parseCurrency(val: any, dec?: number) {
   const decimals = parseNetworkDecimals(Number(dec));
   return createReachAPI().parseCurrency(val, decimals);
 }
+/** @internal Ensure `network` param from user is a recognized value */
+export function safeNetwork(val?: T.NetworkProvider): T.NetworkProvider {
+  const valid: T.NetworkProvider[] = ["TestNet", "MainNet", "ALGO-devnet"];
+  if (!val) return valid[0];
+  const safe = valid.includes(val) ? val : "TestNet";
+  return safe;
+}
+
 
 /** @internal */
 function buildProviderEnv(

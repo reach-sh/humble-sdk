@@ -1,15 +1,16 @@
 import { noOp } from "../utils/utils.reach";
 import { farmAnnouncerBackend, FarmAnnouncerContract } from "../build/backend";
-import {
-  createReachAPI,
-  ReachAccount,
-} from "../reach-helpers/index";
+import { parseAddress, ReachAccount } from "../reach-helpers/index";
 import { ReachTxnOpts, StaticFarmDataUnformatted } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
-import { getFarmAnnouncer } from "../constants";
+import { getAnnouncers } from "../constants";
+import { fetchStakingPool } from "./Staker.Fetch";
+import { isPartnerFarm } from "./subscribeToFarmStream";
 
 /** Options for announcing a Farm */
-type AnnounceOpts = { staticFarmData: StaticFarmDataUnformatted } & ReachTxnOpts;
+type AnnounceOpts = {
+  staticFarmData: StaticFarmDataUnformatted;
+} & ReachTxnOpts;
 
 /**
  * Remove (un-stake) an amount from a contract. Reduces rewards entitlement.
@@ -21,28 +22,39 @@ type AnnounceOpts = { staticFarmData: StaticFarmDataUnformatted } & ReachTxnOpts
  * @param opts.onProgress Optional callback for txn events/updates
  * @returns
  */
-export async function announceFarm(
-  acc: ReachAccount,
-  opts: AnnounceOpts
-) {
-  const { bigNumberToNumber } = createReachAPI();
-  const { staticFarmData: farmData, onProgress = noOp, onComplete = noOp } = opts;
+export async function announceFarm(acc: ReachAccount, opts: AnnounceOpts) {
+  const {
+    contract,
+    staticFarmData: farmData,
+    onProgress = noOp,
+    onComplete = noOp
+  } = opts;
 
-  const announcerInfo = getFarmAnnouncer();
-  const ctc: FarmAnnouncerContract = opts.contract || acc.contract(farmAnnouncerBackend, announcerInfo);
+  const { partnerFarmAnnouncer, publicFarmAnnouncer } = getAnnouncers();
+  const farmId = parseAddress(farmData.ctcInfo);
+  const { data, succeeded } = await fetchStakingPool(acc, {
+    poolAddress: farmId,
+    formatResult: true
+  });
+  if (!succeeded) return errorResult(`Farm ${farmId} not found`, farmId, data);
 
-  onProgress("Announcing Farm");
+  const isPartner = isPartnerFarm({ farmView: data });
+  const ctcInfo = isPartner ? partnerFarmAnnouncer : publicFarmAnnouncer;
+  const ctc: FarmAnnouncerContract =
+    contract || acc.contract(farmAnnouncerBackend, ctcInfo);
+
+  onProgress(`Announcing ${isPartner ? "Partner" : "Public"} Farm`);
 
   try {
     const resp = await ctc.apis.announce(farmData);
-    const result = successResult("OK", bigNumberToNumber(farmData.ctcInfo), resp, ctc);
+    const result = successResult("OK", farmId, resp, ctc);
     onComplete(result);
     return result;
   } catch (error) {
     const msg = parseContractError(`Farm announcement failed.`, error);
     console.log(msg, { e: error });
-    const result = errorResult(msg, bigNumberToNumber(farmData.ctcInfo), farmData, ctc);
-    onComplete(result)
-    return result    
+    const result = errorResult(msg, farmId, farmData, ctc);
+    onComplete(result);
+    return result;
   }
 }

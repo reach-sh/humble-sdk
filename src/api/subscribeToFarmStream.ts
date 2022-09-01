@@ -4,7 +4,7 @@ import {
   formatCurrency,
   parseAddress
 } from "../reach-helpers";
-import { fromMaybe, noOp } from "../utils/utils.reach";
+import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
 import { farmAnnouncerBackend } from "../build/backend";
 import { getFarmAnnouncer, getProtocolFunder0x } from "../constants";
 import {
@@ -29,9 +29,13 @@ export type FarmSubscriptionOpts = {
 } & ReachTxnOpts;
 
 /** Result of monitoring the farm stream */
-type FarmRegisterEvent = {
+export type FarmRegisterEvent = {
   /** Actual event data */
-  what: [addr: string, data: StaticFarmDataUnformatted, something: any];
+  what: [
+    addr: string,
+    data: StaticFarmDataUnformatted | StaticFarmDataFormatted,
+    something: any
+  ];
   /** Block time when event was received */
   when: any;
 };
@@ -52,12 +56,11 @@ export async function subscribeToFarmStream(
   }
 
   return ctc.events.Announce.monitor(({ what }: FarmRegisterEvent) => {
-    let farmData: StaticFarmDataUnformatted | StaticFarmDataFormatted = what[1];
+    let farmData = what[1];
+    const stakePoolId = what[1].stakedTokenPoolId;
     if (format) {
       const { bigNumberToNumber } = createReachAPI();
-      const stakedTokenPoolId = bigNumberToNumber(
-        what[1].stakedTokenPoolId
-      ).toString();
+      const stakedTokenPoolId = bigNumberToNumber(stakePoolId).toString();
       let pairTokenAId = "";
       let pairTokenBId = "";
       if (stakedTokenPoolId !== "0") {
@@ -66,34 +69,32 @@ export async function subscribeToFarmStream(
         pairTokenBId = bigNumberToNumber(what[1].pairTokenBId).toString();
       }
 
+      const [networkRewards, nnRewards] = farmData.rewardsPerBlock as [any, any];
       farmData = {
         ctcInfo: parseAddress(farmData.ctcInfo).toString(),
         startBlock: bigNumberToNumber(farmData.startBlock),
         endBlock: bigNumberToNumber(farmData.endBlock),
         rewardTokenId: bigNumberToNumber(farmData.rewardTokenId).toString(),
         rewardsPerBlock: {
-          asDefaultNetworkToken: formatCurrency(farmData.rewardsPerBlock[0], 6),
-          asRewardToken: formatCurrency(
-            farmData.rewardsPerBlock[1],
-            farmData.rewardTokenDecimals
-          )
+          asDefaultNetworkToken: formatCurrency(networkRewards, 6),
+          asRewardToken: formatCurrency(nnRewards, farmData.rewardTokenDecimals)
         },
         stakedTokenId: bigNumberToNumber(farmData.stakedTokenId).toString(),
         pairTokenAId,
-        pairTokenASymbol: farmData.pairTokenASymbol.split("\u0000")[0],
+        pairTokenASymbol: trimByteString(farmData.pairTokenASymbol),
         pairTokenBId,
-        pairTokenBSymbol: farmData.pairTokenBSymbol.split("\u0000")[0],
+        pairTokenBSymbol: trimByteString(farmData.pairTokenBSymbol),
         rewardTokenDecimals: bigNumberToNumber(farmData.rewardTokenDecimals),
         rewardTokenSymbol: farmData.rewardTokenSymbol.split("\u0000")[0],
         stakedTokenDecimals: bigNumberToNumber(farmData.stakedTokenDecimals),
         stakedTokenPoolId:
           stakedTokenPoolId === "0" ? undefined : stakedTokenPoolId,
-        stakedTokenSymbol: farmData.stakedTokenSymbol.split("\u0000")[0],
+        stakedTokenSymbol: trimByteString(farmData.stakedTokenSymbol),
         stakedTokenTotalSupply: formatCurrency(
           farmData.stakedTokenTotalSupply,
           bigNumberToNumber(farmData.stakedTokenDecimals)
         )
-      };
+      } as StaticFarmDataFormatted;
     }
     onFarmFetched(successResult("Farm fetched", "", ctc, farmData));
   });

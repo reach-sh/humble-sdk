@@ -2,9 +2,21 @@
 
 export { swapTokens } from "./Trader.Swap";
 export { addLiquidity } from "./LiquidityProvider.Add";
-export { withdrawLiquidity } from "./LiquidityProvider.Withdraw";
-export { subscribeToPoolStream } from "./subscribeToPoolStream";
-export { subscribeToFarmStream } from "./subscribeToFarmStream";
+export {
+  withdrawLiquidity,
+  RequiredWithdrawOpts,
+  WithdrawOpts,
+  WithdrawResult
+} from "./LiquidityProvider.Withdraw";
+export {
+  subscribeToPoolStream,
+  PoolSubscriptionOpts
+} from "./subscribeToPoolStream";
+export {
+  subscribeToFarmStream,
+  isPartnerFarm,
+  FarmSubscriptionOpts
+} from "./subscribeToFarmStream";
 export { announceFarm } from "./FarmStream.Announce";
 
 // Staking/Farming

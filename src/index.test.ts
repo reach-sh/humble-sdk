@@ -1,10 +1,4 @@
-import {
-  getFarmAnnouncer,
-  getSlippage,
-  setFarmAnnouncer,
-  setPoolAnnouncer,
-  setSlippage
-} from "./constants";
+import { getSlippage, setSlippage } from "./constants";
 import { createReachAPI, getPoolAnnouncer, initHumbleSDK } from "./index";
 
 describe("HumbleSDK Default Export tests", () => {
@@ -27,17 +21,5 @@ describe("HumbleSDK Default Export tests", () => {
 
     setSlippage(0.5);
     expect(getSlippage()).toStrictEqual(0.5);
-  });
-
-  it("Can store and retrieve Farm announcers", () => {
-    const announcer = 12345;
-    setFarmAnnouncer(announcer);
-    expect(getFarmAnnouncer()).toStrictEqual(announcer);
-  });
-
-  it("Can store and retrieve Pool announcers", () => {
-    const announcer = 12345;
-    setPoolAnnouncer(announcer);
-    expect(getPoolAnnouncer()).toStrictEqual(announcer);
   });
 });

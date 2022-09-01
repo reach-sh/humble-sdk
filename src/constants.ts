@@ -1,4 +1,4 @@
-import { NetworkProvider } from "./reach-helpers";
+import { safeNetwork, SDKOpts } from "./reach-helpers";
 import { PoolProtocolInfo } from "./types";
 
 // Application constants (or long-lived values)
@@ -23,49 +23,47 @@ export function getFeeInfo(): PoolProtocolInfo {
     protoAddr: getProtocolAddr(),
     protoFee: HUMBLE_DAO_FEE,
     totFee: TOTAL_FEE,
-    locked: false,
+    locked: false
   };
 }
 
 /** @internal account address (not App ID!) of Triumvirate contract */
 let HUMBLE_ADDR: string;
-/**
- * @internal Set account address (not App ID!) of Triumvirate contract for current network */
-export function setProtocolAddr(prov: NetworkProvider, override?: string) {
-  const a = [
-    "YNKCECPOYM3ZLFOHKZTG466GYCAGXKWRWA4G5C6BFLXNDHBUAZ73XATU2U",
-    "RKUC34RZOMK26ZOD4J2OFY3UILORX5AAMIX24L5MWAUUF6DVJVBJYQSABQ",
-  ];
-  if (prov === "ALGO-devnet") HUMBLE_ADDR = override ? override : a[0];
-  if (prov === "TestNet") HUMBLE_ADDR = override ? override : a[0];
-  if (prov === "MainNet") HUMBLE_ADDR = a[1];
+/** @internal get 0x internal account address that funds Partner farms */
+export function getProtocolFunder0x() {
+  return "0x3d19db4979ad8ded592a7e78c81283d3a24b061cb3ac500fa81803db7c299753";
 }
+
 /** @internal get account address (not App ID!) of Triumvirate contract */
 export function getProtocolAddr() {
   return HUMBLE_ADDR;
 }
 
 /** @internal Triumvirate contract app id */
-let POOL_ANNOUNCER_ADDRESS: string | number | undefined;
-/** @internal Set app id of Triumvirate contract */
-export function setPoolAnnouncer(address: string | number) {
-  POOL_ANNOUNCER_ADDRESS = address;
-}
+let POOL_ANNOUNCER_ID: string | number | undefined;
 
 /** Get app id of Triumvirate contract. */
 export function getPoolAnnouncer() {
-  return POOL_ANNOUNCER_ADDRESS;
+  return POOL_ANNOUNCER_ID;
 }
 
 /** @internal farm announcer contract app id */
-let FARM_ANNOUNCER_ADDRESS: string | number | undefined;
-/** @internal Set app id of farm announcer contract */
-export function setFarmAnnouncer(address: string | number) {
-  return FARM_ANNOUNCER_ADDRESS = address;
+let PARTNER_FARM_ANNOUNCER_ID: string | number | undefined;
+/** @internal farm announcer contract app id */
+let PUBLIC_FARM_ANNOUNCER_ID: string | number | undefined;
+
+/** Get Partner farm announcer */
+export function getFarmAnnouncer() {
+  return PARTNER_FARM_ANNOUNCER_ID;
 }
 
-export function getFarmAnnouncer() {
-  return FARM_ANNOUNCER_ADDRESS;
+/** Get public and Partner farm announcers */
+export function getAnnouncers() {
+  return {
+    poolAnnouncer: POOL_ANNOUNCER_ID,
+    partnerFarmAnnouncer: PARTNER_FARM_ANNOUNCER_ID,
+    publicFarmAnnouncer: PUBLIC_FARM_ANNOUNCER_ID
+  };
 }
 
 /** SDK user's slippage preference */
@@ -87,22 +85,13 @@ let NETWORK_PROVIDER: string;
 export function getNetworkProvider() {
   return NETWORK_PROVIDER;
 }
-/** @internal */
-export function setNetworkProvider(provider: string) {
-  NETWORK_PROVIDER = provider;
-}
 
 /** @internal */
 let BLOCKCHAIN: string;
 /** SDK user's blockchain (consensus network) preference */
 export function getBlockchain() {
-  if (!BLOCKCHAIN) setBlockchain("ALGO");
+  if (!BLOCKCHAIN) BLOCKCHAIN = "ALGO";
   return BLOCKCHAIN;
-}
-
-/** @internal */
-export function setBlockchain(provider: string) {
-  BLOCKCHAIN = provider;
 }
 
 /** @internal When 'true', SDK is ready for use */
@@ -110,7 +99,76 @@ let INITIALIZED = false;
 export function checkInitialized() {
   return INITIALIZED;
 }
-/** @internal */
-export function setInitialized(init = false) {
-  INITIALIZED = init;
+
+/** @internal Set SDK options for operation */
+export function setSDKOpts(opts: SDKOpts) {
+  // User slippage tolerance
+  setSlippage(opts.slippageTolerance || 0.5);
+  NETWORK_PROVIDER = safeNetwork(opts.network);
+  HUMBLE_ADDR = ProtocolAddr(opts);
+  POOL_ANNOUNCER_ID = TriumvirContractId(opts);
+  PARTNER_FARM_ANNOUNCER_ID = PartnerFarmAnnouncerId(opts);
+  PUBLIC_FARM_ANNOUNCER_ID = PublicFarmAnnouncerId(opts);
+  // Set SDK as initialized
+  INITIALIZED = true;
+}
+
+/** @internal Get Pool data source for Testnet/Mainnet */
+function TriumvirContractId(opts: SDKOpts) {
+  const { network = "TestNet", contractOverrides = {} } = opts;
+  const { protocolId } = contractOverrides;
+  if (protocolId) return protocolId;
+
+  // V2 Triumvirate
+  const valid = safeNetwork(network);
+  if (valid === "TestNet") return 92391728; // This is Develop triumvirate
+  if (valid === "MainNet") return 771884869;
+
+  throw new Error(`Unrecognized provider "${network}"`);
+}
+
+/** @internal Get Public Farm data source for Testnet/Mainnet */
+function PublicFarmAnnouncerId(opts: SDKOpts) {
+  const { network = "TestNet", contractOverrides = {} } = opts;
+  const { publicFarmAnnouncerId } = contractOverrides;
+  if (publicFarmAnnouncerId) return publicFarmAnnouncerId;
+  const valid = safeNetwork(network);
+  if (valid === "TestNet") return 107539798; // Internal Dev Announcer
+  if (valid === "MainNet") return 857348615; // Production Announcer
+
+  throw new Error(`Unrecognized provider "${network}"`);
+}
+
+/** @internal Get Partner Farm data source for Testnet/Mainnet */
+function PartnerFarmAnnouncerId(opts: SDKOpts) {
+  const { network = "TestNet", contractOverrides = {} } = opts;
+  const { partnerFarmAnnouncerId } = contractOverrides;
+  if (partnerFarmAnnouncerId) return partnerFarmAnnouncerId;
+
+  // V2 Triumvirate
+  const valid = safeNetwork(network);
+  if (valid === "TestNet") return 97832257;
+  if (valid === "MainNet") return 830314595;
+
+  throw new Error(`Unrecognized provider "${network}"`);
+}
+
+/**
+ * @internal Get account address (not App ID!) of Triumvirate contract for current network */
+function ProtocolAddr(opts: SDKOpts) {
+  const ADDRESSES = {
+    MainNet: "RKUC34RZOMK26ZOD4J2OFY3UILORX5AAMIX24L5MWAUUF6DVJVBJYQSABQ",
+    None: "",
+    TestNet: "YNKCECPOYM3ZLFOHKZTG466GYCAGXKWRWA4G5C6BFLXNDHBUAZ73XATU2U",
+    get "ALGO-devnet"() {
+      return ADDRESSES.TestNet;
+    }
+  };
+  const { network: prov = "TestNet", contractOverrides = {} } = opts;
+  const { protocolAddress } = contractOverrides;
+  return (
+    protocolAddress || // override
+    ADDRESSES[prov as keyof typeof ADDRESSES] || // address for provider
+    ADDRESSES.None // empty string (bad bad bad)
+  );
 }

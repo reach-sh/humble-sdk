@@ -28,6 +28,7 @@ import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
 import { runStakeToFarmTest } from "./runStakeToFarmTest.mjs";
 import dotenv from "dotenv";
 import { runPoolReport } from "./runPoolReportTest.mjs";
+import { createFarmAnnouncer } from "./runCreateFarmAnnouncer.mjs";
 
 dotenv.config({ path: "./.env" });
 
@@ -36,28 +37,44 @@ const TK = process.env.ALGONODE_TOKEN;
 initHumbleSDK({
   network: "TestNet",
   providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK },
-  customFarmAnnouncerAddress: 100474119,
-  customAnnouncerId: 93443561,
-  customAnnouncerAddress:
-    "XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE"
+  contractOverrides: {
+    protocolId: 93443561,
+    protocolAddress:
+      "XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE",
+    partnerFarmAnnouncerId: 100474119
+  }
 });
 
 const reach = createReachAPI();
-const options = [
+const poolActions = [
   { title: "List Pools", action: runAnnouncerTest },
-  { title: "List Pools (Report)", action: runPoolReport },
-  { title: "List Farms", action: runFarmAnnouncerTest },
-  { title: "Fetch a Token", action: runFetchTokenTest },
-  { title: "Swap tokens", action: runSwapTest },
   { title: "Create a Liquidity Pool", action: runCreatePoolTest },
   { title: "Fetch a Liquidity Pool", action: runFetchPoolTest },
   { title: "Add/remove Liquidity", action: runLiquidity },
+  { title: "Pools CSV Report", action: runPoolReport }
+];
+const farmActions = [
+  { title: "List Farms", action: runFarmAnnouncerTest },
   { title: "Create a Farm", action: runCreateFarmTest },
   { title: "Fetch a Farm", action: runFetchFarmTest },
   { title: "Announce a Farm", action: runAnnounceFarmTest },
   { title: "Check Staking rewards", action: runCheckRewardsTest },
-  { title: "Stake Funds in farm", action: runStakeToFarmTest }
+  { title: "Stake Funds in farm", action: runStakeToFarmTest },
+  { title: "Create Farm Announcer", action: createFarmAnnouncer }
 ];
+const tokenActions = [
+  { title: "Fetch a Token", action: runFetchTokenTest },
+  { title: "Swap tokens", action: runSwapTest }
+];
+const options = [...poolActions, ...farmActions, ...tokenActions];
+const sections = [
+  { title: "Liquidity Pools", action: () => selectAction(poolActions) },
+  { title: "Farms", action: () => selectAction(farmActions) },
+  { title: "Tokens (swap/fetch)", action: () => selectAction(tokenActions) },
+  { title: "Create Farm Announcer", action: createFarmAnnouncer }
+];
+
+let acc;
 
 (async () => {
   console.clear();
@@ -65,18 +82,26 @@ const options = [
   Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
   Yellow(`Getting account ...`);
   const args = process.argv.slice(2);
-  const acc = await getAccountFromArgs(args);
+  acc = await getAccountFromArgs(args);
   Green(`Connected ${reach.formatAddress(acc)}\n`);
 
+  selectAction(sections);
+})();
+
+async function selectAction(opts) {
   Yellow(`Select an option:\n`);
-  options.map(({ title }, i) => Blue(`${i + 1}. ${title}`));
+  opts.map(({ title }, i) => Blue(`${i + 1}. ${title}`));
   console.log();
   const sIndex = await answerOrDie("Enter number for selection:");
   const index = Number(sIndex) - 1;
-  if (index >= options.length || index < 0) {
+  if (index >= opts.length || index < 0) {
     return exitWithMsgs("Exit: Invalid option selected");
   }
 
-  const { action } = options[index];
+  doAction(index, opts);
+}
+
+function doAction(index, opts) {
+  const { action } = opts[index];
   return action(acc);
-})();
+}

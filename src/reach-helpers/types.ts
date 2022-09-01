@@ -239,14 +239,28 @@ export type AlgoEnvOverride = {
   REACH_ISOLATED_NETWORK?: string;
 };
 
+/** Custom Announcers for the SDK */
+export type SDKContractOverrides = {
+  /** The id of a custom triumvirate to replace the default */
+  protocolId?: string;
+  /** The address of a custom triumvirate to replace the default */
+  protocolAddress?: string;
+  /** Application ID of a custom Partner Farm announcer */
+  partnerFarmAnnouncerId?: string;
+  /** Application ID of a custom Public Farm announcer */
+  publicFarmAnnouncerId?: string;
+};
+
 /** Configuration options for the SDK */
 export type SDKOpts = {
   /** (Optional) Network Provider (`TestNet` or `MainNet`). Defaults to `TestNet` */
   network?: NetworkProvider;
   /** Slippage Tolerance: defaults to 0.5% */
   slippageTolerance?: number;
+  /** Custom Announcers for the SDK */
+  contractOverrides?: SDKContractOverrides;
   // The id and address of a custom triumvirate to use instead of the default (only works on testnet)
-  customTriumvirateId?: string;
+  /* customTriumvirateId?: string;
   customTriumvirateAddress?: string;
-  customFarmAnnouncerAddress?: string;
+  customFarmAnnouncerAddress?: string; */
 } & ReachEnvOpts;

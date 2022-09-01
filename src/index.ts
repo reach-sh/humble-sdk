@@ -1,8 +1,9 @@
-// CONSTANTS
-export { setSlippage } from "./constants";
+import { loadStdlib } from "@reach-sh/stdlib";
+import { loadReach, SDKOpts } from "./reach-helpers";
+import { checkInitialized, setSDKOpts } from "./constants";
 
-// MAIN EXPORTS
-export { initHumbleSDK } from "./core";
+// CONSTANTS
+export { setSlippage, getNetworkProvider, getBlockchain } from "./constants";
 
 // DATA & DATA FETCHERS
 export {
@@ -11,7 +12,7 @@ export {
   createLiquidityPool,
   createStakingPool,
   fetchLiquidityPool,
-  fetchToken
+  fetchToken,
 } from "./participants/index";
 
 // TYPES
@@ -84,3 +85,18 @@ export {
 
 // CONSTANTS
 export { getSlippage, getPoolAnnouncer, getFarmAnnouncer } from "./constants";
+
+/**
+ * Create `stdlib` instance for SDK. Options allow for selective environment
+ * overrides. */
+export function initHumbleSDK(opts: SDKOpts = {}) {
+  if (checkInitialized()) return;
+
+  const { network, providerEnv } = opts;
+  loadReach(loadStdlib, {
+    provider: network,
+    providerEnv,
+    walletFallback: opts.walletFallback
+  });
+  setSDKOpts(opts);
+}

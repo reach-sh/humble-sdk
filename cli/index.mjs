@@ -47,6 +47,10 @@ initHumbleSDK({
 });
 
 const reach = createReachAPI();
+const CreateFarmAnnouncer = {
+  title: "Create Farm Announcer (Requires funded account)",
+  action: createFarmAnnouncer
+};
 const poolActions = [
   { title: "List Pools", action: runAnnouncerTest },
   { title: "Create a Liquidity Pool", action: runCreatePoolTest },
@@ -62,7 +66,7 @@ const farmActions = [
   { title: "Check for Partner Farm", action: runCheckPartnerFarmTest },
   { title: "Create a Farm", action: runCreateFarmTest },
   { title: "Announce a Farm", action: runAnnounceFarmTest },
-  { title: "Create Farm Announcer", action: createFarmAnnouncer }
+  CreateFarmAnnouncer
 ];
 const tokenActions = [
   { title: "Fetch a Token", action: runFetchTokenTest },
@@ -73,7 +77,7 @@ const sections = [
   { title: "Liquidity Pools", action: () => selectAction(poolActions) },
   { title: "Farms", action: () => selectAction(farmActions) },
   { title: "Tokens (swap/fetch)", action: () => selectAction(tokenActions) },
-  { title: "Create Farm Announcer", action: createFarmAnnouncer }
+  CreateFarmAnnouncer
 ];
 
 let acc;

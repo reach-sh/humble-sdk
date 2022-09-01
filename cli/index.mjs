@@ -29,6 +29,7 @@ import { runStakeToFarmTest } from "./runStakeToFarmTest.mjs";
 import dotenv from "dotenv";
 import { runPoolReport } from "./runPoolReportTest.mjs";
 import { createFarmAnnouncer } from "./runCreateFarmAnnouncer.mjs";
+import { runCheckPartnerFarmTest } from "./runCheckPartnerFarmTest.mjs";
 
 dotenv.config({ path: "./.env" });
 
@@ -55,11 +56,12 @@ const poolActions = [
 ];
 const farmActions = [
   { title: "List Farms", action: runFarmAnnouncerTest },
-  { title: "Create a Farm", action: runCreateFarmTest },
   { title: "Fetch a Farm", action: runFetchFarmTest },
-  { title: "Announce a Farm", action: runAnnounceFarmTest },
   { title: "Check Staking rewards", action: runCheckRewardsTest },
   { title: "Stake Funds in farm", action: runStakeToFarmTest },
+  { title: "Check for Partner Farm", action: runCheckPartnerFarmTest },
+  { title: "Create a Farm", action: runCreateFarmTest },
+  { title: "Announce a Farm", action: runAnnounceFarmTest },
   { title: "Create Farm Announcer", action: createFarmAnnouncer }
 ];
 const tokenActions = [

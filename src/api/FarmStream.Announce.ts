@@ -3,8 +3,9 @@ import { farmAnnouncerBackend, FarmAnnouncerContract } from "../build/backend";
 import { parseAddress, ReachAccount } from "../reach-helpers/index";
 import { ReachTxnOpts, StaticFarmDataUnformatted } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
-import { getAnnouncers, getProtocolFunder0x } from "../constants";
+import { getAnnouncers } from "../constants";
 import { fetchStakingPool } from "./Staker.Fetch";
+import { isPartnerFarm } from "./subscribeToFarmStream";
 
 /** Options for announcing a Farm */
 type AnnounceOpts = {
@@ -37,13 +38,12 @@ export async function announceFarm(acc: ReachAccount, opts: AnnounceOpts) {
   });
   if (!succeeded) return errorResult(`Farm ${farmId} not found`, farmId, data);
 
-  const { Rewarder0 } = data.opts;
-  const isPartner = Rewarder0 === getProtocolFunder0x();
+  const isPartner = isPartnerFarm({ farmView: data });
   const ctcInfo = isPartner ? partnerFarmAnnouncer : publicFarmAnnouncer;
   const ctc: FarmAnnouncerContract =
     contract || acc.contract(farmAnnouncerBackend, ctcInfo);
 
-  onProgress(`Announcing ${isPartner ? 'Partner' : 'Public'} Farm`);
+  onProgress(`Announcing ${isPartner ? "Partner" : "Public"} Farm`);
 
   try {
     const resp = await ctc.apis.announce(farmData);

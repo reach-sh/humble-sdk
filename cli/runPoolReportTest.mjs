@@ -11,27 +11,31 @@ import {
 } from "./utils.mjs";
 
 let exitTimeout;
-const LIMIT = 150;
+const LIMIT = 250;
 const TIMEOUT = 15;
 const pools = new Set();
+const headings = [
+  "poolName",
+  "poolAddress",
+  "poolTokenId",
+  "tokenAId",
+  "tokenADecimals",
+  "tokenABalance",
+  "tokenBId",
+  "tokenBDecimals",
+  "tokenBBalance"
+];
 
 /** Attach to pool announcer and list a subset of pools */
 export async function runPoolReport(acc) {
   console.clear();
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
-  const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
 
-  subscribeToPoolStream(acc, {
-    onPoolFetched,
-    seekNow,
-    includeTokens: true
-  });
+  subscribeToPoolStream(acc, { onPoolFetched, includeTokens: true });
   Blue(`Listening for up to ${LIMIT} pools.`);
   console.log();
-  Yellow(
-    `poolName,poolAddress,lpTokenId,tokenAId,tokenADecimals,tokenABalance,tokenBId,tokenBDecimals,tokenBBalance`
-  );
+  Yellow(headings.join(","));
   resetTimer();
 }
 
@@ -54,28 +58,14 @@ async function onPoolFetched({ succeeded, poolAddress, data, message }) {
   resetTimer();
 
   const poolName = `${tokenName(tokens[0])}/${tokenName(tokens[1])}`;
-  const d = [
-    poolName,
-    data.pool.poolAddress,
-    data.pool.poolTokenId,
-    data.pool.tokenAId,
-    data.pool.tokenADecimals,
-    data.pool.tokenABalance,
-    data.pool.tokenBId,
-    data.pool.tokenBDecimals,
-    data.pool.tokenBBalance
-  ];
-
+  const d = headings.map((h) => (h === "poolName" ? poolName : data.pool[h]));
   Blue(d.join(","));
-  // Blue(`\t * Got "${poolAddress}" (${pools.size} of ${LIMIT})`);
-  // iout(poolAddress, data.pool);
 }
 
 /** HELPER | Restart Pool Listener timer (TEST only) */
 function resetTimer() {
   if (exitTimeout) clearTimeout(exitTimeout);
   exitTimeout = setTimeout(stopTest, TIMEOUT * 1000);
-  // Blue(`\t * Auto-timeout in ${TIMEOUT}s`);
 }
 
 /** End CLI */

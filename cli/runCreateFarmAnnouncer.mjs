@@ -5,6 +5,10 @@ import { answerOrDie, Blue, exitWithMsgs, Green } from "./utils.mjs";
 
 export async function createFarmAnnouncer(acc) {
   Blue("Creating FARM ANNOUNCER on " + getNetworkProvider());
+  if (!(await answerOrDie("Is this account funded?", yesno))) {
+    exitWithMsgs("A funded account is required for this action");
+  }
+
   const ctc = acc.contract(FarmAnnouncerBackend);
   const ctcInfo = await new Promise((resolve) =>
     ctc.participants

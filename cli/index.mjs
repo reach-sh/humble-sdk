@@ -76,7 +76,8 @@ const sections = [
 
 let acc;
 
-(async () => {
+/** Main script */
+async function main() {
   console.clear();
 
   Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
@@ -86,8 +87,9 @@ let acc;
   Green(`Connected ${reach.formatAddress(acc)}\n`);
 
   selectAction(sections);
-})();
+}
 
+/** Select and perform an action from a list */
 async function selectAction(opts) {
   Yellow(`Select an option:\n`);
   opts.map(({ title }, i) => Blue(`${i + 1}. ${title}`));
@@ -98,10 +100,9 @@ async function selectAction(opts) {
     return exitWithMsgs("Exit: Invalid option selected");
   }
 
-  doAction(index, opts);
-}
-
-function doAction(index, opts) {
   const { action } = opts[index];
   return action(acc);
 }
+
+// Run main script
+main();

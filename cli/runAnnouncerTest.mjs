@@ -11,7 +11,7 @@ import {
 } from "./utils.mjs";
 
 let exitTimeout;
-const LIMIT = 10;
+let LIMIT = 10;
 const TIMEOUT = 15;
 const pools = new Set();
 
@@ -21,6 +21,10 @@ export async function runAnnouncerTest(acc) {
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
   const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
+
+  const hmPrompt = `Stop after how many? (Leave blank to default to 10)`
+  const howMany = (await answerOrDie(hmPrompt)) || 10
+  LIMIT = howMany
 
   subscribeToPoolStream(acc, {
     onPoolReceived: (msg) => {

@@ -6,7 +6,7 @@ import {
 } from "../reach-helpers";
 import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
 import { farmAnnouncerBackend } from "../build/backend";
-import { getFarmAnnouncer, getProtocolFunder0x } from "../constants";
+import { getAnnouncers, getProtocolFunder0x } from "../constants";
 import {
   ReachTxnOpts,
   StaticFarmDataFormatted,
@@ -26,6 +26,8 @@ export type FarmSubscriptionOpts = {
   format?: boolean;
   /** When `true`, only report farms created after subscription */
   seekNow?: boolean;
+  /** When `true`, only report farms created after subscription */
+  includePublicFarms?: boolean;
 } & ReachTxnOpts;
 
 /** Result of monitoring the farm stream */
@@ -45,17 +47,39 @@ export async function subscribeToFarmStream(
   acc: ReachAccount,
   opts: FarmSubscriptionOpts
 ) {
-  const announcerInfo = getFarmAnnouncer();
-  if (!announcerInfo) throw new Error("Farm announcer is not set");
+  const { publicFarmAnnouncer, partnerFarmAnnouncer: announcerInfo } =
+    getAnnouncers();
+  if (!announcerInfo || !publicFarmAnnouncer)
+    throw new Error("Farm announcer is not set");
 
-  const ctc = acc.contract(farmAnnouncerBackend, announcerInfo);
-  const { onFarmFetched, onProgress = noOp, format = false } = opts;
-  if (opts.seekNow) {
-    onProgress("WARN: Listener will only report new farms");
-    await ctc.events.Announce.seekNow();
-  }
+  const partnerCtc = acc.contract(farmAnnouncerBackend, announcerInfo);
+  const {
+    onFarmFetched,
+    onProgress = noOp,
+    format = false,
+    includePublicFarms = false
+  } = opts;
+  const runAnnouncer = async (
+    ctcInfo: string | number,
+    label: string,
+    partner = false
+  ) => {
+    const ctc = acc.contract(farmAnnouncerBackend, ctcInfo);
+    if (opts.seekNow) {
+      onProgress(`WARN: ${label} Farm Listener will only report new farms`);
+      await ctc.events.Announce.seekNow();
+    }
 
-  return ctc.events.Announce.monitor(({ what }: FarmRegisterEvent) => {
+    return ctc.events.Announce.monitor((e) => onRegisterEvent(e, partner));
+  };
+
+  if (includePublicFarms) runAnnouncer(publicFarmAnnouncer, "Public");
+  return runAnnouncer(announcerInfo, "Partner", true);
+
+  async function onRegisterEvent(
+    { what }: FarmRegisterEvent,
+    partner: boolean
+  ) {
     let farmData = what[1];
     const stakePoolId = what[1].stakedTokenPoolId;
     if (format) {
@@ -69,7 +93,10 @@ export async function subscribeToFarmStream(
         pairTokenBId = bigNumberToNumber(what[1].pairTokenBId).toString();
       }
 
-      const [networkRewards, nnRewards] = farmData.rewardsPerBlock as [any, any];
+      const [networkRewards, nnRewards] = farmData.rewardsPerBlock as [
+        any,
+        any
+      ];
       farmData = {
         ctcInfo: parseAddress(farmData.ctcInfo).toString(),
         startBlock: bigNumberToNumber(farmData.startBlock),
@@ -93,11 +120,12 @@ export async function subscribeToFarmStream(
         stakedTokenTotalSupply: formatCurrency(
           farmData.stakedTokenTotalSupply,
           bigNumberToNumber(farmData.stakedTokenDecimals)
-        )
+        ),
+        isPartnerFarm: partner
       } as StaticFarmDataFormatted;
     }
-    onFarmFetched(successResult("Farm fetched", "", ctc, farmData));
-  });
+    onFarmFetched(successResult("Farm fetched", "", partnerCtc, farmData));
+  }
 }
 
 /** Determine if Farm was created by a Humbleswap Parter */

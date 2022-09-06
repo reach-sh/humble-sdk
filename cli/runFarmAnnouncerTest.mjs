@@ -21,6 +21,7 @@ export async function runFarmAnnouncerTest(acc) {
 
   const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
   subscribeToFarmStream(acc, {
+    includePublicFarms: true,
     onFarmFetched,
     format: true,
     seekNow,

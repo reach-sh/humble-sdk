@@ -21,7 +21,7 @@ export type ComputeMintFn = {
   (
     addBalances: Balances,
     poolBalances: Balances,
-    lptBalances: Balances,
+    lptBalances: Balances
   ): BigNumber;
 };
 
@@ -70,7 +70,7 @@ export type ReachTxnOpts = {
 /** Options for interacting with a `Pool` contract */
 export type PoolFetchOpts = ReachTxnOpts & {
   poolAddress: string | number;
-  includeTokens?: boolean
+  includeTokens?: boolean;
 };
 
 /** Options for interacting with a `Pool` contract */
@@ -156,48 +156,48 @@ export type FetchPoolData = {
   tradeable: boolean;
 };
 
-export type StaticFarmDataUnformatted = {
-  ctcInfo: BigNumber,
-  startBlock: BigNumber,
-  endBlock: BigNumber,
-  rewardTokenId: BigNumber,
-  rewardsPerBlock: [ 
-    BigNumber, 
-    BigNumber 
-  ],
-  stakedTokenId: BigNumber,
-  pairTokenAId: Maybe<BigNumber>,
-  pairTokenASymbol: string,
-  pairTokenBId: BigNumber,
-  pairTokenBSymbol: string,
-  rewardTokenDecimals: BigNumber,
-  rewardTokenSymbol: string,
-  stakedTokenDecimals: BigNumber,
-  stakedTokenPoolId: BigNumber,
-  stakedTokenSymbol: string,
-  stakedTokenTotalSupply: BigNumber
-}
+export type FormattedRewardsPerBlock = {
+  asDefaultNetworkToken: string;
+  asRewardToken: string;
+};
 
-export type FormattedRewardsPerBlock = { asDefaultNetworkToken: string; asRewardToken: string }
+export type StaticFarmDataShared = {
+  pairTokenASymbol: string;
+  pairTokenBSymbol: string;
+  rewardTokenSymbol: string;
+  stakedTokenSymbol: string;
+  isPartnerFarm?: boolean
+};
+
+export type StaticFarmDataUnformatted = {
+  ctcInfo: BigNumber;
+  startBlock: BigNumber;
+  endBlock: BigNumber;
+  rewardTokenId: BigNumber;
+  rewardsPerBlock: [BigNumber, BigNumber];
+  stakedTokenId: BigNumber;
+  pairTokenAId: Maybe<BigNumber>;
+  pairTokenBId: BigNumber;
+  rewardTokenDecimals: BigNumber;
+  stakedTokenDecimals: BigNumber;
+  stakedTokenPoolId: BigNumber;
+  stakedTokenTotalSupply: BigNumber;
+} & StaticFarmDataShared;
 
 export type StaticFarmDataFormatted = {
-  ctcInfo: string,
-  startBlock: number,
-  endBlock: number,
-  rewardTokenId: string,
-  rewardsPerBlock: FormattedRewardsPerBlock,
-  stakedTokenId: string,
-  pairTokenAId: string,
-  pairTokenASymbol: string,
-  pairTokenBId: string,
-  pairTokenBSymbol: string,
-  rewardTokenDecimals: number,
-  rewardTokenSymbol: string,
-  stakedTokenDecimals: number,
-  stakedTokenPoolId?: string,
-  stakedTokenSymbol: string,
-  stakedTokenTotalSupply: string
-}
+  ctcInfo: string;
+  startBlock: number;
+  endBlock: number;
+  rewardTokenId: string;
+  rewardsPerBlock: FormattedRewardsPerBlock;
+  stakedTokenId: string;
+  pairTokenAId: string;
+  pairTokenBId: string;
+  rewardTokenDecimals: number;
+  stakedTokenDecimals: number;
+  stakedTokenPoolId?: string;
+  stakedTokenTotalSupply: string;
+} & StaticFarmDataShared;
 
 /**
  * @version v2

@@ -38,12 +38,12 @@ const TK = process.env.ALGONODE_TOKEN;
 initHumbleSDK({
   network: "TestNet",
   providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK },
-  contractOverrides: {
+  /* contractOverrides: {
     protocolId: 93443561,
     protocolAddress:
       "XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE",
     partnerFarmAnnouncerId: 100474119
-  }
+  } */
 });
 
 const reach = createReachAPI();

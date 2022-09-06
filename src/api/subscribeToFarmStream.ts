@@ -26,7 +26,7 @@ export type FarmSubscriptionOpts = {
   format?: boolean;
   /** When `true`, only report farms created after subscription */
   seekNow?: boolean;
-  /** When `true`, only report farms created after subscription */
+  /** When `true`, include permissionless farms */
   includePublicFarms?: boolean;
 } & ReachTxnOpts;
 

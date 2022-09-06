@@ -10,7 +10,7 @@ import {
 } from "./utils.mjs";
 
 let exitTimeout;
-const LIMIT = 10;
+let LIMIT = 10;
 const TIMEOUT = 15;
 
 /** Attach to farm announcer and list a subset of pools */
@@ -18,6 +18,10 @@ export async function runFarmAnnouncerTest(acc) {
   console.clear();
   Blue(`Running ANNOUNCER ${getFarmAnnouncer()}`);
   Yellow(`Attaching Farm listener ...`);
+
+  const hmPrompt = `Stop after how many? (Leave blank to default to 10)`
+  const howMany = (await answerOrDie(hmPrompt)) || 10
+  LIMIT = howMany
 
   const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
   subscribeToFarmStream(acc, {

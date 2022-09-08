@@ -86,7 +86,7 @@ let acc;
 async function main() {
   console.clear();
   // Allow overrides
-  Yellow("Override HumbleSDK options? (Defaults to local testnet) [y/n]");
+  Yellow("Override HumbleSDK options? [y/n]");
   Blue("Enter 'y' to override, or press Enter to skip");
   const shouldOverride = await answerOrDie("Override?: (press enter to skip)");
   if (shouldOverride === "y") await overrideSDKNetwork();
@@ -107,18 +107,19 @@ async function main() {
 /** Override SDK from command line */
 async function overrideSDKNetwork() {
   Yellow("Select a network (enter option number):");
+  Blue("Press Enter to select default (testnet)");
   const doOverride = (k) => {
     humbleOpts.network = opts[k].value || "TestNet";
     if (k === 1) humbleOpts.contractOverrides = pubTestnet;
   };
   const opts = [
-    { name: "TestNet (local)", value: "TestNet" },
+    { name: "TESTNET (local - default)", value: "TestNet" },
     { name: "TestNet (public)", value: "TestNet" },
     { name: "MainNet", value: "MainNet" }
   ];
-  const prompt = await answerOrDie(
-    opts.map((o, i) => `${i + 1}. ${o.name}`).join("\n")
-  );
+  
+  opts.map(({ name }, i) => Blue(`${i + 1}. ${name}`));
+  const prompt = await answerOrDie("Enter number for selection:");
   const nPr = Number(prompt);
   if (nPr === 0) return doOverride(nPr);
   if (isNaN(nPr) || nPr > opts.length || nPr < 0) return doOverride(0);

@@ -83,7 +83,7 @@ export function getSlippage() {
 let NETWORK_PROVIDER: string;
 /** SDK user's provider preference (TestNet/MainNet) */
 export function getNetworkProvider() {
-  return NETWORK_PROVIDER;
+  return NETWORK_PROVIDER || "TestNet";
 }
 
 /** @internal */

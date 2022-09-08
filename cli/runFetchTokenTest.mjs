@@ -14,11 +14,11 @@ import {
 export async function runFetchTokenTest(acc, id) {
   console.clear();
   Blue(`Running TOKEN on ${getBlockchain()} ${getNetworkProvider()}`);
-  const tokenId = id || (await answerOrDie("Enter token id:"));
-  const peraAsset = await answerOrDie("Fetch verified asset? (y/n)", yesno);
+  Yellow("Enter token id:");
+  const tokenId = id || (await answerOrDie("ID:"));
+  Blue(`Fetching Token "${tokenId}"...`);
 
-  Yellow(`Fetching Token "${tokenId}"...`);
-  await (peraAsset ? peraTokenMetadata(tokenId, acc) : fetchToken(acc, tokenId))
+  await fetchToken(acc, tokenId)
     .then((token) => {
       iout("Fetched token", token);
       exitWithMsgs("Test complete! Exiting ...");

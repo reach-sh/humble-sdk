@@ -5,7 +5,8 @@ import {
   Maybe,
   formatCurrency,
   formatAddress,
-  ReachToken
+  ReachToken,
+  peraTokenMetadata
 } from "../reach-helpers";
 import {
   FetchPoolData,
@@ -22,7 +23,7 @@ import {
   makeNetworkToken,
   successResult
 } from "../utils";
-import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
+import { fromMaybe, noOp } from "../utils/utils.reach";
 
 export type FetchPoolOpts = PoolFetchOpts & {
   /** when true, is a network-to-non-network pool */
@@ -146,21 +147,5 @@ export async function fetchToken(
 ): Promise<ReachToken | null> {
   const id = fromMaybe(token);
   if (id === null || isNetworkToken(id)) return makeNetworkToken();
-
-  try {
-    const { bigNumberToNumber } = createReachAPI();
-    const data: any = await acc.tokenMetadata(id);
-    const decimals = data.decimals && bigNumberToNumber(data.decimals);
-
-    return {
-      id: parseAddress(id),
-      name: trimByteString(data.name),
-      symbol: trimByteString(data.symbol),
-      url: trimByteString(data.url),
-      supply: formatCurrency(data.supply, decimals),
-      decimals,
-    };
-  } catch {
-    return null;
-  }
+  return peraTokenMetadata(id, acc);
 }

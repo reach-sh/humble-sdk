@@ -6,9 +6,11 @@ import {
   parseAddress,
   asMaybe,
   fetchLiquidityPool,
-  createReachAPI
+  createReachAPI,
+  isPartnerFarm,
+  getNetworkProvider,
+  fetchFarmAndTokens
 } from "@reach-sh/humble-sdk";
-import { fetchFarmTokens } from "@reach-sh/humble-sdk/lib/api/Staker.Fetch.js";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
   exitWithMsgs,
@@ -32,14 +34,13 @@ farm, pool
 835260005, 778031658
  */
 
-
 /** Attach to pool announcer and list a subset of pools */
 export async function runAnnounceFarmTest(acc) {
   console.clear();
-  Blue(`Running ANNOUNCER ${getFarmAnnouncer()}`);
-  Yellow(`Attaching Farm listener ...`);
+  Blue(`Running ${getNetworkProvider()} ANNOUNCER ${getFarmAnnouncer()}`);
   const farmId = await answerOrDie("Enter Farm ID");
-  const farmResult = await fetchStakingPool(acc, {
+  Yellow(`Fetching farm ${farmId}`);
+  const farmResult = await fetchFarmAndTokens(acc, {
     poolAddress: farmId,
     formatResult: false,
     includeTokens: true
@@ -49,8 +50,12 @@ export async function runAnnounceFarmTest(acc) {
     return exitWithMsgs(`Farm id ${farmId} not found`);
   }
 
-  Green(JSON.stringify(farmResult.data, null, 2));
-  Blue(`Fetched farm id ${farmId}`);
+  const { farmView: farm, stakeToken, rewardToken } = farmResult.data;
+  const isPartner = isPartnerFarm({ farmView: farm });
+  const label = isPartner ? `PARTNER FARM` : `FARM`;
+  Green(`Fetched ${label} id ${farmId}`);
+  Blue(JSON.stringify(farmResult.data, null, 2));
+  if (!isPartner) Red("WARNING: This is a Permissionless farm!");
 
   const poolId = await answerOrDie("Enter Liquidity Pool Address:");
   if (!poolId) {
@@ -66,19 +71,11 @@ export async function runAnnounceFarmTest(acc) {
     onProgress: Yellow
   });
 
-  if (!poolResult.succeeded) {
-    return exitWithMsgs(`Pool id ${poolId} not found`);
-  }
-
-  const { data: farm, contract: farmContract } = farmResult;
-  const { data: pool } = poolResult;
+  if (!poolResult.succeeded) return exitWithMsgs(`Pool id ${poolId} not found`);
+  const { data: poolData } = poolResult;
+  const { contract: farmContract } = farmResult;
   const stdlib = createReachAPI();
-  const { rewardToken, stakeToken } = await fetchFarmTokens(acc, {
-    poolAddress: farmId,
-    contract: farmContract
-  });
-
-  if (pool.pool.poolTokenId.toString() !== stakeToken.id.toString()) {
+  if (poolData.pool.poolTokenId.toString() !== stakeToken.id.toString()) {
     return exitWithMsgs("Pool Liquidity Token does not match Farm Stake Token");
   }
 
@@ -87,9 +84,9 @@ export async function runAnnounceFarmTest(acc) {
     ctcInfo: stdlib.bigNumberify(farmId),
     endBlock: farm.opts.end,
     pairTokenAId: asMaybe(null),
-    pairTokenASymbol: pool.tokens[0].symbol,
-    pairTokenBId: stdlib.bigNumberify(pool.tokens[1].id),
-    pairTokenBSymbol: pool.tokens[1].symbol,
+    pairTokenASymbol: poolData.tokens[0].symbol,
+    pairTokenBId: stdlib.bigNumberify(poolData.tokens[1].id),
+    pairTokenBSymbol: poolData.tokens[1].symbol,
     rewardsPerBlock: farm.opts.rewardsPerBlock,
     rewardTokenDecimals: stdlib.bigNumberify(rewardToken.decimals),
     rewardTokenId: farm.opts.rewardToken1,
@@ -102,7 +99,8 @@ export async function runAnnounceFarmTest(acc) {
     startBlock: farm.opts.start
   };
 
-  iout("Ready to announce", staticFarmData);
+  iout(`Ready to announce ${label} "${farmId}"`, staticFarmData);
+  if (!isPartner) Red("REMINDER: This is a Permissionless farm!");
   const continues = await answerOrDie("Continue? (y/n)", yesno);
   if (!continues) return exitWithMsgs("Exiting ...");
 
@@ -116,7 +114,10 @@ export async function runAnnounceFarmTest(acc) {
   Blue(JSON.stringify(result, null, 2));
   console.log();
   console.log();
-  return exitWithMsgs("Done");
+
+  return (await answerOrDie("Announce another farm? (y/n)")) === "y"
+    ? runAnnounceFarmTest(acc)
+    : exitWithMsgs("Done");
 }
 
 /** HELPER | When a pool is received, fetch details and reset the timer */

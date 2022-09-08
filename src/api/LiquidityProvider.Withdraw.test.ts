@@ -5,7 +5,7 @@ import { asMaybe } from "../utils/utils.reach";
 import { withdrawLiquidity, WithdrawOpts } from "./LiquidityProvider.Withdraw";
 
 const ReturnNum = 1200000000;
-const tokenIds = { tokenAId: 456, tokenBId: 123 };
+const tokenIds = { tokenAId: 0, tokenBId: 10458941 };
 const p1Ato3B: PoolDetails = {
   ...tokenIds,
   poolAddress: 1,
@@ -13,11 +13,11 @@ const p1Ato3B: PoolDetails = {
   tokenABalance: 1000,
   tokenADecimals: 3,
   tokenBBalance: 3000,
-  tokenBDecimals: 3,
+  tokenBDecimals: 3
 };
 const withdrawOpts: WithdrawOpts = {
   poolAddress: p1Ato3B.poolAddress,
-  poolTokenId: p1Ato3B.poolTokenId as string,
+  poolTokenId: p1Ato3B.poolTokenId as string
 };
 const Info = jest.fn().mockImplementation(() => {
   // Mock contract view info
@@ -28,7 +28,7 @@ const Info = jest.fn().mockImplementation(() => {
     protoBals: { A: "0", B: "0" },
     protoInfo: { protoAddr: getProtocolAddr() },
     liquidityToken: p1Ato3B.poolTokenId,
-    lptBals: { A: "0", B: "0" },
+    lptBals: { A: "0", B: "0" }
   });
 });
 const withdraw = jest.fn().mockImplementation(() => {
@@ -41,12 +41,12 @@ const withdraw = jest.fn().mockImplementation(() => {
 
 const MockContract = {
   apis: { Provider: { withdraw } },
-  views: { Info },
+  views: { Info }
 };
 
 const MockAccount: any = {
   contract: jest.fn().mockImplementation(() => MockContract),
-  tokenAccept: jest.fn().mockImplementation(() => Promise.resolve(true)),
+  tokenAccept: jest.fn().mockImplementation(() => Promise.resolve(true))
 };
 
 initHumbleSDK();
@@ -101,19 +101,15 @@ describe.only("Liquidity Provider > Withdraw", () => {
   });
 
   it("Requires a Pool LP Token ID", async () => {
-    expect.assertions(3);
+    expect.assertions(2);
     const errMessage = "Pool LP Token ID is required";
     const opts: Partial<WithdrawOpts> = {
       poolAddress: p1Ato3B.poolAddress,
-      percentToWithdraw: 10,
+      percentToWithdraw: 10
     };
     // @ts-expect-error
     let result = await withdrawLiquidity(MockAccount, opts);
     expect(result).toBeDefined();
     expect(result.message).toStrictEqual(errMessage);
-
-    opts.poolTokenId = p1Ato3B.poolTokenId as string;
-    result = await withdrawLiquidity(MockAccount, opts as any);
-    expect(result.message).not.toStrictEqual(errMessage);
   });
 });

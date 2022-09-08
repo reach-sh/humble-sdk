@@ -87,7 +87,8 @@ async function main() {
   console.clear();
   // Allow overrides
   Yellow("Override HumbleSDK options? (Defaults to local testnet) [y/n]");
-  const shouldOverride = await answerOrDie("Enter y/n or press enter to skip");
+  Blue("Enter 'y' to override, or press Enter to skip");
+  const shouldOverride = await answerOrDie("Override?: (press enter to skip)");
   if (shouldOverride === "y") await overrideSDKNetwork();
 
   // Start

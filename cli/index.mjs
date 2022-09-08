@@ -115,7 +115,7 @@ async function overrideSDKNetwork() {
     opts.map((o, i) => `${i + 1}. ${o.name}`).join("\n")
   );
   const key = Number(prompt) - 1;
-  if (isNaN(key) || key >= opts.length || key === 0) {
+  if (isNaN(key) || key >= opts.length) {
     return exitWithMsgs("Invalid network selection. Exiting ...");
   }
 

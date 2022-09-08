@@ -4,6 +4,8 @@ import {
   createReachAPI
 } from "@reach-sh/humble-sdk";
 import { loadStdlib } from "@reach-sh/stdlib";
+import { yesno } from "@reach-sh/stdlib/ask.mjs";
+import dotenv from "dotenv";
 import {
   Blue,
   Green,
@@ -26,27 +28,24 @@ import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
 import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
 import { runStakeToFarmTest } from "./runStakeToFarmTest.mjs";
-import dotenv from "dotenv";
 import { runPoolReport } from "./runPoolReportTest.mjs";
 import { createFarmAnnouncer } from "./runCreateFarmAnnouncer.mjs";
 import { runCheckPartnerFarmTest } from "./runCheckPartnerFarmTest.mjs";
+import { createTokenMetadata } from "./createTokenMedata.mjs";
 
 dotenv.config({ path: "./.env" });
 
-// init SDK
 const TK = process.env.ALGONODE_TOKEN;
-initHumbleSDK({
+const humbleOpts = {
   network: "TestNet",
-  providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK },
-  contractOverrides: {
-    protocolId: 93443561,
-    protocolAddress:
-      "XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE",
-    partnerFarmAnnouncerId: 100474119
-  }
-});
+  providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK }
+};
+const pubTestnet = {
+  protocolId: 93443561,
+  protocolAddress: "XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE",
+  partnerFarmAnnouncerId: 100474119
+};
 
-const reach = createReachAPI();
 const CreateFarmAnnouncer = {
   title: "Create Farm Announcer (Requires funded account)",
   action: createFarmAnnouncer
@@ -70,7 +69,8 @@ const farmActions = [
 ];
 const tokenActions = [
   { title: "Fetch a Token", action: runFetchTokenTest },
-  { title: "Swap tokens", action: runSwapTest }
+  { title: "Swap tokens", action: runSwapTest },
+  { title: "Create JSON Metadata", action: createTokenMetadata }
 ];
 const options = [...poolActions, ...farmActions, ...tokenActions];
 const sections = [
@@ -85,14 +85,42 @@ let acc;
 /** Main script */
 async function main() {
   console.clear();
+  // Allow overrides
+  Yellow("Override HumbleSDK options? (Defaults to local testnet) [y/n]");
+  const shouldOverride = await answerOrDie("Enter y/n or press enter to skip");
+  if (shouldOverride === "y") await overrideSDKNetwork();
+
+  // Start
+  initHumbleSDK(humbleOpts);
 
   Blue(`ANNOUNCER: ${getPoolAnnouncer()}`);
   Yellow(`Getting account ...`);
+  const reach = createReachAPI();
   const args = process.argv.slice(2);
   acc = await getAccountFromArgs(args);
   Green(`Connected ${reach.formatAddress(acc)}\n`);
 
   selectAction(sections);
+}
+
+/** Override SDK from command line */
+async function overrideSDKNetwork() {
+  Yellow("Select a network (enter option number):");
+  const opts = [
+    { name: "TestNet (local)", value: "TestNet" },
+    { name: "TestNet (public)", value: "TestNet" },
+    { name: "MainNet", value: "MainNet" }
+  ];
+  const prompt = await answerOrDie(
+    opts.map((o, i) => `${i + 1}. ${o.name}`).join("\n")
+  );
+  const key = Number(prompt) - 1;
+  if (isNaN(key) || key >= opts.length || key === 0) {
+    return exitWithMsgs("Invalid network selection. Exiting ...");
+  }
+
+  humbleOpts.network = opts[key].value || "TestNet";
+  if (key === 1) humbleOpts.contractOverrides = pubTestnet;
 }
 
 /** Select and perform an action from a list */

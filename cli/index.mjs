@@ -107,6 +107,10 @@ async function main() {
 /** Override SDK from command line */
 async function overrideSDKNetwork() {
   Yellow("Select a network (enter option number):");
+  const doOverride = (k) => {
+    humbleOpts.network = opts[k].value || "TestNet";
+    if (k === 1) humbleOpts.contractOverrides = pubTestnet;
+  };
   const opts = [
     { name: "TestNet (local)", value: "TestNet" },
     { name: "TestNet (public)", value: "TestNet" },
@@ -115,13 +119,10 @@ async function overrideSDKNetwork() {
   const prompt = await answerOrDie(
     opts.map((o, i) => `${i + 1}. ${o.name}`).join("\n")
   );
-  const key = Number(prompt) - 1;
-  if (isNaN(key) || key >= opts.length) {
-    return exitWithMsgs("Invalid network selection. Exiting ...");
-  }
-
-  humbleOpts.network = opts[key].value || "TestNet";
-  if (key === 1) humbleOpts.contractOverrides = pubTestnet;
+  const nPr = Number(prompt);
+  if (nPr === 0) return doOverride(nPr);
+  if (isNaN(nPr) || nPr > opts.length || nPr < 0) return doOverride(0);
+  return doOverride(nPr - 1);
 }
 
 /** Select and perform an action from a list */

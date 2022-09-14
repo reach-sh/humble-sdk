@@ -1,1 +1,6 @@
-{ "name": "Algorand", "abbr": "ALGO", "decimals": 6, "avgBlockDuration": 4300 }
+{
+  "name": "Algorand",
+  "abbr": "ALGO",
+  "decimals": 6,
+  "avgBlockDuration": 3600
+}

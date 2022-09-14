@@ -44,15 +44,15 @@ export function blockConstants(network = getBlockchain()) {
   const { avgBlockDuration } =
     CHAIN_CONSTANTS[network as keyof typeof CHAIN_CONSTANTS];
   const BLOCK_LENGTH = avgBlockDuration / 1000;
-  const BLOCKS_PER_HR = 3600 / BLOCK_LENGTH;
-  const BLOCKS_PER_DAY = 86400 / BLOCK_LENGTH;
+  const BLOCKS_PER_HR = (60 * 60) / BLOCK_LENGTH;
+  const BLOCKS_PER_DAY = (60 * 60 * 24) / BLOCK_LENGTH;
 
   return {
     /** Length of time to write a single block */
     BLOCK_LENGTH,
-    /* Number of algo blocks written per day (86400 secs / 4.5) */
+    /* Number of algo blocks written per day */
     BLOCKS_PER_DAY,
-    /* Number of algo blocks written per day (800 blocks) */
-    BLOCKS_PER_HR
+    /* Number of algo blocks written per hour */
+    BLOCKS_PER_HR,
   };
 }

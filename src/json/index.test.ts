@@ -5,7 +5,7 @@ describe("Chain Constants", () => {
     const { ALGO, ETH } = Constants;
     expect(ALGO).toBeDefined();
     expect(ALGO.abbr).toStrictEqual("ALGO");
-    expect(ALGO.avgBlockDuration).toStrictEqual(4300);
+    expect(ALGO.avgBlockDuration).toStrictEqual(3600);
     expect(ALGO.decimals).toStrictEqual(6);
     expect(ALGO.name).toStrictEqual("Algorand");
 
@@ -17,11 +17,11 @@ describe("Chain Constants", () => {
 
   it("Converts an interval to a blocklength", () => {
     const blockLengthSecs = Constants.ALGO.avgBlockDuration / 1000;
-    const bloxPerHr = (60 / blockLengthSecs) * 60;
+    const bloxPerHr = (60 * 60) / blockLengthSecs;
     const bloxPerDay = bloxPerHr * 24;
     let days = 0;
     let hours = 0;
-    expect(convertToBlocks(days*24)).toStrictEqual(0);
+    expect(convertToBlocks(days * 24)).toStrictEqual(0);
     expect(convertToBlocks(hours)).toStrictEqual(0);
 
     hours = 1;

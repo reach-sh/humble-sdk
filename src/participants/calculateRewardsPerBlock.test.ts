@@ -16,7 +16,7 @@ describe("StakingAdmin.CalculateRewardsPerBlock", () => {
     startDateTime: tomorrow.toISOString(),
     endDateTime: nextWeek.toISOString(),
     networkRewards: "0",
-    totalReward: "10000",
+    totalReward: "100000",
     rewardTokenDecimals: 6,
     rewardTokenId: "111222333",
     stakeTokenId: "333222111"

@@ -5,7 +5,7 @@ describe("Chain Constants", () => {
     const { ALGO, ETH } = Constants;
     expect(ALGO).toBeDefined();
     expect(ALGO.abbr).toStrictEqual("ALGO");
-    expect(ALGO.avgBlockDuration).toStrictEqual(3620);
+    expect(ALGO.avgBlockDuration).toStrictEqual(3700);
     expect(ALGO.decimals).toStrictEqual(6);
     expect(ALGO.name).toStrictEqual("Algorand");
 

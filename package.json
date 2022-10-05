@@ -11,7 +11,6 @@
   "scripts": {
     "test": "jest --watchAll --testTimeout=300000 --detectOpenHandles",
     "test:ci": "jest --testTimeout=300000",
-    "compress-announcer:farm": "uglifyjs -m -c -o src/build/farmAnnouncer.large.js -- src/build/farmAnnouncer.large.js",
     "compress": "make compress",
     "build": "rm -rf lib/ && tsc && make compress",
     "beta": "npm run build && npm publish --tag beta"

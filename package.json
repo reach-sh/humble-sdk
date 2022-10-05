@@ -1,6 +1,6 @@
 {
   "name": "@reach-sh/humble-sdk",
-  "version": "2.1.1-beta.6",
+  "version": "2.1.1-beta.7",
   "description": "A Javascript library for interacting with the HumbleSwap DEx",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -11,14 +11,8 @@
   "scripts": {
     "test": "jest --watchAll --testTimeout=300000 --detectOpenHandles",
     "test:ci": "jest --testTimeout=300000",
-    "compress-announcer:farm": "uglifyjs -m -c -o src/build/farmAnnouncer.large.js -- src/build/farmAnnouncer.large.js",
-    "compress-announcer:pool": "uglifyjs -m -c -o src/build/index.main.js -- src/build/index.main.js",
-    "compress-triumvirate": "uglifyjs -m -c -o src/build/index.triumvirate.js -- src/build/index.triumvirate.js",
-    "compress-n2nn": "uglifyjs -m -c -o src/build/index.net_tok.js -- src/build/index.net_tok.js",
-    "compress-nn2nn": "uglifyjs -m -c -o src/build/index.tok_tok.js -- src/build/index.tok_tok.js",
-    "compress-staker": "uglifyjs -m -c -o src/build/staker.main.js -- src/build/staker.main.js",
-    "compress-mjs": "npm run compress-announcer:farm && npm run compress-announcer:pool && npm run compress-triumvirate && npm run compress-n2nn && npm run compress-nn2nn && npm run compress-staker",
-    "build": "rm -rf lib/ && tsc",
+    "compress": "make compress",
+    "build": "rm -rf lib/ && tsc && make compress",
     "beta": "npm run build && npm publish --tag beta"
   },
   "repository": {

@@ -8,7 +8,7 @@ PTCP_DIR := lib/participants
 REACH_DIR := lib/reach-helpers
 UTILS_DIR := lib/utils
 TOP_LEVEL := $(shell find $(BUILD_DIR) -name '*.js')
-MIN := uglifyjs -m -c -o
+MIN := uglifyjs -o
 
 clear-screen:
 	@clear

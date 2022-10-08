@@ -22,14 +22,16 @@ export async function runFetchPoolTest(acc) {
   const n2nn = await answerOrDie(isNetworkPrompt, yesno);
 
   Yellow(`Fetching single pool "${addr}"...`);
-  iout(
-    "Fetched pool",
-    await fetchLiquidityPool(acc, {
-      includeTokens: true,
-      poolAddress: addr,
-      onProgress,
-      n2nn,
-    })
-  );
+  const result = await fetchLiquidityPool(acc, {
+    includeTokens: true,
+    poolAddress: addr,
+    onProgress,
+    n2nn
+  });
+  iout("Fetched pool", result);
+  if (result.succeeded && (await answerOrDie("View Contract ABI?"))) {
+    iout("Pool ABI", await result.contract.getABI());
+  }
+
   exitWithMsgs("Test complete! Exiting ...");
 }

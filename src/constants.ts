@@ -113,6 +113,11 @@ export function setSDKOpts(opts: SDKOpts) {
   INITIALIZED = true;
 }
 
+/** @internal Get Humble Farm funder address */
+export function ProtocolFarmFunderAddr() {
+  return `HUM5WSLZVWG62WJKPZ4MQEUD2OREWBQ4WOWFAD5IDAB5W7BJS5JSWCSIBI`
+}
+
 /** @internal Get Pool data source for Testnet/Mainnet */
 function TriumvirContractId(opts: SDKOpts) {
   const { network = "TestNet", contractOverrides = {} } = opts;

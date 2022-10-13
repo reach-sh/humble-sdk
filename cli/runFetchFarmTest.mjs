@@ -48,6 +48,10 @@ export async function runFetchFarmTest(acc) {
     if (formatForUI) return renderFarmData(acc, result);
   }
 
+  if ((await answerOrDie("View ABI?")) === "y") {
+    iout("Farm ABI", await result.contract.getABI());
+  }
+
   iout(result.message, result.data);
   exitWithMsgs("Test complete! Exiting ...");
 }

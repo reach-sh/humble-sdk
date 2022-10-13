@@ -117,7 +117,7 @@ async function overrideSDKNetwork() {
     { name: "TestNet (public)", value: "TestNet" },
     { name: "MainNet", value: "MainNet" }
   ];
-  
+
   opts.map(({ name }, i) => Blue(`${i + 1}. ${name}`));
   const prompt = await answerOrDie("Enter number for selection:");
   const nPr = Number(prompt);

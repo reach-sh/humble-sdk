@@ -16,6 +16,7 @@ import {
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
 import { checkRewardsImbalance } from "./calculateRewardsPerBlock";
+import { ProtocolFarmFunderAddr } from "../constants";
 
 /** Transaction options (create staking pool) */
 type CreateFarmTxnOpts = {
@@ -36,7 +37,7 @@ const requiredFields = [
   "stakeTokenId",
   "totalRewardsPayout",
   "startBlock",
-  "endBlock",
+  "endBlock"
 ];
 
 /** Create a staking contract for earning yield from liquidity tokens */
@@ -53,7 +54,7 @@ export async function createStakingPool(
     opts.stakeTokenId,
     opts.totalRewardsPayout,
     opts.startBlock,
-    opts.endBlock,
+    opts.endBlock
   ];
 
   const missing = required
@@ -68,8 +69,13 @@ export async function createStakingPool(
   }
 
   const stakeToken = await fetchToken(acc, opts.stakeTokenId);
-  if (stakeToken?.symbol !== "HMBL2LT") {
-    return errorResult("Staking token is not a Liquidity Pool token", null, data);
+  const notPartner = opts.rewarder0 !== ProtocolFarmFunderAddr();
+  if (stakeToken?.symbol !== "HMBL2LT" && notPartner) {
+    return errorResult(
+      "Staking token is not a Liquidity Pool token",
+      null,
+      data
+    );
   }
 
   //    deploy and fund contract

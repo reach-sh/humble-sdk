@@ -217,6 +217,15 @@ type TransactionResult<T> = {
 
 ---
 
+# All Sections
+
+- [Shared methods](./METHODS.md)
+- [Swapping](./SWAPPING.md)
+- [Liquidity Pools](./LIQUIDITY-POOLS.md)
+- [Liquidity Pool ABI](./LP-ABI.md)
+- [Farming/Staking Pools](./FARMING.md)
+- [Types](./TYPES.md)
+
 [**Return Home**](./index.md)
 
 ---

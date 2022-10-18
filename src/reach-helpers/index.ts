@@ -1,5 +1,10 @@
+import axios, { AxiosResponse } from "axios";
 import { isNetworkToken, makeNetworkToken } from "../utils";
-import { getNetworkProvider, UNINSTANTIATED } from "../constants";
+import {
+  getBlockchain,
+  getNetworkProvider,
+  UNINSTANTIATED
+} from "../constants";
 import * as T from "./types";
 import { formatNumberShort, trimByteString } from "../utils/utils.reach";
 
@@ -7,7 +12,7 @@ type LoadStdlibFn = { (args: any): any };
 export * from "./types";
 export const NETWORKS: T.NetworksMap = {
   ALGO: { name: "Algorand", abbr: "ALGO", decimals: 6 },
-  ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 },
+  ETH: { name: "Ethereum", abbr: "ETH", decimals: 18 }
 };
 /**
  * @internal
@@ -48,19 +53,26 @@ export function loadReach(
 
   // Instantiate Reach stdlib
   const { provider = "TestNet", chain = "ALGO", providerEnv } = opts;
-  reach = loadStdlibFn({
-    REACH_CONNECTOR_MODE: chain,
-    REACH_NO_WARN: 'Y',
-  });
+  if (/(-devnet|-live|-browser)/.test(provider || "TestNet")) {
+    reach = loadStdlibFn({
+      REACH_CONNECTOR_MODE: provider,
+      REACH_NO_WARN: "Y"
+    });
+  } else {
+    reach = loadStdlibFn({
+      REACH_CONNECTOR_MODE: chain,
+      REACH_NO_WARN: "Y"
+    });
 
-  if (opts.walletFallback) {
-    reach.setWalletFallback(
-      reach.walletFallback({
-        providerEnv: buildProviderEnv(provider, providerEnv),
-        ...opts.walletFallback,
-      })
-    );
-  } else reach.setProviderByEnv(buildProviderEnv(provider, providerEnv));
+    if (opts.walletFallback) {
+      reach.setWalletFallback(
+        reach.walletFallback({
+          providerEnv: buildProviderEnv(provider, providerEnv),
+          ...opts.walletFallback
+        })
+      );
+    } else reach.setProviderByEnv(buildProviderEnv(provider, providerEnv));
+  }
 
   return reach;
 }
@@ -85,6 +97,14 @@ export function parseCurrency(val: any, dec?: number) {
   const decimals = parseNetworkDecimals(Number(dec));
   return createReachAPI().parseCurrency(val, decimals);
 }
+/** @internal Ensure `network` param from user is a recognized value */
+export function safeNetwork(val?: T.NetworkProvider): T.NetworkProvider {
+  const valid: T.NetworkProvider[] = ["TestNet", "MainNet", "ALGO-devnet"];
+  if (!val) return valid[0];
+  const safe = valid.includes(val) ? val : "TestNet";
+  return safe;
+}
+
 
 /** @internal */
 function buildProviderEnv(
@@ -93,56 +113,108 @@ function buildProviderEnv(
 ): T.AlgoEnvOverride {
   let domain = "algonode.cloud";
   const network = provider.toLowerCase();
-
   const server = `https://${network}-api.${domain}`;
   const indexer = `https://${network}-idx.${domain}`;
-  const env = {
+  const env: T.AlgoEnvOverride = {
     ALGO_SERVER: server,
     ALGO_PORT: "",
     ALGO_INDEXER_SERVER: indexer,
     ALGO_INDEXER_PORT: "",
     REACH_ISOLATED_NETWORK: "no",
-
-    ...overrides,
+    ...overrides
   };
 
-  return env as T.AlgoEnvOverride;
+  return env;
 }
 
-async function getNetworkTokenBalance(address: string, bigNumber=false) {
-  const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`
-  const result = await fetch(URL).then((res) => res.json())
+function getBaseURLHeaders() {
+  const net = getNetworkProvider();
+  if (net === "ALGO-devnet")
+    return {
+      headers: {
+        "X-Algo-API-Token":
+          "c87f5580d7a866317b4bfe9e8b8d1dda955636ccebfa88c12b414db208dd9705"
+      }
+    };
+  return {};
+}
+
+function getIndexerURLHeaders() {
+  const net = getNetworkProvider();
+  if (net === "ALGO-devnet")
+    return {
+      headers: {
+        "X-Indexer-API-Token": "reach-devnet"
+      }
+    };
+  return {};
+}
+
+const axiosResponse = (res: AxiosResponse<any, any>) => res.data;
+const axiosError = () => null;
+
+async function getNetworkTokenBalance(address: string, bigNumber = false) {
+  const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`;
+  const result = await axios
+    .get(URL, getBaseURLHeaders())
+    .then(axiosResponse)
+    .catch(() => ({ amount: 0 }));
   const { amount } = result;
   return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
 }
 
+export type TokenBalanceOpts = {
+  id: string | number;
+  bigNumber?: boolean;
+  tokenDecimals?: number;
+};
+
 /** Get formatted token balance */
-export async function tokenBalance(acc: T.ReachAccount, id: string | number, bigNumber=false) {
+export async function tokenBalance(
+  acc: T.ReachAccount,
+  opts: TokenBalanceOpts
+) {
+  const { id, bigNumber = false, tokenDecimals } = opts;
   const reach = createReachAPI();
   const address = reach.formatAddress(acc);
-  if (["0", 0, null].includes(id)) return await getNetworkTokenBalance(address, bigNumber)
+  if (["0", 0, null].includes(id))
+    return getNetworkTokenBalance(address, bigNumber);
 
-  const assetURL = `${await indexerBaseURL()}/assets/${id}`;
   const balURL = `${balanceBaseURL()}/accounts/${address}/assets/${id}`;
-  const [{ asset }, bal] = await Promise.all([
-    fetch(assetURL).then((res) => res.json()),
-    fetch(balURL).then((res) => res.json()),
-  ]);
+  const bal = await axios
+    .get(balURL, getBaseURLHeaders())
+    .then(axiosResponse)
+    .catch(axiosError);
+  if (!bal?.["asset-holding"]) return bigNumber ? parseCurrency(0) : "0";
 
-  if (!asset?.params || !bal?.["asset-holding"]) return bigNumber ? parseCurrency(0) : "0";
-
-  const { decimals } = asset.params;
   const { amount } = bal["asset-holding"];
-  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, decimals);
+  let decimals = tokenDecimals;
+  if (decimals === undefined) {
+    const assetURL = `${await indexerBaseURL()}/assets/${id}`;
+    const { asset } = await axios
+      .get(assetURL, getIndexerURLHeaders())
+      .then(axiosResponse)
+      .catch(axiosError);
+
+    if (!asset?.params) return bigNumber ? parseCurrency(0) : "0";
+    decimals = asset.params.decimals;
+  }
+
+  return bigNumber
+    ? parseCurrency(amount, 0)
+    : formatCurrency(amount, decimals);
 }
 /** @internal Generate URL for fetching token balance  */
 function balanceBaseURL() {
   const net = getNetworkProvider();
+  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:4180/v2";
   return trimURL(`https://${net.toLowerCase()}-api.algonode.cloud/v2/`);
 }
 
 /** @internal Generate Algo Indexer URL if available  */
 async function indexerBaseURL() {
+  const net = getNetworkProvider();
+  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:8980/v2";
   try {
     const reach = createReachAPI();
     const { indexer } = await reach.getProvider();
@@ -161,13 +233,42 @@ function trimURL(url: string) {
   return url.replace(/\/$/, "");
 }
 
+/** (ALGORAND only) Get token data and `acc`'s balance of token (if available) */
+export async function peraTokenMetadata(
+  id: any,
+  acc: T.ReachAccount,
+  withBalance?: boolean
+): Promise<T.ReachToken> {
+  if (getBlockchain() !== "ALGO") return tokenMetadata(id, acc, withBalance);
+
+  const provider = getNetworkProvider().toLowerCase();
+  const balance = () => (withBalance ? tokenBalance(acc, { id }) : 0);
+  const peraToken = async () => {
+    const url = `https://${provider}.api.perawallet.app/v1/assets/${id}/`;
+    return isNetworkToken(id) || id?._hex === "0x00"
+      ? Promise.resolve(makeNetworkToken())
+      : axios
+          .get(url)
+          .catch(() => Promise.resolve(null))
+          .then((md) => (md?.data ? peraToReachToken(md?.data) : null));
+  };
+  const metadata = await peraToken();
+  if (metadata === null)
+    return Promise.reject(new Error(`Token "${id}" not found`));
+  return withBalance
+    ? peraToReachToken(metadata, await balance())
+    : peraToReachToken(metadata, 0);
+}
+
 /** Get token data and `acc`'s balance of token (if available) */
 export async function tokenMetadata(
   token: any,
-  acc: T.ReachAccount
+  acc: T.ReachAccount,
+  withBalance?: boolean
 ): Promise<T.ReachToken> {
   const { eq } = createReachAPI();
-  const fetchBalance = () => tokenBalance(acc, token);
+  const fetchBalance = () =>
+    withBalance ? tokenBalance(acc, { id: token }) : 0;
   const fetchToken = () =>
     isNetworkToken(token) || eq(token, 0)
       ? makeNetworkToken()
@@ -178,7 +279,7 @@ export async function tokenMetadata(
 
   const [metadata, bal] = await Promise.allSettled([
     fetchToken(),
-    fetchBalance(),
+    fetchBalance()
   ]);
 
   if (metadata.status === "rejected" || metadata.value === null) {
@@ -204,6 +305,48 @@ function formatReachToken(tokenId: any, amount: any, data: any): T.ReachToken {
     supply: data.supply,
     decimals: data.decimals,
     verified: data.verified || false,
+    verificationTier:
+      data.verification_tier || data.verificationTier || "unverified"
+  };
+}
+
+type PeraAssetPartial = {
+  asset_id: number;
+  fraction_decimals: 0;
+  is_verified: true;
+  logo: string;
+  name: string;
+  project_url: string;
+  total_supply: number;
+  total: string;
+  unit_name: string;
+  url: string;
+  verification_tier: T.TokenVerificationTier;
+};
+/** @internal Format token metadata from `Pera Wallet` API request */
+function peraToReachToken(
+  raw: PeraAssetPartial | T.ReachToken,
+  amount = 0
+): T.ReachToken {
+  if ((raw as T.ReachToken).verificationTier) {
+    return { ...raw, amount } as T.ReachToken;
+  }
+
+  const data = raw as PeraAssetPartial;
+  const id = data.asset_id;
+  const fallbackName = `Asset #${id}`;
+  const symbol = data.unit_name || `#${id}`;
+
+  return {
+    id,
+    name: data.name || fallbackName,
+    symbol,
+    amount,
+    decimals: data.fraction_decimals,
+    supply: data.total || data.total_supply.toString(),
+    url: data.url || data.project_url || data.logo,
+    verified: data.is_verified || false,
+    verificationTier: data.verification_tier
   };
 }
 /** @internal  */

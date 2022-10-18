@@ -21,7 +21,7 @@ export type ComputeMintFn = {
   (
     addBalances: Balances,
     poolBalances: Balances,
-    lptBalances: Balances,
+    lptBalances: Balances
   ): BigNumber;
 };
 
@@ -70,6 +70,7 @@ export type ReachTxnOpts = {
 /** Options for interacting with a `Pool` contract */
 export type PoolFetchOpts = ReachTxnOpts & {
   poolAddress: string | number;
+  includeTokens?: boolean;
 };
 
 /** Options for interacting with a `Pool` contract */
@@ -154,6 +155,49 @@ export type FetchPoolData = {
   /** Whether pool has liquidity and is tradeable */
   tradeable: boolean;
 };
+
+export type FormattedRewardsPerBlock = {
+  asDefaultNetworkToken: string;
+  asRewardToken: string;
+};
+
+export type StaticFarmDataShared = {
+  pairTokenASymbol: string;
+  pairTokenBSymbol: string;
+  rewardTokenSymbol: string;
+  stakedTokenSymbol: string;
+  isPartnerFarm?: boolean
+};
+
+export type StaticFarmDataUnformatted = {
+  ctcInfo: BigNumber;
+  startBlock: BigNumber;
+  endBlock: BigNumber;
+  rewardTokenId: BigNumber;
+  rewardsPerBlock: [BigNumber, BigNumber];
+  stakedTokenId: BigNumber;
+  pairTokenAId: Maybe<BigNumber>;
+  pairTokenBId: BigNumber;
+  rewardTokenDecimals: BigNumber;
+  stakedTokenDecimals: BigNumber;
+  stakedTokenPoolId: BigNumber;
+  stakedTokenTotalSupply: BigNumber;
+} & StaticFarmDataShared;
+
+export type StaticFarmDataFormatted = {
+  ctcInfo: string;
+  startBlock: number;
+  endBlock: number;
+  rewardTokenId: string;
+  rewardsPerBlock: FormattedRewardsPerBlock;
+  stakedTokenId: string;
+  pairTokenAId: string;
+  pairTokenBId: string;
+  rewardTokenDecimals: number;
+  stakedTokenDecimals: number;
+  stakedTokenPoolId?: string;
+  stakedTokenTotalSupply: string;
+} & StaticFarmDataShared;
 
 /**
  * @version v2

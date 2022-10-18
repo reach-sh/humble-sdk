@@ -5,13 +5,15 @@ import {
   Maybe,
   formatCurrency,
   formatAddress,
+  ReachToken,
+  peraTokenMetadata
 } from "../reach-helpers";
 import {
   FetchPoolData,
   PoolDetails,
   PoolFetchOpts,
   TokenID,
-  TransactionResult,
+  TransactionResult
 } from "../types";
 import { poolBackend, poolBackendN2NN, PoolContract } from "../build/backend";
 import { getFeeInfo, getProtocolAddr } from "../constants";
@@ -19,14 +21,15 @@ import {
   errorResult,
   isNetworkToken,
   makeNetworkToken,
-  successResult,
-  withTimeout,
+  successResult
 } from "../utils";
-import { fromMaybe, noOp, trimByteString } from "../utils/utils.reach";
+import { fromMaybe, noOp } from "../utils/utils.reach";
 
 export type FetchPoolOpts = PoolFetchOpts & {
   /** when true, is a network-to-non-network pool */
   n2nn: boolean;
+  /** (Optional) `TokenA` and `TokenB`. Required if `opts.includeTokens` is `false` */
+  tokens?: [ReachToken, ReachToken];
 };
 /** ALIAS | Fetch data about a pool */
 export const fetchPool = fetchLiquidityPool;
@@ -49,6 +52,8 @@ export async function fetchLiquidityPool(
     n2nn = false,
     onComplete = noOp,
     onProgress = noOp,
+    includeTokens,
+    tokens = []
   } = opts || { n2nn: false };
   // backend is determined on whether or not the pool uses the network token
   const backend = () => (n2nn ? poolBackendN2NN : poolBackend);
@@ -61,6 +66,10 @@ export async function fetchLiquidityPool(
 
   // Load pool data from view
   if (!poolAddress) return fail("Pool address is required");
+  if (!includeTokens && tokens.length === 0) {
+    return fail("Token data is required when 'includeTokens' is false");
+  }
+
   const ctcInfo = parseAddress(poolAddress);
   onProgress(`Fetching data for pool "${ctcInfo}"`);
   const ctc: PoolContract = opts.contract || acc.contract(backend(), ctcInfo);
@@ -74,7 +83,7 @@ export async function fetchLiquidityPool(
     protoBals,
     protoInfo,
     liquidityToken,
-    lptBals,
+    lptBals
   } = view;
 
   // Pool's humble address must match the internal one
@@ -84,11 +93,11 @@ export async function fetchLiquidityPool(
   if (!valid) return fail("invalid pool (protocol mismatch)");
 
   onProgress(`Fetching tokens for pool "${ctcInfo}"`);
-  const [tokA, tokB] = await Promise.all([
-    fetchToken(acc, tokenAId),
-    fetchToken(acc, tokenBId),
-  ]);
-  if (tokA === null || tokB === null) {
+  const [tokA, tokB] = includeTokens
+    ? await Promise.all([fetchToken(acc, tokenAId), fetchToken(acc, tokenBId)])
+    : tokens;
+
+  if (!tokA || !tokB) {
     return fail("invalid pool (one or more tokens were not found)");
   }
 
@@ -113,12 +122,15 @@ export async function fetchLiquidityPool(
     tokenBBalance: formatCurrency(bBal, tokB?.decimals),
     tokenBFees: formatCurrency(totalFees(pBBal), tokB?.decimals),
     tokenBId: tokB?.id,
-    tokenBDecimals: tokB?.decimals,
+    tokenBDecimals: tokB?.decimals
   };
 
   const tradeable: boolean = reach.gt(aBal, 0) && reach.gt(bBal, 0);
-  const tokens: FetchPoolData["tokens"] = [tokA, tokB];
-  const data = { pool, tradeable, tokens };
+  const data: FetchPoolData = {
+    pool,
+    tradeable,
+    tokens: [tokA, tokB] as FetchPoolData["tokens"]
+  };
   const result = successResult("OK", ctcInfo, ctc, data);
   onComplete(result);
   return result;
@@ -132,24 +144,8 @@ export async function fetchLiquidityPool(
 export async function fetchToken(
   acc: ReachAccount,
   token: TokenID | Maybe<TokenID>
-) {
+): Promise<ReachToken | null> {
   const id = fromMaybe(token);
   if (id === null || isNetworkToken(id)) return makeNetworkToken();
-
-  try {
-    const { bigNumberToNumber } = createReachAPI();
-    const data: any = await withTimeout(acc.tokenMetadata(id));
-    const decimals = data.decimals && bigNumberToNumber(data.decimals);
-
-    return {
-      id: parseAddress(id),
-      name: trimByteString(data.name),
-      symbol: trimByteString(data.symbol),
-      url: trimByteString(data.url),
-      supply: formatCurrency(data.supply, decimals),
-      decimals,
-    };
-  } catch {
-    return null;
-  }
+  return peraTokenMetadata(id, acc);
 }

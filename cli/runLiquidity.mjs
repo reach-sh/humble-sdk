@@ -175,7 +175,7 @@ async function fetchLPool(acc, args) {
 
   //  Fetch pool
   Yellow(`* Fetching pool "${poolAddress}"`);
-  const fetchOpts = { poolAddress, n2nn, onProgress: Yellow };
+  const fetchOpts = { includeTokens: true, poolAddress, n2nn, onProgress: Yellow };
   const poolResult = await fetchLiquidityPool(acc, fetchOpts);
   const { succeeded, message } = poolResult;
   if (!succeeded) return exitWithMsgs(JSON.stringify(message));

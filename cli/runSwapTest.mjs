@@ -31,10 +31,16 @@ export async function runSwapTest(acc, opts) {
   const n2nn = await answerOrDie(isNetworkPrompt);
 
   // Fetch pool (delegate logging)
-  const { data: poolData, contract }  = await fetchLiquidityPool(acc, { poolAddress, onProgress, n2nn: n2nn === 'true' });
-  const pool = poolData.pool
+  const { data: poolData, contract } = await fetchLiquidityPool(acc, {
+    includeTokens: true,
+    poolAddress,
+    onProgress,
+    n2nn: n2nn === "true",
+  });
+  const pool = poolData.pool;
 
-  const amountA = inputA || (await answerOrDie(`How much of tokenA are you swapping?`));
+  const amountA =
+    inputA || (await answerOrDie(`How much of tokenA are you swapping?`));
 
   // Calculate price impact
   let swap = { amountA, tokenAId: pool.tokenAId, tokenBId: pool.tokenBId };
@@ -68,7 +74,7 @@ export async function runSwapTest(acc, opts) {
 /** Helper | Fetch target pool for swap */
 async function fetchSwapPool(acc, poolAddress, n2nn) {
   Yellow(`Fetching pool "${poolAddress}"`);
-  const opts = { n2nn, onProgress };
+  const opts = { n2nn, onProgress, includeTokens: true };
   const res = await fetchLiquidityPool(acc, poolAddress, opts);
   const { succeeded, data, message, contract } = res;
   if (!succeeded) return exitWithMsgs(message);

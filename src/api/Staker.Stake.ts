@@ -48,7 +48,7 @@ export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
   const stakerAPI = contract.apis.Staker as StakerAPI;
 
   try {
-    const amt = parseCurrency(amountToStake);
+    const amt = parseCurrency(amountToStake, decimals);
     const resp: StakeUpdate = await stakerAPI.stake(amt);
     const message = `Staked ${amountToStake} ${symbol}`;
     const fmt = formatStakeRewardsUpdate(resp, decimals);

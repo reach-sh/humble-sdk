@@ -39,9 +39,21 @@ export type NetworkData = {
   decimals?: number;
 };
 
-export type NetworkProvider = ("TestNet" | "BetaNet" | "MainNet") & string;
+export type NetworkProvider = (
+  | "TestNet"
+  | "BetaNet"
+  | "MainNet"
+  | "ALGO-devnet"
+) &
+  string;
 
 export type NetworksMap = Record<ChainSymbol, NetworkData>;
+
+export type TokenVerificationTier =
+  | "verified"
+  | "trusted"
+  | "suspicious"
+  | "unverified";
 
 export type ReachToken = {
   id: number | string;
@@ -52,6 +64,7 @@ export type ReachToken = {
   symbol: string | ChainSymbol;
   url: string;
   verified?: boolean;
+  verificationTier?: TokenVerificationTier;
 };
 
 /** A reach-connected Network Account representation */
@@ -125,13 +138,13 @@ export type ReachEvent<T extends any> = { when: any; what: T };
 
 /** `ReachEvent` is an `Event` emitted from a contract `EventStream` */
 export type ReachEventStream<T> = {
-  Register: {
+  [x: string]: {
     next(): Promise<ReachEvent<any>>;
     seek(t: BigNumber): void;
     seekNow(): Promise<void>;
     lastTime(): Promise<BigNumber>;
     monitor(handler: (e: ReachEvent<any>) => void): Promise<void>;
-  } & {[k in keyof T]: any};
+  } & { [k in keyof T]: any };
 };
 
 /** StdLib Helper Interface */
@@ -191,6 +204,7 @@ export type ReachStdLib = {
    * @version 0.1.8-rc-6
    * - Make http requests at least `ms` milliseconds apart. Not supported on all networks */
   setMinMillisBetweenRequests(ms: number): void;
+  customHttpEventHandler(h: (e: any) => Promise<void>): void;
   // bigNumberToNumber: (amt: any) => number;
 } & { [x: string]: any };
 
@@ -217,12 +231,24 @@ export type WalletFallbackOpts = {
 /** Algorand node override options */
 export type AlgoEnvOverride = {
   ALGO_INDEXER_PORT?: string;
-  ALGO_INDEXER_SERVER: string;
-  ALGO_INDEXER_TOKEN: string;
+  ALGO_INDEXER_SERVER?: string;
+  ALGO_INDEXER_TOKEN?: string;
   ALGO_PORT?: string;
-  ALGO_SERVER: string;
-  ALGO_TOKEN: string;
+  ALGO_SERVER?: string;
+  ALGO_TOKEN?: string;
   REACH_ISOLATED_NETWORK?: string;
+};
+
+/** Custom Announcers for the SDK */
+export type SDKContractOverrides = {
+  /** The id of a custom triumvirate to replace the default */
+  protocolId?: string;
+  /** The address of a custom triumvirate to replace the default */
+  protocolAddress?: string;
+  /** Application ID of a custom Partner Farm announcer */
+  partnerFarmAnnouncerId?: string;
+  /** Application ID of a custom Public Farm announcer */
+  publicFarmAnnouncerId?: string;
 };
 
 /** Configuration options for the SDK */
@@ -231,7 +257,10 @@ export type SDKOpts = {
   network?: NetworkProvider;
   /** Slippage Tolerance: defaults to 0.5% */
   slippageTolerance?: number;
+  /** Custom Announcers for the SDK */
+  contractOverrides?: SDKContractOverrides;
   // The id and address of a custom triumvirate to use instead of the default (only works on testnet)
-  customTriumvirateId?: string;
+  /* customTriumvirateId?: string;
   customTriumvirateAddress?: string;
+  customFarmAnnouncerAddress?: string; */
 } & ReachEnvOpts;

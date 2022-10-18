@@ -165,7 +165,7 @@ export async function fetchFarmAndTokens(
 export async function fetchStakingPool(
   acc: ReachAccount,
   opts: FetchStakingPoolOpts
-): Promise<TransactionResult<FarmView>> {
+): Promise<TransactionResult<SDKFarmView>> {
   const {
     contract,
     poolAddress: id,
@@ -178,7 +178,7 @@ export async function fetchStakingPool(
 
   try {
     onProgress("Fetching farm metadata");
-    const data = fromMaybe(await ctc.views.Info());
+    const data = fromMaybe(await ctc.views.Info()) as FarmView;
     const result = data
       ? successResult("Fetched farm", poolAddress, ctc, data)
       : errorResult("Farm was not found", poolAddress, EMPTY_FV, ctc);
@@ -190,10 +190,13 @@ export async function fetchStakingPool(
         createReachAPI().getNetworkTime(),
       ]);
       result.data = formatFarmView(result.data, tokens, poolAddress, now);
-    } else result.data = rawSDKFarmView(result.data, poolAddress);
-
-    onComplete(result);
-    return result;
+    } else {
+      result.data = rawSDKFarmView(result.data, poolAddress)
+    };
+    const sdkResult = {...result} as TransactionResult<SDKFarmView>
+    
+    onComplete(sdkResult);
+    return sdkResult
   } catch (error: any) {
     console.log("Fetch staking pool err", error);
     const msg = "Farm was not fetched";
@@ -272,8 +275,8 @@ function rawSDKFarmView(d: FarmView, poolAddress: string): SDKFarmView {
   };
 }
 
-/** @internal Format BigNumber and byte values for UI */
-function formatFarmView(
+/** Format BigNumber and byte values for UI */
+export function formatFarmView(
   d: FarmView,
   tokens: FarmTokens,
   poolAddress: string,

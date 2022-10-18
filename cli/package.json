@@ -14,6 +14,10 @@
     "@reach-sh/humble-sdk": "file:..",
     "@reach-sh/stdlib": "0.1.10-rc.6",
     "algosdk": "^1.15.0",
+    "axios": "^0.27.2",
     "enquirer": "^2.3.6"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1"
   }
 }

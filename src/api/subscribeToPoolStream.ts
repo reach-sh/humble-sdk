@@ -59,7 +59,11 @@ export async function subscribeToPoolStream(
     const [poolAddr, maybeTokA, tokB] = what;
     const fPoolAddr = parseAddress(poolAddr);
     const tokA = fromMaybe(maybeTokA, parseAddress, "0");
-    onPoolReceived([fPoolAddr, tokA, parseAddress(tokB)]);
+    const tokBId = parseAddress(tokB);
+    // Patch: this token was deleted after someone created a pool with it.
+    // Excluded since bad thing happen when fetching the pool
+    if (tokBId.toString() === "842581764") return;
+    onPoolReceived([fPoolAddr, tokA, tokBId]);
 
     if (!onPoolFetched) return;
 

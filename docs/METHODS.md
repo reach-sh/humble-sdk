@@ -133,6 +133,10 @@ const acc = await stdlib.createAccount();
 
 // Fetch existing streams and get notified when a new one is created
 subscribeToPoolStream(acc, {
+    // When this is "true", the stream will start listening from the current block.
+    // Otherwise you get everything from when the Protocol contract was created.
+    seekNow: false, // default is "false"
+
     // This gets called as soon as the pool id, and the ids of its tokens, are
     // received. The pool data hasn't been fetched yet and may still fail to do so.
     // Implementing this method is optional.
@@ -158,6 +162,9 @@ subscribeToPoolStream(acc, {
 
 ```typescript
 type PoolSubscriptionOpts = {
+    // (Optional) Start listening from the current block when true
+    seekNow?: boolean;
+
     // (Optional) called with an array of items when pool contract data is
     // received, but BEFORE the pool data is fetched.
     onPoolReceived?: ([
@@ -165,10 +172,22 @@ type PoolSubscriptionOpts = {
         tokenAId: string,
         tokenBId: string
     ]) => void;
+
     // Called when data for a pool has been fetched and formatted
     onPoolFetched(data: FetchPoolTxnResult): any;
 }
 ```
+
+##### Additional notes
+You can now provide EITHER `onPoolReceived` OR `onPoolFetched` (or both!) to the `subscribeToPoolStream` function. This allows you to optimize caching:
+- `onPoolReceived` is called as soon as data is received from the blockchain. 
+  - It gives you a **pool application id**, as well as pool token ids in the order they appear. 
+  - At first, it will return a big stream of events. When it "catches up", it will fall quiet until new data is received. 
+- `onPoolFetched` is only called **if you pass in the option**. 
+  - This may be more data-intensive, because it doesn't do any caching
+  - However, it will return full token data along with the pool info
+
+See [here](#why-doesnt-the-sdk-cache-data) for more
 
 #### subscribeToPoolStream Returns
 
@@ -223,14 +242,18 @@ const acc = await stdlib.createAccount();
 
 // Fetch existing streams and get notified when a new one is created
 subscribeToFarmStream(acc, {
+    // When this is "true", the stream will start listening from the current block.
+    // Otherwise you get everything from when the Protocol contract was created.
+    seekNow: false, // default is "false"
+
     // This gets called as soon as the farm data has been
     // fetched. If the attempt failed, 'result.succeeded' will be false.
     onFarmFetched: (data: TransactionResult<StaticFarmDataFormatted>) => {
         const { succeeded, poolAddress, data, message } = data;
         if (succeeded) // ...
     },
-    // Set the format to true if you want to receive the formatted
-    // farm data.
+
+    // Set the format to true if you want to receive the formatted farm data.
     format: true,
 })
 ```
@@ -243,6 +266,9 @@ subscribeToFarmStream(acc, {
 
 ```typescript
 type FarmSubscriptionOpts = {
+  // (Optional) Start listening from the current block when true
+  seekNow?:boolean;
+
   // called when farm contract data is received
   onFarmFetched(
     data: TransactionResult<StaticFarmDataUnformatted | StaticFarmDataFormatted>
@@ -454,6 +480,36 @@ console.log(getSlippage()); // 0.5
 
 ---
 
+
+## Why doesn't the SDK cache data?
+
+> The HumbleSwap SDK was created with the intention of being platform-agnostic. Caching would either 
+> introduce new
+> 1. Dependencies for the SDK, or 
+> 2. Complexities or restrictritions for end-users 
+> 
+> This is why the SDK prioritizes interoperability, so that end-users can tackle their own optimizations.
+> 
+
+### Optimized Pool Fetching
+
+Try the following steps:
+
+1. Use `onPoolReceived` to identify unique token and pool IDs
+  - Write token ids to a `Set` for extreme uniqueness
+  - You will also want to track every `pool + tokenAId + tokenBId` combo for (2(ii)) below
+2. When the `announcer` stream is quiet for up to ~1.5 seconds, trigger your data-fetching:
+  - Fetch all the unique **tokens** first, then
+  - Fetch each pool: in the pool-fetch options,
+    - set `includeTokens` to `false`, and
+    - include the pool's tokens from the list you fetched above (order is important!)
+
+This allows you to control the amount of requests made by the SDK, since it won't be re-fetching tokens as frequently.
+ 
+
+^[**Back to contents**](#shared-methods)
+
+---
 # All Sections
 
 - [Shared methods](./METHODS.md)

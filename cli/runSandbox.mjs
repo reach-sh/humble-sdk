@@ -154,25 +154,7 @@ export function sandbox() {
 
 /*  
 
-// APPROVED FARMS
-
-[
-  { contractId: '905488721', stakedTokenId: '822571357' },
-  { contractId: '872355791', stakedTokenId: '822571357' },
-  { contractId: '856862989', stakedTokenId: '779147012' },
-  { contractId: '850901439', stakedTokenId: '829993892' },
-  { contractId: '850839573', stakedTokenId: '810058973' },
-  { contractId: '849070397', stakedTokenId: '777673834' },
-  { contractId: '848016425', stakedTokenId: '780420357' },
-  { contractId: '842238311', stakedTokenId: '777628481' },
-  { contractId: '840199658', stakedTokenId: '779149943' },
-  { contractId: '837262292', stakedTokenId: '773172677' },
-  { contractId: '835426523', stakedTokenId: '779142878' },
-  { contractId: '835260005', stakedTokenId: '778032204' },
-  { contractId: '835160254', stakedTokenId: '777747781' }
-]
-
-// APPROVED POOLS
+// APPROVED POOLS [ Governance Q4 2022 ]
 -------------------------------------
 -------- NAME -------|---ASSET ID----
 -------------------------------------

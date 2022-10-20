@@ -14,7 +14,8 @@ import {
   getAccountFromArgs,
   iout,
   exitWithMsgs,
-  answerOrDie
+  answerOrDie,
+  Red
 } from "./utils.mjs";
 import { runFetchPoolTest } from "./runFetchPoolTest.mjs";
 import { runFetchTokenTest } from "./runFetchTokenTest.mjs";
@@ -32,6 +33,8 @@ import { runPoolReport } from "./runPoolReportTest.mjs";
 import { createFarmAnnouncer } from "./runCreateFarmAnnouncer.mjs";
 import { runCheckPartnerFarmTest } from "./runCheckPartnerFarmTest.mjs";
 import { createTokenMetadata } from "./createTokenMedata.mjs";
+import selectAction from "./selectAction.mjs";
+import { sandbox } from "./runSandbox.mjs";
 
 dotenv.config({ path: "./.env" });
 
@@ -49,6 +52,10 @@ const pubTestnet = {
 const CreateFarmAnnouncer = {
   title: "Create Farm Announcer (Requires funded account)",
   action: createFarmAnnouncer
+};
+const RunSandbox = {
+  title: "Run Sandbox",
+  action: sandbox
 };
 const poolActions = [
   { title: "List Pools", action: runAnnouncerTest },
@@ -77,7 +84,8 @@ const sections = [
   { title: "Liquidity Pools", action: () => selectAction(poolActions) },
   { title: "Farms", action: () => selectAction(farmActions) },
   { title: "Tokens (swap/fetch)", action: () => selectAction(tokenActions) },
-  CreateFarmAnnouncer
+  CreateFarmAnnouncer,
+  RunSandbox
 ];
 
 let acc;
@@ -101,14 +109,14 @@ async function main() {
   acc = await getAccountFromArgs(args);
   Green(`Connected ${reach.formatAddress(acc)}\n`);
 
-  selectAction(sections);
+  selectAction(sections, acc);
 }
 
 /** Override SDK from command line */
 async function overrideSDKNetwork() {
   Yellow("Select a network (enter option number):");
   Blue("Press Enter to select default (testnet)");
-  const doOverride = (k) => {
+  const changeNetwork = (k) => {
     humbleOpts.network = opts[k].value || "TestNet";
     if (k === 1) humbleOpts.contractOverrides = pubTestnet;
   };
@@ -123,22 +131,16 @@ async function overrideSDKNetwork() {
   const nPr = Number(prompt);
   if (nPr === 0) return doOverride(nPr);
   if (isNaN(nPr) || nPr > opts.length || nPr < 0) return doOverride(0);
-  return doOverride(nPr - 1);
-}
+  changeNetwork(nPr - 1);
 
-/** Select and perform an action from a list */
-async function selectAction(opts) {
-  Yellow(`Select an option:\n`);
-  opts.map(({ title }, i) => Blue(`${i + 1}. ${title}`));
-  console.log();
-  const sIndex = await answerOrDie("Enter number for selection:");
-  const index = Number(sIndex) - 1;
-  if (index >= opts.length || index < 0) {
-    return exitWithMsgs("Exit: Invalid option selected");
+  if ((await answerOrDie("Use AlgoExplorer?")) === "y") {
+    const network = humbleOpts.network.toLowerCase();
+    const $at = network === "mainnet" ? "" : `${network}.`;
+    humbleOpts.providerEnv = {
+      ALGO_INDEXER_SERVER: `https://algoindexer.${$at}algoexplorerapi.io/`,
+      ALGO_SERVER: `https://node.${$at}algoexplorerapi.io/`
+    };
   }
-
-  const { action } = opts[index];
-  return action(acc);
 }
 
 // Run main script

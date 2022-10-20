@@ -260,17 +260,21 @@ if (succeeded) {
 #### fetchLiquidityPool Parameters
 * `acc: ReachAccount`: **reach** [account abstraction](https://docs.reach.sh/frontend/#ref-frontends-js-acc)
 * `poolAddress: string | number` The application ID (or contract address) of the `Pool` you want to fetch.
-* `opts?: FetchPoolOpts`\
-For additional options, see [`ReachTxnOpts`](./TYPES.md#reachtxnopts).
+* `opts?: FetchPoolOpts`
 ```typescript
 type FetchPoolOpts = ReachTxnOpts & {
-    // When set to true, this means one of the pool tokens is a network token (e.g. "ALGO" 
-    // or "ETH"). The correct value is required for fetching the pool data. 
     n2nn: boolean;
-    // Address of the pool you want to fetch
     poolAddress: string | number
+    includeTokens?: boolean
+    tokens?: [Token, Token]
 };
 ```
+* `opts.n2nn`: When set to true, this means one of the pool tokens is a network token (e.g. "ALGO" or "ETH"). The correct value is required for fetching the pool data. 
+* `opts.poolAddress`: Address of the pool you want to fetch
+* `opts.includeTokens`: (optional) Whether to fetch pool tokens as well. If set to false, you MUST provide a pair of token objects to the function using the param below
+* `opts.tokens`: (optional) Pool `Token`s. Required when `includeTokens` is "true" 
+
+For additional options, see [`ReachTxnOpts`](./TYPES.md#reachtxnopts).
 
 #### fetchLiquidityPool Returns
 For pool data properties, see [`PoolDetails`](./TYPES.md#pooldetails)

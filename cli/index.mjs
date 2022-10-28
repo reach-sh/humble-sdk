@@ -81,9 +81,12 @@ const tokenActions = [
 ];
 const options = [...poolActions, ...farmActions, ...tokenActions];
 const sections = [
-  { title: "Liquidity Pools", action: () => selectAction(poolActions) },
-  { title: "Farms", action: () => selectAction(farmActions) },
-  { title: "Tokens (swap/fetch)", action: () => selectAction(tokenActions) },
+  { title: "Liquidity Pools", action: (acc) => selectAction(poolActions, acc) },
+  { title: "Farms", action: (acc) => selectAction(farmActions, acc) },
+  {
+    title: "Tokens (swap/fetch)",
+    action: (acc) => selectAction(tokenActions, acc)
+  },
   CreateFarmAnnouncer,
   RunSandbox
 ];

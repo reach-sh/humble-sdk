@@ -48,9 +48,11 @@ const humbleOpts = {
   providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK }
 };
 const pubTestnet = {
-  protocolId: 93443561,
-  protocolAddress: "XSWSQVQPFMTEQO7UTXGQA5CSSYCDBT2WEN5XWNQ76EBLT2CFRV2HBYKZBE",
-  partnerFarmAnnouncerId: 100474119
+  protocolAddress: "JAL2RRWBDHZW5LOFQBDMDFNOQDCWEUXS2BIICKZV42VQBC2BCUIZRKN5TQ",
+  protocolId: 121344926,
+  partnerFarmAnnouncerId: 121345309,
+  publicFarmAnnouncer: 121345428,
+  limitOrderAnnouncer: 121346090
 };
 
 const CreateFarmAnnouncer = {

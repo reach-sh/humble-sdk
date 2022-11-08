@@ -249,6 +249,8 @@ export type SDKContractOverrides = {
   partnerFarmAnnouncerId?: string;
   /** Application ID of a custom Public Farm announcer */
   publicFarmAnnouncerId?: string;
+  /** Application ID of Limit Order announcer */
+  limitOrderAnnouncerId?: string;
 };
 
 /** Configuration options for the SDK */

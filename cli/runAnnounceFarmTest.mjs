@@ -1,15 +1,14 @@
 import {
-  subscribeToFarmStream,
-  getFarmAnnouncer,
-  fetchStakingPool,
   announceFarm,
-  parseAddress,
   asMaybe,
-  fetchLiquidityPool,
   createReachAPI,
-  isPartnerFarm,
+  fetchFarmAndTokens,
+  fetchLiquidityPool,
+  fetchStakingPool,
   getNetworkProvider,
-  fetchFarmAndTokens
+  isPartnerFarm,
+  parseAddress,
+  subscribeToFarmStream
 } from "@reach-sh/humble-sdk";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
@@ -34,10 +33,10 @@ farm, pool
 835260005, 778031658
  */
 
-/** Attach to pool announcer and list a subset of pools */
+/** Announce a single farm */
 export async function runAnnounceFarmTest(acc) {
   console.clear();
-  Blue(`Running ${getNetworkProvider()} ANNOUNCER ${getFarmAnnouncer()}`);
+  Red(`ANNOUNCING ${getNetworkProvider()} FARM`);
   const farmId = await answerOrDie("Enter Farm ID");
   Yellow(`Fetching farm ${farmId}`);
   const farmResult = await fetchFarmAndTokens(acc, {
@@ -118,26 +117,4 @@ export async function runAnnounceFarmTest(acc) {
   return (await answerOrDie("Announce another farm? (y/n)")) === "y"
     ? runAnnounceFarmTest(acc)
     : exitWithMsgs("Done");
-}
-
-/** HELPER | When a pool is received, fetch details and reset the timer */
-async function onFarmFetched({ succeeded, poolAddress, data, message }) {
-  if (!succeeded) return Red(message);
-
-  Blue(`\t * Got "${data.ctcInfo}"`);
-  iout(data.ctcInfo, data);
-  resetTimer();
-}
-
-/** HELPER | Restart Pool Listener timer (TEST only) */
-function resetTimer() {
-  if (exitTimeout) clearTimeout(exitTimeout);
-  exitTimeout = setTimeout(stopTest, TIMEOUT * 1000);
-  Blue(`\t * Auto-timeout in ${TIMEOUT}s`);
-}
-
-/** End CLI */
-function stopTest() {
-  clearTimeout(exitTimeout);
-  exitWithMsgs("Timer stopped. Exiting ...");
 }

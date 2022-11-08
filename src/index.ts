@@ -12,7 +12,7 @@ export {
   createLiquidityPool,
   createStakingPool,
   fetchLiquidityPool,
-  fetchToken,
+  fetchToken
 } from "./participants/index";
 
 // TYPES
@@ -84,7 +84,13 @@ export {
 } from "./utils/utils.swap";
 
 // CONSTANTS
-export { getSlippage, getPoolAnnouncer, getFarmAnnouncer } from "./constants";
+export {
+  getSlippage,
+  getPoolAnnouncer,
+  getAnnouncers,
+  getProtocolAddr,
+  getProtocolFunder0x
+} from "./constants";
 
 /**
  * Create `stdlib` instance for SDK. Options allow for selective environment

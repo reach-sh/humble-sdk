@@ -1,14 +1,9 @@
-import { safeNetwork, SDKOpts } from "./reach-helpers";
+import { NetworkProvider, safeNetwork, SDKOpts } from "./reach-helpers";
 import { PoolProtocolInfo } from "./types";
 
-// Application constants (or long-lived values)
-export const UNINSTANTIATED = `HumbleSDK is not instantiated!`;
-export const ASSURANCE_MSG = `Your funds were not moved.`;
-export const MIN_BALANCE_MSG = `Transaction would drop account below minimum required balance.`;
-export const POPUP_BLOCKED_MSG = `Your browser is blocking popups; please disable this blocker before retrying.`;
-export const TRANSACTION_CANCELLED_MSG = `Transaction Cancelled.`;
-export const TRANSACTION_DIDNT_LOAD = `Sorry, the transaction window didn't load due to some connection issues. Please try again.`;
-export const POOL_CREATION_ERR = `Pool creation failed.`;
+// Strings
+export * from "./constants.strings";
+
 // Fees
 export const FLOAT = 0.0001;
 
@@ -41,29 +36,26 @@ export function getProtocolAddr() {
 
 /** @internal Triumvirate contract app id */
 let POOL_ANNOUNCER_ID: string | number | undefined;
-
-/** Get app id of Triumvirate contract. */
-export function getPoolAnnouncer() {
-  return POOL_ANNOUNCER_ID;
-}
-
-/** @internal farm announcer contract app id */
+/** @internal partner `farm` announcer contract app id */
 let PARTNER_FARM_ANNOUNCER_ID: string | number | undefined;
-/** @internal farm announcer contract app id */
+/** @internal public `farm` announcer contract app id */
 let PUBLIC_FARM_ANNOUNCER_ID: string | number | undefined;
+/** @internal `limit order` announcer contract app id */
+let LIMIT_ORDER_ANNOUNCER_ID: string | number | undefined;
 
-/** Get Partner farm announcer */
-export function getFarmAnnouncer() {
-  return PARTNER_FARM_ANNOUNCER_ID;
-}
-
-/** Get public and Partner farm announcers */
+/** Get all announcer contract IDs */
 export function getAnnouncers() {
   return {
     poolAnnouncer: POOL_ANNOUNCER_ID,
     partnerFarmAnnouncer: PARTNER_FARM_ANNOUNCER_ID,
-    publicFarmAnnouncer: PUBLIC_FARM_ANNOUNCER_ID
+    publicFarmAnnouncer: PUBLIC_FARM_ANNOUNCER_ID,
+    limitOrderAnnouncer: LIMIT_ORDER_ANNOUNCER_ID
   };
+}
+
+/** Get app id of Triumvirate contract. */
+export function getPoolAnnouncer() {
+  return POOL_ANNOUNCER_ID;
 }
 
 /** SDK user's slippage preference */
@@ -107,64 +99,104 @@ export function setSDKOpts(opts: SDKOpts) {
   NETWORK_PROVIDER = safeNetwork(opts.network);
   HUMBLE_ADDR = ProtocolAddr(opts);
   POOL_ANNOUNCER_ID = TriumvirContractId(opts);
+  if (!HUMBLE_ADDR || POOL_ANNOUNCER_ID === 0) {
+    throw new Error(`Humble ${NETWORK_PROVIDER} Protocol contract not set`);
+  }
+
   PARTNER_FARM_ANNOUNCER_ID = PartnerFarmAnnouncerId(opts);
+  if (PARTNER_FARM_ANNOUNCER_ID === 0) {
+    const e = `Humble ${NETWORK_PROVIDER} Partner Farm announcer not set`;
+    throw new Error(e);
+  }
+
   PUBLIC_FARM_ANNOUNCER_ID = PublicFarmAnnouncerId(opts);
+  if (PUBLIC_FARM_ANNOUNCER_ID === 0) {
+    const e = `Humble ${NETWORK_PROVIDER} Public Farm announcer not set`;
+    throw new Error(e);
+  }
+
+  LIMIT_ORDER_ANNOUNCER_ID = LimitOrderAnnouncerId(opts);
+  if (LIMIT_ORDER_ANNOUNCER_ID === 0) {
+    const e = `Humble ${NETWORK_PROVIDER} Limit Orders announcer not set`;
+    throw new Error(e);
+  }
+
   // Set SDK as initialized
   INITIALIZED = true;
 }
 
 /** @internal Get Humble Farm funder address */
 export function ProtocolFarmFunderAddr() {
-  return `HUM5WSLZVWG62WJKPZ4MQEUD2OREWBQ4WOWFAD5IDAB5W7BJS5JSWCSIBI`
+  return `HUM5WSLZVWG62WJKPZ4MQEUD2OREWBQ4WOWFAD5IDAB5W7BJS5JSWCSIBI`;
 }
 
-/** @internal Get Pool data source for Testnet/Mainnet */
+/** @internal Get Pool Announcer (triumvirate) for Testnet/Mainnet */
 function TriumvirContractId(opts: SDKOpts) {
-  const { network = "TestNet", contractOverrides = {} } = opts;
-  const { protocolId } = contractOverrides;
+  const { protocolId } = opts.contractOverrides || {};
   if (protocolId) return protocolId;
 
-  // V2 Triumvirate
-  const valid = safeNetwork(network);
-  if (valid === "TestNet") return 92391728; // This is Develop triumvirate
-  if (valid === "MainNet") return 771884869;
-
-  throw new Error(`Unrecognized provider "${network}"`);
+  return allocateProviderApps(opts.network, [
+    121344664, // V3 Testnet Triumvirate
+    0 // V3 Mainnet Triumvirate
+  ]);
 }
 
 /** @internal Get Public Farm data source for Testnet/Mainnet */
 function PublicFarmAnnouncerId(opts: SDKOpts) {
-  const { network = "TestNet", contractOverrides = {} } = opts;
-  const { publicFarmAnnouncerId } = contractOverrides;
+  const { publicFarmAnnouncerId } = opts.contractOverrides || {};
   if (publicFarmAnnouncerId) return publicFarmAnnouncerId;
-  const valid = safeNetwork(network);
-  if (valid === "TestNet") return 107539798; // Internal Dev Announcer
-  if (valid === "MainNet") return 857348615; // Production Announcer
 
-  throw new Error(`Unrecognized provider "${network}"`);
+  return allocateProviderApps(opts.network, [
+    121345237, // V3 Testnet Public Farms Announcer
+    0 // V3 Mainnet Public Farms Announcer
+  ]);
+}
+
+/** @internal Get Partner Farm data source for Testnet/Mainnet */
+function LimitOrderAnnouncerId(opts: SDKOpts) {
+  const { limitOrderAnnouncerId } = opts.contractOverrides || {};
+  if (limitOrderAnnouncerId) return limitOrderAnnouncerId;
+
+  return allocateProviderApps(opts.network, [
+    121346021, // V3 Testnet LO Announcer  (new)
+    0 // V3 Mainnet LO Announcer  (new)
+  ]);
 }
 
 /** @internal Get Partner Farm data source for Testnet/Mainnet */
 function PartnerFarmAnnouncerId(opts: SDKOpts) {
-  const { network = "TestNet", contractOverrides = {} } = opts;
-  const { partnerFarmAnnouncerId } = contractOverrides;
+  const { partnerFarmAnnouncerId } = opts.contractOverrides || {};
   if (partnerFarmAnnouncerId) return partnerFarmAnnouncerId;
 
-  // V2 Triumvirate
-  const valid = safeNetwork(network);
-  if (valid === "TestNet") return 97832257;
-  if (valid === "MainNet") return 830314595;
+  return allocateProviderApps(opts.network, [
+    121345136, // V3 Testnet Partner Farms Announcer
+    0 // V3 Mainnet Partner Farms Announcer
+  ]);
+}
 
-  throw new Error(`Unrecognized provider "${network}"`);
+/**
+ * @internal Get account address (not App ID!) of Triumvirate contract for current network */
+function allocateProviderApps(
+  net?: NetworkProvider,
+  opts: [number, number] = [0, 0]
+) {
+  switch (safeNetwork(net)) {
+    case "TestNet": // Testnet application id
+      return opts[0];
+    case "MainNet": // Mainnet application id
+      return opts[1];
+    default: // failure
+      return 0;
+  }
 }
 
 /**
  * @internal Get account address (not App ID!) of Triumvirate contract for current network */
 function ProtocolAddr(opts: SDKOpts) {
   const ADDRESSES = {
-    MainNet: "RKUC34RZOMK26ZOD4J2OFY3UILORX5AAMIX24L5MWAUUF6DVJVBJYQSABQ",
+    MainNet: "",
     None: "",
-    TestNet: "YNKCECPOYM3ZLFOHKZTG466GYCAGXKWRWA4G5C6BFLXNDHBUAZ73XATU2U",
+    TestNet: "R2PCSFSCGVJXQZEWTKUC4XLBDUGSPI7XJL7K7F54WQVPNRDP4UDMGRNH7Q",
     get "ALGO-devnet"() {
       return ADDRESSES.TestNet;
     }

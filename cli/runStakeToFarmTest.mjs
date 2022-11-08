@@ -2,7 +2,7 @@ import {
   createReachAPI,
   fetchFarmAndTokens,
   fetchStakingPool,
-  getFarmAnnouncer,
+  getNetworkProvider,
   stakeTokensToFarm
 } from "@reach-sh/humble-sdk";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
@@ -15,10 +15,10 @@ import {
   Yellow
 } from "./utils.mjs";
 
-// 835612669
+//
 
 export async function runStakeToFarmTest(acc) {
-  Blue(`Running STAKE-TO-FARM :: Farm Announcer ${getFarmAnnouncer()}`);
+  Blue(`Running STAKE-TO-FARM :: ${getNetworkProvider()} Farm Announcer`);
 
   const farmId = await answerOrDie("Enter Farm Id:");
   const result = await fetchFarmAndTokens(acc, {

@@ -105,11 +105,12 @@ export function errorResult<T extends any>(
   message: string,
   poolAddress: number | string | null = "",
   data: T,
-  contract?: any | null
+  contract?: any | null,
+  ctcLabel: "poolAddress" | "contractId" = "poolAddress"
 ): TransactionResult<T> {
   return {
     succeeded: false,
-    poolAddress: poolAddress || "",
+    [ctcLabel]: poolAddress || "",
     message,
     contract,
     data
@@ -124,11 +125,12 @@ export function successResult<T>(
   message: string,
   poolAddress = "",
   contract: any,
-  data: T
+  data: T,
+  ctcLabel: "poolAddress" | "contractId" = "poolAddress"
 ): TransactionResult<T> {
   return {
     succeeded: true,
-    poolAddress,
+    [ctcLabel]: poolAddress,
     message,
     contract,
     data

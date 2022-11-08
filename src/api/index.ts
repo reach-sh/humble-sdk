@@ -12,6 +12,9 @@ export {
   subscribeToPoolStream,
   PoolSubscriptionOpts
 } from "./subscribeToPoolStream";
+
+// Staking/Farming
+export * from "./Staker.API";
 export {
   subscribeToFarmStream,
   isPartnerFarm,
@@ -19,5 +22,11 @@ export {
 } from "./subscribeToFarmStream";
 export { announceFarm } from "./FarmStream.Announce";
 
-// Staking/Farming
-export * from "./Staker.API";
+// Limit Order
+export * from "./LimitOrder.Fetch";
+export { LimitOrderVariant } from "../build/backend";
+export {
+  subscribeToLimitOrders,
+  LOSubscriptionOpts
+} from "./subscribeToLimitOrders";
+

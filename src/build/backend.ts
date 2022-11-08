@@ -9,7 +9,7 @@ import * as LimitOrderAnnouncer from "./limitOrder.announcer.js";
 import * as LimitOrderN2NN from "./limitOrder.lo_net_tok.js";
 import * as LimitOrderNN2NN from "./limitOrder.lo_tok_tok.js";
 import * as LimitOrderNN2N from "./limitOrder.lo_tok_net.js";
-import { ReachContract } from "../reach-helpers/types";
+import { BackendModule, ReachContract } from "../reach-helpers/types";
 import { ComputeSwapFn, ComputeMintFn } from "../types";
 
 export const poolBackend = PoolBackend;
@@ -41,6 +41,18 @@ export function getComputeMint(stdlib: any): ComputeMintFn {
   return LibBackend.getExports(stdlib).computeMint_;
 }
 
+export function getLimitOrderBackend(v: LimitOrderVariant): LimitOrderBackend {
+  switch (v) {
+    case "network-to-token":
+      return limitOrderN2NN;
+    case "token-to-network":
+      return limitOrderNN2N;
+    case "token-to-token":
+    default:
+      return limitOrderNN2NN;
+  }
+}
+
 /** Triumvirate (HumbleSwap Protocol) Contract */
 export type ProtocolContract = ReachContract<typeof TriumvirateBackend>;
 
@@ -50,9 +62,14 @@ export type PoolContract = ReachContract<
 >;
 
 /** Scheduled Swap Contract */
-export type LimitOrderContract = ReachContract<
-  typeof LimitOrderN2NN | typeof LimitOrderNN2NN | typeof LimitOrderNN2N
->;
+export type LimitOrderBackend = BackendModule &
+  (typeof LimitOrderN2NN | typeof LimitOrderNN2NN | typeof LimitOrderNN2N);
+export type LimitOrderContract = ReachContract<LimitOrderBackend>;
+
+export type LimitOrderVariant =
+  | "network-to-token"
+  | "token-to-token"
+  | "token-to-network";
 
 /** Farm Announcer Contract */
 export type FarmAnnouncerContract = ReachContract<typeof farmAnnouncerBackend>;

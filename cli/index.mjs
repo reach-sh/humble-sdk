@@ -30,11 +30,15 @@ import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
 import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
 import { runStakeToFarmTest } from "./runStakeToFarmTest.mjs";
 import { runPoolReport } from "./runPoolReportTest.mjs";
-import { createFarmAnnouncer } from "./runCreateFarmAnnouncer.mjs";
 import { runCheckPartnerFarmTest } from "./runCheckPartnerFarmTest.mjs";
 import { createTokenMetadata } from "./createTokenMedata.mjs";
 import selectAction from "./selectAction.mjs";
 import { sandbox } from "./runSandbox.mjs";
+import {
+  createFarmAnnouncer,
+  createLOAnnouncer,
+  createTriumvirate
+} from "./runCreateAnnouncer.mjs";
 
 dotenv.config({ path: "./.env" });
 
@@ -50,9 +54,10 @@ const pubTestnet = {
 };
 
 const CreateFarmAnnouncer = {
-  title: "Create Farm Announcer (Requires funded account)",
+  title: "Create Farm Announcer (requires funds)",
   action: createFarmAnnouncer
 };
+const AnnounceFarm = { title: "Announce a Farm", action: runAnnounceFarmTest };
 const RunSandbox = {
   title: "Run Sandbox",
   action: sandbox
@@ -63,6 +68,18 @@ const poolActions = [
   { title: "Fetch a Liquidity Pool", action: runFetchPoolTest },
   { title: "Add/remove Liquidity", action: runLiquidity },
   { title: "Pools CSV Report", action: runPoolReport }
+];
+const adminActions = [
+  {
+    title: "Create Triumvirate (requires funds)",
+    action: createTriumvirate
+  },
+  CreateFarmAnnouncer,
+  {
+    title: "Create Limit Order Announcer (requires funds)",
+    action: createLOAnnouncer
+  },
+  AnnounceFarm
 ];
 const farmActions = [
   { title: "List Farms", action: runFarmAnnouncerTest },
@@ -79,8 +96,11 @@ const tokenActions = [
   { title: "Swap tokens", action: runSwapTest },
   { title: "Create JSON Metadata", action: createTokenMetadata }
 ];
-const options = [...poolActions, ...farmActions, ...tokenActions];
 const sections = [
+  {
+    title: "Admin: Contract Actions (requires funded account!)",
+    action: (acc) => selectAction(adminActions, acc)
+  },
   { title: "Liquidity Pools", action: (acc) => selectAction(poolActions, acc) },
   { title: "Farms", action: (acc) => selectAction(farmActions, acc) },
   {

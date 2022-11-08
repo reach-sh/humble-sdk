@@ -20,13 +20,19 @@ export const fmt = (x) => {
   return stdlib.formatCurrency(x, stdlib.connector == "ALGO" ? 6 : 18);
 };
 
+/** Ensure user has funds */
+export async function promptIsFunded() {
+  if ((await answerOrDie("Is this account funded?")) === "y") return;
+  exitWithMsgs("A funded account is required for this action");
+}
+
 // Prompt cli user for a response, or exit
 export async function answerOrDie(question, validator) {
   const validate = validator || ((x) => x);
   const promptOpts = (p) => ({
     type: "input",
     message: `${p} ("exit" to exit)\n`,
-    name: "ans",
+    name: "ans"
   });
   const query = async (p) => (await Enquirer.prompt([promptOpts(p)])).ans;
   let answer = undefined;

@@ -1,9 +1,11 @@
 import {
   getLimitOrderBackend,
   LimitOrderContract,
-  LimitOrderVariant
+  LimitOrderTokens,
+  LimitOrderType
 } from "build/backend";
-import { ReachAccount } from "reach-helpers";
+import { fetchToken } from "participants";
+import { ReachAccount, ReachToken } from "reach-helpers";
 import { ReachTxnOpts } from "types";
 import { errorResult, successResult } from "utils";
 import { fromMaybe, noOp } from "utils/utils.reach";
@@ -11,6 +13,8 @@ import { fromMaybe, noOp } from "utils/utils.reach";
 export type FetchLimitOrderOpts = {
   /** Limit Order contract id */
   contractId: string;
+  /** Token order (network/non-network to network/non-network) */
+  variant: LimitOrderType;
   /** Fetch tokens & format response (increases network usage) */
   formatResult?: boolean;
   /** Include tokens in response (increases network usage) */
@@ -19,15 +23,7 @@ export type FetchLimitOrderOpts = {
   tokenADecimals?: number;
   /** Decimals for `Token B`. Required if `includeTokens` is true */
   tokenBDecimals?: number;
-  /** Token order (network/non-network to network/non-network) */
-  variant?: LimitOrderVariant;
 } & ReachTxnOpts;
-
-/** Limit Order Token pair */
-export type LimitOrderTokens =
-  | { tokenA: any; tokenB: any }
-  | { tokenA: null; tokenB: any }
-  | { tokenA: any; tokenB: null };
 
 /** Limit Order Contract details */
 export type LimitOrderView = LimitOrderTokens & {
@@ -35,6 +31,8 @@ export type LimitOrderView = LimitOrderTokens & {
   amtA: any;
   /** amount B specified or requested in contract */
   amtB: any;
+  /** Token metadata (if fetched) */
+  tokens?: [ReachToken | null, ReachToken | null];
 };
 
 /**
@@ -52,10 +50,15 @@ export async function fetchLimitOrder(
     includeTokens = false,
     tokenADecimals,
     tokenBDecimals,
-    variant = "network-to-token",
+    variant,
     onComplete = noOp,
     onProgress = noOp
   } = opts;
+  if (!variant) {
+    const oneOf = `one of 'network-to-token', 'token-to-token', 'token-to-network'`;
+    return errorResult(`Variant (${oneOf}) is required`, contractId, null);
+  }
+
   const invalidDecs =
     isNaN(Number(tokenADecimals)) || isNaN(Number(tokenBDecimals));
   if (!includeTokens && invalidDecs) {
@@ -72,9 +75,36 @@ export async function fetchLimitOrder(
       ? successResult("OK", contractId, ctc, view, "contractId")
       : errorResult("Limit Order not found", contractId, null, ctc);
 
+    // Optional: fetch tokens
+    if (includeTokens && result.data) {
+      const { tokenA, tokenB } = result.data;
+      onProgress("Fetching Limit Order Tokens ...");
+      result.data = {
+        ...result.data,
+        tokens: await fetchLimitOrderTokens(acc, { tokenA, tokenB })
+      };
+    }
+
+    // Return result
     onComplete(result);
     return result;
   } catch (error: any) {
-    return errorResult("Limit Order not found", contractId, error, ctc);
+    const e = error.toString();
+    return errorResult("Limit Order not found", contractId, { error: e }, ctc);
   }
+}
+
+/**
+ * Fetch Tokens associated with a Limit Order Contract
+ * @param acc Reach Account to use
+ * @param tokens Options for fetching limit order
+ */
+export async function fetchLimitOrderTokens(
+  acc: ReachAccount,
+  tokens: LimitOrderTokens
+): Promise<[ReachToken | null, ReachToken | null]> {
+  return Promise.all([
+    fetchToken(acc, tokens.tokenA),
+    fetchToken(acc, tokens.tokenB)
+  ]);
 }

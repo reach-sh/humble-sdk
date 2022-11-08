@@ -11,6 +11,7 @@ import * as LimitOrderNN2NN from "./limitOrder.lo_tok_tok.js";
 import * as LimitOrderNN2N from "./limitOrder.lo_tok_net.js";
 import { BackendModule, ReachContract } from "../reach-helpers/types";
 import { ComputeSwapFn, ComputeMintFn } from "../types";
+import { isNetworkToken } from "utils/index.js";
 
 export const poolBackend = PoolBackend;
 export const poolBackendN2NN = PoolBackendN2NN;
@@ -41,7 +42,20 @@ export function getComputeMint(stdlib: any): ComputeMintFn {
   return LibBackend.getExports(stdlib).computeMint_;
 }
 
-export function getLimitOrderBackend(v: LimitOrderVariant): LimitOrderBackend {
+/** Determine Limit Order type from token pair */
+export function getLimitOrderVariant(t: LimitOrderTokens): LimitOrderType {
+  switch (true) {
+    case isNetworkToken(t.tokenA):
+      return "network-to-token";
+    case isNetworkToken(t.tokenB):
+      return "token-to-network";
+    default:
+      return "token-to-token";
+  }
+}
+
+/** Determine Limit Order binary from `LimitOrderType` */
+export function getLimitOrderBackend(v: LimitOrderType): LimitOrderBackend {
   switch (v) {
     case "network-to-token":
       return limitOrderN2NN;
@@ -66,11 +80,6 @@ export type LimitOrderBackend = BackendModule &
   (typeof LimitOrderN2NN | typeof LimitOrderNN2NN | typeof LimitOrderNN2N);
 export type LimitOrderContract = ReachContract<LimitOrderBackend>;
 
-export type LimitOrderVariant =
-  | "network-to-token"
-  | "token-to-token"
-  | "token-to-network";
-
 /** Farm Announcer Contract */
 export type FarmAnnouncerContract = ReachContract<typeof farmAnnouncerBackend>;
 
@@ -82,3 +91,15 @@ export type StakingContractViews = StakingContract["views"];
 
 /** Staking Contract Staker API */
 export type StakerAPI = StakingContract["apis"]["Staker"];
+
+/** Limit Order Token pair */
+export type LimitOrderTokens =
+  | { tokenA: any; tokenB: any }
+  | { tokenA: null; tokenB: any }
+  | { tokenA: any; tokenB: null };
+
+/** Limit Order Type */
+export type LimitOrderType =
+  | "network-to-token"
+  | "token-to-token"
+  | "token-to-network";

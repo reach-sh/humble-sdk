@@ -109,7 +109,11 @@ export type LimitOrderType =
   | "token-to-network";
 
 /** Limit Order Contract details */
-export type LimitOrderView = LimitOrderTokens & {
+export type LimitOrderView = {
+  /** Token to sell */
+  tokA: any;
+  /** Token to buy */
+  tokB: any;
   /** amount A specified or requested in contract */
   amtA: any;
   /** amount B specified or requested in contract */

@@ -110,11 +110,21 @@ export async function runFetchLimitOrder(acc) {
     { title: `Token to ${NET}`, action: () => "token-to-network" }
   ];
   const variant = await selectAction(variantOpts, acc);
+  const includeTokens = (await answerOrDie("Fetch Order tokens?")) === "y";
+  let tokenADecimals;
+  let tokenBDecimals;
+  if (!includeTokens) {
+    tokenADecimals = await answerOrDie("Enter Token A Decimals:");
+    tokenBDecimals = await answerOrDie("Enter Token B Decimals:");
+  }
+
   const result = await fetchLimitOrder(acc, {
     contractId,
+    includeTokens,
+    tokenADecimals,
+    tokenBDecimals,
     variant,
     onProgress: Yellow,
-    includeTokens: true,
     formatResult: true
   });
 
@@ -134,3 +144,4 @@ function validateLOToken(tok) {
   return ["null", "0"].includes(tok) ? null : tok;
 }
 // 121499712
+// 121522870

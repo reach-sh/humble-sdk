@@ -33,6 +33,11 @@ export type FetchLimitOrderOpts = {
 
 export type LimitOrderResult = SDKLimitOrderView | { error: string } | null;
 
+const safeTok = (id: any) => {
+  const p = parseAddress(id);
+  return p === null ? "0" : p;
+};
+
 /**
  * Fetch a Limit Order Contract
  * @param acc Reach Account to use
@@ -71,23 +76,34 @@ export async function fetchLimitOrder(
     const fmtView = (v: LimitOrderView) => ({ ...v, contractId });
     const view = fromMaybe<LimitOrderView>(await ctc.views.opts(), fmtView);
     const errMessage = `Limit Order may have been filled or cancelled`;
-    const result = view
-      ? successResult("OK", contractId, ctc, view, "contractId")
-      : errorResult(errMessage, contractId, null, ctc);
+
+    if (!view) {
+      const result = errorResult(errMessage, contractId, null, ctc);
+      onComplete(result);
+      return result;
+    }
 
     // Optional: fetch tokens
-    if (includeTokens && result.data) {
-      const { tokenA, tokenB } = result.data;
+    let data = formatLimitOrder(view, []);
+    if (includeTokens) {
+      const { tokA, tokB } = view;
       onProgress("Fetching Limit Order Tokens ...");
-      const tokens = await fetchLimitOrderTokens(acc, { tokenA, tokenB });
-      const unformatted = { ...result.data, tokens };
-      result.data = formatLimitOrder(
-        unformatted,
-        unformatted.tokens.map((tk) => tk?.decimals) as [number, number]
-      );
+      const tokenDecimals = (
+        await fetchLimitOrderTokens(acc, {
+          tokenA: safeTok(tokA) || "0",
+          tokenB: safeTok(tokB) || "0"
+        })
+      ).map((tk) => tk?.decimals);
+      data = formatLimitOrder(view, tokenDecimals as [number, number]);
+    } else {
+      const { tokenADecimals, tokenBDecimals } = opts;
+      data = formatLimitOrder(view, [tokenADecimals, tokenBDecimals]);
     }
 
     // Return result
+    data.contractId = parseAddress(contractId).toString();
+
+    const result = successResult("OK", contractId, ctc, data, "contractId");
     onComplete(result);
     return result;
   } catch (error: any) {
@@ -140,8 +156,8 @@ export function formatLimitOrder(
   return {
     amtA: ok(decA) ? formatCurrency(v.amtA, decA) : v.amtA,
     amtB: ok(decB) ? formatCurrency(v.amtB, decB) : v.amtB,
-    tokenA: parseAddress(v.tokenA).toString(),
-    tokenB: parseAddress(v.tokenB).toString(),
-    tokens: v.tokens as ReachTokenPair
+    tokenA: safeTok(v.tokA).toString(),
+    tokenB: safeTok(v.tokB).toString(),
+    tokens: Array.isArray(v.tokens) ? (v.tokens as ReachTokenPair) : undefined
   };
 }

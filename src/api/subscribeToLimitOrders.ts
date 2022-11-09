@@ -1,7 +1,6 @@
 import {
   getLimitOrderVariant,
-  limitOrderAnnouncer as limitOrderAnnouncerBIN,
-  LimitOrderView
+  limitOrderAnnouncer as limitOrderAnnouncerBIN
 } from "../build/backend";
 import { getAnnouncers } from "../constants";
 import {
@@ -12,7 +11,11 @@ import {
 } from "../reach-helpers";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 import { ReachTxnOpts, TransactionResult } from "../types";
-import { fetchLimitOrder, SDKLimitOrderView } from "./LimitOrder.Fetch";
+import {
+  fetchLimitOrder,
+  LimitOrderResult,
+  SDKLimitOrderView
+} from "./LimitOrder.Fetch";
 
 export type LOSubscriptionOpts = {
   /** Exclude notifications prior to "now" when true */
@@ -28,9 +31,7 @@ export type LOSubscriptionOpts = {
   /** Called when limit order log is received */
   onOrderReceived(o: SDKLimitOrderView): any;
   /** Called when limit order is fetched */
-  onOrderFetched?: (
-    o: TransactionResult<LimitOrderView | null | { error: any }>
-  ) => any;
+  onOrderFetched?: (o: TransactionResult<LimitOrderResult>) => any;
 } & ReachTxnOpts;
 
 export type LimitOrderEvent = ReachEvent<
@@ -78,26 +79,29 @@ export async function subscribeToLimitOrders(
     const creator = formatAddress(creator0x);
     if (filter(creator)) return; // optionally exclude or include addresses
 
-    const toString = (id: string) => parseAddress(id).toString()
+    const toString = (id: any) => parseAddress(id).toString();
     const fmt = {
       amtA,
       amtB,
       contractId: parseAddress(contractId),
       creator,
-      tokenA: fromMaybe(tokenAId, toString),
-      tokenB: fromMaybe(tokenBId, toString)
+      tokenA: fromMaybe(tokenAId, toString) || "0",
+      tokenB: fromMaybe(tokenBId, toString) || "0"
     };
     onOrderReceived(fmt);
 
     // Fetch order details
     if (!onOrderFetched) return;
+    const variant = getLimitOrderVariant({
+      tokenA: fmt.tokenA,
+      tokenB: fmt.tokenB
+    });
+    onProgress(`Fetching ${variant} order`);
     fetchLimitOrder(acc, {
       contractId,
       includeTokens: true,
-      variant: getLimitOrderVariant({
-        tokenA: fmt.tokenA,
-        tokenB: fmt.tokenB
-      })
+      onProgress,
+      variant
     }).then(onOrderFetched);
   });
 }

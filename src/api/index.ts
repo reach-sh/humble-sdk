@@ -28,4 +28,4 @@ export {
   subscribeToLimitOrders,
   LOSubscriptionOpts
 } from "./subscribeToLimitOrders";
-export { LimitOrderType } from "../build/backend";
+export { LimitOrderType, getLimitOrderVariant } from "../build/backend";

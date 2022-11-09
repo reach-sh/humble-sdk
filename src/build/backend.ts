@@ -9,9 +9,13 @@ import * as LimitOrderAnnouncer from "./limitOrder.announcer.js";
 import * as LimitOrderN2NN from "./limitOrder.lo_net_tok.js";
 import * as LimitOrderNN2NN from "./limitOrder.lo_tok_tok.js";
 import * as LimitOrderNN2N from "./limitOrder.lo_tok_net.js";
-import { BackendModule, ReachContract } from "../reach-helpers/types";
+import {
+  BackendModule,
+  ReachContract,
+  ReachToken
+} from "../reach-helpers/types";
 import { ComputeSwapFn, ComputeMintFn } from "../types";
-import { isNetworkToken } from "utils/index.js";
+import { isNetworkToken } from "../utils/index";
 
 export const poolBackend = PoolBackend;
 export const poolBackendN2NN = PoolBackendN2NN;
@@ -103,3 +107,13 @@ export type LimitOrderType =
   | "network-to-token"
   | "token-to-token"
   | "token-to-network";
+
+/** Limit Order Contract details */
+export type LimitOrderView = LimitOrderTokens & {
+  /** amount A specified or requested in contract */
+  amtA: any;
+  /** amount B specified or requested in contract */
+  amtB: any;
+  /** Token metadata (if fetched) */
+  tokens?: [ReachToken | null, ReachToken | null];
+};

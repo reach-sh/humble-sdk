@@ -56,7 +56,7 @@ describe("Reach Helpers | Utils", () => {
   it("Applies conditional formatting when unwrapping a `Maybe`", () => {
     const some = H.asMaybe(1000);
     expect(H.fromMaybe(some)).toStrictEqual(1000);
-    expect(H.fromMaybe(some, H.formatNumberShort)).toStrictEqual("1K");
+    expect(H.fromMaybe<any>(some, H.formatNumberShort)).toStrictEqual("1K");
   });
 
   it("Returns a fallback when a `Maybe` value is undefined", () => {

@@ -1,18 +1,18 @@
-import { limitOrderAnnouncer } from "build/backend";
+import {
+  getLimitOrderVariant,
+  limitOrderAnnouncer,
+  LimitOrderView
+} from "../build/backend";
 import { getAnnouncers } from "../constants";
-import { ReachAccount, ReachEvent } from "reach-helpers";
-import { noOp } from "utils/utils.reach";
-import { ReachTxnOpts, TransactionResult } from "types";
+import {
+  formatAddress,
+  parseAddress,
+  ReachAccount,
+  ReachEvent
+} from "../reach-helpers";
+import { noOp } from "../utils/utils.reach";
+import { ReachTxnOpts, TransactionResult } from "../types";
 import { fetchLimitOrder } from "./LimitOrder.Fetch";
-
-export type LimitOrder = {
-  amtA: any;
-  amtB: any;
-  contractId: any;
-  creator: string;
-  poolTokenAId: any;
-  poolTokenBId: any;
-};
 
 export type LOSubscriptionOpts = {
   /** Exclude notifications prior to "now" when true */
@@ -20,17 +20,19 @@ export type LOSubscriptionOpts = {
   /** Exclude notifications prior to this block time */
   startFrom?: number;
   /** Called when limit order log is received */
-  onOrderReceived(o: LimitOrder): any;
+  onOrderReceived(o: LimitOrderView): any;
   /** Called when limit order is fetched */
-  onOrderFetched?: (o: TransactionResult<LimitOrder | null>) => any;
+  onOrderFetched?: (
+    o: TransactionResult<LimitOrderView | null | { error: any }>
+  ) => any;
 } & ReachTxnOpts;
 
 export type LimitOrderEvent = ReachEvent<
   [
     creator: string,
     contractId: any,
-    poolTokenAId: any,
-    poolTokenBId: any,
+    tokenAId: any,
+    tokenBId: any,
     amtA: any,
     amtB: any
   ]
@@ -54,20 +56,27 @@ export async function subscribeToLimitOrders(
   } else if (opts.startFrom) ctc.events.LimitOrder.seek(opts.startFrom);
 
   return ctc.events.LimitOrder.monitor(({ what }: LimitOrderEvent) => {
-    const [amtA, amtB, contractId, creator, poolTokenAId, poolTokenBId] = what;
-
-    onOrderReceived({
+    const [amtA, amtB, contractId, creator, tokenAId, tokenBId] = what;
+    const fmt = {
       amtA,
       amtB,
-      contractId,
-      creator,
-      poolTokenAId,
-      poolTokenBId
-    });
+      contractId: parseAddress(contractId),
+      creator: formatAddress(creator),
+      tokenA: parseAddress(tokenAId),
+      tokenB: parseAddress(tokenBId)
+    };
 
-    if (onOrderFetched) {
-      const fetchLimitOrderOpts = { contractId, includeTokens: true };
-      fetchLimitOrder(acc, fetchLimitOrderOpts).then(onOrderFetched);
-    }
+    onOrderReceived(fmt);
+
+    if (!onOrderFetched) return;
+
+    fetchLimitOrder(acc, {
+      contractId,
+      includeTokens: true,
+      variant: getLimitOrderVariant({
+        tokenA: fmt.tokenA,
+        tokenB: fmt.tokenB
+      })
+    }).then(onOrderFetched);
   });
 }

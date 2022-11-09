@@ -1,10 +1,13 @@
-import { getLimitOrderBackend, getLimitOrderVariant } from "build/backend";
+import {
+  getLimitOrderBackend,
+  getLimitOrderVariant,
+  LimitOrderView
+} from "../build/backend";
 import { getAnnouncers } from "../constants";
-import { parseAddress, parseCurrency, ReachAccount } from "reach-helpers";
-import { ReachTxnOpts } from "types";
-import { noOp } from "utils/utils.reach";
-import { LimitOrderView } from "../api/LimitOrder.Fetch";
-import { errorResult, successResult } from "utils";
+import { parseAddress, parseCurrency, ReachAccount } from "../reach-helpers";
+import { ReachTxnOpts } from "../types";
+import { noOp } from "../utils/utils.reach";
+import { errorResult, successResult } from "../utils";
 
 export type CreateLimitOrderOpts = ReachTxnOpts &
   LimitOrderView & {

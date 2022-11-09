@@ -12,7 +12,7 @@ import {
   ReachAccount,
   ReachToken
 } from "../reach-helpers";
-import { ReachTokenPair, ReachTxnOpts } from "../types";
+import { ReachTokenPair, ReachTxnOptsCore } from "../types";
 import { errorResult, successResult } from "../utils";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 
@@ -29,7 +29,7 @@ export type FetchLimitOrderOpts = {
   tokenADecimals?: number;
   /** Decimals for `Token B`. Required if `includeTokens` is true */
   tokenBDecimals?: number;
-} & ReachTxnOpts;
+} & ReachTxnOptsCore;
 
 /**
  * Fetch a Limit Order Contract

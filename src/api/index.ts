@@ -23,9 +23,9 @@ export {
 export { announceFarm } from "./FarmStream.Announce";
 
 // Limit Order
-export * from "./LimitOrder.Fetch";
 export {
   subscribeToLimitOrders,
   LOSubscriptionOpts
 } from "./subscribeToLimitOrders";
-export { LimitOrderType, getLimitOrderVariant } from "../build/backend";
+export * from "./LimitOrder.Fetch";
+export * from "./LimitOrder.Cancel";

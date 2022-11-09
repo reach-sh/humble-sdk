@@ -55,10 +55,8 @@ export type TransactionResult<T> = {
   contract?: ReachContract<any>;
 };
 
-/** Options for interacting with a `Pool` contract */
-export type ReachTxnOpts = {
-  /** (Optional) The pool address targeted for the txn */
-  poolAddress?: string | number;
+/** Options for interacting with most SDK functions */
+export type ReachTxnOptsCore = {
   /** A pre-attached `ReachContract` object, if any, to speed up initialization */
   contract?: ReachContract<any>;
   /** Optional function to call when withdrawal action is complete */
@@ -66,6 +64,12 @@ export type ReachTxnOpts = {
   /** Optional function to call as the transaction progresses (e.g. for UI notifications) */
   onProgress?: (msg: string) => void;
 };
+
+/** Options for interacting with a `Pool` contract */
+export type ReachTxnOpts = {
+  /** (Optional) The pool address targeted for the txn */
+  poolAddress?: string | number;
+} & ReachTxnOptsCore;
 
 /** Options for interacting with a `Pool` contract */
 export type PoolFetchOpts = ReachTxnOpts & {
@@ -166,7 +170,7 @@ export type StaticFarmDataShared = {
   pairTokenBSymbol: string;
   rewardTokenSymbol: string;
   stakedTokenSymbol: string;
-  isPartnerFarm?: boolean
+  isPartnerFarm?: boolean;
 };
 
 export type StaticFarmDataUnformatted = {

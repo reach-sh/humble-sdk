@@ -9,36 +9,21 @@ import dotenv from "dotenv";
 import {
   Blue,
   Green,
+  Red,
   Yellow,
+  answerOrDie,
+  exitWithMsgs,
   fromArgs,
   getAccountFromArgs,
-  iout,
-  exitWithMsgs,
-  answerOrDie,
-  Red
+  iout
 } from "./utils.mjs";
-import { runFetchPoolTest } from "./runFetchPoolTest.mjs";
-import { runFetchTokenTest } from "./runFetchTokenTest.mjs";
-import { runAnnouncerTest } from "./runAnnouncerTest.mjs";
-import { runFarmAnnouncerTest } from "./runFarmAnnouncerTest.mjs";
-import { runSwapTest } from "./runSwapTest.mjs";
-import { runLiquidity } from "./runLiquidity.mjs";
-import { runCreatePoolTest } from "./runCreatePoolTest.mjs";
-import { runCreateFarmTest } from "./runCreateFarmTest.mjs";
-import { runFetchFarmTest } from "./runFetchFarmTest.mjs";
-import { runCheckRewardsTest } from "./runCheckRewardsTest.mjs";
-import { runAnnounceFarmTest } from "./runAnnounceFarmTest.mjs";
-import { runStakeToFarmTest } from "./runStakeToFarmTest.mjs";
-import { runPoolReport } from "./runPoolReportTest.mjs";
-import { runCheckPartnerFarmTest } from "./runCheckPartnerFarmTest.mjs";
-import { createTokenMetadata } from "./createTokenMedata.mjs";
 import selectAction from "./selectAction.mjs";
 import { sandbox } from "./runSandbox.mjs";
-import {
-  createFarmAnnouncer,
-  createLOAnnouncer,
-  createTriumvirate
-} from "./runCreateAnnouncer.mjs";
+import poolActions from "./actions/poolActions.mjs";
+import farmActions from "./actions/farmActions.mjs";
+import adminActions from "./actions/adminActions.mjs";
+import tokActions from "./actions/tokenActions.mjs";
+import LOActions from "./actions/limitOrderActions.mjs";
 
 dotenv.config({ path: "./.env" });
 
@@ -54,63 +39,17 @@ const pubTestnet = {
   publicFarmAnnouncer: 121345428,
   limitOrderAnnouncer: 121346090
 };
-
-const CreateFarmAnnouncer = {
-  title: "Create Farm Announcer (requires funds)",
-  action: createFarmAnnouncer
-};
-const AnnounceFarm = { title: "Announce a Farm", action: runAnnounceFarmTest };
-const RunSandbox = {
-  title: "Run Sandbox",
-  action: sandbox
-};
-const poolActions = [
-  { title: "List Pools", action: runAnnouncerTest },
-  { title: "Create a Liquidity Pool", action: runCreatePoolTest },
-  { title: "Fetch a Liquidity Pool", action: runFetchPoolTest },
-  { title: "Add/remove Liquidity", action: runLiquidity },
-  { title: "Pools CSV Report", action: runPoolReport }
-];
-const adminActions = [
-  {
-    title: "Create Triumvirate (requires funds)",
-    action: createTriumvirate
-  },
-  CreateFarmAnnouncer,
-  {
-    title: "Create Limit Order Announcer (requires funds)",
-    action: createLOAnnouncer
-  },
-  AnnounceFarm
-];
-const farmActions = [
-  { title: "List Farms", action: runFarmAnnouncerTest },
-  { title: "Fetch a Farm", action: runFetchFarmTest },
-  { title: "Check Staking rewards", action: runCheckRewardsTest },
-  { title: "Stake Funds in farm", action: runStakeToFarmTest },
-  { title: "Check for Partner Farm", action: runCheckPartnerFarmTest },
-  { title: "Create a Farm", action: runCreateFarmTest },
-  { title: "Announce a Farm", action: runAnnounceFarmTest },
-  CreateFarmAnnouncer
-];
-const tokenActions = [
-  { title: "Fetch a Token", action: runFetchTokenTest },
-  { title: "Swap tokens", action: runSwapTest },
-  { title: "Create JSON Metadata", action: createTokenMetadata }
-];
+const rf = (s) => `${s} ((requires funded account!))`;
 const sections = [
   {
-    title: "Admin: Contract Actions (requires funded account!)",
+    title: rf("Admin: Contract stuff"),
     action: (acc) => selectAction(adminActions, acc)
   },
   { title: "Liquidity Pools", action: (acc) => selectAction(poolActions, acc) },
+  { title: rf("Limit Orders"), action: (acc) => selectAction(LOActions, acc) },
   { title: "Farms", action: (acc) => selectAction(farmActions, acc) },
-  {
-    title: "Tokens (swap/fetch)",
-    action: (acc) => selectAction(tokenActions, acc)
-  },
-  CreateFarmAnnouncer,
-  RunSandbox
+  { title: "Tokens (swap/fetch)", action: (a) => selectAction(tokActions, a) },
+  { title: "Sandbox (runSandbox.mjs)", action: sandbox }
 ];
 
 let acc;

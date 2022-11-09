@@ -7,7 +7,6 @@ import {
   fetchStakingPool,
   getNetworkProvider,
   isPartnerFarm,
-  parseAddress,
   subscribeToFarmStream
 } from "@reach-sh/humble-sdk";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";

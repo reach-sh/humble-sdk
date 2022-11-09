@@ -16,7 +16,8 @@ import {
   Yellow,
   answerOrDie,
   exitWithMsgs,
-  promptIsFunded
+  promptIsFunded,
+  rerunOrExit
 } from "./utils.mjs";
 
 const showTitle = (t) => {
@@ -95,10 +96,4 @@ async function createAnnouncer(acc, bin, participant = "Deployer") {
     prompt: "Create another announcer?",
     do: () => createAnnouncer(acc, bin, participant)
   });
-}
-
-/** Helper: recurse last function or exit */
-async function rerunOrExit(opts) {
-  if ((await answerOrDie(opts.prompt)) === "y") return opts.do();
-  return exitWithMsgs("Complete: exiting ... ");
 }

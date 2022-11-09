@@ -128,13 +128,15 @@ export function iout(msg, data) {
   console.log(JSON.stringify(data, null, 4));
 }
 
-export function parseAddress(addr) {
-  let ctcInfo = parseInt(addr);
-  if (createReachAPI().connector !== "ALGO") {
-    let pit = addr.toString().trim().replace(/\0.*$/g, "");
-    ctcInfo = pit.startsWith("0x") ? pit : "0x" + pit;
-  }
-  return ctcInfo;
+/** 
+ * HELPER | recurse last function or exit 
+ * @param {object} opts
+ * @param {string} opts.prompt
+ * @param {Function} opts.do
+ */
+export async function rerunOrExit(opts) {
+  if ((await answerOrDie(opts.prompt)) === "y") return opts.do();
+  return exitWithMsgs("Complete: exiting ... ");
 }
 
 export default {};

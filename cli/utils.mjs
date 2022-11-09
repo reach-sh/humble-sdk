@@ -20,13 +20,19 @@ export const fmt = (x) => {
   return stdlib.formatCurrency(x, stdlib.connector == "ALGO" ? 6 : 18);
 };
 
+/** Ensure user has funds */
+export async function promptIsFunded() {
+  if ((await answerOrDie("Is this account funded?")) === "y") return;
+  exitWithMsgs("A funded account is required for this action");
+}
+
 // Prompt cli user for a response, or exit
 export async function answerOrDie(question, validator) {
   const validate = validator || ((x) => x);
   const promptOpts = (p) => ({
     type: "input",
     message: `${p} ("exit" to exit)\n`,
-    name: "ans",
+    name: "ans"
   });
   const query = async (p) => (await Enquirer.prompt([promptOpts(p)])).ans;
   let answer = undefined;
@@ -122,13 +128,15 @@ export function iout(msg, data) {
   console.log(JSON.stringify(data, null, 4));
 }
 
-export function parseAddress(addr) {
-  let ctcInfo = parseInt(addr);
-  if (createReachAPI().connector !== "ALGO") {
-    let pit = addr.toString().trim().replace(/\0.*$/g, "");
-    ctcInfo = pit.startsWith("0x") ? pit : "0x" + pit;
-  }
-  return ctcInfo;
+/** 
+ * HELPER | recurse last function or halt terminal session
+ * @param {object} opts
+ * @param {string} opts.prompt
+ * @param {Function} opts.do
+ */
+export async function rerunOrExit(opts) {
+  if ((await answerOrDie(opts.prompt)) === "y") return opts.do();
+  return exitWithMsgs("Complete: exiting ... ");
 }
 
 export default {};

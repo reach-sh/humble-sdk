@@ -1,4 +1,4 @@
-import { subscribeToFarmStream, getFarmAnnouncer } from "@reach-sh/humble-sdk";
+import { subscribeToFarmStream } from "@reach-sh/humble-sdk";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
   exitWithMsgs,
@@ -14,14 +14,14 @@ let LIMIT = 10;
 const TIMEOUT = 15;
 
 /** Attach to farm announcer and list a subset of pools */
-export async function runFarmAnnouncerTest(acc) {
+export async function runFarmStreamTest(acc) {
   console.clear();
-  Blue(`Running ANNOUNCER ${getFarmAnnouncer()}`);
+  Blue(`Running FARM ANNOUNCER TEST`);
   Yellow(`Attaching Farm listener ...`);
 
-  const hmPrompt = `Stop after how many? (Leave blank to default to 10)`
-  const howMany = (await answerOrDie(hmPrompt)) || 10
-  LIMIT = howMany
+  const hmPrompt = `Stop after how many? (Leave blank to default to 10)`;
+  const howMany = (await answerOrDie(hmPrompt)) || 10;
+  LIMIT = howMany;
 
   const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
   subscribeToFarmStream(acc, {

@@ -5,7 +5,7 @@ export const noOp = () => null;
 // Generate a number abbreviation
 function abbrevNumber(numOfGroups: number) {
   if (Number.isNaN(numOfGroups) || !numOfGroups) return "";
-  const ab = ["K", "M", "B", "T", "Qa", "Qi", "Si", "Se", "O", "N", "D"];
+  const ab = ["K", "M", "B", "T", "Qa", "Qi", "Si", "Se", "o", "N", "dec"];
   if (numOfGroups >= ab.length) return "!";
   return ab[numOfGroups - 1];
 }
@@ -33,8 +33,8 @@ export function asMaybe<T extends any>(val: T): Maybe<T> {
  */
 export function fromMaybe<T extends any>(
   mVal: T | Maybe<T>,
-  format = (v: T): any => v,
-  fallback: any = null
+  format = (v: any, ..._rest: any[]): T | any => v,
+  fallback: any = null as T
 ): T | null {
   if (!isMaybe(mVal)) return format(mVal as T);
 
@@ -78,6 +78,48 @@ export function formatNumberShort(val: any, round = 2) {
   return out;
 }
 
+export function formatUnsafeInt(val: string, round = 2) {
+  if (isNaN(Number(val))) return "";
+  console.log(val, typeof val);
+  const parts = val.split(".");
+  const numInts = parts[0].length;
+  if (!numInts) return "0";
+  if (numInts <= 3) return truncateNum(val);
+
+  // Get number of vals before first 'comma'
+  const leadingLength = numInts % 3 || 3;
+  const leading = parts[0].substring(0, leadingLength) || parts[0];
+
+  const rest = parts[0].substring(leadingLength);
+  const decimals = trimDecimals(rest.substring(0, round));
+  const groups = [];
+  const grouper = new RegExp(/[0-9]{3}/g);
+  const i = rest.matchAll(grouper);
+  let n = i.next();
+
+  do {
+    groups.push(n.value[0]);
+    n = i.next();
+  } while (!n.done);
+
+  return `${leading}${decimals}${abbrevNumber(groups.length)}`;
+}
+
+type NumberFormatPart = Intl.NumberFormatPart;
+export function formatCurrencyShort(val: number, decimalPlaces = 2) {
+  const parts = Intl.NumberFormat().formatToParts(val);
+  const groups = parts.filter((p) => p.type === "group").length;
+  const int = parts[0].value;
+  const decs = getDecimals(parts, decimalPlaces);
+  return `${int}${decs}${abbrevNumber(groups)}`;
+}
+
+export function truncateNum(n: string, decimals = 2) {
+  const num = Number(n);
+  const fmtd = formatCurrencyShort(num, decimals);
+  return fmtd === "0" && num > 0 ? "< 0.001" : fmtd;
+}
+
 /**
  * @internal
  * Strip `\u0000` characters from byte string
@@ -95,4 +137,21 @@ export function trailing0s(val: string) {
 function trimDecimals(val: string) {
   if (val.replace(/0*/, "") === "") return "";
   return `.${trailing0s(val)}`;
+}
+
+/** Generates a string with the decimal value of the parsed number in `parts` */
+function getDecimals(parts: NumberFormatPart[], places = 2) {
+  if (!places) return "";
+
+  const ints: NumberFormatPart[] = [];
+  const fractions: NumberFormatPart[] = [];
+  parts.forEach((part) => {
+    const { type } = part;
+    if (type === "integer") ints.push(part);
+    else if (type === "fraction") fractions.push(part);
+  });
+
+  if (ints.length > 1) return trimDecimals(ints[1].value.substring(0, places));
+  if (fractions.length) return trimDecimals(fractions[0].value);
+  return "";
 }

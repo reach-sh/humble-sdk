@@ -1,9 +1,8 @@
 import {
-  createReachAPI,
   formatAddress,
   parseAddress,
   parseCurrency,
-  ReachAccount,
+  ReachAccount
 } from "../reach-helpers";
 import { noOp } from "../utils/utils.reach";
 import { stakingBackend } from "../build/backend";
@@ -11,7 +10,7 @@ import {
   ReachTxnOpts,
   StakingDeployerOpts,
   StakingRewards,
-  TransactionResult,
+  TransactionResult
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
@@ -78,7 +77,7 @@ export async function createStakingPool(
     );
   }
 
-  //    deploy and fund contract
+  // Deploy and fund contract
   onProgress(`Creating staking pool`);
   const deployment = await deployFarmContract(acc, stakingOpts);
   if (deployment.message) onProgress(deployment.message);
@@ -92,30 +91,23 @@ async function deployFarmContract(
   opts: CreateFarmTxnOpts
 ): Promise<TransactionResult<CreateFarmTxnResult>> {
   const { onProgress = noOp, onComplete = noOp, opts: rest } = opts;
-  const reach = createReachAPI();
   const [networkRewards, totalReward] = rest.totalRewardsPayout;
   const { stakeTokenId, rewardTokenId } = rest;
   const rewardTokenDecimals =
     rest.rewardTokenDecimals === undefined
       ? (await fetchToken(acc, rewardTokenId))?.decimals
       : rest.rewardTokenDecimals;
-  const {
-    networkRewardsPerBlock: networkRewardsPerDay,
-    rewardsPerBlock: rewardsPerDay,
-    startBlock,
-    endBlock,
-    imbalance,
-    totalRewards,
-  } = await checkRewardsImbalance({
-    endDateTime: rest.endBlock,
-    startDateTime: rest.startBlock,
-    stakeTokenId: stakeTokenId?.toString(),
-    rewardTokenId: rewardTokenId?.toString(),
-    rewardTokenDecimals,
-    networkRewards,
-    networkRewardsFunder: rest.rewarder0,
-    totalReward,
-  });
+  const { startBlock, endBlock, imbalance, totalRewards } =
+    await checkRewardsImbalance({
+      endDateTime: rest.endBlock,
+      startDateTime: rest.startBlock,
+      stakeTokenId: stakeTokenId?.toString(),
+      rewardTokenId: rewardTokenId?.toString(),
+      rewardTokenDecimals,
+      networkRewards,
+      networkRewardsFunder: rest.rewarder0,
+      totalReward
+    });
 
   // Prevent creation if user expects to pay significantly less
   // than the actual cost over the farm's block-duration.
@@ -127,7 +119,7 @@ async function deployFarmContract(
     `;
     return errorResult(msg, null, {
       amountsDeposited: [0, 0] as StakingRewards,
-      poolAddress: "",
+      poolAddress: ""
     });
   }
 
@@ -140,35 +132,38 @@ async function deployFarmContract(
   const deployerOpts = {
     rewardToken1: rest.rewardTokenId,
     stakeToken: rest.stakeTokenId,
-    rewardsPerBlock: [
-      parseCurrency(networkRewardsPerDay),
-      parseCurrency(rewardsPerDay, rToken?.decimals),
+    rewards: [
+      parseCurrency(networkRewards),
+      parseCurrency(totalReward, rToken?.decimals)
     ],
     start: startBlock,
     end: endBlock,
-    Rewarder0: rest.rewarder0,
+    Rewarder0: rest.rewarder0
   };
 
   /** Response data */
   const data: CreateFarmTxnResult = {
     amountsDeposited: [0, 0] as StakingRewards,
-    poolAddress: "",
+    poolAddress: ""
   };
 
   try {
     onProgress("Deploying contract");
-    let resolveReadyForRewarder: any = null;
-    const pReadyForRewarder = new Promise((r) => (resolveReadyForRewarder = r));
-    reach.withDisconnect(() =>
-      ctc.p.Deployer({
-        opts: deployerOpts,
-        readyForRewarder: () => resolveReadyForRewarder(),
-        readyForStakers: () => {},
-      })
+
+    data.poolAddress = await new Promise((resolve) =>
+      ctc.p
+        .Deployer({
+          opts: deployerOpts,
+          readyForRewarder: async () => {
+            const appId = await ctc.getInfo();
+            resolve(parseAddress(appId).toString());
+          },
+          readyForStakers: () => {}
+        })
+        .catch(() => null)
     );
-    data.poolAddress = parseAddress(await ctc.getInfo());
-    data.amountsDeposited = rest.totalRewardsPayout;
-    await pReadyForRewarder;
+    if (data.poolAddress) data.amountsDeposited = rest.totalRewardsPayout;
+
     if (rest.rewarder0 === formatAddress(acc)) {
       try {
         await ctc.a.Setup.fund();

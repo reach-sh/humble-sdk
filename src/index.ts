@@ -3,17 +3,22 @@ import { loadReach, SDKOpts } from "./reach-helpers";
 import { checkInitialized, setSDKOpts } from "./constants";
 
 // CONSTANTS
-export { setSlippage, getNetworkProvider, getBlockchain } from "./constants";
+export {
+  getAnnouncers,
+  getBlockchain,
+  getNetworkProvider,
+  getPoolAnnouncer,
+  getProtocolAddr,
+  getProtocolFunder0x,
+  getSlippage,
+  setSlippage
+} from "./constants";
+
+// CONTRACTS
+export { LimitOrderType, getLimitOrderVariant } from "./build/backend";
 
 // DATA & DATA FETCHERS
-export {
-  calculateRewardsPerBlock,
-  checkRewardsImbalance,
-  createLiquidityPool,
-  createStakingPool,
-  fetchLiquidityPool,
-  fetchToken,
-} from "./participants/index";
+export * from "./participants/index";
 
 // TYPES
 export * from "./types";
@@ -82,9 +87,6 @@ export {
   calculateTokenSwap,
   checkPoolWillOverflow
 } from "./utils/utils.swap";
-
-// CONSTANTS
-export { getSlippage, getPoolAnnouncer, getFarmAnnouncer } from "./constants";
 
 /**
  * Create `stdlib` instance for SDK. Options allow for selective environment

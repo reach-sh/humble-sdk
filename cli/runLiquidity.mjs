@@ -3,18 +3,18 @@ import {
   calculateOtherAmount,
   createReachAPI,
   fetchLiquidityPool,
-  withdrawLiquidity,
+  parseAddress,
+  withdrawLiquidity
 } from "@reach-sh/humble-sdk";
 import {
   answerOrDie,
   exitWithMsgs,
   iout,
-  parseAddress,
   Blue,
   Green,
   Yellow,
   fromArgs,
-  Red,
+  Red
 } from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);

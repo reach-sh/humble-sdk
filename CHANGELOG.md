@@ -5,6 +5,10 @@
 [🔃] Change to existing functionality
 
 
+## 3.0.0-beta.0
+* ✅ Upgrades to `v3` contracts
+* ✅ Adds **scheduled swaps** (decentralized limit-orders)
+
 ## 2.0.0
 * ✅ Upgrades to `v2` contracts
 * ✅ Adds `createLiquidityPool`

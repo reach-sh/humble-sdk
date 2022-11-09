@@ -84,6 +84,7 @@ export function loadReach(
  * @returns string|number contract address
  */
 export function parseAddress(ctc: any) {
+  if (ctc === null) return "0";
   const { isBigNumber, bigNumberToNumber } = createReachAPI();
   const addr = isBigNumber(ctc) ? bigNumberToNumber(ctc) : ctc;
   if (reach.connector === "ALGO") return parseInt(addr);
@@ -104,7 +105,6 @@ export function safeNetwork(val?: T.NetworkProvider): T.NetworkProvider {
   const safe = valid.includes(val) ? val : "TestNet";
   return safe;
 }
-
 
 /** @internal */
 function buildProviderEnv(

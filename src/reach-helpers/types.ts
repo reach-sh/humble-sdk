@@ -115,8 +115,10 @@ export type ReachContract<T extends BackendModule> = {
   getContractAddress(): Promise<string | number>;
   /** Reach Contract `API` member */
   a: APIFn<T["_APIs"]>;
-  /** Reach Contract `API` member */
+  /** Reach Contract `API` member (error if api not found) */
   apis: APIFn<T["_APIs"]>;
+  /** Reach Contract `API` member (always returns `Maybe` values) */
+  safeApis: APIFn<T["_APIs"]>;
   /** Reach Contract `Participant` member */
   p: InteractFn<T["_Participants"]>;
   /** Reach Contract `Participant` member */
@@ -249,6 +251,8 @@ export type SDKContractOverrides = {
   partnerFarmAnnouncerId?: string;
   /** Application ID of a custom Public Farm announcer */
   publicFarmAnnouncerId?: string;
+  /** Application ID of Limit Order announcer */
+  limitOrderAnnouncerId?: string;
 };
 
 /** Configuration options for the SDK */

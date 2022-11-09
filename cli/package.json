@@ -1,6 +1,6 @@
 {
   "name": "humblesdk-cli",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "index.mjs",
   "type": "module",
@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@reach-sh/humble-sdk": "file:..",
-    "@reach-sh/stdlib": "0.1.10-rc.6",
+    "@reach-sh/stdlib": "^0.1.12-rc.8",
     "algosdk": "^1.15.0",
     "axios": "^0.27.2",
     "enquirer": "^2.3.6"

@@ -3,7 +3,8 @@ import {
   getNetworkProvider,
   createLimitOrder,
   cancelLimitOrder,
-  getBlockchain
+  getBlockchain,
+  fetchLimitOrder
 } from "@reach-sh/humble-sdk";
 import selectAction from "./selectAction.mjs";
 import {
@@ -93,6 +94,43 @@ export async function runCancelLimitOrder(acc) {
   });
 }
 
+export async function runFetchLimitOrder(acc) {
+  console.clear();
+  Blue(`Running FETCH LIMIT-ORDER on ${getNetworkProvider()}`);
+  console.log();
+
+  Yellow("Enter contract id");
+  const contractId = await answerOrDie("Contract Id:");
+
+  Yellow("What type of Limit Order is this?"); // "network-to-token" | "token-to-token" | "token-to-network"
+  const NET = getBlockchain();
+  const variantOpts = [
+    { title: `${NET} to Token`, action: () => "network-to-token" },
+    { title: `Token to Token`, action: () => "token-to-token" },
+    { title: `Token to ${NET}`, action: () => "token-to-network" }
+  ];
+  const variant = await selectAction(variantOpts, acc);
+  const result = await fetchLimitOrder(acc, {
+    contractId,
+    variant,
+    onProgress: Yellow,
+    includeTokens: true,
+    formatResult: true
+  });
+
+  if (result.succeeded) iout(result.message, result.data);
+  else {
+    Red(result.message);
+    Red(JSON.stringify(result.data || {}));
+  }
+
+  rerunOrExit({
+    do: () => runFetchLimitOrder(acc),
+    prompt: "Fetch another Limit order?"
+  });
+}
+
 function validateLOToken(tok) {
   return ["null", "0"].includes(tok) ? null : tok;
 }
+// 121499712

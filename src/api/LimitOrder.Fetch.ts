@@ -12,7 +12,7 @@ import {
   ReachAccount,
   ReachToken
 } from "../reach-helpers";
-import { ReachTokenPair, ReachTxnOptsCore } from "../types";
+import { ReachTokenPair, ReachTxnOptsCore, TransactionResult } from "../types";
 import { errorResult, successResult } from "../utils";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 
@@ -31,6 +31,8 @@ export type FetchLimitOrderOpts = {
   tokenBDecimals?: number;
 } & ReachTxnOptsCore;
 
+export type LimitOrderResult = SDKLimitOrderView | { error: string } | null;
+
 /**
  * Fetch a Limit Order Contract
  * @param acc Reach Account to use
@@ -39,7 +41,7 @@ export type FetchLimitOrderOpts = {
 export async function fetchLimitOrder(
   acc: ReachAccount,
   opts: FetchLimitOrderOpts
-) {
+): Promise<TransactionResult<LimitOrderResult>> {
   const {
     contractId,
     contract,
@@ -66,10 +68,12 @@ export async function fetchLimitOrder(
   const ctc: LimitOrderContract = contract || acc.contract(bin, contractId);
   try {
     onProgress("Fetching Limit Order ...");
-    const view = fromMaybe<LimitOrderView>(await ctc.views.opts());
+    const fmtView = (v: LimitOrderView) => ({ ...v, contractId });
+    const view = fromMaybe<LimitOrderView>(await ctc.views.opts(), fmtView);
+    const errMessage = `Limit Order may have been filled or cancelled`;
     const result = view
       ? successResult("OK", contractId, ctc, view, "contractId")
-      : errorResult("Limit Order not found", contractId, null, ctc);
+      : errorResult(errMessage, contractId, null, ctc);
 
     // Optional: fetch tokens
     if (includeTokens && result.data) {
@@ -87,8 +91,13 @@ export async function fetchLimitOrder(
     onComplete(result);
     return result;
   } catch (error: any) {
-    const e = error.toString();
-    return errorResult("Limit Order not found", contractId, { error: e }, ctc);
+    let msg = "Limit Order not found";
+    let e = error.toString();
+    if (e.includes("Approval program does not match Reach backend")) {
+      e = "Error: Contract bytecode mismatch";
+      msg = "Invalid contract variant specified";
+    }
+    return errorResult(msg, contractId, { error: e }, ctc);
   }
 }
 
@@ -113,8 +122,12 @@ export type SDKLimitOrderView = LimitOrderTokens & {
   amtA: string;
   /** amount B specified or requested in contract */
   amtB: string;
+  /** Order application ID (available from stream) */
+  contractId?: string;
+  /** Order creator (available from stream) */
+  creator?: string;
   /** Token metadata (if fetched) */
-  tokens?: ReachTokenPair;
+  tokens?: [ReachToken | null, ReachToken | null];
 };
 
 /** Create human-readable Limit order values  */

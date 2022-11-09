@@ -129,7 +129,7 @@ export function iout(msg, data) {
 }
 
 /** 
- * HELPER | recurse last function or exit 
+ * HELPER | recurse last function or halt terminal session
  * @param {object} opts
  * @param {string} opts.prompt
  * @param {Function} opts.do

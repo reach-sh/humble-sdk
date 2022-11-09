@@ -29,7 +29,7 @@ export async function createLimitOrder(
     tokenADecimals,
     tokenBDecimals
   } = opts;
-  if (!tokenA && !tokenB) {
+  if ((!tokenA && !tokenB) || tokenA === tokenB) {
     return errorResult("Invalid token selection", null, null);
   }
 

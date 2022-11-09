@@ -47,8 +47,8 @@ export async function cancelLimitOrder(
     onComplete(res);
     return res;
   } catch (error) {
-    onProgress("Limit order cancelation failed");
-    const e = `LimitOrder.Cancel error: ${JSON.stringify(error)}`;
+    onProgress("Limit order Cancellation failed");
+    const e = `Cancellation failed: the contract may have been filled or deleted`;
     return errorResult(e, contractId, false, ctc, "contractId");
   }
 }

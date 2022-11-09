@@ -14,7 +14,7 @@ let LIMIT = 10;
 const TIMEOUT = 15;
 
 /** Attach to farm announcer and list a subset of pools */
-export async function runFarmAnnouncerTest(acc) {
+export async function runFarmStreamTest(acc) {
   console.clear();
   Blue(`Running FARM ANNOUNCER TEST`);
   Yellow(`Attaching Farm listener ...`);

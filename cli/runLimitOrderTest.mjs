@@ -1,7 +1,9 @@
 import {
   fetchToken,
   getNetworkProvider,
-  createLimitOrder
+  createLimitOrder,
+  cancelLimitOrder,
+  getBlockchain
 } from "@reach-sh/humble-sdk";
 import selectAction from "./selectAction.mjs";
 import {
@@ -48,14 +50,13 @@ export async function runCreateLimitOrder(acc) {
     tokenADecimals: tokenA.decimals,
     tokenB: validateLOToken(idB),
     tokenBDecimals: tokenB.decimals,
-    onProgress: Yellow,
-    onComplete: (v) => {
-      iout(v.message, v.data);
-      rerunOrExit({
-        do: () => runCreateLimitOrder(acc),
-        prompt: "Create another Limit order?"
-      });
-    }
+    onProgress: Yellow
+  });
+
+  iout(result.message, result.data);
+  return rerunOrExit({
+    do: () => runCreateLimitOrder(acc),
+    prompt: "Create another Limit order?"
   });
 }
 
@@ -65,16 +66,31 @@ export async function runCancelLimitOrder(acc) {
   console.log();
 
   Yellow("Enter contract id");
-  const ctcId = await answerOrDie("Contract Id:");
+  const contractId = await answerOrDie("Contract Id:");
 
   Yellow("Select Order Type"); // "network-to-token" | "token-to-token" | "token-to-network"
+  const NET = getBlockchain();
   const variantOpts = [
-    { title: "Network to non-network", action: () => "network-to-token" },
-    { title: "Non-network to non-network", action: () => "token-to-token" },
-    { title: "Non-network to network", action: () => "token-to-network" }
+    { title: `${NET} to Token`, action: () => "network-to-token" },
+    { title: `Token to Token`, action: () => "token-to-token" },
+    { title: `Token to ${NET}`, action: () => "token-to-network" }
   ];
   const variant = await selectAction(variantOpts, acc);
-  exitWithMsgs(variant);
+  const result = await cancelLimitOrder(acc, {
+    contractId,
+    variant,
+    onProgress: Yellow
+  });
+
+  if (result.succeeded) iout(result.message, result.data);
+  else {
+    Red(result.message);
+    Red(JSON.stringify(result.data || {}));
+  }
+  rerunOrExit({
+    do: () => runCancelLimitOrder(acc),
+    prompt: "Cancel another Limit order?"
+  });
 }
 
 function validateLOToken(tok) {

@@ -16,15 +16,15 @@ const TIMEOUT = 15;
 const pools = new Set();
 
 /** Attach to pool announcer and list a subset of pools */
-export async function runAnnouncerTest(acc) {
+export async function runPoolStreamTest(acc) {
   console.clear();
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
   Yellow(`Attaching pool listener ...`);
   const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
 
-  const hmPrompt = `Stop after how many? (Leave blank to default to 10)`
-  const howMany = (await answerOrDie(hmPrompt)) || 10
-  LIMIT = howMany
+  const hmPrompt = `Stop after how many? (Leave blank to default to 10)`;
+  const howMany = (await answerOrDie(hmPrompt)) || 10;
+  LIMIT = howMany;
 
   subscribeToPoolStream(acc, {
     onPoolReceived: (msg) => {

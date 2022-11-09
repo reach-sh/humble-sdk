@@ -18,7 +18,14 @@ export async function swapTokens(
   acct: ReachAccount,
   opts: SwapTxnOpts
 ): Promise<TransactionResult<SwapResult>> {
-  const { contract, swap, pool, onProgress = noOp, onComplete = noOp } = opts;
+  const {
+    contract,
+    swap,
+    pool,
+    onProgress = noOp,
+    onComplete = noOp,
+    exact
+  } = opts;
   if (swap.tokenAId === undefined || swap.tokenBId === undefined) {
     const err = "Invalid swap pair";
     return errorResult(err, null, { amountIn: "0", amountOut: "0" }, null);
@@ -34,7 +41,7 @@ export async function swapTokens(
   const { tokenBId } = swap;
   const [tokenB, optedInB] = await Promise.all([
     fetchToken(acct, tokenBId),
-    isNetworkToken(tokenBId) || acct.tokenAccepted(tokenBId),
+    isNetworkToken(tokenBId) || acct.tokenAccepted(tokenBId)
   ]);
 
   if (!optedInB) {
@@ -51,9 +58,12 @@ export async function swapTokens(
     const expectedOut = swap.amountB;
     onProgress(`Swapping for ${expectedOut} ${tokenB?.symbol}`);
 
-    const swapResult: Balances = swapAForB
-      ? await traderAPI.swapAForB(aIn, eOut)
-      : await traderAPI.swapBForA(aIn, eOut);
+    let doSwap = swapAForB ? traderAPI.swapAForB : traderAPI.swapBForA;
+    if (exact) {
+      doSwap = swapAForB ? traderAPI.exactSwapAForB : traderAPI.exactSwapBForA;
+    }
+
+    const swapResult: Balances = await doSwap(aIn, eOut);
     const out = swapAForB ? swapResult.B : swapResult.A;
     const decs = swapAForB ? pool.tokenBDecimals : pool.tokenADecimals;
     data.amountOut = formatCurrency(out, decs === undefined ? 6 : decs);
@@ -62,7 +72,7 @@ export async function swapTokens(
       data,
       succeeded: true,
       message: "Swap complete",
-      contract: ctc,
+      contract: ctc
     };
     onComplete(txnResult);
     return txnResult;
@@ -82,7 +92,7 @@ function swapErrorMessage(failureMsg: string, e: any) {
   switch (true) {
     case error.includes("logic eval error"):
     case error.includes("amtOut >= expectedOut"):
-    case error.includes("expectedOut > 0"): 
+    case error.includes("expectedOut > 0"):
     case error.includes("slippage"): {
       message = `Slippage error: the amount returned would have been below the 
       minimum you were expected to receive.`;
@@ -94,9 +104,8 @@ function swapErrorMessage(failureMsg: string, e: any) {
     }
 
     default:
-      return parseContractError(failureMsg, e)
+      return parseContractError(failureMsg, e);
   }
-
 }
 
 /**

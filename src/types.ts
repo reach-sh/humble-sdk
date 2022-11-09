@@ -29,6 +29,7 @@ export type TokenID = string | number | null;
 
 export type SwapTxnOpts = {
   swap: SwapInfo;
+  exact?: boolean;
   pool?: PoolDetails;
 } & ReachTxnOpts;
 

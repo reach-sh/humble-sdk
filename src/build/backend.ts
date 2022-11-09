@@ -98,9 +98,9 @@ export type StakerAPI = StakingContract["apis"]["Staker"];
 
 /** Limit Order Token pair */
 export type LimitOrderTokens =
-  | { tokenA: any; tokenB: any }
-  | { tokenA: null; tokenB: any }
-  | { tokenA: any; tokenB: null };
+  | { tokenA: string; tokenB: string }
+  | { tokenA: null; tokenB: string }
+  | { tokenA: string; tokenB: null };
 
 /** Limit Order Type */
 export type LimitOrderType =

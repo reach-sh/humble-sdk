@@ -31,7 +31,7 @@ export const exponentialFormat = (val: string) => {
  * @param tokenId Token id
  * @returns Boolean (true if token id represents network Token)
  */
-export function isNetworkToken(tokenId: string | number) {
+export function isNetworkToken(tokenId: string | number | null) {
   return [0, "0", null].includes(tokenId);
 }
 

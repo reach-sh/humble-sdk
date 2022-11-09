@@ -63,7 +63,7 @@ export type ReachToken = {
   supply: string | number;
   symbol: string | ChainSymbol;
   url: string;
-  verified?: boolean;
+  verified?: boolean | null;
   verificationTier?: TokenVerificationTier;
 };
 

@@ -48,6 +48,8 @@ export type TransactionResult<T> = {
   succeeded: boolean;
   /** The pool address targeted for the txn */
   poolAddress?: string | number;
+  /** The application id for the txn. Use `poolAddress` with pool/farm data */
+  contractId?: string | number;
   /** Any useful data associated about the txn (or any error encountered) */
   data: T;
   /** Optional success or failure message */

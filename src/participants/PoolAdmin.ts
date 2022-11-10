@@ -5,7 +5,7 @@ import { noOp } from "../utils/utils.reach";
 import { PoolInfo, ReachTxnOpts, TransactionResult } from "../types";
 import { deployPool } from "../utils/utils.pool";
 import { addLiquidity } from "../api/index";
-import { HUMBLE_LP_TOKEN_SYMBOL } from "constants";
+import { HUMBLE_LP_TOKEN_SYMBOL } from "../constants";
 
 type CreatePoolTxnOpts = {
   tokenIds: [string | number, string | number];

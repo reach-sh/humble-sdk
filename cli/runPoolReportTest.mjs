@@ -43,7 +43,7 @@ export async function runPoolReport(acc) {
 function tokenName(token) {
   const { symbol, name } = token;
   const invalid =
-    symbol.startsWith("AF-POOL") || ["HMBL2LT", "TMPOOL11"].includes(symbol);
+    symbol.startsWith("AF-POOL") || [HUMBLE, "TMPOOL11"].includes(symbol);
   return invalid ? name : symbol;
 }
 

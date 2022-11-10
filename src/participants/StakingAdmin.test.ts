@@ -1,4 +1,4 @@
-import { createReachAPI, initHumbleSDK } from "../index";
+import { createReachAPI, HUMBLE_LP_TOKEN_SYMBOL } from "../index";
 import { createStakingPool } from "./StakingAdmin";
 import { StakingRewards } from "../types";
 
@@ -8,12 +8,12 @@ const deposit = jest
   .mockImplementation(() => createReachAPI().bigNumberify(MintedLPTokens));
 
 const MockContract = {
-  apis: { Provider: { deposit } },
+  apis: { Provider: { deposit } }
 };
 
 const MockAccount: any = {
   contract: jest.fn().mockImplementation(() => MockContract),
-  tokenAccept: jest.fn().mockImplementation(() => Promise.resolve(true)),
+  tokenAccept: jest.fn().mockImplementation(() => Promise.resolve(true))
 };
 
 const startTime = new Date();
@@ -26,12 +26,12 @@ const stakingOpts = {
     stakeTokenId: 44110986,
     totalRewardsPayout: ["0", "10"] as StakingRewards,
     startBlock: startTime.toString(),
-    endBlock: endTime.toString(),
-  },
+    endBlock: endTime.toString()
+  }
 };
 
 describe.only("Create Staking Pool", () => {
-  it("Requires staking token to be a HMBL2LP token", async () => {
+  it(`Requires staking token to be a ${HUMBLE_LP_TOKEN_SYMBOL} token`, async () => {
     expect.assertions(3);
     const result = await createStakingPool(MockAccount, stakingOpts);
     expect(result).toBeDefined();

@@ -1,4 +1,8 @@
-import { subscribeToPoolStream, getPoolAnnouncer } from "@reach-sh/humble-sdk";
+import {
+  subscribeToPoolStream,
+  getPoolAnnouncer,
+  HUMBLE_LP_TOKEN_SYMBOL
+} from "@reach-sh/humble-sdk";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
   exitWithMsgs,
@@ -43,7 +47,8 @@ export async function runPoolReport(acc) {
 function tokenName(token) {
   const { symbol, name } = token;
   const invalid =
-    symbol.startsWith("AF-POOL") || [HUMBLE, "TMPOOL11"].includes(symbol);
+    symbol.startsWith("AF-POOL") ||
+    [HUMBLE_LP_TOKEN_SYMBOL, "TMPOOL11"].includes(symbol);
   return invalid ? name : symbol;
 }
 

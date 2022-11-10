@@ -7,6 +7,8 @@ export * from "./constants.strings";
 // Fees
 export const FLOAT = 0.0001;
 
+export const HUMBLE_LP_TOKEN_SYMBOL = 'HMBL3LT'
+
 /** @internal Get protocol fee info for all pools */
 export function getFeeInfo(): PoolProtocolInfo {
   const LIQUIDITY_PROVIDER_FEE = 25;

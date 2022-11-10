@@ -4,6 +4,7 @@ import { checkInitialized, setSDKOpts } from "./constants";
 
 // CONSTANTS
 export {
+  HUMBLE_LP_TOKEN_SYMBOL,
   getAnnouncers,
   getBlockchain,
   getNetworkProvider,

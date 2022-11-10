@@ -15,7 +15,7 @@ import {
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
 import { checkRewardsImbalance } from "./calculateRewardsPerBlock";
-import { ProtocolFarmFunderAddr } from "../constants";
+import { HUMBLE_LP_TOKEN_SYMBOL, ProtocolFarmFunderAddr } from "../constants";
 
 /** Transaction options (create staking pool) */
 type CreateFarmTxnOpts = {
@@ -69,7 +69,7 @@ export async function createStakingPool(
 
   const stakeToken = await fetchToken(acc, opts.stakeTokenId);
   const notPartner = opts.rewarder0 !== ProtocolFarmFunderAddr();
-  if (stakeToken?.symbol !== "HMBL2LT" && notPartner) {
+  if (stakeToken?.symbol !== HUMBLE_LP_TOKEN_SYMBOL && notPartner) {
     return errorResult(
       "Staking token is not a Liquidity Pool token",
       null,

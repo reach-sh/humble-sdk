@@ -5,6 +5,7 @@ import { noOp } from "../utils/utils.reach";
 import { PoolInfo, ReachTxnOpts, TransactionResult } from "../types";
 import { deployPool } from "../utils/utils.pool";
 import { addLiquidity } from "../api/index";
+import { HUMBLE_LP_TOKEN_SYMBOL } from "../constants";
 
 type CreatePoolTxnOpts = {
   tokenIds: [string | number, string | number];
@@ -76,7 +77,7 @@ export async function createLiquidityPool(
     const deployment = await deployPool(acc, backend, {
       tokenAId: ids[0],
       tokenBId: ids[1],
-      tokSymbol: "HMBL2LT",
+      tokSymbol: HUMBLE_LP_TOKEN_SYMBOL,
       lpTokenName: `HUMBLE LP - ${symbolA}/${symbolB}`,
       onProgress,
     });

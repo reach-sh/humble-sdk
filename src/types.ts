@@ -98,7 +98,7 @@ export type TokenPair = {
 /** Basic, high-level info about a `Liquidity Pool` */
 export type PoolInfo = TokenPair & {
   /** Pool contract address (or Algorand application ID) */
-  poolAddress: string | number;
+  poolAddress: string;
   /** Number of decimal places for `Token A`. Defaults to `6` */
   tokenADecimals?: number;
   /** Number of decimal places for `Token B`. Defaults to `6` */
@@ -106,24 +106,27 @@ export type PoolInfo = TokenPair & {
   /** When true, indicates this pool uses a network token (e.g. ALGO or ETH) */
   n2nn?: boolean;
   /** ID for pool liquidity token */
-  poolTokenId?: ResourceIdentifier;
+  poolTokenId?: string;
 };
 
-/** Enhanced `Pool` data */
-export type PoolDetails = PoolInfo & {
+/** `Pool` Liquidity information */
+export type PoolLiquidity = {
   /** Balance of user pool LP tokens (amount of user Liquidity in the pool) */
   userLiquidity?: any;
   /** LP Tokens minted for this pool */
   mintedLiquidityTokens?: any;
   /** Balance of Pool `Token A` */
-  tokenABalance?: string | number;
+  tokenABalance?: string;
   /** Fees accrued from `Token A` */
-  tokenAFees?: string | number;
+  tokenAFees?: string;
   /** Balance of Pool `Token B` */
-  tokenBBalance?: string | number;
+  tokenBBalance?: string;
   /** Fees accrued from `Token B` */
-  tokenBFees?: string | number;
+  tokenBFees?: string;
 };
+
+/** Enhanced `Pool` data */
+export type PoolDetails = PoolInfo & PoolLiquidity;
 
 /** Options for making a deposit */
 export type DepositTxnOpts = {
@@ -134,7 +137,7 @@ export type DepositTxnOpts = {
   amounts: [amountIn: number | string, amountOut: number | string];
 
   /** Data about target pool at time of txn */
-  pool: PoolInfo;
+  pool: PoolInfo & PoolLiquidity;
 
   /**
    * Whether to opt user account into pool liquidity token. NOTE: If false and user hasn't
@@ -142,6 +145,12 @@ export type DepositTxnOpts = {
    * right value here. Defaults to `false`
    */
   optInToLPToken?: boolean;
+
+  /**
+   * @internal Affects calculation of expected LP amounts. Used internally: DO NOT USE, or
+   * otherwise may result in partial liquidit loss, or frequent transaction failures
+   */
+  initialDeposit?: boolean;
 } & ReachTxnOpts;
 
 export type SwapInfo = TokenPair & {

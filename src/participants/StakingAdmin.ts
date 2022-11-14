@@ -18,12 +18,12 @@ import { checkRewardsImbalance } from "./calculateRewardsPerBlock";
 import { HUMBLE_LP_TOKEN_SYMBOL, ProtocolFarmFunderAddr } from "../constants";
 
 /** Transaction options (create staking pool) */
-type CreateFarmTxnOpts = {
+export type CreateFarmTxnOpts = {
   opts: StakingDeployerOpts & { rewardTokenDecimals?: number };
 } & ReachTxnOpts;
 
 /** Transaction result (create staking pool) */
-type CreateFarmTxnResult = {
+export type CreateFarmTxnResult = {
   /** App id of new staking pool */
   poolAddress?: string;
   /** User-deposited amounts in contract */

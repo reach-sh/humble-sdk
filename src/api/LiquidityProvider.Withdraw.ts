@@ -5,12 +5,16 @@ import {
   formatCurrency,
   BigNumber,
   tokenBalance,
-  TokenBalanceOpts
+  TokenBalanceOpts,
+  parseCurrency
 } from "../reach-helpers";
 import { PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
 import { TransactionResult, ReachTxnOpts, ReachTokenPair } from "../types";
-import { fetchLiquidityPool } from "../participants/index";
+import {
+  convertLPToTokenValue,
+  fetchLiquidityPool
+} from "../participants/index";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 
 /** Required options for withdrawing liquidity from a pool */
@@ -57,14 +61,15 @@ export async function withdrawLiquidity(
   acc: ReachAccount,
   opts: WithdrawOpts
 ): Promise<TransactionResult<WithdrawResult>> {
+  let ctc = opts?.contract as PoolContract;
   const data = { ...NODATA, received: { ...NODATA.received } };
   const [valid, reason] = validateArgs(acc, opts);
   if (!valid) return errorResult(reason, null, data);
 
   const {
     poolAddress: poolId,
-    exchangeLPTokens: inputAmt,
-    percentToWithdraw: pct
+    exchangeLPTokens: lpAmt,
+    percentToWithdraw: lpPct
   } = opts;
   const poolAddress = parseAddress(poolId).toString();
   const {
@@ -75,30 +80,36 @@ export async function withdrawLiquidity(
   } = opts;
 
   onProgress(`Fetching Pool metadata`);
-  const lpool = await fetchLiquidityPool(acc, {
+  const fpOpts = {
     poolAddress,
     n2nn,
-    contract: opts.contract,
+    contract: ctc,
     includeTokens: true
-  });
-  if (!lpool.succeeded || !Array.isArray(lpool.data.tokens)) {
-    return errorResult("Pool not found", poolAddress, data, lpool.contract);
+  };
+  const { data: poolRes, contract: pc } = await fetchLiquidityPool(acc, fpOpts);
+  if (!poolRes.pool || !Array.isArray(poolRes.tokens)) {
+    return errorResult("Pool not found", poolAddress, data, ctc);
   }
 
-  const { data: poolResult, contract } = lpool;
-  const ctc = contract as PoolContract;
+  if (pc) ctc = pc as PoolContract;
   const { setSigningMonitor, bigNumberToNumber } = createReachAPI();
   setSigningMonitor(() => onProgress("SIGNING_EVENT"));
 
   try {
-    onProgress(`Withdrawing funds`);
-    const amt = inputAmt || (await amountFromPctInput(pct, acc, poolTokenId));
-    const withdrawResult = await ctc.apis.Provider.withdraw(amt);
-    const tokens = poolResult.tokens as ReachTokenPair;
-    data.received = {
-      tokenA: formatCurrency(withdrawResult.A, tokens[0].decimals),
-      tokenB: formatCurrency(withdrawResult.B, tokens[1].decimals)
-    };
+    const tokens = poolRes.tokens as ReachTokenPair;
+    const src = lpAmt || (await amountFromPctInput(lpPct, acc, poolTokenId));
+    const amt = parseCurrency(src);
+    const expectedA = convertLPToTokenValue(src, poolRes.pool, true);
+    const expectedB = convertLPToTokenValue(src, poolRes.pool);
+    const expected = formatAmounts({ A: expectedA, B: expectedB }, tokens);
+
+    onProgress(`Withdrawing funds (${JSON.stringify(expected)}) ...`);
+    const withdrawResult = await ctc.apis.Provider.withdraw(amt, {
+      A: parseCurrency(expectedA, tokens[0].decimals),
+      B: parseCurrency(expectedB, tokens[1].decimals)
+    });
+    const fmted = formatAmounts(withdrawResult, tokens);
+    data.received = { tokenA: fmted.A, tokenB: fmted.B };
 
     onProgress("Fetching updated pool LP token balance");
     const balOpts: TokenBalanceOpts = {
@@ -145,6 +156,18 @@ async function amountFromPctInput(
   const userLiquidity = await tokenBalance(acc, balOpts);
   const divisor = bigNumberify(100).div(bigNumberify(pctInput));
   return userLiquidity.div(divisor);
+}
+
+/** @internal Return a pair of human-readable currency amounts  */
+function formatAmounts(d: { A?: any; B?: any } = {}, tokens: ReachTokenPair) {
+  const { A, B } = d;
+  const falsy = (v: any) => [undefined, null].includes(v);
+  if (falsy(d) || falsy(A) || falsy(B)) return { A: "0", B: "0" };
+
+  return {
+    A: formatCurrency(A, tokens[0].decimals),
+    B: formatCurrency(B, tokens[1].decimals)
+  };
 }
 
 /** @internal Ensure correct arguments are supplied */

@@ -7,10 +7,12 @@ import { deployPool } from "../utils/utils.pool";
 import { addLiquidity } from "../api/index";
 import { HUMBLE_LP_TOKEN_SYMBOL } from "../constants";
 
-type CreatePoolTxnOpts = {
+export type CreatePoolTxnOpts = {
   tokenIds: [string | number, string | number];
   tokenAmounts: [a: number, b: number];
 } & ReachTxnOpts;
+
+export { convertLPToTokenValue } from "../utils/utils.pool";
 
 /** Create a Liquidity pool */
 export async function createLiquidityPool(
@@ -39,7 +41,7 @@ export async function createLiquidityPool(
   const isN2nnPool = tokenIds.some(checkIsNetwork);
   const tokens = await Promise.allSettled([
     tokenMetadata(tokenIds[0], acc),
-    tokenMetadata(tokenIds[1], acc),
+    tokenMetadata(tokenIds[1], acc)
   ]);
 
   // Validate tokens
@@ -79,7 +81,7 @@ export async function createLiquidityPool(
       tokenBId: ids[1],
       tokSymbol: HUMBLE_LP_TOKEN_SYMBOL,
       lpTokenName: `HUMBLE LP - ${symbolA}/${symbolB}`,
-      onProgress,
+      onProgress
     });
     if (!deployment.succeeded || !deployment.data) return deployment;
 
@@ -91,6 +93,7 @@ export async function createLiquidityPool(
       pool: poolData,
       onProgress,
       optInToLPToken: true,
+      initialDeposit: true
     });
 
     if (deposit.succeeded) {

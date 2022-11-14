@@ -15,21 +15,21 @@ const p1Ato3B: PoolDetails = {
   tokenABalance: 1000,
   tokenADecimals: 3,
   tokenBBalance: 3000,
-  tokenBDecimals: 3,
+  tokenBDecimals: 3
 };
 const depositOpts: DepositTxnOpts = {
   amounts: [10, 20],
   pool: p1Ato3B,
-  optInToLPToken: false,
+  optInToLPToken: false
 };
 
 const MockContract = {
-  apis: { Provider: { deposit } },
+  apis: { Provider: { deposit } }
 };
 
 const MockAccount: any = {
   contract: jest.fn().mockImplementation(() => MockContract),
-  tokenAccept: jest.fn().mockImplementation(() => Promise.resolve(true)),
+  tokenAccept: jest.fn().mockImplementation(() => Promise.resolve(true))
 };
 
 initHumbleSDK();
@@ -95,7 +95,11 @@ describe.only("Liquidity Provider > Add", () => {
 
   it("Opts-in to a token", async () => {
     expect.assertions(5);
-    const opts = { ...depositOpts, optInToLPToken: true };
+    const opts = {
+      ...depositOpts,
+      pool: { ...depositOpts.pool, mintedLiquidityTokens: MintedLPTokens },
+      optInToLPToken: true
+    };
     const acc = { ...MockAccount, tokenAccept: jest.fn() };
     const spy = jest
       .spyOn(acc, "tokenAccept")
@@ -104,8 +108,8 @@ describe.only("Liquidity Provider > Add", () => {
     const result = await addLiquidity(acc, opts);
     expect(spy).toHaveBeenCalled();
     expect(result).toBeDefined();
-    expect(result.succeeded).toBe(true);
     expect(result.message).toBe("Funds deposited");
+    expect(result.succeeded).toBe(true);
     expect(result.data.lpTokens).toBe(MintedLPTokens);
   });
 });

@@ -1,6 +1,6 @@
 import { getProtocolAddr } from "../constants";
 import { createReachAPI, initHumbleSDK } from "../index";
-import { DepositTxnOpts, PoolDetails } from "../types";
+import { PoolDetails } from "../types";
 import { asMaybe } from "../utils/utils.reach";
 import { withdrawLiquidity, WithdrawOpts } from "./LiquidityProvider.Withdraw";
 
@@ -8,16 +8,12 @@ const ReturnNum = 1200000000;
 const tokenIds = { tokenAId: 0, tokenBId: 10458941 };
 const p1Ato3B: PoolDetails = {
   ...tokenIds,
-  poolAddress: 1,
-  poolTokenId: 77889910,
-  tokenABalance: 1000,
+  poolAddress: "1",
+  poolTokenId: "77889910",
+  tokenABalance: "1000",
   tokenADecimals: 3,
-  tokenBBalance: 3000,
+  tokenBBalance: "3000",
   tokenBDecimals: 3
-};
-const withdrawOpts: WithdrawOpts = {
-  poolAddress: p1Ato3B.poolAddress,
-  poolTokenId: p1Ato3B.poolTokenId as string
 };
 const Info = jest.fn().mockImplementation(() => {
   // Mock contract view info
@@ -52,16 +48,6 @@ const MockAccount: any = {
 initHumbleSDK();
 
 describe.only("Liquidity Provider > Withdraw", () => {
-  it("Requires an account", async () => {
-    expect.assertions(4);
-    // @ts-expect-error
-    const result = await withdrawLiquidity();
-    expect(result).toBeDefined();
-    expect(result.succeeded).toStrictEqual(false);
-    expect(result.message).toStrictEqual("Account is required");
-    expect(result.data.lpBalance).toStrictEqual(0);
-  });
-
   it("Requires valid options", async () => {
     expect.assertions(4);
     // @ts-expect-error

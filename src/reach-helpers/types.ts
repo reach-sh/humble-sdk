@@ -56,15 +56,15 @@ export type TokenVerificationTier =
   | "unverified";
 
 export type ReachToken = {
-  id: number | string;
+  id: string;
   name: string;
-  amount?: number | any;
+  amount?: string;
   decimals: number;
-  supply: string | number;
+  supply: string;
   symbol: string | ChainSymbol;
   url: string;
   verified?: boolean | null;
-  verificationTier?: TokenVerificationTier;
+  verificationTier?: TokenVerificationTier | null;
 };
 
 /** A reach-connected Network Account representation */

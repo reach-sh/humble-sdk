@@ -3,7 +3,7 @@ import { convertDateToBlocks } from "../json";
 import { getValueWithMaxDecimals } from "../utils/utils.swap";
 import { getBlockchain } from "../constants";
 
-type RewardsFormData = {
+export type RewardsFormData = {
   endDateTime: string;
   networkRewards: string;
   networkRewardsFunder: string;
@@ -78,13 +78,13 @@ export function calculateRewardsPerBlock(
  * Assert sum of `rewardsPerBlock` is less than 95% of original expected. This should
  * cover most tokens with 2 or more decimals
  */
-export const isImbalanced = (
+export function isImbalanced(
   rewardsPerBlock: number,
   originalRewardTotal: string
-) => {
+) {
   const precision = 0.95;
   return rewardsPerBlock / Number(originalRewardTotal) < precision;
-};
+}
 
 /**
  * Check whether the difference between what the user wants to pay and what they
@@ -95,7 +95,10 @@ export async function checkRewardsImbalance(
   opts: Partial<RewardsFormData> = {}
 ) {
   const reach = createReachAPI();
-  const data = calculateRewardsPerBlock(opts, Number(await reach.getNetworkTime()));
+  const data = calculateRewardsPerBlock(
+    opts,
+    Number(await reach.getNetworkTime())
+  );
   const [networkRewardsPerBlock, rewardsPerBlock] = data.totalRewards;
   const [networkRewardsImbalanced, rewardsImbalanced] = [
     isImbalanced(networkRewardsPerBlock, opts.networkRewards || "0"),

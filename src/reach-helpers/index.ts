@@ -201,7 +201,7 @@ export async function tokenBalance(
   }
 
   return bigNumber
-    ? parseCurrency(amount, 0)
+    ? parseCurrency(amount, decimals)
     : formatCurrency(amount, decimals);
 }
 /** @internal Generate URL for fetching token balance  */
@@ -326,14 +326,15 @@ type PeraAssetPartial = {
 /** @internal Format token metadata from `Pera Wallet` API request */
 function peraToReachToken(
   raw: PeraAssetPartial | T.ReachToken,
-  amount = 0
-): T.ReachToken {
+  amt = 0
+  ): T.ReachToken {
+  const amount = amt.toString()
   if ((raw as T.ReachToken).verificationTier) {
     return { ...raw, amount } as T.ReachToken;
   }
 
   const data = raw as PeraAssetPartial;
-  const id = data.asset_id;
+  const id = data.asset_id.toString();
   const fallbackName = `Asset #${id}`;
   const symbol = data.unit_name || `#${id}`;
 
@@ -344,7 +345,7 @@ function peraToReachToken(
     amount,
     decimals: data.fraction_decimals,
     supply: data.total || data.total_supply.toString(),
-    url: data.url || data.project_url || data.logo,
+    url: data.url || data.project_url || data.logo || '',
     verified: data.is_verified || false,
     verificationTier: data.verification_tier
   };

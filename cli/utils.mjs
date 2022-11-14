@@ -128,13 +128,14 @@ export function iout(msg, data) {
   console.log(JSON.stringify(data, null, 4));
 }
 
-/** 
+/**
  * HELPER | recurse last function or halt terminal session
  * @param {object} opts
  * @param {string} opts.prompt
  * @param {Function} opts.do
  */
 export async function rerunOrExit(opts) {
+  console.log(); // line-break
   if ((await answerOrDie(opts.prompt)) === "y") return opts.do();
   return exitWithMsgs("Complete: exiting ... ");
 }

@@ -111,17 +111,17 @@ export async function fetchLiquidityPool(
   const { A: aBal, B: bBal } = poolBals;
   const { A: pABal, B: pBBal } = protoBals;
   const pool: PoolDetails = {
-    poolAddress: ctcInfo,
-    poolTokenId: parseAddress(liquidityToken),
+    poolAddress: ctcInfo.toString(),
+    poolTokenId: parseAddress(liquidityToken).toString(),
     mintedLiquidityTokens: reach.bigNumberToNumber(lptBals.B),
     n2nn,
     tokenABalance: formatCurrency(aBal, tokA?.decimals),
     tokenAFees: formatCurrency(totalFees(pABal), tokA?.decimals),
-    tokenAId: tokA?.id,
+    tokenAId: tokA?.id.toString(),
     tokenADecimals: tokA?.decimals,
     tokenBBalance: formatCurrency(bBal, tokB?.decimals),
     tokenBFees: formatCurrency(totalFees(pBBal), tokB?.decimals),
-    tokenBId: tokB?.id,
+    tokenBId: tokB?.id.toString(),
     tokenBDecimals: tokB?.decimals
   };
 

@@ -4,6 +4,7 @@ import {
   createReachAPI,
   fetchLiquidityPool,
   parseAddress,
+  tokenBalance,
   withdrawLiquidity
 } from "@reach-sh/humble-sdk";
 import {
@@ -14,14 +15,15 @@ import {
   Green,
   Yellow,
   fromArgs,
-  Red
+  Red,
+  rerunOrExit
 } from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);
 const actions = ["add", "withdraw"];
 
 /** Run Add/Withdraw Liquidity Tests */
-export async function runLiquidity(acc, opts) {
+export async function runLiquidity(acc) {
   console.clear();
   Blue("Running LIQUIDITY");
 
@@ -50,7 +52,7 @@ export async function runLiquidity(acc, opts) {
       amountA,
       poolAddress,
       tokenIn: tokenIn.id,
-      tokenOut: tokenOut.id,
+      tokenOut: tokenOut.id
     };
     return runAddLiquidity(acc, addOpts, poolResult);
   }
@@ -76,8 +78,12 @@ export async function runLiquidity(acc, opts) {
 
   // No action match
   const expected = actions.map((_, i) => i).join(", ");
-  const e = `Invalid action "${action}": expected one of "${expected}"`;
-  return exitWithMsgs(e);
+  Red(`Invalid action "${action}": expected one of "${expected}"`);
+
+  return rerunOrExit({
+    do: () => runLiquidity(acc),
+    prompt: "Re-run Pool Liquidity suite?"
+  });
 }
 
 /** Add Liquidity to a pool */
@@ -90,6 +96,11 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
   const { poolAddress, tokenAId, tokenBId } = pool;
   const tokenIds = [tokenAId, tokenBId];
   const label = "* Input args:";
+  const redo = () =>
+    rerunOrExit({
+      do: () => runLiquidity(acc),
+      prompt: "Re-run Pool Liquidity suite?"
+    });
 
   const amounts = [amountA];
   const tokenB = data.tokens.find(({ id }) => id === tokenBId);
@@ -111,32 +122,32 @@ async function runAddLiquidity(acc, opts, poolFetchData) {
     amountA: amounts[0],
     tokenIn: tokenIds[0],
     amountB: amounts[1],
-    tokenOut: tokenIds[1],
+    tokenOut: tokenIds[1]
   };
 
   //   Deposit
-  Yellow(`Depositing to pool "${poolAddress}"`);
   Blue(`\t Pool ${JSON.stringify(pool, null, 2)}`);
   Blue(`\t ${label} ${JSON.stringify(args, null, 2)}`);
+  Yellow(`Depositing to pool "${poolAddress}"`);
   const {
     succeeded,
     message,
-    data: addResult,
+    data: addResult
   } = await addLiquidity(acc, {
     amounts,
     pool,
     contract,
-    optInToLPToken: true,
-    onProgress: Yellow,
+    optInToLPToken: !(await acc.tokenAccepted(pool.poolTokenId)),
+    onProgress: Yellow
   });
 
   if (succeeded) {
-    Blue("Deposit complete!");
+    Green("Deposit complete!");
     iout(message, addResult);
-    return exitWithMsgs("'Add Liquidity' Test complete");
-  }
+    Blue("'Add Liquidity' Test complete");
+  } else Red(message);
 
-  exitWithMsgs(message);
+  redo();
 }
 
 /** Pull Liquidity from a pool */
@@ -144,6 +155,11 @@ async function runWithdrawLiquidity(acc, opts, poolFetchData) {
   Blue(`\t * Running WITHDRAW-LIQUIDITY (pool "${opts.poolAddress}")`);
   const { percentToWithdraw, exchangeLPTokens } = opts;
   const { data: poolFetchResult, contract } = poolFetchData;
+  const redo = () =>
+    rerunOrExit({
+      do: () => runLiquidity(acc),
+      prompt: "Re-run Pool Liquidity suite?"
+    });
   const { pool } = poolFetchResult;
   const { succeeded, message, data } = await withdrawLiquidity(acc, {
     exchangeLPTokens,
@@ -152,14 +168,19 @@ async function runWithdrawLiquidity(acc, opts, poolFetchData) {
     n2nn: pool.n2nn,
     onProgress: Yellow,
     poolAddress: pool.poolAddress,
-    poolTokenId: pool.poolTokenId,
+    poolTokenId: pool.poolTokenId
   });
 
-  if (!succeeded) return exitWithMsgs(message);
+  if (!succeeded) {
+    Red(`Withdraw failed: ${message}`);
+    Blue("'Withdraw Liquidity' test complete");
+  } else {
+    Green("Withdraw successful!");
+    iout(message || "Withdraw successful", data || "(no data)");
+    Blue("'Withdraw Liquidity' test complete");
+  }
 
-  Blue("Withdraw successful!");
-  iout(message || "Withdraw successful", data || "(no data)");
-  return exitWithMsgs("'Withdraw Liquidity' test complete");
+  redo();
 }
 
 /** Fetch pool data */
@@ -171,11 +192,18 @@ async function fetchLPool(acc, args) {
   const n2nnArgs = fromArgs(args, "N2NN");
   const n2nn = n2nnArgs
     ? n2nnArgs === "1"
-    : (await answerOrDie(`Does pool ${poolAddress} contain ${net}? [ y/n ]`)) === "y";
+    : (await answerOrDie(
+        `Does pool ${poolAddress} contain ${net}? [ y/n ]`
+      )) === "y";
 
   //  Fetch pool
   Yellow(`* Fetching pool "${poolAddress}"`);
-  const fetchOpts = { includeTokens: true, poolAddress, n2nn, onProgress: Yellow };
+  const fetchOpts = {
+    includeTokens: true,
+    poolAddress,
+    n2nn,
+    onProgress: Yellow
+  };
   const poolResult = await fetchLiquidityPool(acc, fetchOpts);
   const { succeeded, message } = poolResult;
   if (!succeeded) return exitWithMsgs(JSON.stringify(message));

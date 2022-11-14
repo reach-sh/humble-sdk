@@ -4,18 +4,23 @@ import {
   LimitOrderView
 } from "../build/backend";
 import { getAnnouncers } from "../constants";
-import { parseAddress, parseCurrency, ReachAccount } from "../reach-helpers";
-import { ReachTxnOpts } from "../types";
+import {
+  createReachAPI,
+  parseAddress,
+  parseCurrency,
+  ReachAccount
+} from "../reach-helpers";
+import { ReachTxnOptsCore } from "../types";
 import { noOp } from "../utils/utils.reach";
 import { errorResult, successResult } from "../utils";
 
-export type CreateLimitOrderOpts = ReachTxnOpts &
-  LimitOrderView & {
-    tokenA: string;
-    tokenADecimals: number;
-    tokenB: string;
-    tokenBDecimals: number;
-  };
+export type CreateLimitOrderOpts = {
+  tokenA: string;
+  tokenADecimals: number;
+  tokenB: string;
+  tokenBDecimals: number;
+} & Pick<LimitOrderView, "amtA" | "amtB"> &
+  Pick<ReachTxnOptsCore, "onComplete" | "onProgress">;
 
 export async function createLimitOrder(
   acc: ReachAccount,
@@ -36,6 +41,9 @@ export async function createLimitOrder(
   onProgress("Creating limit order ...");
   const variant = getLimitOrderVariant({ tokenA, tokenB });
   const ctc = acc.contract(getLimitOrderBackend(variant));
+
+  createReachAPI().setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+
   const appId: string | null = await new Promise((resolve) =>
     ctc.participants
       .D({
@@ -48,12 +56,12 @@ export async function createLimitOrder(
         },
         ready: async () => {
           const ctcInfo = parseAddress(await ctc.getInfo());
-          resolve(ctcInfo.toString());
+          resolve(ctcInfo?.toString());
         }
       })
       .catch((e: any) => {
         console.log("LimitOrder.Create error", JSON.stringify(e));
-        return null;
+        resolve(null);
       })
   );
   const result =
@@ -62,5 +70,6 @@ export async function createLimitOrder(
       : successResult("OK", appId, ctc, { contractId: appId }, "contractId");
 
   onComplete(result);
+  createReachAPI().setSigningMonitor(noOp);
   return result;
 }

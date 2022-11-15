@@ -87,14 +87,14 @@ export function getNetworkProvider() {
 }
 
 /** @internal */
-let BLOCKCHAIN: ChainSymbol & string;
+let BLOCKCHAIN: ChainSymbol | string;
 /** SDK user's blockchain (consensus network) preference */
 export function getBlockchain() {
   if (!BLOCKCHAIN) BLOCKCHAIN = "ALGO";
   return BLOCKCHAIN;
 }
 /** Default decimal places supported by user's blockchain preference */
-export function getDefaultDecimals(ch: ChainSymbol & string = BLOCKCHAIN) {
+export function getDefaultDecimals(ch = BLOCKCHAIN) {
   const chain = CHAIN_CONSTANTS[ch || "ALGO"];
   return chain.decimals;
 }

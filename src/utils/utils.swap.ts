@@ -145,7 +145,8 @@ export function checkPoolWillOverflow(data?: PoolDetails): OverloadCheck {
   const { tokenADecimals, tokenBDecimals, tokenABalance, tokenBBalance } = data;
   const reach = createReachAPI();
   const M100 = 100_000_000; // 100 million
-  let lastInput = reach.bigNumberify(1);
+  const big = reach.bigNumberify
+  let lastInput = big(1);
 
   try {
     const computeSwap = getComputeSwap(reach);
@@ -165,9 +166,9 @@ export function checkPoolWillOverflow(data?: PoolDetails): OverloadCheck {
       checkB({ B: lastInput, A: 0 });
 
       // if we got here, it worked. Increment and check again
-      lastInput = reach.mul(lastInput, reach.bigNumberify(10));
-      const lessThanA = reach.le(tokenABalance, lastInput);
-      const lessThanB = reach.le(tokenBBalance, lastInput);
+      lastInput = reach.mul(lastInput, big(10));
+      const lessThanA = reach.le(big(tokenABalance || "0"), lastInput);
+      const lessThanB = reach.le(big(tokenBBalance || "0"), lastInput);
       if (!lessThanA && !lessThanB) return checkNext();
 
       const max = lessThanA ? tokenABalance : tokenBBalance;

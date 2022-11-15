@@ -19,13 +19,13 @@ const pools = new Set();
 export async function runPoolStreamTest(acc) {
   console.clear();
   Blue(`Running ANNOUNCER ${getPoolAnnouncer()}`);
-  Yellow(`Attaching pool listener ...`);
-  const seekNow = await answerOrDie("Start from now? (y/n)", yesno);
+  Yellow("Start from now?");
+  const seekNow = (await answerOrDie("y = yes; 'Enter' to skip")) === "y";
+  Yellow("Stop after how many? Enter a number:");
+  const hmPrompt = `[ press 'Enter' to default to 10 ]`;
+  LIMIT = (await answerOrDie(hmPrompt)) || 10;
 
-  const hmPrompt = `Stop after how many? (Leave blank to default to 10)`;
-  const howMany = (await answerOrDie(hmPrompt)) || 10;
-  LIMIT = howMany;
-
+  Blue(`Attaching pool listener ...`);
   subscribeToPoolStream(acc, {
     onPoolReceived: (msg) => {
       Blue("* Received [poolId, tokenA, tokenB]");

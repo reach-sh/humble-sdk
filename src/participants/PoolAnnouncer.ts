@@ -28,7 +28,7 @@ import { fromMaybe, noOp } from "../utils/utils.reach";
 export type FetchPoolOpts = PoolFetchOpts & {
   /** when true, is a network-to-non-network pool */
   n2nn: boolean;
-  /** (Optional) `TokenA` and `TokenB`. Required if `opts.includeTokens` is `false` */
+  /** (Optional) `TokenA` and `TokenB`: required if `opts.includeTokens` is `false` */
   tokens?: [ReachToken, ReachToken];
 };
 /** ALIAS | Fetch data about a pool */

@@ -3,7 +3,7 @@ import {
   createReachAPI,
   parseCurrency,
   formatCurrency,
-  tokenBalance
+  getAtomicBalance
 } from "../reach-helpers";
 import {
   getComputeMint,
@@ -13,7 +13,9 @@ import {
 } from "../build/backend";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { noOp } from "../utils/utils.reach";
-import { TransactionResult, DepositTxnOpts, ReachTxnOptsCore } from "../types";
+import { TransactionResult, DepositTxnOpts } from "../types";
+import { getDefaultDecimals } from "../constants";
+import { formatAmounts } from "../utils/utils.pool";
 
 export type AddLiquidityResult = { lpTokens?: number };
 
@@ -33,7 +35,6 @@ export type AddLiquidityResult = { lpTokens?: number };
 export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
   const data: AddLiquidityResult = { lpTokens: 0 };
   const [valid, message] = protectArgs(opts);
-
   if (!acc) return errorResult("Account is required", null, data, null);
   if (!valid) return errorResult(message, null, data, null);
 
@@ -48,45 +49,50 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
   };
 
   // Validate pool data
+  const defaultDecs = getDefaultDecimals();
   const {
     poolTokenId,
-    tokenADecimals = 6,
-    tokenBDecimals = 6,
+    tokenADecimals = defaultDecs,
+    tokenBDecimals = defaultDecs,
     mintedLiquidityTokens,
     tokenBBalance,
     tokenABalance
   } = pool;
   if (!poolTokenId) {
-    return errorResult("Pool token id is required", null, data, null);
-  } else if (!opts.initialDeposit && (!tokenABalance || !tokenBBalance)) {
+    return done(errorResult("Pool token id is required", null, data, null));
+  }
+
+  if (!opts.initialDeposit && (!tokenABalance || !tokenBBalance)) {
     const msg = `Pool balances required for expected LP output`;
-    return errorResult(msg, poolAddress, data, ctc);
+    return done(errorResult(msg, poolAddress, data, ctc));
   }
 
   // (OPTIONAL) opt-in to LP token
-  const { balance: lpHeld, error } = await getUnformattedLPHeld(acc, {
-    optInToLPToken: opts.optInToLPToken || false,
-    lpTokenId: poolTokenId?.toString(),
-    onProgress
+  const stdlib = createReachAPI();
+  const { bigNumberToNumber, bigNumberify } = stdlib;
+  const { balance: lpHeld, error } = await getAtomicBalance(acc, {
+    onProgress,
+    id: poolTokenId?.toString(),
+    optIn: opts.optInToLPToken || false
   });
   if (error.length) return errorResult(error, null, data, null);
-  else onProgress(`User has ${formatCurrency(lpHeld)} LP tokens`);
+  onProgress(`User has ${formatCurrency(lpHeld, defaultDecs)} LP tokens`);
 
   try {
     const [amtA, amtB] = opts.amounts;
     const A = parseCurrency(amtA, tokenADecimals);
     const B = parseCurrency(amtB, tokenBDecimals);
-    const stdlib = createReachAPI();
-    const { bigNumberToNumber } = stdlib;
     const computeMint = getComputeMint(stdlib);
     const userDeposit = { A, B };
     const poolBals = {
       A: parseCurrency(tokenABalance || "0", tokenADecimals),
       B: parseCurrency(tokenBBalance || "0", tokenBDecimals)
     };
-    const lpBals = { A: lpHeld, B: parseCurrency(mintedLiquidityTokens, 6) };
+    // mintedLiquidityTokens is in atomic units
+    const lpBals = { A: lpHeld, B: bigNumberify(mintedLiquidityTokens) };
     const expects = computeMint(userDeposit, poolBals, lpBals);
-    const fLPBals = formatAmounts(lpBals, [6, 6]);
+    const decs = { decimals: defaultDecs }
+    const fLPBals = formatAmounts(lpBals, [decs, decs]);
     onProgress(`LP Balances: ${JSON.stringify(fLPBals)}`);
     onProgress(`${formatCurrency(expects)} LP Tokens expected`);
     onProgress(`Depositing funds`);
@@ -127,48 +133,4 @@ export function protectArgs(opts: DepositTxnOpts): [boolean, string] {
   }
 
   return [valid, message];
-}
-
-/** @internal Return a pair of human-readable currency amounts  */
-function formatAmounts(d: { A?: any; B?: any } = {}, decs: number[]) {
-  const { A, B } = d;
-  const falsy = (v: any) => [undefined, null].includes(v);
-  if (falsy(d) || falsy(A) || falsy(B)) return { A: "0", B: "0" };
-
-  return {
-    A: formatCurrency(A, decs[0]),
-    B: formatCurrency(B, decs[1])
-  };
-}
-
-/** Options for fetching LP token balances */
-type LPBalanceOpts = {
-  optInToLPToken?: boolean;
-  lpTokenId: string;
-} & Pick<ReachTxnOptsCore, "onProgress">;
-
-/** @internal Get `BigNumber` amount of `LP Tokens` held by user */
-async function getUnformattedLPHeld(acc: ReachAccount, opts: LPBalanceOpts) {
-  const { lpTokenId, optInToLPToken = false, onProgress = noOp } = opts;
-  const { bigNumberify } = createReachAPI();
-  const done = (b: any, e = "") => ({ balance: b, error: e });
-
-  if (!optInToLPToken) {
-    onProgress("Checking LP token balance");
-    const bal = await tokenBalance(acc, {
-      id: lpTokenId,
-      bigNumber: true,
-      tokenDecimals: 6
-    });
-    return done(bal);
-  }
-
-  onProgress("Opting-in to LP token");
-  try {
-    await acc.tokenAccept(lpTokenId);
-    return done(bigNumberify(0));
-  } catch (e: any) {
-    onProgress(e);
-    return done(bigNumberify(0), e);
-  }
 }

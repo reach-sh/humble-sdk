@@ -67,7 +67,7 @@ export async function runLiquidity(acc) {
     const withdrawPrompt =
       actionPrompt === "1"
         ? "Enter percentage of liquidity to withdraw:"
-        : "Enter amount of liquidity tokens you will deposit:";
+        : "Enter amount of LP Tokens you will return:";
     const p = await answerOrDie(withdrawPrompt);
     if (actionPrompt === "1") {
       withdrawOpts.percentToWithdraw = p.replace("%", "");

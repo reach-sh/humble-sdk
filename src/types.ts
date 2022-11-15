@@ -77,6 +77,7 @@ export type ReachTxnOpts = {
 /** Options for interacting with a `Pool` contract */
 export type PoolFetchOpts = ReachTxnOpts & {
   poolAddress: string | number;
+  /** If true, fetch token metadata for pool */
   includeTokens?: boolean;
 };
 

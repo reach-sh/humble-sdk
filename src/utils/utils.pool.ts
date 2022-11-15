@@ -35,18 +35,18 @@ type CreatePoolOpts = ReachTxnOpts &
  * @param isTokA When true, calculate for pool's `Token A` value
  */
 export function convertLPToTokenValue(
-  amt: string,
+  amt: string, // atomic units
   pool: PoolLiquidity,
   isTokA = false
 ) {
   const {
-    mintedLiquidityTokens: minted,
-    tokenABalance: A,
-    tokenBBalance: B
+    mintedLiquidityTokens: minted, // atomic units
+    tokenABalance: balA, // non-atomic
+    tokenBBalance: balB // non-atomic
   } = pool;
-  const fmt = (v?: string) => Number(formatCurrency(v));
-  const userShareOfPool = fmt(amt) / fmt(minted);
-  const conversion = Number(isTokA ? A : B) * userShareOfPool;
+  const nonAtomic = (v?: string) => Number(formatCurrency(v));
+  const userPoolShare = nonAtomic(amt) / nonAtomic(minted);
+  const conversion = Number(isTokA ? balA : balB) * userPoolShare;
   return isNaN(conversion) ? 0 : conversion;
 }
 
@@ -69,10 +69,11 @@ export async function deployPool(
     tokenAId,
     tokenBId
   };
+  const { setSigningMonitor } = createReachAPI();
+  setSigningMonitor(() => onProgress("SIGNING_EVENT"));
 
   try {
     const ctcAdmin = acc.contract(backend);
-    createReachAPI().setSigningMonitor(() => onProgress("SIGNING_EVENT"));
     const [poolLPTokenIdProm, tokAProm, tokBProm] = await Promise.allSettled([
       runAdminParticipant(ctcAdmin, opts),
       fetchToken(acc, tokenAId),
@@ -101,9 +102,11 @@ export async function deployPool(
     data.tokenBBalance = "0";
     data.mintedLiquidityTokens = "0";
 
+    setSigningMonitor(noOp);
     return successResult("OK", data.poolAddress as string, ctcAdmin, data);
   } catch (error: any) {
     const msg = parseContractError("Pool creation failed", error);
+    setSigningMonitor(noOp);
     return errorResult(msg, null, data);
   }
 }
@@ -115,6 +118,19 @@ export function createPoolFailed<T>(e: T, m = ""): TransactionResult<T> {
   if (!m) response.message = parseContractError(POOL_CREATION_ERR, e);
 
   return response;
+}
+
+/** @internal Return a pair of human-readable currency amounts  */
+export function formatAmounts(
+  d: { A?: any; B?: any } = {},
+  tokenDecs: { decimals: number }[]
+) {
+  const { A, B } = d;
+  const falsy = (v: any) => [undefined, null].includes(v);
+  if (falsy(d) || falsy(A) || falsy(B)) return { A: "0", B: "0" };
+
+  const [{ decimals: decA }, { decimals: decB }] = tokenDecs;
+  return { A: formatCurrency(A, decA), B: formatCurrency(B, decB) };
 }
 
 /** @internal Run `Admin` participant to create pool contract */

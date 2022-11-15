@@ -3,7 +3,6 @@ import {
   createReachAPI,
   parseAddress,
   formatCurrency,
-  BigNumber,
   tokenBalance,
   TokenBalanceOpts,
   parseCurrency
@@ -16,6 +15,8 @@ import {
   fetchLiquidityPool
 } from "../participants/index";
 import { fromMaybe, noOp } from "../utils/utils.reach";
+import { getDefaultDecimals } from "../constants";
+import { formatAmounts } from "../utils/utils.pool";
 
 /** Required options for withdrawing liquidity from a pool */
 export type RequiredWithdrawOpts = ReachTxnOpts & {
@@ -27,8 +28,8 @@ export type RequiredWithdrawOpts = ReachTxnOpts & {
 
 /** All options for withdrawing liquidity from a pool */
 export type WithdrawOpts = RequiredWithdrawOpts & {
-  /** Amount of LP tokens to exchange for original stake (use this OR `percentToWithdraw`) */
-  exchangeLPTokens?: number | BigNumber;
+  /** Atomic amount of LP tokens to exchange for original stake (use this OR `percentToWithdraw`) */
+  exchangeLPTokens?: number;
   /** Percentage of liquidity to withdraw (e.g. 5 = `5%`). Use this OR `lpTokensToWithdraw` */
   percentToWithdraw?: number;
 };
@@ -68,7 +69,7 @@ export async function withdrawLiquidity(
 
   const {
     poolAddress: poolId,
-    exchangeLPTokens: lpAmt,
+    exchangeLPTokens: lpAmt, // MUST BE atomic
     percentToWithdraw: lpPct
   } = opts;
   const poolAddress = parseAddress(poolId).toString();
@@ -92,26 +93,28 @@ export async function withdrawLiquidity(
   }
 
   if (pc) ctc = pc as PoolContract;
-  const { setSigningMonitor, bigNumberToNumber } = createReachAPI();
+  const stdlib = createReachAPI();
+  const { setSigningMonitor, bigNumberToNumber, bigNumberify } = stdlib;
   setSigningMonitor(() => onProgress("SIGNING_EVENT"));
 
   try {
     const tokens = poolRes.tokens as ReachTokenPair;
     const src = lpAmt || (await amountFromPctInput(lpPct, acc, poolTokenId));
-    const amt = parseCurrency(src);
-    const expectedA = convertLPToTokenValue(src, poolRes.pool, true);
-    const expectedB = convertLPToTokenValue(src, poolRes.pool);
-    const expected = formatAmounts({ A: expectedA, B: expectedB }, tokens);
+    const expectA = convertLPToTokenValue(`${src}`, poolRes.pool, true);
+    const expectB = convertLPToTokenValue(`${src}`, poolRes.pool);
+    onProgress(`Exchanging ${src} LP Tokens to contract`);
+    const msgA = `${expectA} ${tokens[0].symbol}`;
+    const msgB = `${expectB} ${tokens[1].symbol}`;
+    onProgress(`Withdrawing (${msgA}, ${msgB}) ...`);
 
-    onProgress(`Withdrawing funds (${JSON.stringify(expected)}) ...`);
-    const withdrawResult = await ctc.apis.Provider.withdraw(amt, {
-      A: parseCurrency(expectedA, tokens[0].decimals),
-      B: parseCurrency(expectedB, tokens[1].decimals)
+    const apiResult = await ctc.apis.Provider.withdraw(bigNumberify(src), {
+      A: parseCurrency(expectA, tokens[0].decimals),
+      B: parseCurrency(expectB, tokens[1].decimals)
     });
-    const fmted = formatAmounts(withdrawResult, tokens);
+    const fmted = formatAmounts(apiResult, tokens);
     data.received = { tokenA: fmted.A, tokenB: fmted.B };
 
-    onProgress("Fetching updated pool LP token balance");
+    onProgress("Withdrawal complete! Fetching updated LP token balance");
     const balOpts: TokenBalanceOpts = {
       id: poolTokenId,
       bigNumber: true,
@@ -129,45 +132,28 @@ export async function withdrawLiquidity(
 
     const result = successResult("Funds withdrawn", poolAddress, ctc, data);
     onComplete(result);
+    setSigningMonitor(noOp); // clear signing monitor listener
     return result;
   } catch (e: any) {
-    console.error("HumbleSDK withdraw error", { e });
+    setSigningMonitor(noOp); // clear signing monitor listener
     const msg = parseContractError("Funds were not withdrawn.", e);
+    const err = `HumbleSDK withdraw error: ${JSON.stringify(e)}`;
+    onProgress(err);
+    console.log(err);
     return errorResult(msg, poolAddress, data, ctc);
   }
 }
 
-/**
- * @internal
- * Calculate amount of liquidity pool tokens to exchange for staked tokens.
- * Used when a user enters a percentage amount (e.g. `5` = `withdraw 5% of liquidity`)
- */
-async function amountFromPctInput(
-  pctInput: any,
-  acc: any,
-  poolTokenId: any
-): Promise<BigNumber> {
-  const { bigNumberify } = createReachAPI();
-  const balOpts: TokenBalanceOpts = {
+/** @internal Calculate percentage of liquidity pool tokens to exchange for staked tokens. */
+async function amountFromPctInput(pctInput: any, acc: any, poolTokenId: any) {
+  const { bigNumberify, bigNumberToNumber } = createReachAPI();
+  const userLiquidity = await tokenBalance(acc, {
     id: parseAddress(poolTokenId),
     bigNumber: true,
-    tokenDecimals: 6
-  };
-  const userLiquidity = await tokenBalance(acc, balOpts);
+    tokenDecimals: getDefaultDecimals()
+  });
   const divisor = bigNumberify(100).div(bigNumberify(pctInput));
-  return userLiquidity.div(divisor);
-}
-
-/** @internal Return a pair of human-readable currency amounts  */
-function formatAmounts(d: { A?: any; B?: any } = {}, tokens: ReachTokenPair) {
-  const { A, B } = d;
-  const falsy = (v: any) => [undefined, null].includes(v);
-  if (falsy(d) || falsy(A) || falsy(B)) return { A: "0", B: "0" };
-
-  return {
-    A: formatCurrency(A, tokens[0].decimals),
-    B: formatCurrency(B, tokens[1].decimals)
-  };
+  return bigNumberToNumber(userLiquidity.div(divisor));
 }
 
 /** @internal Ensure correct arguments are supplied */

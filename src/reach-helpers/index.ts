@@ -2,13 +2,15 @@ import axios, { AxiosResponse } from "axios";
 import { isNetworkToken, makeNetworkToken } from "../utils";
 import {
   getBlockchain,
+  getDefaultDecimals,
   getNetworkProvider,
   UNINSTANTIATED
 } from "../constants";
 import * as T from "./types";
-import { formatNumberShort, trimByteString } from "../utils/utils.reach";
+import { formatNumberShort, noOp, trimByteString } from "../utils/utils.reach";
+import { ReachTxnOptsCore } from "../types";
 
-type LoadStdlibFn = { (args: any): any };
+type LoadStdlibFn = { (...args: any[]): any };
 export * from "./types";
 export const NETWORKS: T.NetworksMap = {
   ALGO: { name: "Algorand", abbr: "ALGO", decimals: 6 },
@@ -106,68 +108,45 @@ export function safeNetwork(val?: T.NetworkProvider): T.NetworkProvider {
   return safe;
 }
 
-/** @internal */
-function buildProviderEnv(
-  provider: T.NetworkProvider,
-  overrides: Partial<T.AlgoEnvOverride> = {}
-): T.AlgoEnvOverride {
-  let domain = "algonode.cloud";
-  const network = provider.toLowerCase();
-  const server = `https://${network}-api.${domain}`;
-  const indexer = `https://${network}-idx.${domain}`;
-  const env: T.AlgoEnvOverride = {
-    ALGO_SERVER: server,
-    ALGO_PORT: "",
-    ALGO_INDEXER_SERVER: indexer,
-    ALGO_INDEXER_PORT: "",
-    REACH_ISOLATED_NETWORK: "no",
-    ...overrides
-  };
-
-  return env;
-}
-
-function getBaseURLHeaders() {
-  const net = getNetworkProvider();
-  if (net === "ALGO-devnet")
-    return {
-      headers: {
-        "X-Algo-API-Token":
-          "c87f5580d7a866317b4bfe9e8b8d1dda955636ccebfa88c12b414db208dd9705"
-      }
-    };
-  return {};
-}
-
-function getIndexerURLHeaders() {
-  const net = getNetworkProvider();
-  if (net === "ALGO-devnet")
-    return {
-      headers: {
-        "X-Indexer-API-Token": "reach-devnet"
-      }
-    };
-  return {};
-}
-
-const axiosResponse = (res: AxiosResponse<any, any>) => res.data;
-const axiosError = () => null;
-
-async function getNetworkTokenBalance(address: string, bigNumber = false) {
-  const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`;
-  const result = await axios
-    .get(URL, getBaseURLHeaders())
-    .then(axiosResponse)
-    .catch(() => ({ amount: 0 }));
-  const { amount } = result;
-  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
-}
-
 export type TokenBalanceOpts = {
   id: string | number;
   bigNumber?: boolean;
   tokenDecimals?: number;
 };
+/** Options for fetching LP token balances */
+export type AtomicBalanceOpts = {
+  optIn?: boolean;
+} & Pick<ReachTxnOptsCore, "onProgress"> &
+  Pick<TokenBalanceOpts, "id" | "tokenDecimals">;
+
+/**
+ * Get atomic (`BigNumber`) amount of `Token` held by user. Optionally
+ * opts-in to token before checking balance */
+export async function getAtomicBalance(
+  acc: T.ReachAccount,
+  opts: AtomicBalanceOpts
+) {
+  const { id, optIn = false, onProgress = noOp } = opts;
+  const { bigNumberify } = createReachAPI();
+  const done = (b: any, e = "") => ({ balance: b, error: e });
+  // Opt in to an LP token, and retun assumed user-balance of 0
+  if (optIn) {
+    onProgress("Opting-in to LP token");
+    try {
+      await acc.tokenAccept(id);
+      return done(bigNumberify(0));
+    } catch (e: any) {
+      onProgress(e);
+      return done(bigNumberify(0), e);
+    }
+  }
+
+  // Fetch user's token balance if they are opted-in
+  onProgress("Checking LP token balance");
+  const tokenDecimals = opts.tokenDecimals || getDefaultDecimals();
+  const bal = await tokenBalance(acc, { id, tokenDecimals, bigNumber: true });
+  return done(bal);
+}
 
 /** Get formatted token balance */
 export async function tokenBalance(
@@ -176,6 +155,7 @@ export async function tokenBalance(
 ) {
   const { id, bigNumber = false, tokenDecimals } = opts;
   const reach = createReachAPI();
+  const { bigNumberify } = reach;
   const address = reach.formatAddress(acc);
   if (["0", 0, null].includes(id))
     return getNetworkTokenBalance(address, bigNumber);
@@ -185,7 +165,7 @@ export async function tokenBalance(
     .get(balURL, getBaseURLHeaders())
     .then(axiosResponse)
     .catch(axiosError);
-  if (!bal?.["asset-holding"]) return bigNumber ? parseCurrency(0) : "0";
+  if (!bal?.["asset-holding"]) return bigNumber ? bigNumberify(0) : "0";
 
   const { amount } = bal["asset-holding"];
   let decimals = tokenDecimals;
@@ -196,41 +176,12 @@ export async function tokenBalance(
       .then(axiosResponse)
       .catch(axiosError);
 
-    if (!asset?.params) return bigNumber ? parseCurrency(0) : "0";
+    if (!asset?.params) return bigNumber ? bigNumberify(0) : "0";
     decimals = asset.params.decimals;
   }
 
-  return bigNumber
-    ? parseCurrency(amount, decimals)
-    : formatCurrency(amount, decimals);
-}
-/** @internal Generate URL for fetching token balance  */
-function balanceBaseURL() {
-  const net = getNetworkProvider();
-  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:4180/v2";
-  return trimURL(`https://${net.toLowerCase()}-api.algonode.cloud/v2/`);
-}
-
-/** @internal Generate Algo Indexer URL if available  */
-async function indexerBaseURL() {
-  const net = getNetworkProvider();
-  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:8980/v2";
-  try {
-    const reach = createReachAPI();
-    const { indexer } = await reach.getProvider();
-    if (!indexer) return "";
-
-    const url = indexer.c?.bc?.bc?.baseURL?.href;
-    return url ? `${trimURL(url)}/v2` : "";
-  } catch {
-    const network = getNetworkProvider();
-    const prefix = network === "MainNet" ? "" : `.${network.toLowerCase()}`;
-    return trimURL(`https://algoindexer${prefix}.algoexplorerapi.io/v2`);
-  }
-}
-
-function trimURL(url: string) {
-  return url.replace(/\/$/, "");
+  // Balances are always represented atomically
+  return bigNumber ? bigNumberify(amount) : formatCurrency(amount, decimals);
 }
 
 /** (ALGORAND only) Get token data and `acc`'s balance of token (if available) */
@@ -327,8 +278,8 @@ type PeraAssetPartial = {
 function peraToReachToken(
   raw: PeraAssetPartial | T.ReachToken,
   amt = 0
-  ): T.ReachToken {
-  const amount = amt.toString()
+): T.ReachToken {
+  const amount = amt.toString();
   if ((raw as T.ReachToken).verificationTier) {
     return { ...raw, amount } as T.ReachToken;
   }
@@ -345,7 +296,7 @@ function peraToReachToken(
     amount,
     decimals: data.fraction_decimals,
     supply: data.total || data.total_supply.toString(),
-    url: data.url || data.project_url || data.logo || '',
+    url: data.url || data.project_url || data.logo || "",
     verified: data.is_verified || false,
     verificationTier: data.verification_tier
   };
@@ -354,4 +305,96 @@ function peraToReachToken(
 function parseNetworkDecimals(decimals?: number) {
   const key = createReachAPI().connector as T.ChainSymbol;
   return isNaN(Number(decimals)) ? NETWORKS[key].decimals || 0 : decimals;
+}
+
+/** @internal */
+function buildProviderEnv(
+  provider: T.NetworkProvider,
+  overrides: Partial<T.AlgoEnvOverride> = {}
+): T.AlgoEnvOverride {
+  let domain = "algonode.cloud";
+  const network = provider.toLowerCase();
+  const server = `https://${network}-api.${domain}`;
+  const indexer = `https://${network}-idx.${domain}`;
+  const env: T.AlgoEnvOverride = {
+    ALGO_SERVER: server,
+    ALGO_PORT: "",
+    ALGO_INDEXER_SERVER: indexer,
+    ALGO_INDEXER_PORT: "",
+    REACH_ISOLATED_NETWORK: "no",
+    ...overrides
+  };
+
+  return env;
+}
+
+/** @internal */
+function getBaseURLHeaders() {
+  const net = getNetworkProvider();
+  if (net === "ALGO-devnet")
+    return {
+      headers: {
+        "X-Algo-API-Token":
+          "c87f5580d7a866317b4bfe9e8b8d1dda955636ccebfa88c12b414db208dd9705"
+      }
+    };
+  return {};
+}
+
+/** @internal */
+function getIndexerURLHeaders() {
+  const net = getNetworkProvider();
+  if (net === "ALGO-devnet")
+    return {
+      headers: {
+        "X-Indexer-API-Token": "reach-devnet"
+      }
+    };
+  return {};
+}
+
+/** @internal */
+const axiosResponse = (res: AxiosResponse<any, any>) => res.data;
+/** @internal */
+const axiosError = () => null;
+
+/** @internal */
+async function getNetworkTokenBalance(address: string, bigNumber = false) {
+  const URL = `${balanceBaseURL()}/accounts/${address}?exclude=all`;
+  const result = await axios
+    .get(URL, getBaseURLHeaders())
+    .then(axiosResponse)
+    .catch(() => ({ amount: 0 }));
+  const { amount } = result;
+  return bigNumber ? parseCurrency(amount, 0) : formatCurrency(amount, 6);
+}
+
+/** @internal Generate URL for fetching token balance  */
+function balanceBaseURL() {
+  const net = getNetworkProvider();
+  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:4180/v2";
+  return trimURL(`https://${net.toLowerCase()}-api.algonode.cloud/v2/`);
+}
+
+/** @internal Generate Algo Indexer URL if available  */
+async function indexerBaseURL() {
+  const net = getNetworkProvider();
+  if (net !== "TestNet" && net !== "MainNet") return "http://localhost:8980/v2";
+  try {
+    const reach = createReachAPI();
+    const { indexer } = await reach.getProvider();
+    if (!indexer) return "";
+
+    const url = indexer.c?.bc?.bc?.baseURL?.href;
+    return url ? `${trimURL(url)}/v2` : "";
+  } catch {
+    const network = getNetworkProvider();
+    const prefix = network === "MainNet" ? "" : `.${network.toLowerCase()}`;
+    return trimURL(`https://algoindexer${prefix}.algoexplorerapi.io/v2`);
+  }
+}
+
+/** @internal */
+function trimURL(url: string) {
+  return url.replace(/\/$/, "");
 }

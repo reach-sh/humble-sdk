@@ -272,7 +272,8 @@ type FetchPoolOpts = ReachTxnOpts & {
 * `opts.n2nn`: When set to true, this means one of the pool tokens is a network token (e.g. "ALGO" or "ETH"). The correct value is required for fetching the pool data. 
 * `opts.poolAddress`: Address of the pool you want to fetch
 * `opts.includeTokens`: (optional) Whether to fetch pool tokens as well. If set to false, you MUST provide a pair of token objects to the function using the param below
-* `opts.tokens`: (optional) Pool `Token`s. Required when `includeTokens` is "true" 
+* `opts.tokens`: (optional) Pool `Token`s. Required when `includeTokens` is `false`. 
+  * The order is important! The SDK expects them in the order [`TokenA`, `TokenB`]
 
 For additional options, see [`ReachTxnOpts`](./TYPES.md#reachtxnopts).
 
@@ -334,9 +335,13 @@ const { succeeded, message, data } = await withdrawLiquidity(acc, {
 For additional options, see [`ReachTxnOpts`](./TYPES.md#reachtxnopts).
 ```typescript
 type WithdrawOpts = ReachTxnOpts & {
-    /** Percentage of liquidity to withdraw as a number. (e.g. 5 = `5%`) */
+    /** (optional) Percentage of liquidity to withdraw as a number. (e.g. 5 = `5%`) */
     percentToWithdraw: number;
+    /** (optional) Atomic amount of LP Tokens to exchange. Use this OR `percentToWithdraw` */
+    exchangeLPTokens: number
+    /** LP token ID */
     poolTokenId: string | number;
+    /** When "true", the pool contains a network token (e.g. ETH/ALGO) */
     n2nn: boolean;
 }
 ```

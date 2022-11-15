@@ -41,8 +41,8 @@ export async function createLimitOrder(
   onProgress("Creating limit order ...");
   const variant = getLimitOrderVariant({ tokenA, tokenB });
   const ctc = acc.contract(getLimitOrderBackend(variant));
-
-  createReachAPI().setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+  const { setSigningMonitor } = createReachAPI();
+  setSigningMonitor(() => onProgress("SIGNING_EVENT"));
 
   const appId: string | null = await new Promise((resolve) =>
     ctc.participants
@@ -60,16 +60,18 @@ export async function createLimitOrder(
         }
       })
       .catch((e: any) => {
-        console.log("LimitOrder.Create error", JSON.stringify(e));
+        const err = `LimitOrder.Create error: ${JSON.stringify(e)}`;
+        console.log(err);
+        onProgress(err);
         resolve(null);
       })
   );
   const result =
     appId === null
-      ? errorResult("Limit Order was not created", null, ctc)
+      ? errorResult("Limit Order was not created", null, null, ctc)
       : successResult("OK", appId, ctc, { contractId: appId }, "contractId");
 
+  setSigningMonitor(noOp);
   onComplete(result);
-  createReachAPI().setSigningMonitor(noOp);
   return result;
 }

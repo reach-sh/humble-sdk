@@ -260,17 +260,18 @@ export type FarmTokens = {
 };
 
 /** @internal Generate default response data shape */
-function rawSDKFarmView(d: FarmView, poolAddress: string): SDKFarmView {
+function rawSDKFarmView(d: FarmView, poolAddress: string): any {
   const reach = createReachAPI();
   const { end, start, rewardsPerBlock } = d.opts;
   const duration = end - start
+  const [netRewards, nnRewards] = rewardsPerBlock
 
   return {
     poolAddress,
     ...d,
     totalRewards: {
-      network: reach.mul(rewardsPerBlock[0], duration),
-      rewardToken: reach.mul(rewardsPerBlock[1], duration),
+      network: reach.mul(netRewards, duration),
+      rewardToken: reach.mul(nnRewards, duration),
     },
   };
 }

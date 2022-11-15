@@ -12,7 +12,7 @@ import {
 } from "../reach-helpers";
 import { ReachTxnOptsCore } from "../types";
 import { noOp } from "../utils/utils.reach";
-import { errorResult, successResult } from "../utils";
+import { errorResult, isNetworkToken, successResult } from "../utils";
 
 export type CreateLimitOrderOpts = {
   tokenA: string;
@@ -49,19 +49,22 @@ export async function createLimitOrder(
       .D({
         opts: {
           ctcAnnouncer: getAnnouncers().limitOrderAnnouncer,
-          tokA: tokenA,
-          tokB: tokenB,
+          tokA: isNetworkToken(tokenA) ? null : tokenA,
+          tokB: isNetworkToken(tokenB) ? null : tokenB,
           amtA: parseCurrency(opts.amtA, tokenADecimals),
           amtB: parseCurrency(opts.amtB, tokenBDecimals)
         },
         ready: async () => {
-          const ctcInfo = parseAddress(await ctc.getInfo());
+          const ctcInfoBig = await ctc.getInfo();
+          onProgress("Got contract address");
+          console.log("LO contract", ctcInfoBig);
+          const ctcInfo = parseAddress(ctcInfoBig);
           resolve(ctcInfo?.toString());
         }
       })
       .catch((e: any) => {
         const err = `LimitOrder.Create error: ${JSON.stringify(e)}`;
-        console.log(err);
+        console.log(err, e);
         onProgress(err);
         resolve(null);
       })

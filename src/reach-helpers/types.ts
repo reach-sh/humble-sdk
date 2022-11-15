@@ -1,3 +1,5 @@
+import { loadStdlib } from "@reach-sh/stdlib";
+
 export type APIFn<T> = {
   [fn in keyof T]: UnwrapAPI<T[fn]>;
 };
@@ -208,7 +210,7 @@ export type ReachStdLib = {
   setMinMillisBetweenRequests(ms: number): void;
   customHttpEventHandler(h: (e: any) => Promise<void>): void;
   // bigNumberToNumber: (amt: any) => number;
-} & { [x: string]: any };
+} & { [x: string]: any } & ReturnType<typeof loadStdlib>;
 
 /** Options passed into `loadStdlib` */
 export type ReachEnvOpts = {

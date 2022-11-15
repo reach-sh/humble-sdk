@@ -7,6 +7,7 @@ export {
   HUMBLE_LP_TOKEN_SYMBOL,
   getAnnouncers,
   getBlockchain,
+  getDefaultDecimals,
   getNetworkProvider,
   getPoolAnnouncer,
   getProtocolAddr,

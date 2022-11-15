@@ -1,4 +1,10 @@
-import { NetworkProvider, safeNetwork, SDKOpts } from "./reach-helpers";
+import CHAIN_CONSTANTS from "./json";
+import {
+  ChainSymbol,
+  NetworkProvider,
+  safeNetwork,
+  SDKOpts
+} from "./reach-helpers";
 import { PoolProtocolInfo } from "./types";
 
 // Strings
@@ -7,7 +13,7 @@ export * from "./constants.strings";
 // Fees
 export const FLOAT = 0.0001;
 
-export const HUMBLE_LP_TOKEN_SYMBOL = 'HMBL3LT'
+export const HUMBLE_LP_TOKEN_SYMBOL = "HMBL3LT";
 
 /** @internal Get protocol fee info for all pools */
 export function getFeeInfo(): PoolProtocolInfo {
@@ -81,15 +87,21 @@ export function getNetworkProvider() {
 }
 
 /** @internal */
-let BLOCKCHAIN: string;
+let BLOCKCHAIN: ChainSymbol & string;
 /** SDK user's blockchain (consensus network) preference */
 export function getBlockchain() {
   if (!BLOCKCHAIN) BLOCKCHAIN = "ALGO";
   return BLOCKCHAIN;
 }
+/** Default decimal places supported by user's blockchain preference */
+export function getDefaultDecimals(ch: ChainSymbol & string = BLOCKCHAIN) {
+  const chain = CHAIN_CONSTANTS[ch || "ALGO"];
+  return chain.decimals;
+}
 
 /** @internal When 'true', SDK is ready for use */
 let INITIALIZED = false;
+/** Check if SDK is ready for use */
 export function checkInitialized() {
   return INITIALIZED;
 }
@@ -176,8 +188,7 @@ function PartnerFarmAnnouncerId(opts: SDKOpts) {
   ]);
 }
 
-/**
- * @internal Get account address (not App ID!) of Triumvirate contract for current network */
+/** @internal Get account address (not App ID!) of Triumvirate contract for current network */
 function allocateProviderApps(
   net?: NetworkProvider,
   opts: [number, number] = [0, 0]
@@ -192,8 +203,7 @@ function allocateProviderApps(
   }
 }
 
-/**
- * @internal Get account address (not App ID!) of Triumvirate contract for current network */
+/** @internal Get account address (not App ID!) of Triumvirate contract for current network */
 function ProtocolAddr(opts: SDKOpts) {
   const ADDRESSES = {
     MainNet: "",

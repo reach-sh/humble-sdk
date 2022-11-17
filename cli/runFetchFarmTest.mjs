@@ -4,7 +4,6 @@ import {
   fetchLiquidityPool,
   fetchStakingPool
 } from "@reach-sh/humble-sdk";
-import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
   iout,
   exitWithMsgs,
@@ -44,8 +43,7 @@ export async function runFetchFarmTest(acc) {
 
   if (withTokens) {
     const qq = "Render old UI format [MainNet farms only]? (y/n)";
-    const formatForUI = await answerOrDie(qq, yesno);
-    if (formatForUI) return renderFarmData(acc, result);
+    if (await answerOrDie(qq) === 'y') return renderFarmData(acc, result);
   }
 
   if ((await answerOrDie("View ABI?")) === "y") {
@@ -68,7 +66,7 @@ const fetchPrimaryStakeTokenBalance = async (assetId) => {
 async function renderFarmData(acc, result) {
   const { farmView, rewardToken, stakeToken } = result.data;
   const poolID = await answerOrDie("Enter Liquidity Pool address");
-  const n2nn = await answerOrDie("Does this pool contain ALGO?", yesno);
+  const n2nn = (await answerOrDie("Does this pool contain ALGO?")) === 'y';
   if (!poolID) return exitWithMsgs("No pool address supplied");
 
   const { succeeded, data } = await fetchLiquidityPool(acc, {

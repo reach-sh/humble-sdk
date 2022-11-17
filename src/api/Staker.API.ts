@@ -18,7 +18,7 @@ import {
   PoolFetchOpts
 } from "../types";
 import { errorResult, successResult } from "../utils";
-import { fetchFarmTokens, fetchFarmView } from "./Staker.Fetch";
+import { fetchFarmTokens } from "./Staker.Fetch";
 import { formatRewardsPair } from "../utils/utils.staker";
 
 export {
@@ -105,15 +105,9 @@ export async function checkRewardsAvailableAt(
 
   const { contract: ctc, onProgress = noOp, onComplete = noOp } = opts;
   const id = opts.poolAddress?.toString();
-  const fmResult = await fetchFarmView(acc, {
-    poolAddress: id,
-    contract: ctc || acc.contract(stakingBackend, id)
-  });
-  if (!fmResult.data || !fmResult.contract)
-    return errorResult(fmResult.message, id, data);
+  const contract = ctc || acc.contract(stakingBackend, id);
 
   onProgress("Checking rewards");
-  const { data: view, contract } = fmResult;
   const rewardsAtTime = fromMaybe<RewardsPair>(
     await (opts.time
       ? contract.views.rewardsAvailableAt(formatAddress(acc), opts.time)
@@ -128,7 +122,7 @@ export async function checkRewardsAvailableAt(
   // Success result
   let rewardDecimals = opts.rewardTokenDecimals;
   if (isNaN(Number(opts.rewardTokenDecimals))) {
-    const { rewardToken } = await fetchFarmTokens(acc, view.opts);
+    const { rewardToken } = await fetchFarmTokens(acc, {});
     rewardDecimals = rewardToken?.decimals;
   }
 

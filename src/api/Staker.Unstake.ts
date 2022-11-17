@@ -4,15 +4,15 @@ import {
   createReachAPI,
   formatCurrency,
   parseCurrency,
-  ReachAccount,
+  ReachAccount
 } from "../reach-helpers/index";
 import { PoolFetchOpts } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import {
   formatStakeRewardsUpdate,
-  SDKStakeUpdate,
+  SDKStakeUpdate
 } from "../utils/utils.staker";
-import { fetchFarmToken } from "./Staker.Fetch";
+import { fetchFarmTokens } from "./Staker.Fetch";
 
 /** Options for unstaking from Farm */
 type UnstakeOpts = { amount: number | string } & PoolFetchOpts;
@@ -32,46 +32,50 @@ export async function unstakeTokensFromFarm(
   acc: ReachAccount,
   opts: UnstakeOpts
 ) {
-  const { isBigNumber } = createReachAPI();
+  const { isBigNumber, setSigningMonitor } = createReachAPI();
   const data: SDKStakeUpdate = { amountStaked: "0", newTotalStaked: "0" };
   const { amount: stk, onProgress = noOp, onComplete = noOp } = opts;
   if (!opts.poolAddress) {
     return errorResult("Pool address is required", null, data, null);
   }
 
-  const farmId = opts.poolAddress.toString();
-  const ctc: StakingContract =
-    opts.contract || acc.contract(stakingBackend, farmId);
-
-  onProgress("Withdrawing stake");
-
-  const stakeToken = await fetchFarmToken(acc, {
-    contract: ctc,
-    poolAddress: farmId,
-    tokenType: "stake",
+  onProgress("Fetching stake token");
+  const id = opts.poolAddress?.toString();
+  const contract: StakingContract =
+    opts.contract || acc.contract(stakingBackend, id);
+  const { stakeToken } = await fetchFarmTokens(acc, {
+    contract,
+    poolAddress: id
   });
 
   if (!stakeToken) {
-    return errorResult("Stake token not found", farmId, data, ctc);
+    return errorResult("Stake token not found", id, data, contract);
   }
 
-  const { decimals, symbol } = stakeToken;
-  const id = opts.poolAddress?.toString();
+  onProgress("Withdrawing stake");
 
   try {
+    setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+    const { decimals, symbol } = stakeToken;
     const amt = isBigNumber(stk) ? stk : parseCurrency(stk, decimals);
-    const update = await ctc.a.Staker.withdrawAndHarvest(amt);
-    const fmt = formatStakeRewardsUpdate(update[0], decimals);
+    const update = await contract.a.Staker.withdrawAndHarvest(amt);
     const withdrew = isBigNumber(stk) ? formatCurrency(stk, decimals) : stk;
     const msg = `Withdrew ${withdrew} ${symbol}`;
-    const result = successResult(msg, id, ctc, fmt);
+    onProgress(msg);
+
+    const fmt = formatStakeRewardsUpdate(update[0], decimals);
+    const result = successResult(msg, id, contract, fmt);
+
+    setSigningMonitor(noOp);
     onComplete(result);
     return result;
   } catch (error: any) {
     const msg = parseContractError(`Unstaking failed.`, error);
+    const result = errorResult(msg, id, data, contract);
     console.log(msg, { e: error });
-    const result = errorResult(msg, id, data, ctc);
-    onComplete(result)
-    return result
+
+    setSigningMonitor(noOp);
+    onComplete(result);
+    return result;
   }
 }

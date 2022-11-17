@@ -28,8 +28,8 @@ const pools = new Set();
 /* 
   Announced 08/18
 =====================
-farm, pool
-835260005, 778031658
+farm          pool
+123132710     122708890
  */
 
 /** Announce a single farm */
@@ -56,11 +56,10 @@ export async function runAnnounceFarmTest(acc) {
   if (!isPartner) Red("WARNING: This is a Permissionless farm!");
 
   const poolId = await answerOrDie("Enter Liquidity Pool Address:");
-  if (!poolId) {
-    return exitWithMsgs("Check for pool ID using pools.json from s3");
-  }
+  if (!poolId)
+    return exitWithMsgs("Use Humble API to search pool by LP token ID");
 
-  const n2nn = await answerOrDie("Does the pool contain ALGO? (y/n)", yesno);
+  const n2nn = (await answerOrDie("Does the pool contain ALGO? (y/n)")) === "y";
   Yellow("Fetching Liquidity Pool ...");
   const poolResult = await fetchLiquidityPool(acc, {
     poolAddress: poolId,
@@ -99,7 +98,8 @@ export async function runAnnounceFarmTest(acc) {
 
   iout(`Ready to announce ${label} "${farmId}"`, staticFarmData);
   if (!isPartner) Red("REMINDER: This is a Permissionless farm!");
-  const continues = await answerOrDie("Continue? (y/n)", yesno);
+
+  const continues = (await answerOrDie("Continue? (y/n)")) === "y";
   if (!continues) return exitWithMsgs("Exiting ...");
 
   Yellow("Announcing Farm ...");

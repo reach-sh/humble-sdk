@@ -7,7 +7,7 @@ import {
   SDKStakingRewards
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
-import { fetchFarmTokens, fetchFarmView } from "./Staker.Fetch";
+import { fetchFarmTokens } from "./Staker.Fetch";
 
 /** Formatted Contract response-object */
 type SDKRewardsUpdate = {
@@ -40,35 +40,31 @@ export async function harvestStakingRewards(
 
   const { onProgress = noOp, onComplete = noOp } = opts;
   const id = opts.poolAddress.toString();
-  const viewResult = await fetchFarmView(acc, {
-    poolAddress: id,
-    onProgress,
-    contract: opts.contract || acc.contract(stakingBackend, id)
-  });
-  const { data: view, contract, message: fvm } = viewResult;
-  if (!view || !contract) return errorResult(fvm, id, null);
+  const contract: StakingContract =
+    opts.contract || acc.contract(stakingBackend, id);
+  let rDecimals = opts.rewardTokenDecimals;
+  if (isNaN(Number(rDecimals))) {
+    onProgress("Fetching reward token metadata");
+    const { rewardToken } = await fetchFarmTokens(acc, {
+      contract,
+      poolAddress: id
+    });
+    rDecimals = rewardToken?.decimals;
+  }
 
-  const ctc: StakingContract = contract;
   try {
     onProgress("Claiming rewards");
-    const resp: StakingRewardsUpdate = await ctc.a.Staker.harvest();
-    let rDecimals = opts.rewardTokenDecimals;
-    if (isNaN(Number(rDecimals))) {
-      onProgress("Fetching reward token metadata");
-      const { rewardToken } = await fetchFarmTokens(acc, view.opts);
-      rDecimals = rewardToken?.decimals;
-    }
-
+    const resp: StakingRewardsUpdate = await contract.a.Staker.harvest();
     const fmt = formatStakeHarvestUpdate(resp, rDecimals);
     data.totalRemaining = fmt.totalRemaining;
     data.userReceived = fmt.userReceived;
-    const result = successResult("OK", id, ctc, data);
+    const result = successResult("OK", id, contract, data);
     onComplete(result);
     return result;
   } catch (error: any) {
     const msg = parseContractError(`Claiming failed.`, error);
     console.log(msg, { e: error });
-    const result = errorResult(msg, id, data, ctc);
+    const result = errorResult(msg, id, data, contract);
     onComplete(result);
     return result;
   }

@@ -316,16 +316,32 @@ export async function fetchFarmToken(
   return fetchToken(acc, parseAddress(id).toString());
 }
 
-/** Fetch farm's stake or reward token */
+type FetchFarmAndOrTokenOpts =
+  | Partial<Pick<FarmView["opts"], "rewardToken1" | "stakeToken">> &
+      Pick<ReachTxnOpts, "contract" | "poolAddress">;
+/** @internal Fetch farm's stake and reward token. Optionally fetch farm first */
 export async function fetchFarmTokens(
   acc: ReachAccount,
-  opts: Pick<FarmView["opts"], "rewardToken1" | "stakeToken">
+  opts: FetchFarmAndOrTokenOpts
 ) {
-  const { rewardToken1: rtId, stakeToken: stId } = opts;
-  const ps = (v: any) => parseAddress(v).toString();
+  let rtId = opts.rewardToken1 || "";
+  let stId = opts.stakeToken || "";
+  const address = (v: any) => parseAddress(v).toString();
+  if (opts.contract && opts.poolAddress && (!rtId || !stId)) {
+    const { data: view } = await fetchFarmView(acc, {
+      contract: opts.contract,
+      poolAddress: opts.poolAddress
+    });
+
+    if (!view) return { stakeToken: null, rewardToken: null };
+
+    rtId = address(view.opts.rewardToken1);
+    stId = address(view.opts.stakeToken);
+  }
+
   const [rewardToken, stakeToken] = await Promise.all([
-    fetchToken(acc, ps(rtId).toString()),
-    fetchToken(acc, ps(stId).toString())
+    fetchToken(acc, address(rtId)),
+    fetchToken(acc, address(stId))
   ]);
   return { stakeToken, rewardToken };
 }

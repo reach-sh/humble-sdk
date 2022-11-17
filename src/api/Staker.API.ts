@@ -2,33 +2,32 @@ import { fromMaybe, noOp } from "../utils/utils.reach";
 import {
   stakingBackend,
   StakingContract,
-  StakingContractViews,
+  StakingContractViews
 } from "../build/backend";
 import {
   BigNumber,
   createReachAPI,
   formatAddress,
   formatCurrency,
-  ReachAccount,
+  ReachAccount
 } from "../reach-helpers";
 import {
   TransactionResult,
   StakingRewards,
   RewardsPair,
-  PoolFetchOpts,
+  PoolFetchOpts
 } from "../types";
 import { errorResult, successResult } from "../utils";
-import { fetchFarmToken } from "./Staker.Fetch";
+import { fetchFarmTokens, fetchFarmView } from "./Staker.Fetch";
 import { formatRewardsPair } from "../utils/utils.staker";
 
 export {
   fetchFarmAndTokens,
   fetchStakingPool,
-  formatFarmView,
   FarmTokens,
   FarmAndTokens,
   SDKFarmView,
-  FarmView,
+  FarmView
 } from "./Staker.Fetch";
 export { stakeTokensToFarm } from "./Staker.Stake";
 export { unstakeTokensFromFarm } from "./Staker.Unstake";
@@ -104,34 +103,37 @@ export async function checkRewardsAvailableAt(
   if (!valid || !opts.poolAddress)
     return errorResult(why, opts.poolAddress, data);
 
-  const { contract, onProgress = noOp, onComplete = noOp } = opts;
+  const { contract: ctc, onProgress = noOp, onComplete = noOp } = opts;
   const id = opts.poolAddress?.toString();
-  const ctc = (contract || acc.contract(stakingBackend, id)) as StakingContract;
+  const fmResult = await fetchFarmView(acc, {
+    poolAddress: id,
+    contract: ctc || acc.contract(stakingBackend, id)
+  });
+  if (!fmResult.data || !fmResult.contract)
+    return errorResult(fmResult.message, id, data);
 
   onProgress("Checking rewards");
-  // const ctc = farmAndTokens.contract as StakingContract;
-  const rewardsAtTime = fromMaybe(
+  const { data: view, contract } = fmResult;
+  const rewardsAtTime = fromMaybe<RewardsPair>(
     await (opts.time
-      ? ctc.views.rewardsAvailableAt(formatAddress(acc), opts.time)
-      : ctc.views.rewardsAvailable(formatAddress(acc)))
-  ) as RewardsPair;
+      ? contract.views.rewardsAvailableAt(formatAddress(acc), opts.time)
+      : contract.views.rewardsAvailable(formatAddress(acc)))
+  );
 
   // error result
   if (!Array.isArray(rewardsAtTime)) {
-    const message = "Could not fetch rewards";
-    return errorResult(message, id, data, ctc);
+    return errorResult("Could not fetch rewards", id, data, ctc);
   }
 
   // Success result
-  let rTokenDecimals = opts.rewardTokenDecimals;
+  let rewardDecimals = opts.rewardTokenDecimals;
   if (isNaN(Number(opts.rewardTokenDecimals))) {
-    const tokenType = "reward";
-    const rToken = await fetchFarmToken(acc, { contract: ctc, tokenType });
-    rTokenDecimals = rToken?.decimals;
+    const { rewardToken } = await fetchFarmTokens(acc, view.opts);
+    rewardDecimals = rewardToken?.decimals;
   }
 
-  const fRewards = formatRewardsPair(rewardsAtTime, rTokenDecimals);
-  const result = successResult("OK", id, ctc, fRewards);
+  const formatted = formatRewardsPair(rewardsAtTime, rewardDecimals);
+  const result = successResult("OK", id, ctc, formatted);
   onComplete(result);
   return result;
 }

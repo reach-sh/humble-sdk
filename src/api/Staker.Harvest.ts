@@ -4,10 +4,10 @@ import { formatCurrency, ReachAccount } from "../reach-helpers/index";
 import {
   PoolFetchOpts,
   StakingRewardsUpdate,
-  SDKStakingRewards,
+  SDKStakingRewards
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
-import { fetchFarmToken } from "./Staker.Fetch";
+import { fetchFarmTokens, fetchFarmView } from "./Staker.Fetch";
 
 /** Formatted Contract response-object */
 type SDKRewardsUpdate = {
@@ -35,25 +35,28 @@ export async function harvestStakingRewards(
   // Response data
   const data: SDKRewardsUpdate = {
     userReceived: ["0", "0"],
-    totalRemaining: ["0", "0"],
+    totalRemaining: ["0", "0"]
   };
 
   const { onProgress = noOp, onComplete = noOp } = opts;
   const id = opts.poolAddress.toString();
-  const ctc = (opts.contract ||
-    acc.contract(stakingBackend, id)) as StakingContract;
+  const viewResult = await fetchFarmView(acc, {
+    poolAddress: id,
+    onProgress,
+    contract: opts.contract || acc.contract(stakingBackend, id)
+  });
+  const { data: view, contract, message: fvm } = viewResult;
+  if (!view || !contract) return errorResult(fvm, id, null);
 
+  const ctc: StakingContract = contract;
   try {
     onProgress("Claiming rewards");
     const resp: StakingRewardsUpdate = await ctc.a.Staker.harvest();
     let rDecimals = opts.rewardTokenDecimals;
     if (isNaN(Number(rDecimals))) {
       onProgress("Fetching reward token metadata");
-      const rToken = await fetchFarmToken(acc, {
-        tokenType: "reward",
-        contract: ctc,
-      });
-      rDecimals = rToken?.decimals;
+      const { rewardToken } = await fetchFarmTokens(acc, view.opts);
+      rDecimals = rewardToken?.decimals;
     }
 
     const fmt = formatStakeHarvestUpdate(resp, rDecimals);
@@ -79,11 +82,11 @@ function formatStakeHarvestUpdate(
   return {
     userReceived: [
       formatCurrency(data.userReceived[0]),
-      formatCurrency(data.userReceived[1], rewardTokenDecs),
+      formatCurrency(data.userReceived[1], rewardTokenDecs)
     ],
     totalRemaining: [
       formatCurrency(data.totalRemaining[0]),
-      formatCurrency(data.totalRemaining[1], rewardTokenDecs),
-    ],
+      formatCurrency(data.totalRemaining[1], rewardTokenDecs)
+    ]
   };
 }

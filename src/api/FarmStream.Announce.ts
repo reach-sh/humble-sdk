@@ -1,7 +1,11 @@
 import { noOp } from "../utils/utils.reach";
 import { farmAnnouncerBackend, FarmAnnouncerContract } from "../build/backend";
 import { parseAddress, ReachAccount } from "../reach-helpers/index";
-import { ReachTxnOpts, StaticFarmDataUnformatted } from "../types";
+import {
+  ReachTxnOpts,
+  SDKStakingRewards,
+  StaticFarmDataUnformatted
+} from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { getAnnouncers } from "../constants";
 import { fetchStakingPool } from "./Staker.Fetch";
@@ -32,11 +36,11 @@ export async function announceFarm(acc: ReachAccount, opts: AnnounceOpts) {
 
   const { partnerFarmAnnouncer, publicFarmAnnouncer } = getAnnouncers();
   const farmId = parseAddress(farmData.ctcInfo);
-  const { data, succeeded } = await fetchStakingPool(acc, {
+  const { data } = await fetchStakingPool(acc, {
     poolAddress: farmId,
     formatResult: true
   });
-  if (!succeeded) return errorResult(`Farm ${farmId} not found`, farmId, data);
+  if (!data) return errorResult(`Farm ${farmId} not found`, farmId, data);
 
   const isPartner = isPartnerFarm({ farmView: data });
   const ctcInfo = isPartner ? partnerFarmAnnouncer : publicFarmAnnouncer;
@@ -57,4 +61,17 @@ export async function announceFarm(acc: ReachAccount, opts: AnnounceOpts) {
     onComplete(result);
     return result;
   }
+}
+
+/**
+ * ESTIMATION ONLY: divide rewards by farm duration. Inaccurate since it ignores token decimals
+ * @param rewards reward amounts
+ * @param duration farm length
+ */
+export function estimateRewardsPerBlock(
+  rewards: SDKStakingRewards,
+  duration: number
+) {
+  const [net, nonnet] = rewards.map(Number);
+  return [net / duration, nonnet / duration].map(String);
 }

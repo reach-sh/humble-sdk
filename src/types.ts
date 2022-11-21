@@ -191,7 +191,6 @@ export type StaticFarmDataUnformatted = {
   startBlock: BigNumber;
   endBlock: BigNumber;
   rewardTokenId: BigNumber;
-  rewardsPerBlock: [BigNumber, BigNumber];
   stakedTokenId: BigNumber;
   pairTokenAId: Maybe<BigNumber>;
   pairTokenBId: BigNumber;

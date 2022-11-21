@@ -93,19 +93,13 @@ export async function subscribeToFarmStream(
         pairTokenBId = bigNumberToNumber(what[1].pairTokenBId).toString();
       }
 
-      const [networkRewards, nnRewards] = farmData.rewardsPerBlock as [
-        any,
-        any
-      ];
       farmData = {
         ctcInfo: parseAddress(farmData.ctcInfo).toString(),
         startBlock: bigNumberToNumber(farmData.startBlock),
         endBlock: bigNumberToNumber(farmData.endBlock),
         rewardTokenId: bigNumberToNumber(farmData.rewardTokenId).toString(),
-        rewardsPerBlock: {
-          asDefaultNetworkToken: formatCurrency(networkRewards, 6),
-          asRewardToken: formatCurrency(nnRewards, farmData.rewardTokenDecimals)
-        },
+        // rewards start at 0 until distribution begins
+        rewardsPerBlock: { asDefaultNetworkToken: "0", asRewardToken: "0" },
         stakedTokenId: bigNumberToNumber(farmData.stakedTokenId).toString(),
         pairTokenAId,
         pairTokenASymbol: trimByteString(farmData.pairTokenASymbol),

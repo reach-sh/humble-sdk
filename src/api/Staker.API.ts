@@ -122,7 +122,10 @@ export async function checkRewardsAvailableAt(
   // Success result
   let rewardDecimals = opts.rewardTokenDecimals;
   if (isNaN(Number(opts.rewardTokenDecimals))) {
-    const { rewardToken } = await fetchFarmTokens(acc, {});
+    const { rewardToken } = await fetchFarmTokens(acc, {
+      contract,
+      poolAddress: id
+    });
     rewardDecimals = rewardToken?.decimals;
   }
 

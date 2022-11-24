@@ -183,10 +183,11 @@ export type StaticFarmDataShared = {
   pairTokenBSymbol: string;
   rewardTokenSymbol: string;
   stakedTokenSymbol: string;
-  isPartnerFarm?: boolean;
+  rewardTokenDecimals: number;
+  stakedTokenDecimals: number;
 };
 
-export type StaticFarmDataUnformatted = {
+export type StaticFarmDataUnformatted = StaticFarmDataShared & {
   ctcInfo: BigNumber;
   startBlock: BigNumber;
   endBlock: BigNumber;
@@ -194,11 +195,11 @@ export type StaticFarmDataUnformatted = {
   stakedTokenId: BigNumber;
   pairTokenAId: Maybe<BigNumber>;
   pairTokenBId: BigNumber;
-  rewardTokenDecimals: BigNumber;
-  stakedTokenDecimals: BigNumber;
   stakedTokenPoolId: BigNumber;
   stakedTokenTotalSupply: BigNumber;
-} & StaticFarmDataShared;
+  rewardTokenDecimals: BigNumber;
+  stakedTokenDecimals: BigNumber;
+};
 
 export type StaticFarmDataFormatted = {
   ctcInfo: string;
@@ -209,10 +210,9 @@ export type StaticFarmDataFormatted = {
   stakedTokenId: string;
   pairTokenAId: string;
   pairTokenBId: string;
-  rewardTokenDecimals: number;
-  stakedTokenDecimals: number;
   stakedTokenPoolId?: string;
   stakedTokenTotalSupply: string;
+  isPartnerFarm?: boolean;
 } & StaticFarmDataShared;
 
 /**

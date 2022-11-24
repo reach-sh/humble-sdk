@@ -4,7 +4,7 @@ import { parseAddress, ReachAccount } from "../reach-helpers/index";
 import {
   ReachTxnOpts,
   SDKStakingRewards,
-  StaticFarmDataFormatted
+  StaticFarmDataUnformatted
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { getAnnouncers } from "../constants";
@@ -12,7 +12,9 @@ import { fetchStakingPool } from "./Staker.Fetch";
 import { isPartnerFarm } from "./subscribeToFarmStream";
 
 /** Options for announcing a Farm */
-type AnnounceOpts = { staticFarmData: StaticFarmDataFormatted } & ReachTxnOpts;
+export type AnnounceOpts = {
+  staticFarmData: StaticFarmDataUnformatted;
+} & ReachTxnOpts;
 
 /**
  * Remove (un-stake) an amount from a contract. Reduces rewards entitlement.

@@ -150,29 +150,18 @@ function TriumvirContractId(opts: SDKOpts) {
   if (protocolId) return protocolId;
 
   return allocateProviderApps(opts.network, [
-    121344664, // V3 Testnet Triumvirate
+    145284095, // V3 Testnet Triumvirate
     0 // V3 Mainnet Triumvirate
   ]);
 }
 
-/** @internal Get Public Farm data source for Testnet/Mainnet */
-function PublicFarmAnnouncerId(opts: SDKOpts) {
-  const { publicFarmAnnouncerId } = opts.contractOverrides || {};
-  if (publicFarmAnnouncerId) return publicFarmAnnouncerId;
-
-  return allocateProviderApps(opts.network, [
-    121345237, // V3 Testnet Public Farms Announcer
-    0 // V3 Mainnet Public Farms Announcer
-  ]);
-}
-
-/** @internal Get Partner Farm data source for Testnet/Mainnet */
+/** @internal Get Limit Order data source for Testnet/Mainnet */
 function LimitOrderAnnouncerId(opts: SDKOpts) {
   const { limitOrderAnnouncerId } = opts.contractOverrides || {};
   if (limitOrderAnnouncerId) return limitOrderAnnouncerId;
 
   return allocateProviderApps(opts.network, [
-    121346021, // V3 Testnet LO Announcer  (new)
+    145284580, // V3 Testnet LO Announcer  (new)
     0 // V3 Mainnet LO Announcer  (new)
   ]);
 }
@@ -183,16 +172,27 @@ function PartnerFarmAnnouncerId(opts: SDKOpts) {
   if (partnerFarmAnnouncerId) return partnerFarmAnnouncerId;
 
   return allocateProviderApps(opts.network, [
-    121345136, // V3 Testnet Partner Farms Announcer
+    145284336, // V3 Testnet Partner Farms Announcer
     0 // V3 Mainnet Partner Farms Announcer
   ]);
 }
 
+/** @internal Get Public Farm data source for Testnet/Mainnet */
+function PublicFarmAnnouncerId(opts: SDKOpts) {
+  const { publicFarmAnnouncerId } = opts.contractOverrides || {};
+  if (publicFarmAnnouncerId) return publicFarmAnnouncerId;
+
+  return allocateProviderApps(opts.network, [
+    145284388, // V3 Testnet Public Farms Announcer
+    0 // V3 Mainnet Public Farms Announcer
+  ]);
+}
+
+/** @internal A pair of [`Testnet`, `MainNet`] App Ids */
+type AppIds = [testnetAppId: number, mainnetAppId: number];
+
 /** @internal Get account address (not App ID!) of Triumvirate contract for current network */
-function allocateProviderApps(
-  net?: NetworkProvider,
-  opts: [number, number] = [0, 0]
-) {
+function allocateProviderApps(net?: NetworkProvider, opts: AppIds = [0, 0]) {
   switch (safeNetwork(net)) {
     case "TestNet": // Testnet application id
       return opts[0];
@@ -208,16 +208,21 @@ function ProtocolAddr(opts: SDKOpts) {
   const ADDRESSES = {
     MainNet: "",
     None: "",
-    TestNet: "R2PCSFSCGVJXQZEWTKUC4XLBDUGSPI7XJL7K7F54WQVPNRDP4UDMGRNH7Q",
+    TestNet: "E5SV5KGEMO7BM27TTCYTD3T2ZMYMNFYGMS7KUJSWSP5XOJHL27JONSKUUM",
     get "ALGO-devnet"() {
       return ADDRESSES.TestNet;
     }
   };
   const { network: prov = "TestNet", contractOverrides = {} } = opts;
   const { protocolAddress } = contractOverrides;
-  return (
+  const addr =
     protocolAddress || // override
     ADDRESSES[prov as keyof typeof ADDRESSES] || // address for provider
-    ADDRESSES.None // empty string (bad bad bad)
-  );
+    ADDRESSES.None; // empty string (bad bad bad)
+
+  if (!addr || addr === ADDRESSES.None) {
+    throw new Error(`${prov} protocol address not found`);
+  }
+
+  return addr;
 }

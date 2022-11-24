@@ -19,9 +19,7 @@ import { SDKFarmView } from "./Staker.API";
 /** Options for subscribing to farms */
 export type FarmSubscriptionOpts = {
   /** called when contract data is received */
-  onFarmFetched(
-    data: TransactionResult<StaticFarmDataUnformatted | StaticFarmDataFormatted>
-  ): any;
+  onFarmFetched(data: TransactionResult<StaticFarmDataFormatted>): any;
   /** boolean to determine whether the farm data should be formatted or left unformatted */
   format?: boolean;
   /** When `true`, only report farms created after subscription */
@@ -33,11 +31,7 @@ export type FarmSubscriptionOpts = {
 /** Result of monitoring the farm stream */
 export type FarmRegisterEvent = {
   /** Actual event data */
-  what: [
-    addr: string,
-    data: StaticFarmDataUnformatted | StaticFarmDataFormatted,
-    something: any
-  ];
+  what: [addr: string, data: StaticFarmDataUnformatted, something: any];
   /** Block time when event was received */
   when: any;
 };
@@ -53,12 +47,7 @@ export async function subscribeToFarmStream(
     throw new Error("Farm announcer is not set");
 
   const partnerCtc = acc.contract(farmAnnouncerBackend, announcerInfo);
-  const {
-    onFarmFetched,
-    onProgress = noOp,
-    format = false,
-    includePublicFarms = false
-  } = opts;
+  const { onFarmFetched, onProgress = noOp, includePublicFarms = false } = opts;
   const runAnnouncer = async (
     ctcInfo: string | number,
     label: string,
@@ -80,44 +69,44 @@ export async function subscribeToFarmStream(
     { what }: FarmRegisterEvent,
     partner: boolean
   ) {
-    let farmData = what[1];
+    const eventData = what[1];
     const stakePoolId = what[1].stakedTokenPoolId;
-    if (format) {
-      const { bigNumberToNumber } = createReachAPI();
-      const stakedTokenPoolId = bigNumberToNumber(stakePoolId).toString();
-      let pairTokenAId = "";
-      let pairTokenBId = "";
-      if (stakedTokenPoolId !== "0") {
-        pairTokenAId = fromMaybe(what[1].pairTokenAId, bigNumberToNumber, "0");
-        pairTokenAId = pairTokenAId.toString();
-        pairTokenBId = bigNumberToNumber(what[1].pairTokenBId).toString();
-      }
-
-      farmData = {
-        ctcInfo: parseAddress(farmData.ctcInfo).toString(),
-        startBlock: bigNumberToNumber(farmData.startBlock),
-        endBlock: bigNumberToNumber(farmData.endBlock),
-        rewardTokenId: bigNumberToNumber(farmData.rewardTokenId).toString(),
-        // rewards start at 0 until distribution begins
-        rewardsPerBlock: { asDefaultNetworkToken: "0", asRewardToken: "0" },
-        stakedTokenId: bigNumberToNumber(farmData.stakedTokenId).toString(),
-        pairTokenAId,
-        pairTokenASymbol: trimByteString(farmData.pairTokenASymbol),
-        pairTokenBId,
-        pairTokenBSymbol: trimByteString(farmData.pairTokenBSymbol),
-        rewardTokenDecimals: bigNumberToNumber(farmData.rewardTokenDecimals),
-        rewardTokenSymbol: farmData.rewardTokenSymbol.split("\u0000")[0],
-        stakedTokenDecimals: bigNumberToNumber(farmData.stakedTokenDecimals),
-        stakedTokenPoolId:
-          stakedTokenPoolId === "0" ? undefined : stakedTokenPoolId,
-        stakedTokenSymbol: trimByteString(farmData.stakedTokenSymbol),
-        stakedTokenTotalSupply: formatCurrency(
-          farmData.stakedTokenTotalSupply,
-          bigNumberToNumber(farmData.stakedTokenDecimals)
-        ),
-        isPartnerFarm: partner
-      } as StaticFarmDataFormatted;
+    const { bigNumberToNumber } = createReachAPI();
+    const stakedTokenPoolId = bigNumberToNumber(stakePoolId).toString();
+    let pairTokenAId = "";
+    let pairTokenBId = "";
+    const toString = (v: any) => parseAddress(v).toString();
+    if (stakedTokenPoolId !== "0") {
+      pairTokenAId = fromMaybe(what[1].pairTokenAId, toString, "0");
+      pairTokenAId = pairTokenAId.toString();
+      pairTokenBId = toString(what[1].pairTokenBId);
     }
+
+    const farmData: StaticFarmDataFormatted = {
+      ctcInfo: toString(eventData.ctcInfo),
+      startBlock: bigNumberToNumber(eventData.startBlock),
+      endBlock: bigNumberToNumber(eventData.endBlock),
+      rewardTokenId: toString(eventData.rewardTokenId),
+      // rewards start at 0 until distribution begins
+      rewardsPerBlock: { asDefaultNetworkToken: "0", asRewardToken: "0" },
+      stakedTokenId: toString(eventData.stakedTokenId),
+      pairTokenAId,
+      pairTokenASymbol: trimByteString(eventData.pairTokenASymbol),
+      pairTokenBId,
+      pairTokenBSymbol: trimByteString(eventData.pairTokenBSymbol),
+      rewardTokenDecimals: bigNumberToNumber(eventData.rewardTokenDecimals),
+      rewardTokenSymbol: eventData.rewardTokenSymbol.split("\u0000")[0],
+      stakedTokenDecimals: bigNumberToNumber(eventData.stakedTokenDecimals),
+      stakedTokenPoolId:
+        stakedTokenPoolId === "0" ? undefined : stakedTokenPoolId,
+      stakedTokenSymbol: trimByteString(eventData.stakedTokenSymbol),
+      stakedTokenTotalSupply: formatCurrency(
+        eventData.stakedTokenTotalSupply,
+        bigNumberToNumber(eventData.stakedTokenDecimals)
+      ),
+      isPartnerFarm: partner
+    };
+
     onFarmFetched(successResult("Farm fetched", "", partnerCtc, farmData));
   }
 }

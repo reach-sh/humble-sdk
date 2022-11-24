@@ -1,8 +1,8 @@
-// Automatically generated with Reach 0.1.12 (b99432c0*)
+// Automatically generated with Reach 0.1.12 (1f68dfdb)
 /* eslint-disable */
 export const _version = '0.1.12';
-export const _versionHash = '0.1.12 (b99432c0*)';
-export const _backendVersion = 25;
+export const _versionHash = '0.1.12 (1f68dfdb)';
+export const _backendVersion = 26;
 
 export function getExports(s) {
   const stdlib = s.reachStdlib;
@@ -12,203 +12,203 @@ export function getExports(s) {
   const ctc3 = stdlib.T_Address;
   const ctc4 = stdlib.T_Struct([['protoFee', ctc0], ['lpFee', ctc0], ['totFee', ctc0], ['protoAddr', ctc3], ['locked', ctc2]]);
   return {
-    calcAmtIn_: ((_v67602, _v67603, _v67604, _v67605 ) => {
-        const v67602 = stdlib.protect(ctc0, _v67602, null);
-        const v67603 = stdlib.protect(ctc0, _v67603, null);
-        const v67604 = stdlib.protect(ctc0, _v67604, null);
-        const v67605 = stdlib.protect(ctc0, _v67605, null);
+    calcAmtIn_: ((_v67902, _v67903, _v67904, _v67905 ) => {
+        const v67902 = stdlib.protect(ctc0, _v67902, null);
+        const v67903 = stdlib.protect(ctc0, _v67903, null);
+        const v67904 = stdlib.protect(ctc0, _v67904, null);
+        const v67905 = stdlib.protect(ctc0, _v67905, null);
       
-      const v67607 = stdlib.safeSub(v67603, v67602);
-      const v67608 = stdlib.cast("UInt", "UInt256", v67607, false, true);
-      const v67609 = stdlib.cast("UInt", "UInt256", v67604, false, true);
-      const v67610 = stdlib.cast("UInt", "UInt256", v67602, false, true);
-      const v67611 = stdlib.safeAdd(stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'), v67605);
-      const v67612 = stdlib.cast("UInt", "UInt256", v67611, false, true);
-      const v67613 = stdlib.safeMul256(v67610, v67612);
-      const v67614 = stdlib.safeMul256(v67608, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', '115792089237316195423570985008687907853269984665640564039457584007913129639935', '10000'));
-      const v67615 = stdlib.safeMul256(v67613, v67609);
-      const v67616 = stdlib.safeDiv256(v67615, v67614);
-      const v67617 = stdlib.cast("UInt256", "UInt", v67616, false, true);
-      const v67618 = stdlib.safeAdd(v67617, stdlib.checkedBigNumberify('252:39:decimal', stdlib.UInt_max, '1'));
+      const v67907 = stdlib.safeSub(v67903, v67902);
+      const v67908 = stdlib.cast("UInt", "UInt256", v67907, false, true);
+      const v67909 = stdlib.cast("UInt", "UInt256", v67904, false, true);
+      const v67910 = stdlib.cast("UInt", "UInt256", v67902, false, true);
+      const v67911 = stdlib.safeAdd(stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'), v67905);
+      const v67912 = stdlib.cast("UInt", "UInt256", v67911, false, true);
+      const v67913 = stdlib.safeMul256(v67910, v67912);
+      const v67914 = stdlib.safeMul256(v67908, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', '115792089237316195423570985008687907853269984665640564039457584007913129639935', '10000'));
+      const v67915 = stdlib.safeMul256(v67913, v67909);
+      const v67916 = stdlib.safeDiv256(v67915, v67914);
+      const v67917 = stdlib.cast("UInt256", "UInt", v67916, false, true);
+      const v67918 = stdlib.safeAdd(v67917, stdlib.checkedBigNumberify('252:39:decimal', stdlib.UInt_max, '1'));
       
-      return v67618;}),
-    computeMint_: ((_v67619, _v67620, _v67621 ) => {
-        const v67619 = stdlib.protect(ctc1, _v67619, null);
-        const v67620 = stdlib.protect(ctc1, _v67620, null);
-        const v67621 = stdlib.protect(ctc1, _v67621, null);
+      return v67918;}),
+    computeMint_: ((_v67919, _v67920, _v67921 ) => {
+        const v67919 = stdlib.protect(ctc1, _v67919, null);
+        const v67920 = stdlib.protect(ctc1, _v67920, null);
+        const v67921 = stdlib.protect(ctc1, _v67921, null);
       
-      const v67622 = v67619.A;
-      const v67623 = v67619.B;
-      const v67624 = v67620.A;
-      const v67625 = v67620.B;
-      const v67627 = v67621.B;
-      let v67628;
-      const v67635 = stdlib.eq(v67627, stdlib.checkedBigNumberify('337:19:decimal', stdlib.UInt_max, '0'));
-      if (v67635) {
-        const v67636 = stdlib.cast("UInt", "UInt256", v67622, false, true);
-        const v67637 = stdlib.cast("UInt", "UInt256", v67623, false, true);
-        const v67638 = stdlib.safeMul256(v67636, v67637);
-        const v67639 = stdlib.sqrt256(v67638);
-        const v67640 = stdlib.cast("UInt256", "UInt", v67639, false, true);
-        v67628 = v67640;
+      const v67922 = v67919.A;
+      const v67923 = v67919.B;
+      const v67924 = v67920.A;
+      const v67925 = v67920.B;
+      const v67927 = v67921.B;
+      let v67928;
+      const v67935 = stdlib.eq(v67927, stdlib.checkedBigNumberify('337:19:decimal', stdlib.UInt_max, '0'));
+      if (v67935) {
+        const v67936 = stdlib.cast("UInt", "UInt256", v67922, false, true);
+        const v67937 = stdlib.cast("UInt", "UInt256", v67923, false, true);
+        const v67938 = stdlib.safeMul256(v67936, v67937);
+        const v67939 = stdlib.sqrt256(v67938);
+        const v67940 = stdlib.cast("UInt256", "UInt", v67939, false, true);
+        v67928 = v67940;
         }
       else {
-        const v67649 = stdlib.safeMuldiv(v67622, v67627, v67624);
-        const v67656 = stdlib.safeMuldiv(v67623, v67627, v67625);
-        const v67658 = stdlib.lt(v67649, v67656);
-        const v67659 = v67658 ? v67649 : v67656;
-        v67628 = v67659;
+        const v67949 = stdlib.safeMuldiv(v67922, v67927, v67924);
+        const v67956 = stdlib.safeMuldiv(v67923, v67927, v67925);
+        const v67958 = stdlib.lt(v67949, v67956);
+        const v67959 = v67958 ? v67949 : v67956;
+        v67928 = v67959;
         }
       
-      return v67628;}),
-    computeSwap_: ((_v67660, _v67661, _v67662, _v67663 ) => {
-        const v67660 = stdlib.protect(ctc2, _v67660, null);
-        const v67661 = stdlib.protect(ctc1, _v67661, null);
-        const v67662 = stdlib.protect(ctc1, _v67662, null);
-        const v67663 = stdlib.protect(ctc4, _v67663, null);
+      return v67928;}),
+    computeSwap_: ((_v67960, _v67961, _v67962, _v67963 ) => {
+        const v67960 = stdlib.protect(ctc2, _v67960, null);
+        const v67961 = stdlib.protect(ctc1, _v67961, null);
+        const v67962 = stdlib.protect(ctc1, _v67962, null);
+        const v67963 = stdlib.protect(ctc4, _v67963, null);
       
-      const v67664 = v67661.A;
-      const v67665 = v67661.B;
-      const v67666 = v67662.A;
-      const v67667 = v67662.B;
-      const v67669 = v67663.protoFee;
-      const v67670 = v67663.lpFee;
-      const v67671 = v67663.totFee;
-      const v67672 = stdlib.lt(v67669, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
-      const v67673 = stdlib.lt(v67670, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
-      const v67674 = v67672 ? v67673 : false;
-      let v67677;
-      if (v67674) {
-        const v67675 = stdlib.safeAdd(v67670, v67669);
-        const v67676 = stdlib.eq(v67671, v67675);
-        v67677 = v67676;
+      const v67964 = v67961.A;
+      const v67965 = v67961.B;
+      const v67966 = v67962.A;
+      const v67967 = v67962.B;
+      const v67969 = v67963.protoFee;
+      const v67970 = v67963.lpFee;
+      const v67971 = v67963.totFee;
+      const v67972 = stdlib.lt(v67969, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
+      const v67973 = stdlib.lt(v67970, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
+      const v67974 = v67972 ? v67973 : false;
+      let v67977;
+      if (v67974) {
+        const v67975 = stdlib.safeAdd(v67970, v67969);
+        const v67976 = stdlib.eq(v67971, v67975);
+        v67977 = v67976;
         }
       else {
-        v67677 = false;
+        v67977 = false;
         }
-      const v67678 = stdlib.lt(v67671, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
-      const v67679 = v67677 ? v67678 : false;
-      const v67680 = stdlib.gt(v67671, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
-      const v67681 = v67679 ? v67680 : false;
-      stdlib.assert(v67681, {
+      const v67978 = stdlib.lt(v67971, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
+      const v67979 = v67977 ? v67978 : false;
+      const v67980 = stdlib.gt(v67971, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
+      const v67981 = v67979 ? v67980 : false;
+      stdlib.assert(v67981, {
         at: '<top level>',
         fs: [],
         msg: null,
         who: 'Module'
         });
-      const v67683 = stdlib.gt(stdlib.UInt_max, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'));
-      stdlib.assert(v67683, {
+      const v67983 = stdlib.gt(stdlib.UInt_max, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'));
+      stdlib.assert(v67983, {
         at: 'reach standard library:57:5:application',
         fs: ['at 328:10:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at <top level> call to "computeSwap_" (defined at: <top level>)'],
         msg: null,
         who: 'Module'
         });
-      let v67699;
-      if (v67660) {
-        const v67704 = stdlib.eq(v67665, stdlib.checkedBigNumberify('./index.rsh:315:18:decimal', stdlib.UInt_max, '0'));
-        stdlib.assert(v67704, {
+      let v67999;
+      if (v67960) {
+        const v68004 = stdlib.eq(v67965, stdlib.checkedBigNumberify('./index.rsh:315:18:decimal', stdlib.UInt_max, '0'));
+        stdlib.assert(v68004, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:315:10:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at 329:34:application call to "computeSwap" (defined at: ./index.rsh:311:79:function exp)', 'at <top level> call to "computeSwap_" (defined at: <top level>)'],
           msg: null,
           who: 'Module'
           });
-        const v67727 = stdlib.cast("UInt", "UInt256", v67667, false, true);
-        const v67728 = stdlib.cast("UInt", "UInt256", v67666, false, true);
-        const v67729 = stdlib.cast("UInt", "UInt256", v67664, false, true);
-        const v67730 = stdlib.safeSub(stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'), v67671);
-        const v67731 = stdlib.cast("UInt", "UInt256", v67730, false, true);
-        const v67732 = stdlib.safeMul256(v67729, v67731);
-        const v67733 = stdlib.safeMul256(v67728, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', '115792089237316195423570985008687907853269984665640564039457584007913129639935', '10000'));
-        const v67734 = stdlib.safeAdd256(v67733, v67732);
-        const v67735 = stdlib.safeMul256(v67732, v67727);
-        const v67736 = stdlib.safeDiv256(v67735, v67734);
-        const v67737 = stdlib.cast("UInt256", "UInt", v67736, false, true);
-        const v67744 = stdlib.safeMul(v67669, stdlib.checkedBigNumberify('./index.rsh:282:40:decimal', stdlib.UInt_max, '100'));
-        const v67745 = stdlib.safeDiv(v67744, v67671);
-        const v67752 = stdlib.safeAdd(v67666, v67664);
-        const v67760 = stdlib.safeMuldiv(v67664, v67667, v67752);
-        const v67765 = stdlib.safeSub(v67760, v67737);
-        const v67771 = stdlib.safeMuldiv(v67765, v67745, stdlib.checkedBigNumberify('./index.rsh:285:62:decimal', stdlib.UInt_max, '100'));
-        const v67776 = stdlib.safeMuldiv(v67664, v67669, stdlib.checkedBigNumberify('./index.rsh:298:52:decimal', stdlib.UInt_max, '10000'));
-        const v67784 = stdlib.safeMuldiv(v67776, v67667, v67752);
-        const v67785 = stdlib.gt(v67784, v67771);
-        const v67786 = [v67776, stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0')];
-        const v67787 = [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v67771];
-        const v67788 = v67785 ? v67786 : v67787;
-        const v67790 = v67788[stdlib.checkedBigNumberify('./index.rsh:316:30:array', stdlib.UInt_max, '0')];
-        const v67791 = v67788[stdlib.checkedBigNumberify('./index.rsh:316:30:array', stdlib.UInt_max, '1')];
-        const v67792 = {
+        const v68027 = stdlib.cast("UInt", "UInt256", v67967, false, true);
+        const v68028 = stdlib.cast("UInt", "UInt256", v67966, false, true);
+        const v68029 = stdlib.cast("UInt", "UInt256", v67964, false, true);
+        const v68030 = stdlib.safeSub(stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'), v67971);
+        const v68031 = stdlib.cast("UInt", "UInt256", v68030, false, true);
+        const v68032 = stdlib.safeMul256(v68029, v68031);
+        const v68033 = stdlib.safeMul256(v68028, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', '115792089237316195423570985008687907853269984665640564039457584007913129639935', '10000'));
+        const v68034 = stdlib.safeAdd256(v68033, v68032);
+        const v68035 = stdlib.safeMul256(v68032, v68027);
+        const v68036 = stdlib.safeDiv256(v68035, v68034);
+        const v68037 = stdlib.cast("UInt256", "UInt", v68036, false, true);
+        const v68044 = stdlib.safeMul(v67969, stdlib.checkedBigNumberify('./index.rsh:282:40:decimal', stdlib.UInt_max, '100'));
+        const v68045 = stdlib.safeDiv(v68044, v67971);
+        const v68052 = stdlib.safeAdd(v67966, v67964);
+        const v68060 = stdlib.safeMuldiv(v67964, v67967, v68052);
+        const v68065 = stdlib.safeSub(v68060, v68037);
+        const v68071 = stdlib.safeMuldiv(v68065, v68045, stdlib.checkedBigNumberify('./index.rsh:285:62:decimal', stdlib.UInt_max, '100'));
+        const v68076 = stdlib.safeMuldiv(v67964, v67969, stdlib.checkedBigNumberify('./index.rsh:298:52:decimal', stdlib.UInt_max, '10000'));
+        const v68084 = stdlib.safeMuldiv(v68076, v67967, v68052);
+        const v68085 = stdlib.gt(v68084, v68071);
+        const v68086 = [v68076, stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0')];
+        const v68087 = [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v68071];
+        const v68088 = v68085 ? v68086 : v68087;
+        const v68090 = v68088[stdlib.checkedBigNumberify('./index.rsh:316:30:array', stdlib.UInt_max, '0')];
+        const v68091 = v68088[stdlib.checkedBigNumberify('./index.rsh:316:30:array', stdlib.UInt_max, '1')];
+        const v68092 = {
           A: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'),
-          B: v67737
+          B: v68037
           };
-        const v67793 = {
-          A: v67790,
-          B: v67791
+        const v68093 = {
+          A: v68090,
+          B: v68091
           };
-        const v67794 = [v67792, v67793, v67664];
-        v67699 = v67794;
+        const v68094 = [v68092, v68093, v67964];
+        v67999 = v68094;
         }
       else {
-        const v67795 = stdlib.eq(v67664, stdlib.checkedBigNumberify('./index.rsh:320:18:decimal', stdlib.UInt_max, '0'));
-        stdlib.assert(v67795, {
+        const v68095 = stdlib.eq(v67964, stdlib.checkedBigNumberify('./index.rsh:320:18:decimal', stdlib.UInt_max, '0'));
+        stdlib.assert(v68095, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:320:10:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at 329:34:application call to "computeSwap" (defined at: ./index.rsh:311:79:function exp)', 'at <top level> call to "computeSwap_" (defined at: <top level>)'],
           msg: null,
           who: 'Module'
           });
-        const v67818 = stdlib.cast("UInt", "UInt256", v67666, false, true);
-        const v67819 = stdlib.cast("UInt", "UInt256", v67667, false, true);
-        const v67820 = stdlib.cast("UInt", "UInt256", v67665, false, true);
-        const v67821 = stdlib.safeSub(stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'), v67671);
-        const v67822 = stdlib.cast("UInt", "UInt256", v67821, false, true);
-        const v67823 = stdlib.safeMul256(v67820, v67822);
-        const v67824 = stdlib.safeMul256(v67819, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', '115792089237316195423570985008687907853269984665640564039457584007913129639935', '10000'));
-        const v67825 = stdlib.safeAdd256(v67824, v67823);
-        const v67826 = stdlib.safeMul256(v67823, v67818);
-        const v67827 = stdlib.safeDiv256(v67826, v67825);
-        const v67828 = stdlib.cast("UInt256", "UInt", v67827, false, true);
-        const v67835 = stdlib.safeMul(v67669, stdlib.checkedBigNumberify('./index.rsh:282:40:decimal', stdlib.UInt_max, '100'));
-        const v67836 = stdlib.safeDiv(v67835, v67671);
-        const v67843 = stdlib.safeAdd(v67667, v67665);
-        const v67851 = stdlib.safeMuldiv(v67665, v67666, v67843);
-        const v67856 = stdlib.safeSub(v67851, v67828);
-        const v67862 = stdlib.safeMuldiv(v67856, v67836, stdlib.checkedBigNumberify('./index.rsh:285:62:decimal', stdlib.UInt_max, '100'));
-        const v67867 = stdlib.safeMuldiv(v67665, v67669, stdlib.checkedBigNumberify('./index.rsh:298:52:decimal', stdlib.UInt_max, '10000'));
-        const v67875 = stdlib.safeMuldiv(v67867, v67666, v67843);
-        const v67876 = stdlib.gt(v67875, v67862);
-        const v67877 = [v67867, stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0')];
-        const v67878 = [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v67862];
-        const v67879 = v67876 ? v67877 : v67878;
-        const v67881 = v67879[stdlib.checkedBigNumberify('./index.rsh:321:30:array', stdlib.UInt_max, '0')];
-        const v67882 = v67879[stdlib.checkedBigNumberify('./index.rsh:321:30:array', stdlib.UInt_max, '1')];
-        const v67883 = {
-          A: v67828,
+        const v68118 = stdlib.cast("UInt", "UInt256", v67966, false, true);
+        const v68119 = stdlib.cast("UInt", "UInt256", v67967, false, true);
+        const v68120 = stdlib.cast("UInt", "UInt256", v67965, false, true);
+        const v68121 = stdlib.safeSub(stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', stdlib.UInt_max, '10000'), v67971);
+        const v68122 = stdlib.cast("UInt", "UInt256", v68121, false, true);
+        const v68123 = stdlib.safeMul256(v68120, v68122);
+        const v68124 = stdlib.safeMul256(v68119, stdlib.checkedBigNumberify('./index.rsh:72:22:decimal', '115792089237316195423570985008687907853269984665640564039457584007913129639935', '10000'));
+        const v68125 = stdlib.safeAdd256(v68124, v68123);
+        const v68126 = stdlib.safeMul256(v68123, v68118);
+        const v68127 = stdlib.safeDiv256(v68126, v68125);
+        const v68128 = stdlib.cast("UInt256", "UInt", v68127, false, true);
+        const v68135 = stdlib.safeMul(v67969, stdlib.checkedBigNumberify('./index.rsh:282:40:decimal', stdlib.UInt_max, '100'));
+        const v68136 = stdlib.safeDiv(v68135, v67971);
+        const v68143 = stdlib.safeAdd(v67967, v67965);
+        const v68151 = stdlib.safeMuldiv(v67965, v67966, v68143);
+        const v68156 = stdlib.safeSub(v68151, v68128);
+        const v68162 = stdlib.safeMuldiv(v68156, v68136, stdlib.checkedBigNumberify('./index.rsh:285:62:decimal', stdlib.UInt_max, '100'));
+        const v68167 = stdlib.safeMuldiv(v67965, v67969, stdlib.checkedBigNumberify('./index.rsh:298:52:decimal', stdlib.UInt_max, '10000'));
+        const v68175 = stdlib.safeMuldiv(v68167, v67966, v68143);
+        const v68176 = stdlib.gt(v68175, v68162);
+        const v68177 = [v68167, stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0')];
+        const v68178 = [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v68162];
+        const v68179 = v68176 ? v68177 : v68178;
+        const v68181 = v68179[stdlib.checkedBigNumberify('./index.rsh:321:30:array', stdlib.UInt_max, '0')];
+        const v68182 = v68179[stdlib.checkedBigNumberify('./index.rsh:321:30:array', stdlib.UInt_max, '1')];
+        const v68183 = {
+          A: v68128,
           B: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0')
           };
-        const v67884 = {
-          A: v67882,
-          B: v67881
+        const v68184 = {
+          A: v68182,
+          B: v68181
           };
-        const v67885 = [v67883, v67884, v67665];
-        v67699 = v67885;
+        const v68185 = [v68183, v68184, v67965];
+        v67999 = v68185;
         }
-      const v67886 = v67699[stdlib.checkedBigNumberify('329:11:array', stdlib.UInt_max, '0')];
-      const v67887 = v67699[stdlib.checkedBigNumberify('329:11:array', stdlib.UInt_max, '1')];
-      const v67889 = v67886.A;
-      const v67890 = v67886.B;
-      const v67891 = v67887.A;
-      const v67892 = v67887.B;
-      const v67893 = {
-        A: v67889,
-        B: v67890
+      const v68186 = v67999[stdlib.checkedBigNumberify('329:11:array', stdlib.UInt_max, '0')];
+      const v68187 = v67999[stdlib.checkedBigNumberify('329:11:array', stdlib.UInt_max, '1')];
+      const v68189 = v68186.A;
+      const v68190 = v68186.B;
+      const v68191 = v68187.A;
+      const v68192 = v68187.B;
+      const v68193 = {
+        A: v68189,
+        B: v68190
         };
-      const v67894 = {
-        A: v67891,
-        B: v67892
+      const v68194 = {
+        A: v68191,
+        B: v68192
         };
-      const v67895 = [v67893, v67894];
+      const v68195 = [v68193, v68194];
       
-      return v67895;})
+      return v68195;})
     };
   };
 export function _getEvents(s) {
@@ -275,28 +275,28 @@ export function _getViews(s, viewlib) {
   
   const _Info = async (i, svs, args) => {
     if (stdlib.eq(i, stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '3'))) {
-      const [v69596, v69608, v69610, v69611, v69615] = svs;
+      const [v69896, v69908, v69910, v69911, v69915] = svs;
       return (await ((async () => {
         
-        const v69659 = v69610.protoFee;
-        const v69660 = v69610.lpFee;
-        const v69661 = v69610.totFee;
-        const v69662 = v69610.protoAddr;
-        const v69663 = v69610.locked;
-        const v69664 = {
-          locked: v69663,
-          lpFee: v69660,
-          protoAddr: v69662,
-          protoFee: v69659,
-          totFee: v69661
+        const v69959 = v69910.protoFee;
+        const v69960 = v69910.lpFee;
+        const v69961 = v69910.totFee;
+        const v69962 = v69910.protoAddr;
+        const v69963 = v69910.locked;
+        const v69964 = {
+          locked: v69963,
+          lpFee: v69960,
+          protoAddr: v69962,
+          protoFee: v69959,
+          totFee: v69961
           };
-        const v69665 = {
-          cmds: v69608,
-          protoInfo: v69664,
-          triumvirs: v69611
+        const v69965 = {
+          cmds: v69908,
+          protoInfo: v69964,
+          triumvirs: v69911
           };
         
-        return v69665;}))(...args));
+        return v69965;}))(...args));
       }
     
     stdlib.assert(false, 'illegal view')
@@ -354,19 +354,19 @@ export async function Admin(ctcTop, interact) {
   const ctc12 = stdlib.T_Tuple([ctc7, ctc10]);
   const ctc13 = stdlib.T_Tuple([ctc3, ctc5, ctc4]);
   const ctc14 = stdlib.T_Data({
-    Triumvir_propose0_68035: ctc11,
-    Triumvir_support0_68035: ctc12,
-    register0_68035: ctc13
+    Triumvir_propose0_68335: ctc11,
+    Triumvir_support0_68335: ctc12,
+    register0_68335: ctc13
     });
   const ctc15 = stdlib.T_Struct([['A', ctc7], ['B', ctc7]]);
   const ctc16 = stdlib.T_Tuple([ctc15, ctc7]);
   const ctc17 = stdlib.T_Tuple([ctc7, ctc16]);
   
   
-  const v69583 = stdlib.protect(ctc1, interact.triumvirs, 'for Admin\'s interact field triumvirs');
+  const v69883 = stdlib.protect(ctc1, interact.triumvirs, 'for Admin\'s interact field triumvirs');
   
   const txn1 = await (ctc.sendrecv({
-    args: [v69583],
+    args: [v69883],
     evt_cnt: 1,
     funcNum: 0,
     lct: stdlib.checkedBigNumberify('./index.rsh:125:9:dot', stdlib.UInt_max, '0'),
@@ -379,31 +379,31 @@ export async function Admin(ctcTop, interact) {
       const getSimTokCtr = () => { sim_txn_ctr = sim_txn_ctr.sub(1); return sim_txn_ctr; };
       
       
-      const {data: [v69590], secs: v69592, time: v69591, didSend: v67910, from: v69589 } = txn1;
+      const {data: [v69890], secs: v69892, time: v69891, didSend: v68210, from: v69889 } = txn1;
       
       ;
-      const v69593 = await ctc.getContractAddress();
+      const v69893 = await ctc.getContractAddress();
       
-      const v69596 = ['NoOp', null];
-      const v69602 = [v69596, v69596, v69596];
-      const v69607 = {
+      const v69896 = ['NoOp', null];
+      const v69902 = [v69896, v69896, v69896];
+      const v69907 = {
         locked: false,
         lpFee: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '25'),
-        protoAddr: v69593,
+        protoAddr: v69893,
         protoFee: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '5'),
         totFee: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '30')
         };
-      const v69608 = v69602;
-      const v69609 = false;
-      const v69610 = v69607;
-      const v69611 = v69590;
-      const v69612 = v69591;
-      const v69615 = stdlib.checkedBigNumberify('./index.rsh:121:9:after expr stmt semicolon', stdlib.UInt_max, '0');
+      const v69908 = v69902;
+      const v69909 = false;
+      const v69910 = v69907;
+      const v69911 = v69890;
+      const v69912 = v69891;
+      const v69915 = stdlib.checkedBigNumberify('./index.rsh:121:9:after expr stmt semicolon', stdlib.UInt_max, '0');
       
       if (await (async () => {
-        const v69658 = v69609 ? false : true;
+        const v69958 = v69909 ? false : true;
         
-        return v69658;})()) {
+        return v69958;})()) {
         sim_r.isHalt = false;
         }
       else {
@@ -420,9 +420,9 @@ export async function Admin(ctcTop, interact) {
     tys: [ctc1],
     waitIfNotPresent: false
     }));
-  const {data: [v69590], secs: v69592, time: v69591, didSend: v67910, from: v69589 } = txn1;
+  const {data: [v69890], secs: v69892, time: v69891, didSend: v68210, from: v69889 } = txn1;
   ;
-  const v69593 = await ctc.getContractAddress();
+  const v69893 = await ctc.getContractAddress();
   stdlib.protect(ctc2, await interact.ready(), {
     at: './index.rsh:133:23:application',
     fs: ['at ./index.rsh:133:23:application call to [unknown function] (defined at: ./index.rsh:133:23:function exp)', 'at ./index.rsh:133:23:application call to "liftedInteract" (defined at: ./index.rsh:133:23:application)'],
@@ -430,27 +430,27 @@ export async function Admin(ctcTop, interact) {
     who: 'Admin'
     });
   
-  const v69596 = ['NoOp', null];
-  const v69602 = [v69596, v69596, v69596];
-  const v69607 = {
+  const v69896 = ['NoOp', null];
+  const v69902 = [v69896, v69896, v69896];
+  const v69907 = {
     locked: false,
     lpFee: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '25'),
-    protoAddr: v69593,
+    protoAddr: v69893,
     protoFee: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '5'),
     totFee: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '30')
     };
-  let v69608 = v69602;
-  let v69609 = false;
-  let v69610 = v69607;
-  let v69611 = v69590;
-  let v69612 = v69591;
-  let v69615 = stdlib.checkedBigNumberify('./index.rsh:121:9:after expr stmt semicolon', stdlib.UInt_max, '0');
+  let v69908 = v69902;
+  let v69909 = false;
+  let v69910 = v69907;
+  let v69911 = v69890;
+  let v69912 = v69891;
+  let v69915 = stdlib.checkedBigNumberify('./index.rsh:121:9:after expr stmt semicolon', stdlib.UInt_max, '0');
   
   let txn2 = txn1;
   while (await (async () => {
-    const v69658 = v69609 ? false : true;
+    const v69958 = v69909 ? false : true;
     
-    return v69658;})()) {
+    return v69958;})()) {
     const txn3 = await (ctc.recv({
       didSend: false,
       evt_cnt: 1,
@@ -459,394 +459,394 @@ export async function Admin(ctcTop, interact) {
       timeoutAt: undefined /* mto */,
       waitIfNotPresent: false
       }));
-    const {data: [v69940], secs: v69942, time: v69941, didSend: v69090, from: v69939 } = txn3;
-    switch (v69940[0]) {
-      case 'Triumvir_propose0_68035': {
-        const v69943 = v69940[1];
+    const {data: [v70240], secs: v70242, time: v70241, didSend: v69390, from: v70239 } = txn3;
+    switch (v70240[0]) {
+      case 'Triumvir_propose0_68335': {
+        const v70243 = v70240[1];
         undefined /* setApiDetails */;
-        const v69948 = v69943[stdlib.checkedBigNumberify('./index.rsh:192:10:spread', stdlib.UInt_max, '0')];
-        let v69949;
-        switch (v69948[0]) {
+        const v70248 = v70243[stdlib.checkedBigNumberify('./index.rsh:192:10:spread', stdlib.UInt_max, '0')];
+        let v70249;
+        switch (v70248[0]) {
           case 'Harvest': {
-            const v69950 = v69948[1];
-            v69949 = true;
+            const v70250 = v70248[1];
+            v70249 = true;
             
             break;
             }
           case 'Kill': {
-            const v69951 = v69948[1];
-            v69949 = true;
+            const v70251 = v70248[1];
+            v70249 = true;
             
             break;
             }
           case 'NewInfo': {
-            const v69952 = v69948[1];
-            const v69953 = v69952.protoFee;
-            const v69954 = v69952.lpFee;
-            const v69955 = v69952.totFee;
-            const v69956 = stdlib.lt(v69953, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
-            const v69957 = stdlib.lt(v69954, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
-            const v69958 = v69956 ? v69957 : false;
-            let v69959;
-            if (v69958) {
-              const v69960 = stdlib.safeAdd(v69954, v69953);
-              const v69961 = stdlib.eq(v69955, v69960);
-              v69959 = v69961;
+            const v70252 = v70248[1];
+            const v70253 = v70252.protoFee;
+            const v70254 = v70252.lpFee;
+            const v70255 = v70252.totFee;
+            const v70256 = stdlib.lt(v70253, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
+            const v70257 = stdlib.lt(v70254, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
+            const v70258 = v70256 ? v70257 : false;
+            let v70259;
+            if (v70258) {
+              const v70260 = stdlib.safeAdd(v70254, v70253);
+              const v70261 = stdlib.eq(v70255, v70260);
+              v70259 = v70261;
               }
             else {
-              v69959 = false;
+              v70259 = false;
               }
-            const v69962 = stdlib.lt(v69955, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
-            const v69963 = v69959 ? v69962 : false;
-            const v69964 = stdlib.gt(v69955, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
-            const v69965 = v69963 ? v69964 : false;
-            v69949 = v69965;
+            const v70262 = stdlib.lt(v70255, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
+            const v70263 = v70259 ? v70262 : false;
+            const v70264 = stdlib.gt(v70255, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
+            const v70265 = v70263 ? v70264 : false;
+            v70249 = v70265;
             
             break;
             }
           case 'NewTriumvirs': {
-            const v69966 = v69948[1];
-            v69949 = true;
+            const v70266 = v70248[1];
+            v70249 = true;
             
             break;
             }
           case 'NoOp': {
-            const v69967 = v69948[1];
-            v69949 = true;
+            const v70267 = v70248[1];
+            v70249 = true;
             
             break;
             }
           case 'Rewards': {
-            const v69968 = v69948[1];
-            v69949 = true;
+            const v70268 = v70248[1];
+            v70249 = true;
             
             break;
             }
           }
-        stdlib.assert(v69949, {
+        stdlib.assert(v70249, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:193:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
           msg: 'invalid command',
           who: 'Admin'
           });
-        const v69970 = ['None', null];
-        const v69971 = await stdlib.Array_asyncReduce([v69611], v69970, async([v69973], v69972, v69974) => {
-          const v69975 = {
+        const v70270 = ['None', null];
+        const v70271 = await stdlib.Array_asyncReduce([v69911], v70270, async([v70273], v70272, v70274) => {
+          const v70275 = {
             None: 0,
             Some: 1
-            }[v69972[0]];
-          const v69976 = stdlib.eq(v69975, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-          const v69977 = stdlib.addressEq(v69939, v69973);
-          const v69978 = v69976 ? v69977 : false;
-          const v69979 = ['Some', v69974];
-          const v69980 = v69978 ? v69979 : v69972;
+            }[v70272[0]];
+          const v70276 = stdlib.eq(v70275, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+          const v70277 = stdlib.addressEq(v70239, v70273);
+          const v70278 = v70276 ? v70277 : false;
+          const v70279 = ['Some', v70274];
+          const v70280 = v70278 ? v70279 : v70272;
           
-          return v69980;})
-        const v69981 = {
+          return v70280;})
+        const v70281 = {
           None: 0,
           Some: 1
-          }[v69971[0]];
-        const v69982 = stdlib.eq(v69981, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-        stdlib.assert(v69982, {
+          }[v70271[0]];
+        const v70282 = stdlib.eq(v70281, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+        stdlib.assert(v70282, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:194:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
           msg: 'not triumvir',
           who: 'Admin'
           });
         ;
-        let v70027;
-        switch (v69948[0]) {
+        let v70327;
+        switch (v70248[0]) {
           case 'Harvest': {
-            const v70028 = v69948[1];
-            v70027 = true;
+            const v70328 = v70248[1];
+            v70327 = true;
             
             break;
             }
           case 'Kill': {
-            const v70029 = v69948[1];
-            v70027 = true;
+            const v70329 = v70248[1];
+            v70327 = true;
             
             break;
             }
           case 'NewInfo': {
-            const v70030 = v69948[1];
-            const v70031 = v70030.protoFee;
-            const v70032 = v70030.lpFee;
-            const v70033 = v70030.totFee;
-            const v70034 = stdlib.lt(v70031, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
-            const v70035 = stdlib.lt(v70032, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
-            const v70036 = v70034 ? v70035 : false;
-            let v70037;
-            if (v70036) {
-              const v70038 = stdlib.safeAdd(v70032, v70031);
-              const v70039 = stdlib.eq(v70033, v70038);
-              v70037 = v70039;
+            const v70330 = v70248[1];
+            const v70331 = v70330.protoFee;
+            const v70332 = v70330.lpFee;
+            const v70333 = v70330.totFee;
+            const v70334 = stdlib.lt(v70331, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
+            const v70335 = stdlib.lt(v70332, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
+            const v70336 = v70334 ? v70335 : false;
+            let v70337;
+            if (v70336) {
+              const v70338 = stdlib.safeAdd(v70332, v70331);
+              const v70339 = stdlib.eq(v70333, v70338);
+              v70337 = v70339;
               }
             else {
-              v70037 = false;
+              v70337 = false;
               }
-            const v70040 = stdlib.lt(v70033, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
-            const v70041 = v70037 ? v70040 : false;
-            const v70042 = stdlib.gt(v70033, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
-            const v70043 = v70041 ? v70042 : false;
-            v70027 = v70043;
+            const v70340 = stdlib.lt(v70333, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
+            const v70341 = v70337 ? v70340 : false;
+            const v70342 = stdlib.gt(v70333, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
+            const v70343 = v70341 ? v70342 : false;
+            v70327 = v70343;
             
             break;
             }
           case 'NewTriumvirs': {
-            const v70044 = v69948[1];
-            v70027 = true;
+            const v70344 = v70248[1];
+            v70327 = true;
             
             break;
             }
           case 'NoOp': {
-            const v70045 = v69948[1];
-            v70027 = true;
+            const v70345 = v70248[1];
+            v70327 = true;
             
             break;
             }
           case 'Rewards': {
-            const v70046 = v69948[1];
-            v70027 = true;
+            const v70346 = v70248[1];
+            v70327 = true;
             
             break;
             }
           }
-        stdlib.assert(v70027, {
+        stdlib.assert(v70327, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:193:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:196:23:application call to [unknown function] (defined at: ./index.rsh:196:23:function exp)'],
           msg: 'invalid command',
           who: 'Admin'
           });
-        const v70049 = await stdlib.Array_asyncReduce([v69611], v69970, async([v70051], v70050, v70052) => {
-          const v70053 = {
+        const v70349 = await stdlib.Array_asyncReduce([v69911], v70270, async([v70351], v70350, v70352) => {
+          const v70353 = {
             None: 0,
             Some: 1
-            }[v70050[0]];
-          const v70054 = stdlib.eq(v70053, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-          const v70055 = stdlib.addressEq(v69939, v70051);
-          const v70056 = v70054 ? v70055 : false;
-          const v70057 = ['Some', v70052];
-          const v70058 = v70056 ? v70057 : v70050;
+            }[v70350[0]];
+          const v70354 = stdlib.eq(v70353, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+          const v70355 = stdlib.addressEq(v70239, v70351);
+          const v70356 = v70354 ? v70355 : false;
+          const v70357 = ['Some', v70352];
+          const v70358 = v70356 ? v70357 : v70350;
           
-          return v70058;})
-        const v70059 = {
+          return v70358;})
+        const v70359 = {
           None: 0,
           Some: 1
-          }[v70049[0]];
-        const v70060 = stdlib.eq(v70059, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-        stdlib.assert(v70060, {
+          }[v70349[0]];
+        const v70360 = stdlib.eq(v70359, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+        stdlib.assert(v70360, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:194:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:196:23:application call to [unknown function] (defined at: ./index.rsh:196:23:function exp)'],
           msg: 'not triumvir',
           who: 'Admin'
           });
-        const v70062 = stdlib.fromSome(v70049, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-        const v70064 = stdlib.Array_set(v69608, v70062, v69948);
-        const v70066 = null;
-        await txn3.getOutput('Triumvir_propose', 'v70066', ctc2, v70066);
+        const v70362 = stdlib.fromSome(v70349, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+        const v70364 = stdlib.Array_set(v69908, v70362, v70248);
+        const v70366 = null;
+        await txn3.getOutput('Triumvir_propose', 'v70366', ctc2, v70366);
         null;
-        const cv69608 = v70064;
-        const cv69609 = false;
-        const cv69610 = v69610;
-        const cv69611 = v69611;
-        const cv69612 = v69941;
-        const cv69615 = v69615;
+        const cv69908 = v70364;
+        const cv69909 = false;
+        const cv69910 = v69910;
+        const cv69911 = v69911;
+        const cv69912 = v70241;
+        const cv69915 = v69915;
         
-        v69608 = cv69608;
-        v69609 = cv69609;
-        v69610 = cv69610;
-        v69611 = cv69611;
-        v69612 = cv69612;
-        v69615 = cv69615;
+        v69908 = cv69908;
+        v69909 = cv69909;
+        v69910 = cv69910;
+        v69911 = cv69911;
+        v69912 = cv69912;
+        v69915 = cv69915;
         
         txn2 = txn3;
         continue;
         break;
         }
-      case 'Triumvir_support0_68035': {
-        const v70372 = v69940[1];
+      case 'Triumvir_support0_68335': {
+        const v70672 = v70240[1];
         undefined /* setApiDetails */;
-        const v70417 = v70372[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '0')];
-        const v70418 = v70372[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '1')];
-        const v70419 = stdlib.lt(v70417, stdlib.checkedBigNumberify('./index.rsh:203:29:dot', stdlib.UInt_max, '3'));
-        stdlib.assert(v70419, {
+        const v70717 = v70672[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '0')];
+        const v70718 = v70672[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '1')];
+        const v70719 = stdlib.lt(v70717, stdlib.checkedBigNumberify('./index.rsh:203:29:dot', stdlib.UInt_max, '3'));
+        stdlib.assert(v70719, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:203:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
           msg: 'illegal idx',
           who: 'Admin'
           });
-        const v70421 = ['None', null];
-        const v70422 = await stdlib.Array_asyncReduce([v69611], v70421, async([v70424], v70423, v70425) => {
-          const v70426 = {
+        const v70721 = ['None', null];
+        const v70722 = await stdlib.Array_asyncReduce([v69911], v70721, async([v70724], v70723, v70725) => {
+          const v70726 = {
             None: 0,
             Some: 1
-            }[v70423[0]];
-          const v70427 = stdlib.eq(v70426, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-          const v70428 = stdlib.addressEq(v69939, v70424);
-          const v70429 = v70427 ? v70428 : false;
-          const v70430 = ['Some', v70425];
-          const v70431 = v70429 ? v70430 : v70423;
+            }[v70723[0]];
+          const v70727 = stdlib.eq(v70726, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+          const v70728 = stdlib.addressEq(v70239, v70724);
+          const v70729 = v70727 ? v70728 : false;
+          const v70730 = ['Some', v70725];
+          const v70731 = v70729 ? v70730 : v70723;
           
-          return v70431;})
-        const v70432 = {
+          return v70731;})
+        const v70732 = {
           None: 0,
           Some: 1
-          }[v70422[0]];
-        const v70433 = stdlib.eq(v70432, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-        stdlib.assert(v70433, {
+          }[v70722[0]];
+        const v70733 = stdlib.eq(v70732, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+        stdlib.assert(v70733, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:204:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
           msg: 'not triumvir',
           who: 'Admin'
           });
-        const v70435 = stdlib.fromSome(v70422, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-        const v70436 = stdlib.eq(v70417, v70435);
-        const v70437 = v70436 ? false : true;
-        stdlib.assert(v70437, {
+        const v70735 = stdlib.fromSome(v70722, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+        const v70736 = stdlib.eq(v70717, v70735);
+        const v70737 = v70736 ? false : true;
+        stdlib.assert(v70737, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:205:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
           msg: 'cannot support self',
           who: 'Admin'
           });
-        const v70440 = v69608[v70417];
-        const v70441 = stdlib.digest([ctc10], [v70418]);
-        const v70442 = stdlib.digest([ctc10], [v70440]);
-        const v70443 = stdlib.digestEq(v70441, v70442);
-        stdlib.assert(v70443, {
+        const v70740 = v69908[v70717];
+        const v70741 = stdlib.digest([ctc10], [v70718]);
+        const v70742 = stdlib.digest([ctc10], [v70740]);
+        const v70743 = stdlib.digestEq(v70741, v70742);
+        stdlib.assert(v70743, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:207:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
           msg: 'command switched',
           who: 'Admin'
           });
         ;
-        const v70545 = await stdlib.Array_asyncReduce([v69611], v70421, async([v70547], v70546, v70548) => {
-          const v70549 = {
+        const v70845 = await stdlib.Array_asyncReduce([v69911], v70721, async([v70847], v70846, v70848) => {
+          const v70849 = {
             None: 0,
             Some: 1
-            }[v70546[0]];
-          const v70550 = stdlib.eq(v70549, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-          const v70551 = stdlib.addressEq(v69939, v70547);
-          const v70552 = v70550 ? v70551 : false;
-          const v70553 = ['Some', v70548];
-          const v70554 = v70552 ? v70553 : v70546;
+            }[v70846[0]];
+          const v70850 = stdlib.eq(v70849, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+          const v70851 = stdlib.addressEq(v70239, v70847);
+          const v70852 = v70850 ? v70851 : false;
+          const v70853 = ['Some', v70848];
+          const v70854 = v70852 ? v70853 : v70846;
           
-          return v70554;})
-        const v70555 = {
+          return v70854;})
+        const v70855 = {
           None: 0,
           Some: 1
-          }[v70545[0]];
-        const v70556 = stdlib.eq(v70555, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-        stdlib.assert(v70556, {
+          }[v70845[0]];
+        const v70856 = stdlib.eq(v70855, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+        stdlib.assert(v70856, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:204:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
           msg: 'not triumvir',
           who: 'Admin'
           });
-        const v70558 = stdlib.fromSome(v70545, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-        const v70559 = stdlib.eq(v70417, v70558);
-        const v70560 = v70559 ? false : true;
-        stdlib.assert(v70560, {
+        const v70858 = stdlib.fromSome(v70845, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+        const v70859 = stdlib.eq(v70717, v70858);
+        const v70860 = v70859 ? false : true;
+        stdlib.assert(v70860, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:205:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
           msg: 'cannot support self',
           who: 'Admin'
           });
-        const v70570 = stdlib.Array_set(v69608, v70417, v69596);
-        const v70573 = null;
-        await txn3.getOutput('Triumvir_support', 'v70573', ctc2, v70573);
+        const v70870 = stdlib.Array_set(v69908, v70717, v69896);
+        const v70873 = null;
+        await txn3.getOutput('Triumvir_support', 'v70873', ctc2, v70873);
         null;
-        switch (v70440[0]) {
+        switch (v70740[0]) {
           case 'Harvest': {
-            const v70617 = v70440[1];
-            const v70618 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '0')];
-            const v70619 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '1')];
-            const v70620 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '2')];
-            const v70621 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '3')];
-            switch (v70619[0]) {
+            const v70917 = v70740[1];
+            const v70918 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '0')];
+            const v70919 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '1')];
+            const v70920 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '2')];
+            const v70921 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '3')];
+            switch (v70919[0]) {
               case 'None': {
-                const v70622 = v70619[1];
-                const v70623 = v69610.protoFee;
-                const v70624 = v69610.lpFee;
-                const v70625 = v69610.totFee;
-                const v70626 = v69610.protoAddr;
-                const v70627 = v69610.locked;
-                const v70630 = [];
-                const v70641 = {
-                  locked: v70627,
-                  lpFee: v70624,
-                  protoAddr: v70626,
-                  protoFee: v70623,
-                  totFee: v70625
+                const v70922 = v70919[1];
+                const v70923 = v69910.protoFee;
+                const v70924 = v69910.lpFee;
+                const v70925 = v69910.totFee;
+                const v70926 = v69910.protoAddr;
+                const v70927 = v69910.locked;
+                const v70930 = [];
+                const v70941 = {
+                  locked: v70927,
+                  lpFee: v70924,
+                  protoAddr: v70926,
+                  protoFee: v70923,
+                  totFee: v70925
                   };
-                const v70642 = undefined /* Remote */;
-                const v70643 = await txn3.getOutput('internal', 'v70642', ctc17, v70642);
-                const v70645 = v70643[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
-                const v70654 = stdlib.add(v69615, v70645);
-                const v70655 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70645);
-                stdlib.assert(v70655, {
+                const v70942 = undefined /* Remote */;
+                const v70943 = await txn3.getOutput('internal', 'v70942', ctc17, v70942);
+                const v70945 = v70943[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
+                const v70954 = stdlib.add(v69915, v70945);
+                const v70955 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70945);
+                stdlib.assert(v70955, {
                   at: './index.rsh:165:15:application',
                   fs: ['at ./index.rsh:169:26:application call to "go" (defined at: ./index.rsh:160:30:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:158:46:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:154:45:function exp)', 'at ./index.rsh:212:57:application call to "evalCommand" (defined at: ./index.rsh:154:33:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
                   msg: 'remote bill check',
                   who: 'Admin'
                   });
-                const cv69608 = v70570;
-                const cv69609 = false;
-                const cv69610 = v69610;
-                const cv69611 = v69611;
-                const cv69612 = v69941;
-                const cv69615 = v70654;
+                const cv69908 = v70870;
+                const cv69909 = false;
+                const cv69910 = v69910;
+                const cv69911 = v69911;
+                const cv69912 = v70241;
+                const cv69915 = v70954;
                 
-                v69608 = cv69608;
-                v69609 = cv69609;
-                v69610 = cv69610;
-                v69611 = cv69611;
-                v69612 = cv69612;
-                v69615 = cv69615;
+                v69908 = cv69908;
+                v69909 = cv69909;
+                v69910 = cv69910;
+                v69911 = cv69911;
+                v69912 = cv69912;
+                v69915 = cv69915;
                 
                 txn2 = txn3;
                 continue;
                 break;
                 }
               case 'Some': {
-                const v70664 = v70619[1];
-                const v70665 = v69610.protoFee;
-                const v70666 = v69610.lpFee;
-                const v70667 = v69610.totFee;
-                const v70668 = v69610.protoAddr;
-                const v70669 = v69610.locked;
-                const v70672 = [];
-                const v70683 = {
-                  locked: v70669,
-                  lpFee: v70666,
-                  protoAddr: v70668,
-                  protoFee: v70665,
-                  totFee: v70667
+                const v70964 = v70919[1];
+                const v70965 = v69910.protoFee;
+                const v70966 = v69910.lpFee;
+                const v70967 = v69910.totFee;
+                const v70968 = v69910.protoAddr;
+                const v70969 = v69910.locked;
+                const v70972 = [];
+                const v70983 = {
+                  locked: v70969,
+                  lpFee: v70966,
+                  protoAddr: v70968,
+                  protoFee: v70965,
+                  totFee: v70967
                   };
-                const v70684 = undefined /* Remote */;
-                const v70685 = await txn3.getOutput('internal', 'v70684', ctc17, v70684);
-                const v70687 = v70685[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
-                const v70696 = stdlib.add(v69615, v70687);
-                const v70697 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70687);
-                stdlib.assert(v70697, {
+                const v70984 = undefined /* Remote */;
+                const v70985 = await txn3.getOutput('internal', 'v70984', ctc17, v70984);
+                const v70987 = v70985[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
+                const v70996 = stdlib.add(v69915, v70987);
+                const v70997 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70987);
+                stdlib.assert(v70997, {
                   at: './index.rsh:165:15:application',
                   fs: ['at ./index.rsh:168:26:application call to "go" (defined at: ./index.rsh:160:30:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:158:46:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:154:45:function exp)', 'at ./index.rsh:212:57:application call to "evalCommand" (defined at: ./index.rsh:154:33:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
                   msg: 'remote bill check',
                   who: 'Admin'
                   });
-                const cv69608 = v70570;
-                const cv69609 = false;
-                const cv69610 = v69610;
-                const cv69611 = v69611;
-                const cv69612 = v69941;
-                const cv69615 = v70696;
+                const cv69908 = v70870;
+                const cv69909 = false;
+                const cv69910 = v69910;
+                const cv69911 = v69911;
+                const cv69912 = v70241;
+                const cv69915 = v70996;
                 
-                v69608 = cv69608;
-                v69609 = cv69609;
-                v69610 = cv69610;
-                v69611 = cv69611;
-                v69612 = cv69612;
-                v69615 = cv69615;
+                v69908 = cv69908;
+                v69909 = cv69909;
+                v69910 = cv69910;
+                v69911 = cv69911;
+                v69912 = cv69912;
+                v69915 = cv69915;
                 
                 txn2 = txn3;
                 continue;
@@ -856,116 +856,116 @@ export async function Admin(ctcTop, interact) {
             break;
             }
           case 'Kill': {
-            const v70706 = v70440[1];
-            const cv69608 = v70570;
-            const cv69609 = true;
-            const cv69610 = v69610;
-            const cv69611 = v69611;
-            const cv69612 = v69941;
-            const cv69615 = v69615;
+            const v71006 = v70740[1];
+            const cv69908 = v70870;
+            const cv69909 = true;
+            const cv69910 = v69910;
+            const cv69911 = v69911;
+            const cv69912 = v70241;
+            const cv69915 = v69915;
             
-            v69608 = cv69608;
-            v69609 = cv69609;
-            v69610 = cv69610;
-            v69611 = cv69611;
-            v69612 = cv69612;
-            v69615 = cv69615;
+            v69908 = cv69908;
+            v69909 = cv69909;
+            v69910 = cv69910;
+            v69911 = cv69911;
+            v69912 = cv69912;
+            v69915 = cv69915;
             
             txn2 = txn3;
             continue;
             break;
             }
           case 'NewInfo': {
-            const v70714 = v70440[1];
-            const v70715 = v70714.locked;
-            const v70716 = v70714.lpFee;
-            const v70717 = v70714.protoAddr;
-            const v70718 = v70714.protoFee;
-            const v70719 = v70714.totFee;
-            const v70720 = {
-              locked: v70715,
-              lpFee: v70716,
-              protoAddr: v70717,
-              protoFee: v70718,
-              totFee: v70719
+            const v71014 = v70740[1];
+            const v71015 = v71014.locked;
+            const v71016 = v71014.lpFee;
+            const v71017 = v71014.protoAddr;
+            const v71018 = v71014.protoFee;
+            const v71019 = v71014.totFee;
+            const v71020 = {
+              locked: v71015,
+              lpFee: v71016,
+              protoAddr: v71017,
+              protoFee: v71018,
+              totFee: v71019
               };
-            const cv69608 = v70570;
-            const cv69609 = false;
-            const cv69610 = v70720;
-            const cv69611 = v69611;
-            const cv69612 = v69941;
-            const cv69615 = v69615;
+            const cv69908 = v70870;
+            const cv69909 = false;
+            const cv69910 = v71020;
+            const cv69911 = v69911;
+            const cv69912 = v70241;
+            const cv69915 = v69915;
             
-            v69608 = cv69608;
-            v69609 = cv69609;
-            v69610 = cv69610;
-            v69611 = cv69611;
-            v69612 = cv69612;
-            v69615 = cv69615;
+            v69908 = cv69908;
+            v69909 = cv69909;
+            v69910 = cv69910;
+            v69911 = cv69911;
+            v69912 = cv69912;
+            v69915 = cv69915;
             
             txn2 = txn3;
             continue;
             break;
             }
           case 'NewTriumvirs': {
-            const v70729 = v70440[1];
-            const cv69608 = v70570;
-            const cv69609 = false;
-            const cv69610 = v69610;
-            const cv69611 = v70729;
-            const cv69612 = v69941;
-            const cv69615 = v69615;
+            const v71029 = v70740[1];
+            const cv69908 = v70870;
+            const cv69909 = false;
+            const cv69910 = v69910;
+            const cv69911 = v71029;
+            const cv69912 = v70241;
+            const cv69915 = v69915;
             
-            v69608 = cv69608;
-            v69609 = cv69609;
-            v69610 = cv69610;
-            v69611 = cv69611;
-            v69612 = cv69612;
-            v69615 = cv69615;
+            v69908 = cv69908;
+            v69909 = cv69909;
+            v69910 = cv69910;
+            v69911 = cv69911;
+            v69912 = cv69912;
+            v69915 = cv69915;
             
             txn2 = txn3;
             continue;
             break;
             }
           case 'NoOp': {
-            const v70737 = v70440[1];
-            const cv69608 = v70570;
-            const cv69609 = false;
-            const cv69610 = v69610;
-            const cv69611 = v69611;
-            const cv69612 = v69941;
-            const cv69615 = v69615;
+            const v71037 = v70740[1];
+            const cv69908 = v70870;
+            const cv69909 = false;
+            const cv69910 = v69910;
+            const cv69911 = v69911;
+            const cv69912 = v70241;
+            const cv69915 = v69915;
             
-            v69608 = cv69608;
-            v69609 = cv69609;
-            v69610 = cv69610;
-            v69611 = cv69611;
-            v69612 = cv69612;
-            v69615 = cv69615;
+            v69908 = cv69908;
+            v69909 = cv69909;
+            v69910 = cv69910;
+            v69911 = cv69911;
+            v69912 = cv69912;
+            v69915 = cv69915;
             
             txn2 = txn3;
             continue;
             break;
             }
           case 'Rewards': {
-            const v70745 = v70440[1];
-            const v70747 = (stdlib.le(await ctc.getBalance(), v69615) ? stdlib.checkedBigNumberify('./index.rsh:174:44:application', stdlib.UInt_max, '0') : stdlib.safeSub(await ctc.getBalance(), v69615));
-            const v70748 = stdlib.safeAdd(v70747, v69615);
-            const v70752 = stdlib.sub(v70748, v70747);
+            const v71045 = v70740[1];
+            const v71047 = (stdlib.le(await ctc.getBalance(), v69915) ? stdlib.checkedBigNumberify('./index.rsh:174:44:application', stdlib.UInt_max, '0') : stdlib.safeSub(await ctc.getBalance(), v69915));
+            const v71048 = stdlib.safeAdd(v71047, v69915);
+            const v71052 = stdlib.sub(v71048, v71047);
             ;
-            const cv69608 = v70570;
-            const cv69609 = false;
-            const cv69610 = v69610;
-            const cv69611 = v69611;
-            const cv69612 = v69941;
-            const cv69615 = v70752;
+            const cv69908 = v70870;
+            const cv69909 = false;
+            const cv69910 = v69910;
+            const cv69911 = v69911;
+            const cv69912 = v70241;
+            const cv69915 = v71052;
             
-            v69608 = cv69608;
-            v69609 = cv69609;
-            v69610 = cv69610;
-            v69611 = cv69611;
-            v69612 = cv69612;
-            v69615 = cv69615;
+            v69908 = cv69908;
+            v69909 = cv69909;
+            v69910 = cv69910;
+            v69911 = cv69911;
+            v69912 = cv69912;
+            v69915 = cv69915;
             
             txn2 = txn3;
             continue;
@@ -974,47 +974,47 @@ export async function Admin(ctcTop, interact) {
           }
         break;
         }
-      case 'register0_68035': {
-        const v70801 = v69940[1];
+      case 'register0_68335': {
+        const v71101 = v70240[1];
         undefined /* setApiDetails */;
-        const v70878 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '0')];
-        const v70881 = stdlib.ctcAddrEq(v70878, v69939);
-        stdlib.assert(v70881, {
+        const v71178 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '0')];
+        const v71181 = stdlib.ctcAddrEq(v71178, v70239);
+        stdlib.assert(v71181, {
           at: 'reach standard library:57:5:application',
           fs: ['at ./index.rsh:185:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:183:49:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
           msg: 'not contract',
           who: 'Admin'
           });
         ;
-        const v71191 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '1')];
-        const v71192 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '2')];
-        const v71198 = v69610.protoFee;
-        const v71199 = v69610.lpFee;
-        const v71200 = v69610.totFee;
-        const v71201 = v69610.protoAddr;
-        const v71202 = v69610.locked;
-        const v71203 = {
-          locked: v71202,
-          lpFee: v71199,
-          protoAddr: v71201,
-          protoFee: v71198,
-          totFee: v71200
+        const v71491 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '1')];
+        const v71492 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '2')];
+        const v71498 = v69910.protoFee;
+        const v71499 = v69910.lpFee;
+        const v71500 = v69910.totFee;
+        const v71501 = v69910.protoAddr;
+        const v71502 = v69910.locked;
+        const v71503 = {
+          locked: v71502,
+          lpFee: v71499,
+          protoAddr: v71501,
+          protoFee: v71498,
+          totFee: v71500
           };
-        await txn3.getOutput('register', 'v71203', ctc9, v71203);
+        await txn3.getOutput('register', 'v71503', ctc9, v71503);
         null;
-        const cv69608 = v69608;
-        const cv69609 = false;
-        const cv69610 = v69610;
-        const cv69611 = v69611;
-        const cv69612 = v69941;
-        const cv69615 = v69615;
+        const cv69908 = v69908;
+        const cv69909 = false;
+        const cv69910 = v69910;
+        const cv69911 = v69911;
+        const cv69912 = v70241;
+        const cv69915 = v69915;
         
-        v69608 = cv69608;
-        v69609 = cv69609;
-        v69610 = cv69610;
-        v69611 = cv69611;
-        v69612 = cv69612;
-        v69615 = cv69615;
+        v69908 = cv69908;
+        v69909 = cv69909;
+        v69910 = cv69910;
+        v69911 = cv69911;
+        v69912 = cv69912;
+        v69915 = cv69915;
         
         txn2 = txn3;
         continue;
@@ -1067,193 +1067,193 @@ export async function _Triumvir_propose3(ctcTop, interact) {
   const ctc14 = stdlib.T_Tuple([ctc6, ctc10]);
   const ctc15 = stdlib.T_Tuple([ctc0, ctc3, ctc2]);
   const ctc16 = stdlib.T_Data({
-    Triumvir_propose0_68035: ctc13,
-    Triumvir_support0_68035: ctc14,
-    register0_68035: ctc15
+    Triumvir_propose0_68335: ctc13,
+    Triumvir_support0_68335: ctc14,
+    register0_68335: ctc15
     });
   
   
-  const [v69596, v69608, v69610, v69611, v69615] = await ctc.getState(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '3'), [ctc10, ctc11, ctc12, ctc9, ctc6]);
-  const v69694 = ctc.selfAddress();
-  const v69696 = stdlib.protect(ctc13, await interact.in(), {
+  const [v69896, v69908, v69910, v69911, v69915] = await ctc.getState(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '3'), [ctc10, ctc11, ctc12, ctc9, ctc6]);
+  const v69994 = ctc.selfAddress();
+  const v69996 = stdlib.protect(ctc13, await interact.in(), {
     at: './index.rsh:1:23:application',
-    fs: ['at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_propose0_68035" (defined at: ./index.rsh:192:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_propose0_68335" (defined at: ./index.rsh:192:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'in',
     who: 'Triumvir_propose'
     });
-  const v69697 = v69696[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '0')];
-  let v69717;
-  switch (v69697[0]) {
+  const v69997 = v69996[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '0')];
+  let v70017;
+  switch (v69997[0]) {
     case 'Harvest': {
-      const v69718 = v69697[1];
-      v69717 = true;
+      const v70018 = v69997[1];
+      v70017 = true;
       
       break;
       }
     case 'Kill': {
-      const v69719 = v69697[1];
-      v69717 = true;
+      const v70019 = v69997[1];
+      v70017 = true;
       
       break;
       }
     case 'NewInfo': {
-      const v69720 = v69697[1];
-      const v69721 = v69720.protoFee;
-      const v69722 = v69720.lpFee;
-      const v69723 = v69720.totFee;
-      const v69724 = stdlib.lt(v69721, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
-      const v69725 = stdlib.lt(v69722, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
-      const v69726 = v69724 ? v69725 : false;
-      let v69727;
-      if (v69726) {
-        const v69728 = stdlib.safeAdd(v69722, v69721);
-        const v69729 = stdlib.eq(v69723, v69728);
-        v69727 = v69729;
+      const v70020 = v69997[1];
+      const v70021 = v70020.protoFee;
+      const v70022 = v70020.lpFee;
+      const v70023 = v70020.totFee;
+      const v70024 = stdlib.lt(v70021, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
+      const v70025 = stdlib.lt(v70022, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
+      const v70026 = v70024 ? v70025 : false;
+      let v70027;
+      if (v70026) {
+        const v70028 = stdlib.safeAdd(v70022, v70021);
+        const v70029 = stdlib.eq(v70023, v70028);
+        v70027 = v70029;
         }
       else {
-        v69727 = false;
+        v70027 = false;
         }
-      const v69730 = stdlib.lt(v69723, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
-      const v69731 = v69727 ? v69730 : false;
-      const v69732 = stdlib.gt(v69723, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
-      const v69733 = v69731 ? v69732 : false;
-      v69717 = v69733;
+      const v70030 = stdlib.lt(v70023, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
+      const v70031 = v70027 ? v70030 : false;
+      const v70032 = stdlib.gt(v70023, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
+      const v70033 = v70031 ? v70032 : false;
+      v70017 = v70033;
       
       break;
       }
     case 'NewTriumvirs': {
-      const v69734 = v69697[1];
-      v69717 = true;
+      const v70034 = v69997[1];
+      v70017 = true;
       
       break;
       }
     case 'NoOp': {
-      const v69735 = v69697[1];
-      v69717 = true;
+      const v70035 = v69997[1];
+      v70017 = true;
       
       break;
       }
     case 'Rewards': {
-      const v69736 = v69697[1];
-      v69717 = true;
+      const v70036 = v69997[1];
+      v70017 = true;
       
       break;
       }
     }
-  stdlib.assert(v69717, {
+  stdlib.assert(v70017, {
     at: 'reach standard library:57:5:application',
-    fs: ['at ./index.rsh:193:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_propose0_68035" (defined at: ./index.rsh:192:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:193:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_propose0_68335" (defined at: ./index.rsh:192:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'invalid command',
     who: 'Triumvir_propose'
     });
-  const v69738 = ['None', null];
-  const v69739 = await stdlib.Array_asyncReduce([v69611], v69738, async([v69741], v69740, v69742) => {
-    const v69743 = {
+  const v70038 = ['None', null];
+  const v70039 = await stdlib.Array_asyncReduce([v69911], v70038, async([v70041], v70040, v70042) => {
+    const v70043 = {
       None: 0,
       Some: 1
-      }[v69740[0]];
-    const v69744 = stdlib.eq(v69743, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-    const v69745 = stdlib.addressEq(v69694, v69741);
-    const v69746 = v69744 ? v69745 : false;
-    const v69747 = ['Some', v69742];
-    const v69748 = v69746 ? v69747 : v69740;
+      }[v70040[0]];
+    const v70044 = stdlib.eq(v70043, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+    const v70045 = stdlib.addressEq(v69994, v70041);
+    const v70046 = v70044 ? v70045 : false;
+    const v70047 = ['Some', v70042];
+    const v70048 = v70046 ? v70047 : v70040;
     
-    return v69748;})
-  const v69749 = {
+    return v70048;})
+  const v70049 = {
     None: 0,
     Some: 1
-    }[v69739[0]];
-  const v69750 = stdlib.eq(v69749, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-  stdlib.assert(v69750, {
+    }[v70039[0]];
+  const v70050 = stdlib.eq(v70049, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+  stdlib.assert(v70050, {
     at: 'reach standard library:57:5:application',
-    fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:194:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_propose0_68035" (defined at: ./index.rsh:192:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:194:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_propose0_68335" (defined at: ./index.rsh:192:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'not triumvir',
     who: 'Triumvir_propose'
     });
-  const v69778 = ['Triumvir_propose0_68035', v69696];
+  const v70078 = ['Triumvir_propose0_68335', v69996];
   
-  let v69863;
-  switch (v69697[0]) {
+  let v70163;
+  switch (v69997[0]) {
     case 'Harvest': {
-      const v69864 = v69697[1];
-      v69863 = true;
+      const v70164 = v69997[1];
+      v70163 = true;
       
       break;
       }
     case 'Kill': {
-      const v69865 = v69697[1];
-      v69863 = true;
+      const v70165 = v69997[1];
+      v70163 = true;
       
       break;
       }
     case 'NewInfo': {
-      const v69866 = v69697[1];
-      const v69867 = v69866.protoFee;
-      const v69868 = v69866.lpFee;
-      const v69869 = v69866.totFee;
-      const v69870 = stdlib.lt(v69867, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
-      const v69871 = stdlib.lt(v69868, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
-      const v69872 = v69870 ? v69871 : false;
-      let v69873;
-      if (v69872) {
-        const v69874 = stdlib.safeAdd(v69868, v69867);
-        const v69875 = stdlib.eq(v69869, v69874);
-        v69873 = v69875;
+      const v70166 = v69997[1];
+      const v70167 = v70166.protoFee;
+      const v70168 = v70166.lpFee;
+      const v70169 = v70166.totFee;
+      const v70170 = stdlib.lt(v70167, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
+      const v70171 = stdlib.lt(v70168, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
+      const v70172 = v70170 ? v70171 : false;
+      let v70173;
+      if (v70172) {
+        const v70174 = stdlib.safeAdd(v70168, v70167);
+        const v70175 = stdlib.eq(v70169, v70174);
+        v70173 = v70175;
         }
       else {
-        v69873 = false;
+        v70173 = false;
         }
-      const v69876 = stdlib.lt(v69869, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
-      const v69877 = v69873 ? v69876 : false;
-      const v69878 = stdlib.gt(v69869, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
-      const v69879 = v69877 ? v69878 : false;
-      v69863 = v69879;
+      const v70176 = stdlib.lt(v70169, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
+      const v70177 = v70173 ? v70176 : false;
+      const v70178 = stdlib.gt(v70169, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
+      const v70179 = v70177 ? v70178 : false;
+      v70163 = v70179;
       
       break;
       }
     case 'NewTriumvirs': {
-      const v69880 = v69697[1];
-      v69863 = true;
+      const v70180 = v69997[1];
+      v70163 = true;
       
       break;
       }
     case 'NoOp': {
-      const v69881 = v69697[1];
-      v69863 = true;
+      const v70181 = v69997[1];
+      v70163 = true;
       
       break;
       }
     case 'Rewards': {
-      const v69882 = v69697[1];
-      v69863 = true;
+      const v70182 = v69997[1];
+      v70163 = true;
       
       break;
       }
     }
-  stdlib.assert(v69863, {
+  stdlib.assert(v70163, {
     at: 'reach standard library:57:5:application',
     fs: ['at ./index.rsh:193:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'invalid command',
     who: 'Triumvir_propose'
     });
-  const v69885 = await stdlib.Array_asyncReduce([v69611], v69738, async([v69887], v69886, v69888) => {
-    const v69889 = {
+  const v70185 = await stdlib.Array_asyncReduce([v69911], v70038, async([v70187], v70186, v70188) => {
+    const v70189 = {
       None: 0,
       Some: 1
-      }[v69886[0]];
-    const v69890 = stdlib.eq(v69889, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-    const v69891 = stdlib.addressEq(v69694, v69887);
-    const v69892 = v69890 ? v69891 : false;
-    const v69893 = ['Some', v69888];
-    const v69894 = v69892 ? v69893 : v69886;
+      }[v70186[0]];
+    const v70190 = stdlib.eq(v70189, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+    const v70191 = stdlib.addressEq(v69994, v70187);
+    const v70192 = v70190 ? v70191 : false;
+    const v70193 = ['Some', v70188];
+    const v70194 = v70192 ? v70193 : v70186;
     
-    return v69894;})
-  const v69895 = {
+    return v70194;})
+  const v70195 = {
     None: 0,
     Some: 1
-    }[v69885[0]];
-  const v69896 = stdlib.eq(v69895, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-  stdlib.assert(v69896, {
+    }[v70185[0]];
+  const v70196 = stdlib.eq(v70195, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+  stdlib.assert(v70196, {
     at: 'reach standard library:57:5:application',
     fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:194:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'not triumvir',
@@ -1261,7 +1261,7 @@ export async function _Triumvir_propose3(ctcTop, interact) {
     });
   
   const txn1 = await (ctc.sendrecv({
-    args: [v69596, v69608, v69610, v69611, v69615, v69778],
+    args: [v69896, v69908, v69910, v69911, v69915, v70078],
     evt_cnt: 1,
     funcNum: 2,
     lct: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'),
@@ -1274,51 +1274,51 @@ export async function _Triumvir_propose3(ctcTop, interact) {
       const getSimTokCtr = () => { sim_txn_ctr = sim_txn_ctr.sub(1); return sim_txn_ctr; };
       
       
-      const {data: [v69940], secs: v69942, time: v69941, didSend: v69090, from: v69939 } = txn1;
+      const {data: [v70240], secs: v70242, time: v70241, didSend: v69390, from: v70239 } = txn1;
       
-      switch (v69940[0]) {
-        case 'Triumvir_propose0_68035': {
-          const v69943 = v69940[1];
+      switch (v70240[0]) {
+        case 'Triumvir_propose0_68335': {
+          const v70243 = v70240[1];
           sim_r.txns.push({
             kind: 'api',
             who: "Triumvir_propose"
             });
-          const v69948 = v69943[stdlib.checkedBigNumberify('./index.rsh:192:10:spread', stdlib.UInt_max, '0')];
-          const v69970 = ['None', null];
+          const v70248 = v70243[stdlib.checkedBigNumberify('./index.rsh:192:10:spread', stdlib.UInt_max, '0')];
+          const v70270 = ['None', null];
           ;
-          const v70049 = await stdlib.Array_asyncReduce([v69611], v69970, async([v70051], v70050, v70052) => {
-            const v70053 = {
+          const v70349 = await stdlib.Array_asyncReduce([v69911], v70270, async([v70351], v70350, v70352) => {
+            const v70353 = {
               None: 0,
               Some: 1
-              }[v70050[0]];
-            const v70054 = stdlib.eq(v70053, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-            const v70055 = stdlib.addressEq(v69939, v70051);
-            const v70056 = v70054 ? v70055 : false;
-            const v70057 = ['Some', v70052];
-            const v70058 = v70056 ? v70057 : v70050;
+              }[v70350[0]];
+            const v70354 = stdlib.eq(v70353, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+            const v70355 = stdlib.addressEq(v70239, v70351);
+            const v70356 = v70354 ? v70355 : false;
+            const v70357 = ['Some', v70352];
+            const v70358 = v70356 ? v70357 : v70350;
             
-            return v70058;})
-          const v70062 = stdlib.fromSome(v70049, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-          const v70064 = stdlib.Array_set(v69608, v70062, v69948);
-          const v70066 = null;
-          const v70067 = await txn1.getOutput('Triumvir_propose', 'v70066', ctc1, v70066);
+            return v70358;})
+          const v70362 = stdlib.fromSome(v70349, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+          const v70364 = stdlib.Array_set(v69908, v70362, v70248);
+          const v70366 = null;
+          const v70367 = await txn1.getOutput('Triumvir_propose', 'v70366', ctc1, v70366);
           
           null;
-          const v77060 = v70064;
-          const v77062 = v69610;
-          const v77063 = v69611;
-          const v77065 = v69615;
+          const v77360 = v70364;
+          const v77362 = v69910;
+          const v77363 = v69911;
+          const v77365 = v69915;
           sim_r.isHalt = false;
           
           break;
           }
-        case 'Triumvir_support0_68035': {
-          const v70372 = v69940[1];
+        case 'Triumvir_support0_68335': {
+          const v70672 = v70240[1];
           
           break;
           }
-        case 'register0_68035': {
-          const v70801 = v69940[1];
+        case 'register0_68335': {
+          const v71101 = v70240[1];
           
           break;
           }
@@ -1330,194 +1330,194 @@ export async function _Triumvir_propose3(ctcTop, interact) {
     tys: [ctc10, ctc11, ctc12, ctc9, ctc6, ctc16],
     waitIfNotPresent: false
     }));
-  const {data: [v69940], secs: v69942, time: v69941, didSend: v69090, from: v69939 } = txn1;
-  switch (v69940[0]) {
-    case 'Triumvir_propose0_68035': {
-      const v69943 = v69940[1];
+  const {data: [v70240], secs: v70242, time: v70241, didSend: v69390, from: v70239 } = txn1;
+  switch (v70240[0]) {
+    case 'Triumvir_propose0_68335': {
+      const v70243 = v70240[1];
       undefined /* setApiDetails */;
-      const v69948 = v69943[stdlib.checkedBigNumberify('./index.rsh:192:10:spread', stdlib.UInt_max, '0')];
-      let v69949;
-      switch (v69948[0]) {
+      const v70248 = v70243[stdlib.checkedBigNumberify('./index.rsh:192:10:spread', stdlib.UInt_max, '0')];
+      let v70249;
+      switch (v70248[0]) {
         case 'Harvest': {
-          const v69950 = v69948[1];
-          v69949 = true;
+          const v70250 = v70248[1];
+          v70249 = true;
           
           break;
           }
         case 'Kill': {
-          const v69951 = v69948[1];
-          v69949 = true;
+          const v70251 = v70248[1];
+          v70249 = true;
           
           break;
           }
         case 'NewInfo': {
-          const v69952 = v69948[1];
-          const v69953 = v69952.protoFee;
-          const v69954 = v69952.lpFee;
-          const v69955 = v69952.totFee;
-          const v69956 = stdlib.lt(v69953, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
-          const v69957 = stdlib.lt(v69954, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
-          const v69958 = v69956 ? v69957 : false;
-          let v69959;
-          if (v69958) {
-            const v69960 = stdlib.safeAdd(v69954, v69953);
-            const v69961 = stdlib.eq(v69955, v69960);
-            v69959 = v69961;
+          const v70252 = v70248[1];
+          const v70253 = v70252.protoFee;
+          const v70254 = v70252.lpFee;
+          const v70255 = v70252.totFee;
+          const v70256 = stdlib.lt(v70253, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
+          const v70257 = stdlib.lt(v70254, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
+          const v70258 = v70256 ? v70257 : false;
+          let v70259;
+          if (v70258) {
+            const v70260 = stdlib.safeAdd(v70254, v70253);
+            const v70261 = stdlib.eq(v70255, v70260);
+            v70259 = v70261;
             }
           else {
-            v69959 = false;
+            v70259 = false;
             }
-          const v69962 = stdlib.lt(v69955, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
-          const v69963 = v69959 ? v69962 : false;
-          const v69964 = stdlib.gt(v69955, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
-          const v69965 = v69963 ? v69964 : false;
-          v69949 = v69965;
+          const v70262 = stdlib.lt(v70255, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
+          const v70263 = v70259 ? v70262 : false;
+          const v70264 = stdlib.gt(v70255, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
+          const v70265 = v70263 ? v70264 : false;
+          v70249 = v70265;
           
           break;
           }
         case 'NewTriumvirs': {
-          const v69966 = v69948[1];
-          v69949 = true;
+          const v70266 = v70248[1];
+          v70249 = true;
           
           break;
           }
         case 'NoOp': {
-          const v69967 = v69948[1];
-          v69949 = true;
+          const v70267 = v70248[1];
+          v70249 = true;
           
           break;
           }
         case 'Rewards': {
-          const v69968 = v69948[1];
-          v69949 = true;
+          const v70268 = v70248[1];
+          v70249 = true;
           
           break;
           }
         }
-      stdlib.assert(v69949, {
+      stdlib.assert(v70249, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:193:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
         msg: 'invalid command',
         who: 'Triumvir_propose'
         });
-      const v69970 = ['None', null];
-      const v69971 = await stdlib.Array_asyncReduce([v69611], v69970, async([v69973], v69972, v69974) => {
-        const v69975 = {
+      const v70270 = ['None', null];
+      const v70271 = await stdlib.Array_asyncReduce([v69911], v70270, async([v70273], v70272, v70274) => {
+        const v70275 = {
           None: 0,
           Some: 1
-          }[v69972[0]];
-        const v69976 = stdlib.eq(v69975, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-        const v69977 = stdlib.addressEq(v69939, v69973);
-        const v69978 = v69976 ? v69977 : false;
-        const v69979 = ['Some', v69974];
-        const v69980 = v69978 ? v69979 : v69972;
+          }[v70272[0]];
+        const v70276 = stdlib.eq(v70275, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+        const v70277 = stdlib.addressEq(v70239, v70273);
+        const v70278 = v70276 ? v70277 : false;
+        const v70279 = ['Some', v70274];
+        const v70280 = v70278 ? v70279 : v70272;
         
-        return v69980;})
-      const v69981 = {
+        return v70280;})
+      const v70281 = {
         None: 0,
         Some: 1
-        }[v69971[0]];
-      const v69982 = stdlib.eq(v69981, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-      stdlib.assert(v69982, {
+        }[v70271[0]];
+      const v70282 = stdlib.eq(v70281, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+      stdlib.assert(v70282, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:194:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:192:35:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:192:35:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
         msg: 'not triumvir',
         who: 'Triumvir_propose'
         });
       ;
-      let v70027;
-      switch (v69948[0]) {
+      let v70327;
+      switch (v70248[0]) {
         case 'Harvest': {
-          const v70028 = v69948[1];
-          v70027 = true;
+          const v70328 = v70248[1];
+          v70327 = true;
           
           break;
           }
         case 'Kill': {
-          const v70029 = v69948[1];
-          v70027 = true;
+          const v70329 = v70248[1];
+          v70327 = true;
           
           break;
           }
         case 'NewInfo': {
-          const v70030 = v69948[1];
-          const v70031 = v70030.protoFee;
-          const v70032 = v70030.lpFee;
-          const v70033 = v70030.totFee;
-          const v70034 = stdlib.lt(v70031, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
-          const v70035 = stdlib.lt(v70032, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
-          const v70036 = v70034 ? v70035 : false;
-          let v70037;
-          if (v70036) {
-            const v70038 = stdlib.safeAdd(v70032, v70031);
-            const v70039 = stdlib.eq(v70033, v70038);
-            v70037 = v70039;
+          const v70330 = v70248[1];
+          const v70331 = v70330.protoFee;
+          const v70332 = v70330.lpFee;
+          const v70333 = v70330.totFee;
+          const v70334 = stdlib.lt(v70331, stdlib.checkedBigNumberify('./index.rsh:74:14:decimal', stdlib.UInt_max, '100'));
+          const v70335 = stdlib.lt(v70332, stdlib.checkedBigNumberify('./index.rsh:75:14:decimal', stdlib.UInt_max, '100'));
+          const v70336 = v70334 ? v70335 : false;
+          let v70337;
+          if (v70336) {
+            const v70338 = stdlib.safeAdd(v70332, v70331);
+            const v70339 = stdlib.eq(v70333, v70338);
+            v70337 = v70339;
             }
           else {
-            v70037 = false;
+            v70337 = false;
             }
-          const v70040 = stdlib.lt(v70033, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
-          const v70041 = v70037 ? v70040 : false;
-          const v70042 = stdlib.gt(v70033, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
-          const v70043 = v70041 ? v70042 : false;
-          v70027 = v70043;
+          const v70340 = stdlib.lt(v70333, stdlib.checkedBigNumberify('./index.rsh:77:15:decimal', stdlib.UInt_max, '100'));
+          const v70341 = v70337 ? v70340 : false;
+          const v70342 = stdlib.gt(v70333, stdlib.checkedBigNumberify('./index.rsh:78:15:decimal', stdlib.UInt_max, '0'));
+          const v70343 = v70341 ? v70342 : false;
+          v70327 = v70343;
           
           break;
           }
         case 'NewTriumvirs': {
-          const v70044 = v69948[1];
-          v70027 = true;
+          const v70344 = v70248[1];
+          v70327 = true;
           
           break;
           }
         case 'NoOp': {
-          const v70045 = v69948[1];
-          v70027 = true;
+          const v70345 = v70248[1];
+          v70327 = true;
           
           break;
           }
         case 'Rewards': {
-          const v70046 = v69948[1];
-          v70027 = true;
+          const v70346 = v70248[1];
+          v70327 = true;
           
           break;
           }
         }
-      stdlib.assert(v70027, {
+      stdlib.assert(v70327, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:193:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:196:23:application call to [unknown function] (defined at: ./index.rsh:196:23:function exp)'],
         msg: 'invalid command',
         who: 'Triumvir_propose'
         });
-      const v70049 = await stdlib.Array_asyncReduce([v69611], v69970, async([v70051], v70050, v70052) => {
-        const v70053 = {
+      const v70349 = await stdlib.Array_asyncReduce([v69911], v70270, async([v70351], v70350, v70352) => {
+        const v70353 = {
           None: 0,
           Some: 1
-          }[v70050[0]];
-        const v70054 = stdlib.eq(v70053, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-        const v70055 = stdlib.addressEq(v69939, v70051);
-        const v70056 = v70054 ? v70055 : false;
-        const v70057 = ['Some', v70052];
-        const v70058 = v70056 ? v70057 : v70050;
+          }[v70350[0]];
+        const v70354 = stdlib.eq(v70353, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+        const v70355 = stdlib.addressEq(v70239, v70351);
+        const v70356 = v70354 ? v70355 : false;
+        const v70357 = ['Some', v70352];
+        const v70358 = v70356 ? v70357 : v70350;
         
-        return v70058;})
-      const v70059 = {
+        return v70358;})
+      const v70359 = {
         None: 0,
         Some: 1
-        }[v70049[0]];
-      const v70060 = stdlib.eq(v70059, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-      stdlib.assert(v70060, {
+        }[v70349[0]];
+      const v70360 = stdlib.eq(v70359, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+      stdlib.assert(v70360, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:194:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:196:23:application call to [unknown function] (defined at: ./index.rsh:196:23:function exp)'],
         msg: 'not triumvir',
         who: 'Triumvir_propose'
         });
-      const v70062 = stdlib.fromSome(v70049, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-      const v70064 = stdlib.Array_set(v69608, v70062, v69948);
-      const v70066 = null;
-      const v70067 = await txn1.getOutput('Triumvir_propose', 'v70066', ctc1, v70066);
-      if (v69090) {
-        stdlib.protect(ctc1, await interact.out(v69943, v70067), {
+      const v70362 = stdlib.fromSome(v70349, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+      const v70364 = stdlib.Array_set(v69908, v70362, v70248);
+      const v70366 = null;
+      const v70367 = await txn1.getOutput('Triumvir_propose', 'v70366', ctc1, v70366);
+      if (v69390) {
+        stdlib.protect(ctc1, await interact.out(v70243, v70367), {
           at: './index.rsh:192:11:application',
           fs: ['at ./index.rsh:192:11:application call to [unknown function] (defined at: ./index.rsh:192:11:function exp)', 'at ./index.rsh:197:10:application call to "k" (defined at: ./index.rsh:196:23:function exp)', 'at ./index.rsh:196:23:application call to [unknown function] (defined at: ./index.rsh:196:23:function exp)'],
           msg: 'out',
@@ -1528,21 +1528,21 @@ export async function _Triumvir_propose3(ctcTop, interact) {
         }
       
       null;
-      const v77060 = v70064;
-      const v77062 = v69610;
-      const v77063 = v69611;
-      const v77065 = v69615;
+      const v77360 = v70364;
+      const v77362 = v69910;
+      const v77363 = v69911;
+      const v77365 = v69915;
       return;
       
       break;
       }
-    case 'Triumvir_support0_68035': {
-      const v70372 = v69940[1];
+    case 'Triumvir_support0_68335': {
+      const v70672 = v70240[1];
       return;
       break;
       }
-    case 'register0_68035': {
-      const v70801 = v69940[1];
+    case 'register0_68335': {
+      const v71101 = v70240[1];
       return;
       break;
       }
@@ -1590,104 +1590,104 @@ export async function _Triumvir_support3(ctcTop, interact) {
   const ctc14 = stdlib.T_Tuple([ctc10]);
   const ctc15 = stdlib.T_Tuple([ctc0, ctc3, ctc2]);
   const ctc16 = stdlib.T_Data({
-    Triumvir_propose0_68035: ctc14,
-    Triumvir_support0_68035: ctc13,
-    register0_68035: ctc15
+    Triumvir_propose0_68335: ctc14,
+    Triumvir_support0_68335: ctc13,
+    register0_68335: ctc15
     });
   const ctc17 = stdlib.T_Struct([['A', ctc6], ['B', ctc6]]);
   const ctc18 = stdlib.T_Tuple([ctc17, ctc6]);
   const ctc19 = stdlib.T_Tuple([ctc6, ctc18]);
   
   
-  const [v69596, v69608, v69610, v69611, v69615] = await ctc.getState(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '3'), [ctc10, ctc11, ctc12, ctc9, ctc6]);
-  const v69780 = ctc.selfAddress();
-  const v69782 = stdlib.protect(ctc13, await interact.in(), {
+  const [v69896, v69908, v69910, v69911, v69915] = await ctc.getState(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '3'), [ctc10, ctc11, ctc12, ctc9, ctc6]);
+  const v70080 = ctc.selfAddress();
+  const v70082 = stdlib.protect(ctc13, await interact.in(), {
     at: './index.rsh:1:23:application',
-    fs: ['at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68035" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68335" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'in',
     who: 'Triumvir_support'
     });
-  const v69783 = v69782[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '0')];
-  const v69784 = v69782[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '1')];
-  const v69805 = stdlib.lt(v69783, stdlib.checkedBigNumberify('./index.rsh:203:29:dot', stdlib.UInt_max, '3'));
-  stdlib.assert(v69805, {
+  const v70083 = v70082[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '0')];
+  const v70084 = v70082[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '1')];
+  const v70105 = stdlib.lt(v70083, stdlib.checkedBigNumberify('./index.rsh:203:29:dot', stdlib.UInt_max, '3'));
+  stdlib.assert(v70105, {
     at: 'reach standard library:57:5:application',
-    fs: ['at ./index.rsh:203:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68035" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:203:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68335" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'illegal idx',
     who: 'Triumvir_support'
     });
-  const v69807 = ['None', null];
-  const v69808 = await stdlib.Array_asyncReduce([v69611], v69807, async([v69810], v69809, v69811) => {
-    const v69812 = {
+  const v70107 = ['None', null];
+  const v70108 = await stdlib.Array_asyncReduce([v69911], v70107, async([v70110], v70109, v70111) => {
+    const v70112 = {
       None: 0,
       Some: 1
-      }[v69809[0]];
-    const v69813 = stdlib.eq(v69812, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-    const v69814 = stdlib.addressEq(v69780, v69810);
-    const v69815 = v69813 ? v69814 : false;
-    const v69816 = ['Some', v69811];
-    const v69817 = v69815 ? v69816 : v69809;
+      }[v70109[0]];
+    const v70113 = stdlib.eq(v70112, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+    const v70114 = stdlib.addressEq(v70080, v70110);
+    const v70115 = v70113 ? v70114 : false;
+    const v70116 = ['Some', v70111];
+    const v70117 = v70115 ? v70116 : v70109;
     
-    return v69817;})
-  const v69818 = {
+    return v70117;})
+  const v70118 = {
     None: 0,
     Some: 1
-    }[v69808[0]];
-  const v69819 = stdlib.eq(v69818, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-  stdlib.assert(v69819, {
+    }[v70108[0]];
+  const v70119 = stdlib.eq(v70118, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+  stdlib.assert(v70119, {
     at: 'reach standard library:57:5:application',
-    fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:204:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68035" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:204:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68335" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'not triumvir',
     who: 'Triumvir_support'
     });
-  const v69821 = stdlib.fromSome(v69808, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-  const v69822 = stdlib.eq(v69783, v69821);
-  const v69823 = v69822 ? false : true;
-  stdlib.assert(v69823, {
+  const v70121 = stdlib.fromSome(v70108, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+  const v70122 = stdlib.eq(v70083, v70121);
+  const v70123 = v70122 ? false : true;
+  stdlib.assert(v70123, {
     at: 'reach standard library:57:5:application',
-    fs: ['at ./index.rsh:205:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68035" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:205:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68335" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'cannot support self',
     who: 'Triumvir_support'
     });
-  const v69826 = v69608[v69783];
-  const v69827 = stdlib.digest([ctc10], [v69784]);
-  const v69828 = stdlib.digest([ctc10], [v69826]);
-  const v69829 = stdlib.digestEq(v69827, v69828);
-  stdlib.assert(v69829, {
+  const v70126 = v69908[v70083];
+  const v70127 = stdlib.digest([ctc10], [v70084]);
+  const v70128 = stdlib.digest([ctc10], [v70126]);
+  const v70129 = stdlib.digestEq(v70127, v70128);
+  stdlib.assert(v70129, {
     at: 'reach standard library:57:5:application',
-    fs: ['at ./index.rsh:207:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68035" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:207:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to "runTriumvir_support0_68335" (defined at: ./index.rsh:202:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'command switched',
     who: 'Triumvir_support'
     });
-  const v69859 = ['Triumvir_support0_68035', v69782];
+  const v70159 = ['Triumvir_support0_68335', v70082];
   
-  const v69907 = await stdlib.Array_asyncReduce([v69611], v69807, async([v69909], v69908, v69910) => {
-    const v69911 = {
+  const v70207 = await stdlib.Array_asyncReduce([v69911], v70107, async([v70209], v70208, v70210) => {
+    const v70211 = {
       None: 0,
       Some: 1
-      }[v69908[0]];
-    const v69912 = stdlib.eq(v69911, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-    const v69913 = stdlib.addressEq(v69780, v69909);
-    const v69914 = v69912 ? v69913 : false;
-    const v69915 = ['Some', v69910];
-    const v69916 = v69914 ? v69915 : v69908;
+      }[v70208[0]];
+    const v70212 = stdlib.eq(v70211, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+    const v70213 = stdlib.addressEq(v70080, v70209);
+    const v70214 = v70212 ? v70213 : false;
+    const v70215 = ['Some', v70210];
+    const v70216 = v70214 ? v70215 : v70208;
     
-    return v69916;})
-  const v69917 = {
+    return v70216;})
+  const v70217 = {
     None: 0,
     Some: 1
-    }[v69907[0]];
-  const v69918 = stdlib.eq(v69917, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-  stdlib.assert(v69918, {
+    }[v70207[0]];
+  const v70218 = stdlib.eq(v70217, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+  stdlib.assert(v70218, {
     at: 'reach standard library:57:5:application',
     fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:204:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'not triumvir',
     who: 'Triumvir_support'
     });
-  const v69920 = stdlib.fromSome(v69907, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-  const v69921 = stdlib.eq(v69783, v69920);
-  const v69922 = v69921 ? false : true;
-  stdlib.assert(v69922, {
+  const v70220 = stdlib.fromSome(v70207, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+  const v70221 = stdlib.eq(v70083, v70220);
+  const v70222 = v70221 ? false : true;
+  stdlib.assert(v70222, {
     at: 'reach standard library:57:5:application',
     fs: ['at ./index.rsh:205:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'cannot support self',
@@ -1695,7 +1695,7 @@ export async function _Triumvir_support3(ctcTop, interact) {
     });
   
   const txn1 = await (ctc.sendrecv({
-    args: [v69596, v69608, v69610, v69611, v69615, v69859],
+    args: [v69896, v69908, v69910, v69911, v69915, v70159],
     evt_cnt: 1,
     funcNum: 2,
     lct: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'),
@@ -1708,112 +1708,112 @@ export async function _Triumvir_support3(ctcTop, interact) {
       const getSimTokCtr = () => { sim_txn_ctr = sim_txn_ctr.sub(1); return sim_txn_ctr; };
       
       
-      const {data: [v69940], secs: v69942, time: v69941, didSend: v69090, from: v69939 } = txn1;
+      const {data: [v70240], secs: v70242, time: v70241, didSend: v69390, from: v70239 } = txn1;
       
-      switch (v69940[0]) {
-        case 'Triumvir_propose0_68035': {
-          const v69943 = v69940[1];
+      switch (v70240[0]) {
+        case 'Triumvir_propose0_68335': {
+          const v70243 = v70240[1];
           
           break;
           }
-        case 'Triumvir_support0_68035': {
-          const v70372 = v69940[1];
+        case 'Triumvir_support0_68335': {
+          const v70672 = v70240[1];
           sim_r.txns.push({
             kind: 'api',
             who: "Triumvir_support"
             });
-          const v70417 = v70372[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '0')];
-          const v70440 = v69608[v70417];
+          const v70717 = v70672[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '0')];
+          const v70740 = v69908[v70717];
           ;
-          const v70570 = stdlib.Array_set(v69608, v70417, v69596);
-          const v70573 = null;
-          const v70574 = await txn1.getOutput('Triumvir_support', 'v70573', ctc1, v70573);
+          const v70870 = stdlib.Array_set(v69908, v70717, v69896);
+          const v70873 = null;
+          const v70874 = await txn1.getOutput('Triumvir_support', 'v70873', ctc1, v70873);
           
           null;
-          switch (v70440[0]) {
+          switch (v70740[0]) {
             case 'Harvest': {
-              const v70617 = v70440[1];
-              const v70618 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '0')];
-              const v70619 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '1')];
-              const v70620 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '2')];
-              const v70621 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '3')];
-              switch (v70619[0]) {
+              const v70917 = v70740[1];
+              const v70918 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '0')];
+              const v70919 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '1')];
+              const v70920 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '2')];
+              const v70921 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '3')];
+              switch (v70919[0]) {
                 case 'None': {
-                  const v70622 = v70619[1];
-                  const v70623 = v69610.protoFee;
-                  const v70624 = v69610.lpFee;
-                  const v70625 = v69610.totFee;
-                  const v70626 = v69610.protoAddr;
-                  const v70627 = v69610.locked;
-                  const v70630 = [];
-                  const v70641 = {
-                    locked: v70627,
-                    lpFee: v70624,
-                    protoAddr: v70626,
-                    protoFee: v70623,
-                    totFee: v70625
+                  const v70922 = v70919[1];
+                  const v70923 = v69910.protoFee;
+                  const v70924 = v69910.lpFee;
+                  const v70925 = v69910.totFee;
+                  const v70926 = v69910.protoAddr;
+                  const v70927 = v69910.locked;
+                  const v70930 = [];
+                  const v70941 = {
+                    locked: v70927,
+                    lpFee: v70924,
+                    protoAddr: v70926,
+                    protoFee: v70923,
+                    totFee: v70925
                     };
-                  const v70642 = await (async () => {
+                  const v70942 = await (async () => {
                     sim_r.txns.push({
                       kind: 'remote',
-                      obj: v70618,
+                      obj: v70918,
                       remote: ({
-                        accs: [v70621],
+                        accs: [v70921],
                         apps: [],
                         bills: stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0'),
                         fees: stdlib.checkedBigNumberify('./index.rsh:162:40:application', stdlib.UInt_max, '2'),
                         pays: stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0'),
-                        toks: [v70620]
+                        toks: [v70920]
                         })
                       })
-                    return [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0') /* simNetRecv */, v70630 /* simTokensRecv */, undefined /* simReturnVal */];})();
-                  const v70643 = await txn1.getOutput('internal', 'v70642', ctc19, v70642);
-                  const v70645 = v70643[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
-                  const v70654 = stdlib.add(v69615, v70645);
-                  const v77130 = v70570;
-                  const v77132 = v69610;
-                  const v77133 = v69611;
-                  const v77135 = v70654;
+                    return [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0') /* simNetRecv */, ctc18.defaultValue /* simReturnVal */];})();
+                  const v70943 = await txn1.getOutput('internal', 'v70942', ctc19, v70942);
+                  const v70945 = v70943[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
+                  const v70954 = stdlib.add(v69915, v70945);
+                  const v77430 = v70870;
+                  const v77432 = v69910;
+                  const v77433 = v69911;
+                  const v77435 = v70954;
                   sim_r.isHalt = false;
                   
                   break;
                   }
                 case 'Some': {
-                  const v70664 = v70619[1];
-                  const v70665 = v69610.protoFee;
-                  const v70666 = v69610.lpFee;
-                  const v70667 = v69610.totFee;
-                  const v70668 = v69610.protoAddr;
-                  const v70669 = v69610.locked;
-                  const v70672 = [];
-                  const v70683 = {
-                    locked: v70669,
-                    lpFee: v70666,
-                    protoAddr: v70668,
-                    protoFee: v70665,
-                    totFee: v70667
+                  const v70964 = v70919[1];
+                  const v70965 = v69910.protoFee;
+                  const v70966 = v69910.lpFee;
+                  const v70967 = v69910.totFee;
+                  const v70968 = v69910.protoAddr;
+                  const v70969 = v69910.locked;
+                  const v70972 = [];
+                  const v70983 = {
+                    locked: v70969,
+                    lpFee: v70966,
+                    protoAddr: v70968,
+                    protoFee: v70965,
+                    totFee: v70967
                     };
-                  const v70684 = await (async () => {
+                  const v70984 = await (async () => {
                     sim_r.txns.push({
                       kind: 'remote',
-                      obj: v70618,
+                      obj: v70918,
                       remote: ({
-                        accs: [v70621],
+                        accs: [v70921],
                         apps: [],
                         bills: stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0'),
                         fees: stdlib.checkedBigNumberify('./index.rsh:162:40:application', stdlib.UInt_max, '3'),
                         pays: stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0'),
-                        toks: [v70664, v70620]
+                        toks: [v70964, v70920]
                         })
                       })
-                    return [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0') /* simNetRecv */, v70672 /* simTokensRecv */, undefined /* simReturnVal */];})();
-                  const v70685 = await txn1.getOutput('internal', 'v70684', ctc19, v70684);
-                  const v70687 = v70685[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
-                  const v70696 = stdlib.add(v69615, v70687);
-                  const v77137 = v70570;
-                  const v77139 = v69610;
-                  const v77140 = v69611;
-                  const v77142 = v70696;
+                    return [stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0') /* simNetRecv */, ctc18.defaultValue /* simReturnVal */];})();
+                  const v70985 = await txn1.getOutput('internal', 'v70984', ctc19, v70984);
+                  const v70987 = v70985[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
+                  const v70996 = stdlib.add(v69915, v70987);
+                  const v77437 = v70870;
+                  const v77439 = v69910;
+                  const v77440 = v69911;
+                  const v77442 = v70996;
                   sim_r.isHalt = false;
                   
                   break;
@@ -1822,7 +1822,7 @@ export async function _Triumvir_support3(ctcTop, interact) {
               break;
               }
             case 'Kill': {
-              const v70706 = v70440[1];
+              const v71006 = v70740[1];
               sim_r.txns.push({
                 kind: 'halt',
                 tok: undefined /* Nothing */
@@ -1832,61 +1832,61 @@ export async function _Triumvir_support3(ctcTop, interact) {
               break;
               }
             case 'NewInfo': {
-              const v70714 = v70440[1];
-              const v70715 = v70714.locked;
-              const v70716 = v70714.lpFee;
-              const v70717 = v70714.protoAddr;
-              const v70718 = v70714.protoFee;
-              const v70719 = v70714.totFee;
-              const v70720 = {
-                locked: v70715,
-                lpFee: v70716,
-                protoAddr: v70717,
-                protoFee: v70718,
-                totFee: v70719
+              const v71014 = v70740[1];
+              const v71015 = v71014.locked;
+              const v71016 = v71014.lpFee;
+              const v71017 = v71014.protoAddr;
+              const v71018 = v71014.protoFee;
+              const v71019 = v71014.totFee;
+              const v71020 = {
+                locked: v71015,
+                lpFee: v71016,
+                protoAddr: v71017,
+                protoFee: v71018,
+                totFee: v71019
                 };
-              const v77151 = v70570;
-              const v77153 = v70720;
-              const v77154 = v69611;
-              const v77156 = v69615;
+              const v77451 = v70870;
+              const v77453 = v71020;
+              const v77454 = v69911;
+              const v77456 = v69915;
               sim_r.isHalt = false;
               
               break;
               }
             case 'NewTriumvirs': {
-              const v70729 = v70440[1];
-              const v77158 = v70570;
-              const v77160 = v69610;
-              const v77161 = v70729;
-              const v77163 = v69615;
+              const v71029 = v70740[1];
+              const v77458 = v70870;
+              const v77460 = v69910;
+              const v77461 = v71029;
+              const v77463 = v69915;
               sim_r.isHalt = false;
               
               break;
               }
             case 'NoOp': {
-              const v70737 = v70440[1];
-              const v77165 = v70570;
-              const v77167 = v69610;
-              const v77168 = v69611;
-              const v77170 = v69615;
+              const v71037 = v70740[1];
+              const v77465 = v70870;
+              const v77467 = v69910;
+              const v77468 = v69911;
+              const v77470 = v69915;
               sim_r.isHalt = false;
               
               break;
               }
             case 'Rewards': {
-              const v70745 = v70440[1];
-              const v70747 = (stdlib.le(await ctc.getBalance(), v69615) ? stdlib.checkedBigNumberify('./index.rsh:174:44:application', stdlib.UInt_max, '0') : stdlib.safeSub(await ctc.getBalance(), v69615));
-              const v70748 = stdlib.safeAdd(v70747, v69615);
-              const v70752 = stdlib.sub(v70748, v70747);
+              const v71045 = v70740[1];
+              const v71047 = (stdlib.le(await ctc.getBalance(), v69915) ? stdlib.checkedBigNumberify('./index.rsh:174:44:application', stdlib.UInt_max, '0') : stdlib.safeSub(await ctc.getBalance(), v69915));
+              const v71048 = stdlib.safeAdd(v71047, v69915);
+              const v71052 = stdlib.sub(v71048, v71047);
               sim_r.txns.push({
                 kind: 'from',
-                to: v70745,
+                to: v71045,
                 tok: undefined /* Nothing */
                 });
-              const v77172 = v70570;
-              const v77174 = v69610;
-              const v77175 = v69611;
-              const v77177 = v70752;
+              const v77472 = v70870;
+              const v77474 = v69910;
+              const v77475 = v69911;
+              const v77477 = v71052;
               sim_r.isHalt = false;
               
               break;
@@ -1894,8 +1894,8 @@ export async function _Triumvir_support3(ctcTop, interact) {
             }
           break;
           }
-        case 'register0_68035': {
-          const v70801 = v69940[1];
+        case 'register0_68335': {
+          const v71101 = v70240[1];
           
           break;
           }
@@ -1907,106 +1907,106 @@ export async function _Triumvir_support3(ctcTop, interact) {
     tys: [ctc10, ctc11, ctc12, ctc9, ctc6, ctc16],
     waitIfNotPresent: false
     }));
-  const {data: [v69940], secs: v69942, time: v69941, didSend: v69090, from: v69939 } = txn1;
-  switch (v69940[0]) {
-    case 'Triumvir_propose0_68035': {
-      const v69943 = v69940[1];
+  const {data: [v70240], secs: v70242, time: v70241, didSend: v69390, from: v70239 } = txn1;
+  switch (v70240[0]) {
+    case 'Triumvir_propose0_68335': {
+      const v70243 = v70240[1];
       return;
       break;
       }
-    case 'Triumvir_support0_68035': {
-      const v70372 = v69940[1];
+    case 'Triumvir_support0_68335': {
+      const v70672 = v70240[1];
       undefined /* setApiDetails */;
-      const v70417 = v70372[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '0')];
-      const v70418 = v70372[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '1')];
-      const v70419 = stdlib.lt(v70417, stdlib.checkedBigNumberify('./index.rsh:203:29:dot', stdlib.UInt_max, '3'));
-      stdlib.assert(v70419, {
+      const v70717 = v70672[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '0')];
+      const v70718 = v70672[stdlib.checkedBigNumberify('./index.rsh:202:10:spread', stdlib.UInt_max, '1')];
+      const v70719 = stdlib.lt(v70717, stdlib.checkedBigNumberify('./index.rsh:203:29:dot', stdlib.UInt_max, '3'));
+      stdlib.assert(v70719, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:203:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
         msg: 'illegal idx',
         who: 'Triumvir_support'
         });
-      const v70421 = ['None', null];
-      const v70422 = await stdlib.Array_asyncReduce([v69611], v70421, async([v70424], v70423, v70425) => {
-        const v70426 = {
+      const v70721 = ['None', null];
+      const v70722 = await stdlib.Array_asyncReduce([v69911], v70721, async([v70724], v70723, v70725) => {
+        const v70726 = {
           None: 0,
           Some: 1
-          }[v70423[0]];
-        const v70427 = stdlib.eq(v70426, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-        const v70428 = stdlib.addressEq(v69939, v70424);
-        const v70429 = v70427 ? v70428 : false;
-        const v70430 = ['Some', v70425];
-        const v70431 = v70429 ? v70430 : v70423;
+          }[v70723[0]];
+        const v70727 = stdlib.eq(v70726, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+        const v70728 = stdlib.addressEq(v70239, v70724);
+        const v70729 = v70727 ? v70728 : false;
+        const v70730 = ['Some', v70725];
+        const v70731 = v70729 ? v70730 : v70723;
         
-        return v70431;})
-      const v70432 = {
+        return v70731;})
+      const v70732 = {
         None: 0,
         Some: 1
-        }[v70422[0]];
-      const v70433 = stdlib.eq(v70432, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-      stdlib.assert(v70433, {
+        }[v70722[0]];
+      const v70733 = stdlib.eq(v70732, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+      stdlib.assert(v70733, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:204:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
         msg: 'not triumvir',
         who: 'Triumvir_support'
         });
-      const v70435 = stdlib.fromSome(v70422, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-      const v70436 = stdlib.eq(v70417, v70435);
-      const v70437 = v70436 ? false : true;
-      stdlib.assert(v70437, {
+      const v70735 = stdlib.fromSome(v70722, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+      const v70736 = stdlib.eq(v70717, v70735);
+      const v70737 = v70736 ? false : true;
+      stdlib.assert(v70737, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:205:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
         msg: 'cannot support self',
         who: 'Triumvir_support'
         });
-      const v70440 = v69608[v70417];
-      const v70441 = stdlib.digest([ctc10], [v70418]);
-      const v70442 = stdlib.digest([ctc10], [v70440]);
-      const v70443 = stdlib.digestEq(v70441, v70442);
-      stdlib.assert(v70443, {
+      const v70740 = v69908[v70717];
+      const v70741 = stdlib.digest([ctc10], [v70718]);
+      const v70742 = stdlib.digest([ctc10], [v70740]);
+      const v70743 = stdlib.digestEq(v70741, v70742);
+      stdlib.assert(v70743, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:207:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:202:41:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:202:41:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
         msg: 'command switched',
         who: 'Triumvir_support'
         });
       ;
-      const v70545 = await stdlib.Array_asyncReduce([v69611], v70421, async([v70547], v70546, v70548) => {
-        const v70549 = {
+      const v70845 = await stdlib.Array_asyncReduce([v69911], v70721, async([v70847], v70846, v70848) => {
+        const v70849 = {
           None: 0,
           Some: 1
-          }[v70546[0]];
-        const v70550 = stdlib.eq(v70549, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
-        const v70551 = stdlib.addressEq(v69939, v70547);
-        const v70552 = v70550 ? v70551 : false;
-        const v70553 = ['Some', v70548];
-        const v70554 = v70552 ? v70553 : v70546;
+          }[v70846[0]];
+        const v70850 = stdlib.eq(v70849, stdlib.checkedBigNumberify('reach standard library:39:41:application', stdlib.UInt_max, '0'));
+        const v70851 = stdlib.addressEq(v70239, v70847);
+        const v70852 = v70850 ? v70851 : false;
+        const v70853 = ['Some', v70848];
+        const v70854 = v70852 ? v70853 : v70846;
         
-        return v70554;})
-      const v70555 = {
+        return v70854;})
+      const v70855 = {
         None: 0,
         Some: 1
-        }[v70545[0]];
-      const v70556 = stdlib.eq(v70555, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
-      stdlib.assert(v70556, {
+        }[v70845[0]];
+      const v70856 = stdlib.eq(v70855, stdlib.checkedBigNumberify('reach standard library:38:41:application', stdlib.UInt_max, '1'));
+      stdlib.assert(v70856, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:151:14:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:204:30:application call to "chkTriumvir" (defined at: ./index.rsh:149:33:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
         msg: 'not triumvir',
         who: 'Triumvir_support'
         });
-      const v70558 = stdlib.fromSome(v70545, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
-      const v70559 = stdlib.eq(v70417, v70558);
-      const v70560 = v70559 ? false : true;
-      stdlib.assert(v70560, {
+      const v70858 = stdlib.fromSome(v70845, stdlib.checkedBigNumberify('./index.rsh:152:31:decimal', stdlib.UInt_max, '0'));
+      const v70859 = stdlib.eq(v70717, v70858);
+      const v70860 = v70859 ? false : true;
+      stdlib.assert(v70860, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:205:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
         msg: 'cannot support self',
         who: 'Triumvir_support'
         });
-      const v70570 = stdlib.Array_set(v69608, v70417, v69596);
-      const v70573 = null;
-      const v70574 = await txn1.getOutput('Triumvir_support', 'v70573', ctc1, v70573);
-      if (v69090) {
-        stdlib.protect(ctc1, await interact.out(v70372, v70574), {
+      const v70870 = stdlib.Array_set(v69908, v70717, v69896);
+      const v70873 = null;
+      const v70874 = await txn1.getOutput('Triumvir_support', 'v70873', ctc1, v70873);
+      if (v69390) {
+        stdlib.protect(ctc1, await interact.out(v70672, v70874), {
           at: './index.rsh:202:11:application',
           fs: ['at ./index.rsh:202:11:application call to [unknown function] (defined at: ./index.rsh:202:11:function exp)', 'at ./index.rsh:210:10:application call to "k" (defined at: ./index.rsh:209:23:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
           msg: 'out',
@@ -2017,78 +2017,78 @@ export async function _Triumvir_support3(ctcTop, interact) {
         }
       
       null;
-      switch (v70440[0]) {
+      switch (v70740[0]) {
         case 'Harvest': {
-          const v70617 = v70440[1];
-          const v70618 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '0')];
-          const v70619 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '1')];
-          const v70620 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '2')];
-          const v70621 = v70617[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '3')];
-          switch (v70619[0]) {
+          const v70917 = v70740[1];
+          const v70918 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '0')];
+          const v70919 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '1')];
+          const v70920 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '2')];
+          const v70921 = v70917[stdlib.checkedBigNumberify('./index.rsh:158:19:array', stdlib.UInt_max, '3')];
+          switch (v70919[0]) {
             case 'None': {
-              const v70622 = v70619[1];
-              const v70623 = v69610.protoFee;
-              const v70624 = v69610.lpFee;
-              const v70625 = v69610.totFee;
-              const v70626 = v69610.protoAddr;
-              const v70627 = v69610.locked;
-              const v70630 = [];
-              const v70641 = {
-                locked: v70627,
-                lpFee: v70624,
-                protoAddr: v70626,
-                protoFee: v70623,
-                totFee: v70625
+              const v70922 = v70919[1];
+              const v70923 = v69910.protoFee;
+              const v70924 = v69910.lpFee;
+              const v70925 = v69910.totFee;
+              const v70926 = v69910.protoAddr;
+              const v70927 = v69910.locked;
+              const v70930 = [];
+              const v70941 = {
+                locked: v70927,
+                lpFee: v70924,
+                protoAddr: v70926,
+                protoFee: v70923,
+                totFee: v70925
                 };
-              const v70642 = undefined /* Remote */;
-              const v70643 = await txn1.getOutput('internal', 'v70642', ctc19, v70642);
-              const v70645 = v70643[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
-              const v70654 = stdlib.add(v69615, v70645);
-              const v70655 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70645);
-              stdlib.assert(v70655, {
+              const v70942 = undefined /* Remote */;
+              const v70943 = await txn1.getOutput('internal', 'v70942', ctc19, v70942);
+              const v70945 = v70943[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
+              const v70954 = stdlib.add(v69915, v70945);
+              const v70955 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70945);
+              stdlib.assert(v70955, {
                 at: './index.rsh:165:15:application',
                 fs: ['at ./index.rsh:169:26:application call to "go" (defined at: ./index.rsh:160:30:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:158:46:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:154:45:function exp)', 'at ./index.rsh:212:57:application call to "evalCommand" (defined at: ./index.rsh:154:33:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
                 msg: 'remote bill check',
                 who: 'Triumvir_support'
                 });
-              const v77130 = v70570;
-              const v77132 = v69610;
-              const v77133 = v69611;
-              const v77135 = v70654;
+              const v77430 = v70870;
+              const v77432 = v69910;
+              const v77433 = v69911;
+              const v77435 = v70954;
               return;
               
               break;
               }
             case 'Some': {
-              const v70664 = v70619[1];
-              const v70665 = v69610.protoFee;
-              const v70666 = v69610.lpFee;
-              const v70667 = v69610.totFee;
-              const v70668 = v69610.protoAddr;
-              const v70669 = v69610.locked;
-              const v70672 = [];
-              const v70683 = {
-                locked: v70669,
-                lpFee: v70666,
-                protoAddr: v70668,
-                protoFee: v70665,
-                totFee: v70667
+              const v70964 = v70919[1];
+              const v70965 = v69910.protoFee;
+              const v70966 = v69910.lpFee;
+              const v70967 = v69910.totFee;
+              const v70968 = v69910.protoAddr;
+              const v70969 = v69910.locked;
+              const v70972 = [];
+              const v70983 = {
+                locked: v70969,
+                lpFee: v70966,
+                protoAddr: v70968,
+                protoFee: v70965,
+                totFee: v70967
                 };
-              const v70684 = undefined /* Remote */;
-              const v70685 = await txn1.getOutput('internal', 'v70684', ctc19, v70684);
-              const v70687 = v70685[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
-              const v70696 = stdlib.add(v69615, v70687);
-              const v70697 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70687);
-              stdlib.assert(v70697, {
+              const v70984 = undefined /* Remote */;
+              const v70985 = await txn1.getOutput('internal', 'v70984', ctc19, v70984);
+              const v70987 = v70985[stdlib.checkedBigNumberify('./index.rsh:165:15:application', stdlib.UInt_max, '0')];
+              const v70996 = stdlib.add(v69915, v70987);
+              const v70997 = stdlib.eq(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'), v70987);
+              stdlib.assert(v70997, {
                 at: './index.rsh:165:15:application',
                 fs: ['at ./index.rsh:168:26:application call to "go" (defined at: ./index.rsh:160:30:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:158:46:function exp)', 'at ./index.rsh:154:45:application call to [unknown function] (defined at: ./index.rsh:154:45:function exp)', 'at ./index.rsh:212:57:application call to "evalCommand" (defined at: ./index.rsh:154:33:function exp)', 'at ./index.rsh:209:23:application call to [unknown function] (defined at: ./index.rsh:209:23:function exp)'],
                 msg: 'remote bill check',
                 who: 'Triumvir_support'
                 });
-              const v77137 = v70570;
-              const v77139 = v69610;
-              const v77140 = v69611;
-              const v77142 = v70696;
+              const v77437 = v70870;
+              const v77439 = v69910;
+              const v77440 = v69911;
+              const v77442 = v70996;
               return;
               
               break;
@@ -2097,63 +2097,63 @@ export async function _Triumvir_support3(ctcTop, interact) {
           break;
           }
         case 'Kill': {
-          const v70706 = v70440[1];
+          const v71006 = v70740[1];
           return;
           
           break;
           }
         case 'NewInfo': {
-          const v70714 = v70440[1];
-          const v70715 = v70714.locked;
-          const v70716 = v70714.lpFee;
-          const v70717 = v70714.protoAddr;
-          const v70718 = v70714.protoFee;
-          const v70719 = v70714.totFee;
-          const v70720 = {
-            locked: v70715,
-            lpFee: v70716,
-            protoAddr: v70717,
-            protoFee: v70718,
-            totFee: v70719
+          const v71014 = v70740[1];
+          const v71015 = v71014.locked;
+          const v71016 = v71014.lpFee;
+          const v71017 = v71014.protoAddr;
+          const v71018 = v71014.protoFee;
+          const v71019 = v71014.totFee;
+          const v71020 = {
+            locked: v71015,
+            lpFee: v71016,
+            protoAddr: v71017,
+            protoFee: v71018,
+            totFee: v71019
             };
-          const v77151 = v70570;
-          const v77153 = v70720;
-          const v77154 = v69611;
-          const v77156 = v69615;
+          const v77451 = v70870;
+          const v77453 = v71020;
+          const v77454 = v69911;
+          const v77456 = v69915;
           return;
           
           break;
           }
         case 'NewTriumvirs': {
-          const v70729 = v70440[1];
-          const v77158 = v70570;
-          const v77160 = v69610;
-          const v77161 = v70729;
-          const v77163 = v69615;
+          const v71029 = v70740[1];
+          const v77458 = v70870;
+          const v77460 = v69910;
+          const v77461 = v71029;
+          const v77463 = v69915;
           return;
           
           break;
           }
         case 'NoOp': {
-          const v70737 = v70440[1];
-          const v77165 = v70570;
-          const v77167 = v69610;
-          const v77168 = v69611;
-          const v77170 = v69615;
+          const v71037 = v70740[1];
+          const v77465 = v70870;
+          const v77467 = v69910;
+          const v77468 = v69911;
+          const v77470 = v69915;
           return;
           
           break;
           }
         case 'Rewards': {
-          const v70745 = v70440[1];
-          const v70747 = (stdlib.le(await ctc.getBalance(), v69615) ? stdlib.checkedBigNumberify('./index.rsh:174:44:application', stdlib.UInt_max, '0') : stdlib.safeSub(await ctc.getBalance(), v69615));
-          const v70748 = stdlib.safeAdd(v70747, v69615);
-          const v70752 = stdlib.sub(v70748, v70747);
+          const v71045 = v70740[1];
+          const v71047 = (stdlib.le(await ctc.getBalance(), v69915) ? stdlib.checkedBigNumberify('./index.rsh:174:44:application', stdlib.UInt_max, '0') : stdlib.safeSub(await ctc.getBalance(), v69915));
+          const v71048 = stdlib.safeAdd(v71047, v69915);
+          const v71052 = stdlib.sub(v71048, v71047);
           ;
-          const v77172 = v70570;
-          const v77174 = v69610;
-          const v77175 = v69611;
-          const v77177 = v70752;
+          const v77472 = v70870;
+          const v77474 = v69910;
+          const v77475 = v69911;
+          const v77477 = v71052;
           return;
           
           break;
@@ -2161,8 +2161,8 @@ export async function _Triumvir_support3(ctcTop, interact) {
         }
       break;
       }
-    case 'register0_68035': {
-      const v70801 = v69940[1];
+    case 'register0_68335': {
+      const v71101 = v70240[1];
       return;
       break;
       }
@@ -2210,32 +2210,32 @@ export async function _register3(ctcTop, interact) {
   const ctc14 = stdlib.T_Tuple([ctc10]);
   const ctc15 = stdlib.T_Tuple([ctc6, ctc10]);
   const ctc16 = stdlib.T_Data({
-    Triumvir_propose0_68035: ctc14,
-    Triumvir_support0_68035: ctc15,
-    register0_68035: ctc13
+    Triumvir_propose0_68335: ctc14,
+    Triumvir_support0_68335: ctc15,
+    register0_68335: ctc13
     });
   
   
-  const [v69596, v69608, v69610, v69611, v69615] = await ctc.getState(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '3'), [ctc10, ctc11, ctc12, ctc9, ctc6]);
-  const v69668 = ctc.selfAddress();
-  const v69670 = stdlib.protect(ctc13, await interact.in(), {
+  const [v69896, v69908, v69910, v69911, v69915] = await ctc.getState(stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '3'), [ctc10, ctc11, ctc12, ctc9, ctc6]);
+  const v69968 = ctc.selfAddress();
+  const v69970 = stdlib.protect(ctc13, await interact.in(), {
     at: './index.rsh:1:23:application',
-    fs: ['at ./index.rsh:183:49:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to "runregister0_68035" (defined at: ./index.rsh:183:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:183:49:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to "runregister0_68335" (defined at: ./index.rsh:183:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'in',
     who: 'register'
     });
-  const v69671 = v69670[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '0')];
-  const v69679 = stdlib.ctcAddrEq(v69671, v69668);
-  stdlib.assert(v69679, {
+  const v69971 = v69970[stdlib.checkedBigNumberify('./index.rsh:1:23:application', stdlib.UInt_max, '0')];
+  const v69979 = stdlib.ctcAddrEq(v69971, v69968);
+  stdlib.assert(v69979, {
     at: 'reach standard library:57:5:application',
-    fs: ['at ./index.rsh:185:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:183:49:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to "runregister0_68035" (defined at: ./index.rsh:183:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
+    fs: ['at ./index.rsh:185:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:183:49:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to "runregister0_68335" (defined at: ./index.rsh:183:10:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
     msg: 'not contract',
     who: 'register'
     });
-  const v69692 = ['register0_68035', v69670];
+  const v69992 = ['register0_68335', v69970];
   
   const txn1 = await (ctc.sendrecv({
-    args: [v69596, v69608, v69610, v69611, v69615, v69692],
+    args: [v69896, v69908, v69910, v69911, v69915, v69992],
     evt_cnt: 1,
     funcNum: 2,
     lct: stdlib.checkedBigNumberify('<builtin>', stdlib.UInt_max, '0'),
@@ -2248,48 +2248,48 @@ export async function _register3(ctcTop, interact) {
       const getSimTokCtr = () => { sim_txn_ctr = sim_txn_ctr.sub(1); return sim_txn_ctr; };
       
       
-      const {data: [v69940], secs: v69942, time: v69941, didSend: v69090, from: v69939 } = txn1;
+      const {data: [v70240], secs: v70242, time: v70241, didSend: v69390, from: v70239 } = txn1;
       
-      switch (v69940[0]) {
-        case 'Triumvir_propose0_68035': {
-          const v69943 = v69940[1];
+      switch (v70240[0]) {
+        case 'Triumvir_propose0_68335': {
+          const v70243 = v70240[1];
           
           break;
           }
-        case 'Triumvir_support0_68035': {
-          const v70372 = v69940[1];
+        case 'Triumvir_support0_68335': {
+          const v70672 = v70240[1];
           
           break;
           }
-        case 'register0_68035': {
-          const v70801 = v69940[1];
+        case 'register0_68335': {
+          const v71101 = v70240[1];
           sim_r.txns.push({
             kind: 'api',
             who: "register"
             });
-          const v70878 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '0')];
+          const v71178 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '0')];
           ;
-          const v71191 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '1')];
-          const v71192 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '2')];
-          const v71198 = v69610.protoFee;
-          const v71199 = v69610.lpFee;
-          const v71200 = v69610.totFee;
-          const v71201 = v69610.protoAddr;
-          const v71202 = v69610.locked;
-          const v71203 = {
-            locked: v71202,
-            lpFee: v71199,
-            protoAddr: v71201,
-            protoFee: v71198,
-            totFee: v71200
+          const v71491 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '1')];
+          const v71492 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '2')];
+          const v71498 = v69910.protoFee;
+          const v71499 = v69910.lpFee;
+          const v71500 = v69910.totFee;
+          const v71501 = v69910.protoAddr;
+          const v71502 = v69910.locked;
+          const v71503 = {
+            locked: v71502,
+            lpFee: v71499,
+            protoAddr: v71501,
+            protoFee: v71498,
+            totFee: v71500
             };
-          const v71204 = await txn1.getOutput('register', 'v71203', ctc8, v71203);
+          const v71504 = await txn1.getOutput('register', 'v71503', ctc8, v71503);
           
           null;
-          const v77242 = v69608;
-          const v77244 = v69610;
-          const v77245 = v69611;
-          const v77247 = v69615;
+          const v77542 = v69908;
+          const v77544 = v69910;
+          const v77545 = v69911;
+          const v77547 = v69915;
           sim_r.isHalt = false;
           
           break;
@@ -2302,47 +2302,47 @@ export async function _register3(ctcTop, interact) {
     tys: [ctc10, ctc11, ctc12, ctc9, ctc6, ctc16],
     waitIfNotPresent: false
     }));
-  const {data: [v69940], secs: v69942, time: v69941, didSend: v69090, from: v69939 } = txn1;
-  switch (v69940[0]) {
-    case 'Triumvir_propose0_68035': {
-      const v69943 = v69940[1];
+  const {data: [v70240], secs: v70242, time: v70241, didSend: v69390, from: v70239 } = txn1;
+  switch (v70240[0]) {
+    case 'Triumvir_propose0_68335': {
+      const v70243 = v70240[1];
       return;
       break;
       }
-    case 'Triumvir_support0_68035': {
-      const v70372 = v69940[1];
+    case 'Triumvir_support0_68335': {
+      const v70672 = v70240[1];
       return;
       break;
       }
-    case 'register0_68035': {
-      const v70801 = v69940[1];
+    case 'register0_68335': {
+      const v71101 = v70240[1];
       undefined /* setApiDetails */;
-      const v70878 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '0')];
-      const v70881 = stdlib.ctcAddrEq(v70878, v69939);
-      stdlib.assert(v70881, {
+      const v71178 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '0')];
+      const v71181 = stdlib.ctcAddrEq(v71178, v70239);
+      stdlib.assert(v71181, {
         at: 'reach standard library:57:5:application',
         fs: ['at ./index.rsh:185:12:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./index.rsh:183:49:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:183:49:function exp)', 'at ./index.rsh:136:19:application call to [unknown function] (defined at: ./index.rsh:136:19:function exp)'],
         msg: 'not contract',
         who: 'register'
         });
       ;
-      const v71191 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '1')];
-      const v71192 = v70801[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '2')];
-      const v71198 = v69610.protoFee;
-      const v71199 = v69610.lpFee;
-      const v71200 = v69610.totFee;
-      const v71201 = v69610.protoAddr;
-      const v71202 = v69610.locked;
-      const v71203 = {
-        locked: v71202,
-        lpFee: v71199,
-        protoAddr: v71201,
-        protoFee: v71198,
-        totFee: v71200
+      const v71491 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '1')];
+      const v71492 = v71101[stdlib.checkedBigNumberify('./index.rsh:183:10:spread', stdlib.UInt_max, '2')];
+      const v71498 = v69910.protoFee;
+      const v71499 = v69910.lpFee;
+      const v71500 = v69910.totFee;
+      const v71501 = v69910.protoAddr;
+      const v71502 = v69910.locked;
+      const v71503 = {
+        locked: v71502,
+        lpFee: v71499,
+        protoAddr: v71501,
+        protoFee: v71498,
+        totFee: v71500
         };
-      const v71204 = await txn1.getOutput('register', 'v71203', ctc8, v71203);
-      if (v69090) {
-        stdlib.protect(ctc1, await interact.out(v70801, v71204), {
+      const v71504 = await txn1.getOutput('register', 'v71503', ctc8, v71503);
+      if (v69390) {
+        stdlib.protect(ctc1, await interact.out(v71101, v71504), {
           at: './index.rsh:183:11:application',
           fs: ['at ./index.rsh:183:11:application call to [unknown function] (defined at: ./index.rsh:183:11:function exp)', 'at ./index.rsh:187:10:application call to "k" (defined at: ./index.rsh:186:23:function exp)', 'at ./index.rsh:186:23:application call to [unknown function] (defined at: ./index.rsh:186:23:function exp)'],
           msg: 'out',
@@ -2353,10 +2353,10 @@ export async function _register3(ctcTop, interact) {
         }
       
       null;
-      const v77242 = v69608;
-      const v77244 = v69610;
-      const v77245 = v69611;
-      const v77247 = v69615;
+      const v77542 = v69908;
+      const v77544 = v69910;
+      const v77545 = v69911;
+      const v77547 = v69915;
       return;
       
       break;
@@ -2404,7 +2404,11 @@ const _ALGO = {
     pure: [`Info()(address[3],(byte,byte[96])[3],(uint64,uint64,uint64,address,byte))`],
     sigs: [`Info()(address[3],(byte,byte[96])[3],(uint64,uint64,uint64,address,byte))`, `Triumvir_propose((byte,byte[96]))byte[0]`, `Triumvir_support(uint64,(byte,byte[96]))byte[0]`, `register(uint64,(byte,byte[8]),uint64)(uint64,uint64,uint64,address,byte)`]
     },
-  appApproval: `ByAVAAEDIAUCYQZkCBAEzJrO1wTFgN+kDuiU6MoEhAM5vQNgowIJJggBAQABAAECAQMBBAVhcHBJRAQomkRuIjUAMRhBCJUpZEkiWzUBSSEJWzUCIQpbNQg2GgAXSUEAuCI1BCM1BkkhDAxAAC9JIQ0MQAAUIQ0SRDYaATX/KjT/UCEJr1BCAKghDBJENhoBNhoCUDX/KDT/UEIAlEkhDgxAABwhDhJENhoBNhoCUDYaA1A1/ys0/1CBUK9QQgBxgfa70OUBEkQ0ASQSRCpkKGRQK2RQJwRkUCcFZFBJNQMhDyEQWDX/NAMhESESWDQDIQYhE1hQNP9XKQg0/1cBCFA0/1cxCFA0/1cJIFA0/1cAAVBQNQdCB7s2GgIXNQQ2GgM2GgEXSSEFDEAGDiEFEkQkNAESRDQESSISTDQCEhFEKmQoZFArZFAnBGRQJwVkUEk1A0lKSVcAYTX/IQYhE1g1/iEPIRBYNf0hESESWDX8gZ0EWzX7STUFNfqABKLqoRI0+lCwNPoiVUkjDEADuEkhBQxAAIshBRJENPpXARk19zT3Ils19icGNPYWUAMxABJEgAgAAAAAAAEWIzT9VykINP1XAQhQNP1XMQhQNP1XCSBQNP1XAAFQULA0/VcpCDT9VwEIUDT9VzEIUDT9VwkgUDT9VwABUDUHgAS6Xf0zNPYWUDT3VwgJUDT3VxEIULA0/zT+IjT9NPwyBjT7QgX6SDT6VwFpNfexIrIBIQeyEDQIshizNPciW0k19iQMRCEUr0k19TX0IjXzNPwlNPMLJVg18jT0KDTzFlA09CJVIhIxADTyEhBNNfQ08yMISTXzJAxA/9Q09CJVIxJENPYiNPRJNfMjWzTzIlVNE0Q0/iEGNPYLIQZYNfM091cIYQE08wESRDT1NfIiNfE0/CU08QslWDXwNPIoNPEWUDTyIlUiEjEANPASEE018jTxIwhJNfEkDED/1DTyIlUjEkQ09iI08kk18SNbNPEiVU0TRDT+NPYhBgs0/1018YAIAAAAAAABE62wKTUHgASiIOREMQBQNPYWUDTzULA08yJVSSQMQAB0SSELDEAAVUkhBAxAAD0hBBJENPNXASA18DIKYDIKeAk0+wk177EisgE077III7IQNPCyB7M0/zTxIjT9NPwyBjTvNPsINO8JQgSqSDT/NPEiNP00/DIGNPtCBJlINPNXAWA18DT/NPEiNP008DIGNPtCBIFJIwxAAEtJIQUMQAAzSDTzVwE5NfA0/zTxIjTwVzgBNPBXCAhQNPBXGCBQNPBXAAhQNPBXEAhQNPwyBjT7QgRBSDT/NPEjNP00/DIGNPtCBDBINPNXATlJNfAiWzXvNPCBEVs17jTwVxkgNe008FcICUk17CJVQACVJwY07xZQAzXqMgp4NekyCmA06QkWNeixIrIBIQeyEDTvshgnB7IaNO1JshyyGjT9VykINP1XAQhQNP1XMQhQNP1XCSBQNP1XAAFQsho07rIwszIKYDTpCTToFwkWtwA+VwQAUDXrgAgAAAAAAAET8jTrULA060k16iJbNekiNOkSRDT/NPEiNP00/DIGNPs06QhCA3M07CNbNesnBjTvFlADNekyCng16DIKYDToCRY157EisgEhB7IQNO+yGCcHsho07UmyHLIaNP1XKQg0/VcBCFA0/VcxCFA0/VcJIFA0/VcAAVCyGjTrsjA07rIwszIKYDToCTTnFwkWtwA+VwQAUDXqgAgAAAAAAAEUHDTqULA06kk16SJbNegiNOgSRDT/NPEiNP00/DIGNPs06AhCAtRINPpXAWE19zT3STX2IlVJJAxAACZJIQsMQAAYSSEEDEAACiEEEkQjNfVCAHRIIzX1QgBtSCM19UIAZkkjDEAAWUkhBQxAAEtINPZXATlJNfQiWzXzNPQhCVs18jT0IQpbNfE08yEIDDTyIQgMEEEADTTxNPI08wgSNfBCAAMiNfA08DTxIQgMEDTxIg0QNfVCAA5IIzX1QgAHSCM19UIAADT1RCEUr0k19DXzIjXyNPwlNPILJVg18TTzKDTyFlA08yJVIhIxADTxEhBNNfM08iMISTXyJAxA/9Q08yJVIxJENPYiVUkkDEAAJkkhCwxAABhJIQQMQAAKIQQSRCM18kIAdEgjNfJCAG1IIzXyQgBmSSMMQABZSSEFDEAAS0g09lcBOUk18SJbNfA08SEJWzXvNPEhCls17jTwIQgMNO8hCAwQQQANNO407zTwCBI17UIAAyI17TTtNO4hCAwQNO4iDRA18kIADkgjNfJCAAdIIzXyQgAANPJENPQ18SI18DT8JTTwCyVYNe808Sg08BZQNPEiVSISMQA07xIQTTXxNPAjCEk18CQMQP/UNPEiVSMSRIAIAAAAAAABEbKwKTUHgATt9gUDMQBQNPZQsDT/NP4iNPFJNfAjWzTwIlVNIQYLNPZdIjT9NPwyBjT7QgDhIhJEgcCaDIgBuLEisgEhB7IQIrIYgAYHMQAyCRKyHoABB7Ifs7Q9NQgiNAESRDQESSISTDQCEhFESTUFNf+ABDIq61k0/1CwgGEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASTX+SUlQNP5QIoAJAAAAAAAAAAAZMgpQgAgAAAAAAAAABVCACAAAAAAAAAAeUDT/MgYiQgAANf81/jX9Nfw1+zX6Nfk0+0EAA0IARTT5NPpQNPxQNP1QNP8WUCpLAVcAf2coSwFXf39nK0sBV/5/ZycESwGB/QKBf1hnJwVLAYH8A4EpWGdIJDUBMgY1AkIALTEZIQQSRLEisgEhB7IQNAiyGCEEshmzsSKyASKyCCOyEDIJsgkyCrIHs0IABTEZIhJEKTQBFjQCFjQIFlBQZzQGQQAKgAQVH3x1NAdQsDQASSMIMgQSRDEWEkQjQzEZIhJEQv/fIjE0EkQhBzE1EkQiMTYSRCIxNxJEIjUBIjUCIjUIQv+nNABJSiMINQA4BzIKEkQ4ECMSRDgIEkSJ`,
+  GlobalNumByteSlice: 6,
+  GlobalNumUint: 0,
+  LocalNumByteSlice: 0,
+  LocalNumUint: 0,
+  appApproval: `ByAVAAEDIAUCYQZkCBAEzJrO1wTFgN+kDuiU6MoEhAM5vQNgowIJJggBAQABAAECAQMBBAVhcHBJRAQomkRuIjUAMRhBCJUpZEkiWzUBSSEJWzUCIQpbNQg2GgAXSUEAuCI1BCM1BkkhDAxAAC9JIQ0MQAAUIQ0SRDYaATX/KjT/UCEJr1BCAKghDBJENhoBNhoCUDX/KDT/UEIAlEkhDgxAABwhDhJENhoBNhoCUDYaA1A1/ys0/1CBUK9QQgBxgfa70OUBEkQ0ASQSRCpkKGRQK2RQJwRkUCcFZFBJNQMhDyEQWDX/NAMhESESWDQDIQYhE1hQNP9XKQg0/1cBCFA0/1cxCFA0/1cJIFA0/1cAAVBQNQdCB7s2GgIXNQQ2GgM2GgEXSSEFDEAGDiEFEkQkNAESRDQESSISTDQCEhFEKmQoZFArZFAnBGRQJwVkUEk1A0lKSVcAYTX/IQYhE1g1/iEPIRBYNf0hESESWDX8gZ0EWzX7STUFNfqABKLqoRI0+lCwNPoiVUkjDEADuEkhBQxAAIshBRJENPpXARk19zT3Ils19icGNPYWUAMxABJEgAgAAAAAAAEXTzT9VykINP1XAQhQNP1XMQhQNP1XCSBQNP1XAAFQULA0/VcpCDT9VwEIUDT9VzEIUDT9VwkgUDT9VwABUDUHgAS6Xf0zNPYWUDT3VwgJUDT3VxEIULA0/zT+IjT9NPwyBjT7QgX6SDT6VwFpNfexIrIBIQeyEDQIshizNPciW0k19iQMRCEUr0k19TX0IjXzNPwlNPMLJVg18jT0KDTzFlA09CJVIhIxADTyEhBNNfQ08yMISTXzJAxA/9Q09CJVIxJENPYiNPRJNfMjWzTzIlVNE0Q0/iEGNPYLIQZYNfM091cIYQE08wESRDT1NfIiNfE0/CU08QslWDXwNPIoNPEWUDTyIlUiEjEANPASEE018jTxIwhJNfEkDED/1DTyIlUjEkQ09iI08kk18SNbNPEiVU0TRDT+NPYhBgs0/1018YAIAAAAAAABFNmwKTUHgASiIOREMQBQNPYWUDTzULA08yJVSSQMQAB0SSELDEAAVUkhBAxAAD0hBBJENPNXASA18DIKYDIKeAk0+wk177EisgE077III7IQNPCyB7M0/zTxIjT9NPwyBjTvNPsINO8JQgSqSDT/NPEiNP00/DIGNPtCBJlINPNXAWA18DT/NPEiNP008DIGNPtCBIFJIwxAAEtJIQUMQAAzSDTzVwE5NfA0/zTxIjTwVzgBNPBXCAhQNPBXGCBQNPBXAAhQNPBXEAhQNPwyBjT7QgRBSDT/NPEjNP00/DIGNPtCBDBINPNXATlJNfAiWzXvNPCBEVs17jTwVxkgNe008FcICUk17CJVQACVJwY07xZQAzXqMgp4NekyCmA06QkWNeixIrIBIQeyEDTvshgnB7IaNO1JshyyGjT9VykINP1XAQhQNP1XMQhQNP1XCSBQNP1XAAFQsho07rIwszIKYDTpCTToFwkWtwA+VwQAUDXrgAgAAAAAAAEVHjTrULA060k16iJbNekiNOkSRDT/NPEiNP00/DIGNPs06QhCA3M07CNbNesnBjTvFlADNekyCng16DIKYDToCRY157EisgEhB7IQNO+yGCcHsho07UmyHLIaNP1XKQg0/VcBCFA0/VcxCFA0/VcJIFA0/VcAAVCyGjTrsjA07rIwszIKYDToCTTnFwkWtwA+VwQAUDXqgAgAAAAAAAEVSDTqULA06kk16SJbNegiNOgSRDT/NPEiNP00/DIGNPs06AhCAtRINPpXAWE19zT3STX2IlVJJAxAACZJIQsMQAAYSSEEDEAACiEEEkQjNfVCAHRIIzX1QgBtSCM19UIAZkkjDEAAWUkhBQxAAEtINPZXATlJNfQiWzXzNPQhCVs18jT0IQpbNfE08yEIDDTyIQgMEEEADTTxNPI08wgSNfBCAAMiNfA08DTxIQgMEDTxIg0QNfVCAA5IIzX1QgAHSCM19UIAADT1RCEUr0k19DXzIjXyNPwlNPILJVg18TTzKDTyFlA08yJVIhIxADTxEhBNNfM08iMISTXyJAxA/9Q08yJVIxJENPYiVUkkDEAAJkkhCwxAABhJIQQMQAAKIQQSRCM18kIAdEgjNfJCAG1IIzXyQgBmSSMMQABZSSEFDEAAS0g09lcBOUk18SJbNfA08SEJWzXvNPEhCls17jTwIQgMNO8hCAwQQQANNO407zTwCBI17UIAAyI17TTtNO4hCAwQNO4iDRA18kIADkgjNfJCAAdIIzXyQgAANPJENPQ18SI18DT8JTTwCyVYNe808Sg08BZQNPEiVSISMQA07xIQTTXxNPAjCEk18CQMQP/UNPEiVSMSRIAIAAAAAAABEt6wKTUHgATt9gUDMQBQNPZQsDT/NP4iNPFJNfAjWzTwIlVNIQYLNPZdIjT9NPwyBjT7QgDhIhJEgcCaDIgBuLEisgEhB7IQIrIYgAYHMQAyCRKyHoABB7Ifs7Q9NQgiNAESRDQESSISTDQCEhFESTUFNf+ABDIq61k0/1CwgGEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASTX+SUlQNP5QIoAJAAAAAAAAAAAZMgpQgAgAAAAAAAAABVCACAAAAAAAAAAeUDT/MgYiQgAANf81/jX9Nfw1+zX6Nfk0+0EAA0IARTT5NPpQNPxQNP1QNP8WUCpLAVcAf2coSwFXf39nK0sBV/5/ZycESwGB/QKBf1hnJwVLAYH8A4EpWGdIJDUBMgY1AkIALTEZIQQSRLEisgEhB7IQNAiyGCEEshmzsSKyASKyCCOyEDIJsgkyCrIHs0IABTEZIhJEKTQBFjQCFjQIFlBQZzQGQQAKgAQVH3x1NAdQsDQASSMIMgQSRDEWEkQjQzEZIhJEQv/fIjE0EkQhBzE1EkQiMTYSRCIxNxJEIjUBIjUCIjUIQv+nNABJSiMINQA4BzIKEkQ4ECMSRDgIEkSJ`,
   appClear: `Bw==`,
   companionInfo: {
     api_Triumvir_support: 1
@@ -2416,1718 +2420,14 @@ const _ALGO = {
   stateSize: 549,
   unsupported: [],
   version: 11,
-  warnings: [`Step 2 calls a remote object at /home/user/prog/reach/duoswap-core/index.rsh:165:15:application. This means that Reach's conservative analysis of resource utilization and fees is incorrect, because we cannot take into account the needs of the remote object. Furthermore, the remote object may require special transaction parameters which are not expressed in the Reach API or the Algorand ABI standards.`]
+  warnings: [`Step 2 calls a remote object at /app/index.rsh:165:15:application. This means that Reach's conservative analysis of resource utilization and fees is incorrect, because we cannot take into account the needs of the remote object. Furthermore, the remote object may require special transaction parameters which are not expressed in the Reach API or the Algorand ABI standards.`]
   };
 const _ETH = {
-  ABI: `[
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "time",
-            "type": "uint256"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address payable[3]",
-                "name": "v69590",
-                "type": "address[3]"
-              }
-            ],
-            "internalType": "struct T13",
-            "name": "msg",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct T14",
-        "name": "_a",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "msg",
-        "type": "uint256"
-      }
-    ],
-    "name": "ReachError",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address payable",
-        "name": "v0",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "enum _enum_T5",
-            "name": "which",
-            "type": "uint8"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address payable",
-                "name": "elem0",
-                "type": "address"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "enum _enum_T2",
-                    "name": "which",
-                    "type": "uint8"
-                  },
-                  {
-                    "internalType": "bool",
-                    "name": "_None",
-                    "type": "bool"
-                  },
-                  {
-                    "internalType": "address payable",
-                    "name": "_Some",
-                    "type": "address"
-                  }
-                ],
-                "internalType": "struct T2",
-                "name": "elem1",
-                "type": "tuple"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem2",
-                "type": "address"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem3",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct T3",
-            "name": "_Harvest",
-            "type": "tuple"
-          },
-          {
-            "internalType": "bool",
-            "name": "_Kill",
-            "type": "bool"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "protoFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "lpFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "totFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "address payable",
-                "name": "protoAddr",
-                "type": "address"
-              },
-              {
-                "internalType": "bool",
-                "name": "locked",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct T4",
-            "name": "_NewInfo",
-            "type": "tuple"
-          },
-          {
-            "internalType": "address payable[3]",
-            "name": "_NewTriumvirs",
-            "type": "address[3]"
-          },
-          {
-            "internalType": "bool",
-            "name": "_NoOp",
-            "type": "bool"
-          },
-          {
-            "internalType": "address payable",
-            "name": "_Rewards",
-            "type": "address"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T5",
-        "name": "v1",
-        "type": "tuple"
-      }
-    ],
-    "name": "Propose",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address payable",
-        "name": "v0",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "enum _enum_T2",
-            "name": "which",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bool",
-            "name": "_None",
-            "type": "bool"
-          },
-          {
-            "internalType": "address payable",
-            "name": "_Some",
-            "type": "address"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T2",
-        "name": "v1",
-        "type": "tuple"
-      },
-      {
-        "indexed": false,
-        "internalType": "address payable",
-        "name": "v2",
-        "type": "address"
-      }
-    ],
-    "name": "Register",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address payable",
-        "name": "v0",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "v1",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "internalType": "enum _enum_T5",
-            "name": "which",
-            "type": "uint8"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address payable",
-                "name": "elem0",
-                "type": "address"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "enum _enum_T2",
-                    "name": "which",
-                    "type": "uint8"
-                  },
-                  {
-                    "internalType": "bool",
-                    "name": "_None",
-                    "type": "bool"
-                  },
-                  {
-                    "internalType": "address payable",
-                    "name": "_Some",
-                    "type": "address"
-                  }
-                ],
-                "internalType": "struct T2",
-                "name": "elem1",
-                "type": "tuple"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem2",
-                "type": "address"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem3",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct T3",
-            "name": "_Harvest",
-            "type": "tuple"
-          },
-          {
-            "internalType": "bool",
-            "name": "_Kill",
-            "type": "bool"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "protoFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "lpFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "totFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "address payable",
-                "name": "protoAddr",
-                "type": "address"
-              },
-              {
-                "internalType": "bool",
-                "name": "locked",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct T4",
-            "name": "_NewInfo",
-            "type": "tuple"
-          },
-          {
-            "internalType": "address payable[3]",
-            "name": "_NewTriumvirs",
-            "type": "address[3]"
-          },
-          {
-            "internalType": "bool",
-            "name": "_NoOp",
-            "type": "bool"
-          },
-          {
-            "internalType": "address payable",
-            "name": "_Rewards",
-            "type": "address"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T5",
-        "name": "v2",
-        "type": "tuple"
-      }
-    ],
-    "name": "Support",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_who",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "time",
-            "type": "uint256"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address payable[3]",
-                "name": "v69590",
-                "type": "address[3]"
-              }
-            ],
-            "internalType": "struct T13",
-            "name": "msg",
-            "type": "tuple"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T14",
-        "name": "_a",
-        "type": "tuple"
-      }
-    ],
-    "name": "_reach_e0",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_who",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "time",
-            "type": "uint256"
-          },
-          {
-            "components": [
-              {
-                "components": [
-                  {
-                    "internalType": "enum _enum_T18",
-                    "name": "which",
-                    "type": "uint8"
-                  },
-                  {
-                    "components": [
-                      {
-                        "components": [
-                          {
-                            "internalType": "enum _enum_T5",
-                            "name": "which",
-                            "type": "uint8"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "address payable",
-                                "name": "elem0",
-                                "type": "address"
-                              },
-                              {
-                                "components": [
-                                  {
-                                    "internalType": "enum _enum_T2",
-                                    "name": "which",
-                                    "type": "uint8"
-                                  },
-                                  {
-                                    "internalType": "bool",
-                                    "name": "_None",
-                                    "type": "bool"
-                                  },
-                                  {
-                                    "internalType": "address payable",
-                                    "name": "_Some",
-                                    "type": "address"
-                                  }
-                                ],
-                                "internalType": "struct T2",
-                                "name": "elem1",
-                                "type": "tuple"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem2",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem3",
-                                "type": "address"
-                              }
-                            ],
-                            "internalType": "struct T3",
-                            "name": "_Harvest",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_Kill",
-                            "type": "bool"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "uint256",
-                                "name": "protoFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "lpFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "totFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "protoAddr",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "bool",
-                                "name": "locked",
-                                "type": "bool"
-                              }
-                            ],
-                            "internalType": "struct T4",
-                            "name": "_NewInfo",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "address payable[3]",
-                            "name": "_NewTriumvirs",
-                            "type": "address[3]"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_NoOp",
-                            "type": "bool"
-                          },
-                          {
-                            "internalType": "address payable",
-                            "name": "_Rewards",
-                            "type": "address"
-                          }
-                        ],
-                        "internalType": "struct T5",
-                        "name": "elem0",
-                        "type": "tuple"
-                      }
-                    ],
-                    "internalType": "struct T15",
-                    "name": "_Triumvir_propose0_68035",
-                    "type": "tuple"
-                  },
-                  {
-                    "components": [
-                      {
-                        "internalType": "uint256",
-                        "name": "elem0",
-                        "type": "uint256"
-                      },
-                      {
-                        "components": [
-                          {
-                            "internalType": "enum _enum_T5",
-                            "name": "which",
-                            "type": "uint8"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "address payable",
-                                "name": "elem0",
-                                "type": "address"
-                              },
-                              {
-                                "components": [
-                                  {
-                                    "internalType": "enum _enum_T2",
-                                    "name": "which",
-                                    "type": "uint8"
-                                  },
-                                  {
-                                    "internalType": "bool",
-                                    "name": "_None",
-                                    "type": "bool"
-                                  },
-                                  {
-                                    "internalType": "address payable",
-                                    "name": "_Some",
-                                    "type": "address"
-                                  }
-                                ],
-                                "internalType": "struct T2",
-                                "name": "elem1",
-                                "type": "tuple"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem2",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem3",
-                                "type": "address"
-                              }
-                            ],
-                            "internalType": "struct T3",
-                            "name": "_Harvest",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_Kill",
-                            "type": "bool"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "uint256",
-                                "name": "protoFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "lpFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "totFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "protoAddr",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "bool",
-                                "name": "locked",
-                                "type": "bool"
-                              }
-                            ],
-                            "internalType": "struct T4",
-                            "name": "_NewInfo",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "address payable[3]",
-                            "name": "_NewTriumvirs",
-                            "type": "address[3]"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_NoOp",
-                            "type": "bool"
-                          },
-                          {
-                            "internalType": "address payable",
-                            "name": "_Rewards",
-                            "type": "address"
-                          }
-                        ],
-                        "internalType": "struct T5",
-                        "name": "elem1",
-                        "type": "tuple"
-                      }
-                    ],
-                    "internalType": "struct T16",
-                    "name": "_Triumvir_support0_68035",
-                    "type": "tuple"
-                  },
-                  {
-                    "components": [
-                      {
-                        "internalType": "address payable",
-                        "name": "elem0",
-                        "type": "address"
-                      },
-                      {
-                        "components": [
-                          {
-                            "internalType": "enum _enum_T2",
-                            "name": "which",
-                            "type": "uint8"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_None",
-                            "type": "bool"
-                          },
-                          {
-                            "internalType": "address payable",
-                            "name": "_Some",
-                            "type": "address"
-                          }
-                        ],
-                        "internalType": "struct T2",
-                        "name": "elem1",
-                        "type": "tuple"
-                      },
-                      {
-                        "internalType": "address payable",
-                        "name": "elem2",
-                        "type": "address"
-                      }
-                    ],
-                    "internalType": "struct T17",
-                    "name": "_register0_68035",
-                    "type": "tuple"
-                  }
-                ],
-                "internalType": "struct T18",
-                "name": "v69940",
-                "type": "tuple"
-              }
-            ],
-            "internalType": "struct T23",
-            "name": "msg",
-            "type": "tuple"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T24",
-        "name": "_a",
-        "type": "tuple"
-      }
-    ],
-    "name": "_reach_e2",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "v0",
-        "type": "bool"
-      }
-    ],
-    "name": "_reach_oe_v70066",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "v0",
-        "type": "bool"
-      }
-    ],
-    "name": "_reach_oe_v70573",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "elem0",
-            "type": "uint256"
-          },
-          {
-            "components": [
-              {
-                "components": [
-                  {
-                    "internalType": "uint256",
-                    "name": "A",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "B",
-                    "type": "uint256"
-                  }
-                ],
-                "internalType": "struct T20",
-                "name": "elem0",
-                "type": "tuple"
-              },
-              {
-                "internalType": "uint256",
-                "name": "elem1",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct T21",
-            "name": "elem1",
-            "type": "tuple"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T22",
-        "name": "v0",
-        "type": "tuple"
-      }
-    ],
-    "name": "_reach_oe_v70642",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "elem0",
-            "type": "uint256"
-          },
-          {
-            "components": [
-              {
-                "components": [
-                  {
-                    "internalType": "uint256",
-                    "name": "A",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "B",
-                    "type": "uint256"
-                  }
-                ],
-                "internalType": "struct T20",
-                "name": "elem0",
-                "type": "tuple"
-              },
-              {
-                "internalType": "uint256",
-                "name": "elem1",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct T21",
-            "name": "elem1",
-            "type": "tuple"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T22",
-        "name": "v0",
-        "type": "tuple"
-      }
-    ],
-    "name": "_reach_oe_v70684",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "protoFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "lpFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address payable",
-            "name": "protoAddr",
-            "type": "address"
-          },
-          {
-            "internalType": "bool",
-            "name": "locked",
-            "type": "bool"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct T4",
-        "name": "v0",
-        "type": "tuple"
-      }
-    ],
-    "name": "_reach_oe_v71203",
-    "type": "event"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "fallback"
-  },
-  {
-    "inputs": [],
-    "name": "Info",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address payable[3]",
-            "name": "triumvirs",
-            "type": "address[3]"
-          },
-          {
-            "components": [
-              {
-                "internalType": "enum _enum_T5",
-                "name": "which",
-                "type": "uint8"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "address payable",
-                    "name": "elem0",
-                    "type": "address"
-                  },
-                  {
-                    "components": [
-                      {
-                        "internalType": "enum _enum_T2",
-                        "name": "which",
-                        "type": "uint8"
-                      },
-                      {
-                        "internalType": "bool",
-                        "name": "_None",
-                        "type": "bool"
-                      },
-                      {
-                        "internalType": "address payable",
-                        "name": "_Some",
-                        "type": "address"
-                      }
-                    ],
-                    "internalType": "struct T2",
-                    "name": "elem1",
-                    "type": "tuple"
-                  },
-                  {
-                    "internalType": "address payable",
-                    "name": "elem2",
-                    "type": "address"
-                  },
-                  {
-                    "internalType": "address payable",
-                    "name": "elem3",
-                    "type": "address"
-                  }
-                ],
-                "internalType": "struct T3",
-                "name": "_Harvest",
-                "type": "tuple"
-              },
-              {
-                "internalType": "bool",
-                "name": "_Kill",
-                "type": "bool"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "uint256",
-                    "name": "protoFee",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "lpFee",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "uint256",
-                    "name": "totFee",
-                    "type": "uint256"
-                  },
-                  {
-                    "internalType": "address payable",
-                    "name": "protoAddr",
-                    "type": "address"
-                  },
-                  {
-                    "internalType": "bool",
-                    "name": "locked",
-                    "type": "bool"
-                  }
-                ],
-                "internalType": "struct T4",
-                "name": "_NewInfo",
-                "type": "tuple"
-              },
-              {
-                "internalType": "address payable[3]",
-                "name": "_NewTriumvirs",
-                "type": "address[3]"
-              },
-              {
-                "internalType": "bool",
-                "name": "_NoOp",
-                "type": "bool"
-              },
-              {
-                "internalType": "address payable",
-                "name": "_Rewards",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct T5[3]",
-            "name": "cmds",
-            "type": "tuple[3]"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "protoFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "lpFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "totFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "address payable",
-                "name": "protoAddr",
-                "type": "address"
-              },
-              {
-                "internalType": "bool",
-                "name": "locked",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct T4",
-            "name": "protoInfo",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct T7",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "enum _enum_T5",
-            "name": "which",
-            "type": "uint8"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address payable",
-                "name": "elem0",
-                "type": "address"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "enum _enum_T2",
-                    "name": "which",
-                    "type": "uint8"
-                  },
-                  {
-                    "internalType": "bool",
-                    "name": "_None",
-                    "type": "bool"
-                  },
-                  {
-                    "internalType": "address payable",
-                    "name": "_Some",
-                    "type": "address"
-                  }
-                ],
-                "internalType": "struct T2",
-                "name": "elem1",
-                "type": "tuple"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem2",
-                "type": "address"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem3",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct T3",
-            "name": "_Harvest",
-            "type": "tuple"
-          },
-          {
-            "internalType": "bool",
-            "name": "_Kill",
-            "type": "bool"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "protoFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "lpFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "totFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "address payable",
-                "name": "protoAddr",
-                "type": "address"
-              },
-              {
-                "internalType": "bool",
-                "name": "locked",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct T4",
-            "name": "_NewInfo",
-            "type": "tuple"
-          },
-          {
-            "internalType": "address payable[3]",
-            "name": "_NewTriumvirs",
-            "type": "address[3]"
-          },
-          {
-            "internalType": "bool",
-            "name": "_NoOp",
-            "type": "bool"
-          },
-          {
-            "internalType": "address payable",
-            "name": "_Rewards",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct T5",
-        "name": "_a0",
-        "type": "tuple"
-      }
-    ],
-    "name": "Triumvir_propose",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_a0",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "internalType": "enum _enum_T5",
-            "name": "which",
-            "type": "uint8"
-          },
-          {
-            "components": [
-              {
-                "internalType": "address payable",
-                "name": "elem0",
-                "type": "address"
-              },
-              {
-                "components": [
-                  {
-                    "internalType": "enum _enum_T2",
-                    "name": "which",
-                    "type": "uint8"
-                  },
-                  {
-                    "internalType": "bool",
-                    "name": "_None",
-                    "type": "bool"
-                  },
-                  {
-                    "internalType": "address payable",
-                    "name": "_Some",
-                    "type": "address"
-                  }
-                ],
-                "internalType": "struct T2",
-                "name": "elem1",
-                "type": "tuple"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem2",
-                "type": "address"
-              },
-              {
-                "internalType": "address payable",
-                "name": "elem3",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct T3",
-            "name": "_Harvest",
-            "type": "tuple"
-          },
-          {
-            "internalType": "bool",
-            "name": "_Kill",
-            "type": "bool"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "protoFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "lpFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "totFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "address payable",
-                "name": "protoAddr",
-                "type": "address"
-              },
-              {
-                "internalType": "bool",
-                "name": "locked",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct T4",
-            "name": "_NewInfo",
-            "type": "tuple"
-          },
-          {
-            "internalType": "address payable[3]",
-            "name": "_NewTriumvirs",
-            "type": "address[3]"
-          },
-          {
-            "internalType": "bool",
-            "name": "_NoOp",
-            "type": "bool"
-          },
-          {
-            "internalType": "address payable",
-            "name": "_Rewards",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct T5",
-        "name": "_a1",
-        "type": "tuple"
-      }
-    ],
-    "name": "Triumvir_support",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "_reachCreationTime",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "_reachCurrentState",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "_reachCurrentTime",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "time",
-            "type": "uint256"
-          },
-          {
-            "components": [
-              {
-                "components": [
-                  {
-                    "internalType": "enum _enum_T18",
-                    "name": "which",
-                    "type": "uint8"
-                  },
-                  {
-                    "components": [
-                      {
-                        "components": [
-                          {
-                            "internalType": "enum _enum_T5",
-                            "name": "which",
-                            "type": "uint8"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "address payable",
-                                "name": "elem0",
-                                "type": "address"
-                              },
-                              {
-                                "components": [
-                                  {
-                                    "internalType": "enum _enum_T2",
-                                    "name": "which",
-                                    "type": "uint8"
-                                  },
-                                  {
-                                    "internalType": "bool",
-                                    "name": "_None",
-                                    "type": "bool"
-                                  },
-                                  {
-                                    "internalType": "address payable",
-                                    "name": "_Some",
-                                    "type": "address"
-                                  }
-                                ],
-                                "internalType": "struct T2",
-                                "name": "elem1",
-                                "type": "tuple"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem2",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem3",
-                                "type": "address"
-                              }
-                            ],
-                            "internalType": "struct T3",
-                            "name": "_Harvest",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_Kill",
-                            "type": "bool"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "uint256",
-                                "name": "protoFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "lpFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "totFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "protoAddr",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "bool",
-                                "name": "locked",
-                                "type": "bool"
-                              }
-                            ],
-                            "internalType": "struct T4",
-                            "name": "_NewInfo",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "address payable[3]",
-                            "name": "_NewTriumvirs",
-                            "type": "address[3]"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_NoOp",
-                            "type": "bool"
-                          },
-                          {
-                            "internalType": "address payable",
-                            "name": "_Rewards",
-                            "type": "address"
-                          }
-                        ],
-                        "internalType": "struct T5",
-                        "name": "elem0",
-                        "type": "tuple"
-                      }
-                    ],
-                    "internalType": "struct T15",
-                    "name": "_Triumvir_propose0_68035",
-                    "type": "tuple"
-                  },
-                  {
-                    "components": [
-                      {
-                        "internalType": "uint256",
-                        "name": "elem0",
-                        "type": "uint256"
-                      },
-                      {
-                        "components": [
-                          {
-                            "internalType": "enum _enum_T5",
-                            "name": "which",
-                            "type": "uint8"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "address payable",
-                                "name": "elem0",
-                                "type": "address"
-                              },
-                              {
-                                "components": [
-                                  {
-                                    "internalType": "enum _enum_T2",
-                                    "name": "which",
-                                    "type": "uint8"
-                                  },
-                                  {
-                                    "internalType": "bool",
-                                    "name": "_None",
-                                    "type": "bool"
-                                  },
-                                  {
-                                    "internalType": "address payable",
-                                    "name": "_Some",
-                                    "type": "address"
-                                  }
-                                ],
-                                "internalType": "struct T2",
-                                "name": "elem1",
-                                "type": "tuple"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem2",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "elem3",
-                                "type": "address"
-                              }
-                            ],
-                            "internalType": "struct T3",
-                            "name": "_Harvest",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_Kill",
-                            "type": "bool"
-                          },
-                          {
-                            "components": [
-                              {
-                                "internalType": "uint256",
-                                "name": "protoFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "lpFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "uint256",
-                                "name": "totFee",
-                                "type": "uint256"
-                              },
-                              {
-                                "internalType": "address payable",
-                                "name": "protoAddr",
-                                "type": "address"
-                              },
-                              {
-                                "internalType": "bool",
-                                "name": "locked",
-                                "type": "bool"
-                              }
-                            ],
-                            "internalType": "struct T4",
-                            "name": "_NewInfo",
-                            "type": "tuple"
-                          },
-                          {
-                            "internalType": "address payable[3]",
-                            "name": "_NewTriumvirs",
-                            "type": "address[3]"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_NoOp",
-                            "type": "bool"
-                          },
-                          {
-                            "internalType": "address payable",
-                            "name": "_Rewards",
-                            "type": "address"
-                          }
-                        ],
-                        "internalType": "struct T5",
-                        "name": "elem1",
-                        "type": "tuple"
-                      }
-                    ],
-                    "internalType": "struct T16",
-                    "name": "_Triumvir_support0_68035",
-                    "type": "tuple"
-                  },
-                  {
-                    "components": [
-                      {
-                        "internalType": "address payable",
-                        "name": "elem0",
-                        "type": "address"
-                      },
-                      {
-                        "components": [
-                          {
-                            "internalType": "enum _enum_T2",
-                            "name": "which",
-                            "type": "uint8"
-                          },
-                          {
-                            "internalType": "bool",
-                            "name": "_None",
-                            "type": "bool"
-                          },
-                          {
-                            "internalType": "address payable",
-                            "name": "_Some",
-                            "type": "address"
-                          }
-                        ],
-                        "internalType": "struct T2",
-                        "name": "elem1",
-                        "type": "tuple"
-                      },
-                      {
-                        "internalType": "address payable",
-                        "name": "elem2",
-                        "type": "address"
-                      }
-                    ],
-                    "internalType": "struct T17",
-                    "name": "_register0_68035",
-                    "type": "tuple"
-                  }
-                ],
-                "internalType": "struct T18",
-                "name": "v69940",
-                "type": "tuple"
-              }
-            ],
-            "internalType": "struct T23",
-            "name": "msg",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct T24",
-        "name": "_a",
-        "type": "tuple"
-      }
-    ],
-    "name": "_reach_m2",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "_a0",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "enum _enum_T2",
-            "name": "which",
-            "type": "uint8"
-          },
-          {
-            "internalType": "bool",
-            "name": "_None",
-            "type": "bool"
-          },
-          {
-            "internalType": "address payable",
-            "name": "_Some",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct T2",
-        "name": "_a1",
-        "type": "tuple"
-      },
-      {
-        "internalType": "address payable",
-        "name": "_a2",
-        "type": "address"
-      }
-    ],
-    "name": "register",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "protoFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "lpFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "totFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address payable",
-            "name": "protoAddr",
-            "type": "address"
-          },
-          {
-            "internalType": "bool",
-            "name": "locked",
-            "type": "bool"
-          }
-        ],
-        "internalType": "struct T4",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "receive"
-  }
-]`,
-  Bytecode: `0x608060405260405162003b3738038062003b37833981016040819052620000269162000583565b6000805543600355620000386200020c565b7fe5d35ee1d5d0380ec4bb3893af49ad0266757898dc8e4981d86f4fcd3a980e5533836040516200006b9291906200066d565b60405180910390a162000081341560086200013e565b8051600490528051600060a0909101819052815160208084018051929092528351825182015283519151604090810192909252818401805193909352825160199101528151309101528051600560609091015251601e608090910152620000e762000266565b81518151526020808301518183018051919091528051600090830181905260408086015183519091015291850151518151606001528051436080909101525160a00152620001358162000168565b505050620009e5565b81620001645760405163100960cb60e01b81526004810182905260240160405180910390fd5b5050565b806020015160200151156200019257600080805560018190556200018f906002906200028a565b50565b6200019c620002c9565b8151518152602080830180515182840152805160409081015181850152815160609081015190850152905160a00151608084015260036000554360015551620001e891839101620007d1565b6040516020818303038152906040526002908162000207919062000919565b505050565b60405180606001604052806200022162000337565b815260200162000230620003c3565b81526040805160a0810182526000808252602082810182905292820181905260608201819052608082015291015290565b905290565b60405180604001604052806200027b620003f3565b81526020016200026162000408565b50805462000298906200088b565b6000825580601f10620002a9575050565b601f0160209004906000526020600020908101906200018f91906200048c565b6040518060a00160405280620002de62000337565b8152602001620002ed620003c3565b81526040805160a0810182526000808252602082810182905292820181905260608201819052608082015291019081526020016200032a620004a7565b8152602001600081525090565b6040805160e08101909152806000815260200162000354620004c5565b8152602001600015158152602001620003a06040518060a0016040528060008152602001600081526020016000815260200160006001600160a01b031681526020016000151581525090565b8152602001620003af620004a7565b815260006020820181905260409091015290565b60405180606001604052806003905b620003dc62000337565b815260200190600190039081620003d25790505090565b60405180602001604052806200026162000337565b6040518060c001604052806200041d620003c3565b8152602001600015158152602001620004696040518060a001604052806000151581526020016000815260200160006001600160a01b0316815260200160008152602001600081525090565b815260200162000478620004a7565b815260200160008152602001600081525090565b5b80821115620004a357600081556001016200048d565b5090565b60405180606001604052806003906020820280368337509192915050565b604051806080016040528060006001600160a01b03168152602001620003af6040805160608101909152806000620003af565b634e487b7160e01b600052604160045260246000fd5b604080519081016001600160401b0381118282101715620005335762000533620004f8565b60405290565b604051602081016001600160401b0381118282101715620005335762000533620004f8565b604051606081016001600160401b0381118282101715620005335762000533620004f8565b600081830360808112156200059757600080fd5b620005a16200050e565b8351815260206060601f1984011215620005ba57600080fd5b620005c462000539565b925085603f860112620005d657600080fd5b620005e06200055e565b806080870188811115620005f357600080fd5b8388015b81811015620006275780516001600160a01b0381168114620006195760008081fd5b8452928401928401620005f7565b50508452508101919091529392505050565b8060005b6003811015620006675781516001600160a01b03168452602093840193909101906001016200063d565b50505050565b600060a08201905060018060a01b03841682528251602083015260208301516200069c60408401825162000639565b509392505050565b634e487b7160e01b600052602160045260246000fd5b805160068110620006cf57620006cf620006a4565b825260208181015180516001600160a01b039081168386015291810151805191929160028110620007045762000704620006a4565b60408681019190915260208201511515606080880191909152918101518316608087015283015190911660a085015201516001600160a01b03811660c084015250604081015180151560e084015250606081810151805161010085015260208101516101208501526040810151610140850152908101516001600160a01b031661016084015260808101511515610180840152506080810151620007ad6101a084018262000639565b5060a0810151151561020083015260c001516001600160a01b031661022090910152565b6000610a2082019050620007e7828451620006ba565b60208084015161024080850160005b60038110156200081e576200080d828551620006ba565b9284019290820190600101620007f6565b5050505060408481015180511515610900860152918201516109208501528101516001600160a01b0316610940840152606080820151610960850152608090910151610980840152830151620008796109a084018262000639565b506080830151610a0083015292915050565b600181811c90821680620008a057607f821691505b602082108103620008c157634e487b7160e01b600052602260045260246000fd5b50919050565b601f8211156200020757600081815260208120601f850160051c81016020861015620008f05750805b601f850160051c820191505b818110156200091157828155600101620008fc565b505050505050565b81516001600160401b03811115620009355762000935620004f8565b6200094d816200094684546200088b565b84620008c7565b602080601f8311600181146200098557600084156200096c5750858301515b600019600386901b1c1916600185901b17855562000911565b600085815260208120601f198616915b82811015620009b65788860151825594840194600190910190840162000995565b5085821015620009d55787850151600019600388901b60f8161c191681555b5050505050600190811b01905550565b61314280620009f56000396000f3fe6080604052600436106100795760003560e01c8063832307571161004b578063832307571461010b578063ab53f2c614610120578063d379c61114610143578063dfcc43891461015657005b80631a6febfe146100825780631e93b0f1146100aa5780633b02a717146100c95780634012e02e146100e957005b3661008057005b005b610095610090366004612605565b610169565b60405190151581526020015b60405180910390f35b3480156100b657600080fd5b506003545b6040519081526020016100a1565b6100dc6100d7366004612633565b61017e565b6040516100a191906126b5565b3480156100f557600080fd5b506100fe61019b565b6040516100a19190612816565b34801561011757600080fd5b506001546100bb565b34801561012c57600080fd5b506101356101b4565b6040516100a192919061287b565b6100806101513660046128b5565b610251565b6100956101643660046128ce565b610275565b60006101758383610280565b90505b92915050565b610186611d0b565b6101918484846102c9565b90505b9392505050565b6101a3611d45565b60006101ae81610336565b91505090565b6000606060005460028080546101c9906128eb565b80601f01602080910402602001604051908101604052809291908181526020018280546101f5906128eb565b80156102425780601f1061021757610100808354040283529160200191610242565b820191906000526020600020905b81548152906001019060200180831161022557829003601f168201915b50505050509050915091509091565b610259611d77565b61027161026b36849003840184612968565b82610476565b5050565b600061017882611b17565b600061028a611d96565b6020818101805151600190528051516040908101518790529051510151018390526102b3611d77565b6102bd8282610476565b60200151949350505050565b6102d1611d0b565b6102d9611d96565b6020818101805151600290528051516060908101516001600160a01b0389811690915282515182015190930187905290515101519084166040919091015261031f611d77565b6103298282610476565b6040015195945050505050565b61033e611d45565b60036000540361046557600060028054610357906128eb565b80601f0160208091040260200160405190810160405280929190818152602001828054610383906128eb565b80156103d05780601f106103a5576101008083540402835291602001916103d0565b820191906000526020600020905b8154815290600101906020018083116103b357829003601f168201915b50505050508060200190518101906103e89190612c96565b90506103f2611db0565b604080830180516060908101518451528151602090810151855182015282516080908101518651860152835185015186516001600160a01b039091169084015292515185519015159301929092528401518184018051919091529381015184519091015290518251909101525192915050565b61047160006007611b4e565b919050565b610486600360005414601b611b4e565b81516104a190158061049a57508251600154145b601c611b4e565b6000808055600280546104b3906128eb565b80601f01602080910402602001604051908101604052809291908181526020018280546104df906128eb565b801561052c5780601f106105015761010080835404028352916020019161052c565b820191906000526020600020905b81548152906001019060200180831161050f57829003601f168201915b50505050508060200190518101906105449190612c96565b905061054e611dd0565b7f6392de3086ad392d559b57a003ab34e70460d2baca532f308e45c5a87ed12206338560405161057f929190612d50565b60405180910390a160006020850151515160028111156105a1576105a16126ef565b03610be957602080850151510151815260008151515160058111156105c8576105c86126ef565b036105d95760016020820152610732565b60018151515160058111156105f0576105f06126ef565b036106015760016020820152610732565b6002815151516005811115610618576106186126ef565b036106be5780515160600151604082018190525160641161063a576000610647565b6064816040015160200151105b15610675576040810151602081015190516106629190611b74565b604080830151015114606082015261067d565b600060608201525b806060015161068d57600061069a565b6064816040015160400151105b6106a55760006106b2565b6000816040015160400151115b15156020820152610732565b60038151515160058111156106d5576106d56126ef565b036106e65760016020820152610732565b60048151515160058111156106fd576106fd6126ef565b0361070e5760016020820152610732565b6005815151516005811115610725576107256126ef565b0361073257600160208201525b61074181602001516009611b4e565b6080810180516000908190528151602001819052905160c08301525b600381101561080e578260600151816003811061077c5761077c612df9565b60200201516001600160a01b031660e083015261010082018051600190819052905160400182905260c0830151516000918111156107bc576107bc6126ef565b146107c85760006107e2565b8160e001516001600160a01b0316336001600160a01b0316145b6107f0578160c001516107f7565b8161010001515b60c08301528061080681612e25565b91505061075d565b5060c081015160a082018190525161083b9060019081811115610833576108336126ef565b14600a611b4e565b6108473415600b611b4e565b600081515151600581111561085e5761085e6126ef565b036108705760016101208201526109d8565b6001815151516005811115610887576108876126ef565b036108995760016101208201526109d8565b60028151515160058111156108b0576108b06126ef565b0361096157805151606001516101408201819052516064116108d35760006108e1565b606481610140015160200151105b1561091357610140810151602081015190516108fd9190611b74565b610140820151604001511461016082015261091c565b60006101608201525b80610160015161092d57600061093b565b606481610140015160400151105b610946576000610954565b600081610140015160400151115b15156101208201526109d8565b6003815151516005811115610978576109786126ef565b0361098a5760016101208201526109d8565b60048151515160058111156109a1576109a16126ef565b036109b35760016101208201526109d8565b60058151515160058111156109ca576109ca6126ef565b036109d85760016101208201525b6109e8816101200151600c611b4e565b60808101516101a082015260005b6003811015610aac5782606001518160038110610a1557610a15612df9565b60200201516001600160a01b03166101c08301526101e08201805160019081905290516040018290526101a083015151600091811115610a5757610a576126ef565b14610a63576000610a7e565b816101c001516001600160a01b0316336001600160a01b0316145b610a8d57816101a00151610a94565b816101e001515b6101a083015280610aa481612e25565b9150506109f6565b506101a0810151610180820181905251610adb9060019081811115610ad357610ad36126ef565b14600d611b4e565b604051600081527f2262501d7098919553ce644d0b8e3773a000e3d524eb1ab7ff4e7fb6d9ae05769060200160405180910390a1600083528051516040517f510fa3e00163331e7163ef9e01f872b444c3d8848dda15e731d1789d76c6361891610b4791339190612e3e565b60405180910390a1610b57611fd9565b82518151526020830151610b9e906001610180850151516001811115610b7f57610b7f6126ef565b14610b8b576000610b96565b836101800151604001515b845151611bc1565b602080830180519290925281516000910152604080850151825190910152606080850151825190910152805143608091820152840151905160a00152610be381611c35565b50611b11565b6001602085015151516002811115610c0357610c036126ef565b036119825760208401515160400151610200820181905251610c2990600311600e611b4e565b61022081018051600090819052815160200181905290516102608301525b6003811015610cfd5782606001518160038110610c6657610c66612df9565b60200201516001600160a01b03166102808301526102a082018051600190819052905160400182905261026083015151600091811115610ca857610ca86126ef565b14610cb4576000610ccf565b8161028001516001600160a01b0316336001600160a01b0316145b610cde57816102600151610ce5565b816102a001515b61026083015280610cf581612e25565b915050610c47565b50610260810151610240820181905251610d2c9060019081811115610d2457610d246126ef565b14600f611b4e565b610d7d6001610240830151516001811115610d4957610d496126ef565b14610d55576000610d60565b816102400151604001515b6102008301515114610d73576001610d76565b60005b6010611b4e565b610e0382602001518261020001516000015160038110610d9f57610d9f612df9565b6020020151604051602001610db49190612e5c565b60408051601f198184030181529082905280516020918201206102008501518201519092610de29201612e5c565b6040516020818303038152906040528051906020012060001c146011611b4e565b610e0f34156012611b4e565b6102208101516102e082015260005b6003811015610ed45782606001518160038110610e3d57610e3d612df9565b60200201516001600160a01b03166103008301526103208201805160019081905290516040018290526102e083015151600091811115610e7f57610e7f6126ef565b14610e8b576000610ea6565b8161030001516001600160a01b0316336001600160a01b0316145b610eb557816102e00151610ebc565b8161032001515b6102e083015280610ecc81612e25565b915050610e1e565b506102e08101516102c0820181905251610f039060019081811115610efb57610efb6126ef565b146013611b4e565b610f5460016102c0830151516001811115610f2057610f206126ef565b14610f2c576000610f37565b816102c00151604001515b6102008301515114610f4a576001610f4d565b60005b6014611b4e565b6020820151610200820151518351610f6d929190611bc1565b610340820152604051600081527fc6a32edf86feaa381d8749a0b2ca8f99f47ed2a0a5d8251918c40bbff043408b9060200160405180910390a1600060208085019190915261020082015151908301517f1ca272bbb6018d7b99180311121f45ec91a0b47a19077a7badd69e3dbd0db37e9133918160038110610ff257610ff2612df9565b602002015160405161100693929190612e6b565b60405180910390a160006020830151610200830151516003811061102c5761102c612df9565b6020020151516005811115611043576110436126ef565b03611556576020820151610200820151516003811061106457611064612df9565b6020908102919091015181015161036083018190520151516000906001811115611090576110906126ef565b036112dd57604082810180516060908101516103a0850180519190915282516020908101518251909101528251608090810151825186015283519094015181516001600160a01b03909116920191909152905151905190151591015247610580820152610360810151606001516103a082015160405160009263038da9cb60e21b9261111e92602401612e98565b604051602081830303815290604052906001600160e01b0319166020820180516001600160e01b0383818316178352505050509050600080836103600151600001516001600160a01b03166000846040516111799190612eb5565b60006040518083038185875af1925050503d80600081146111b6576040519150601f19603f3d011682016040523d82523d6000602084013e6111bb565b606091505b50915091506111cc82826015611cd0565b5061058084015147036103c08501515280516111f19082016020908101908301612ed1565b6103c08501805160200191909152516103e085018190526040517f5c36a24cd9043e34978822a04ccb312a66c02d5b6ca6d7d465f44531d2d59b30945061125f9350909150815181526020918201518051805184840152830151604083015290910151606082015260800190565b60405180910390a16103e08101515161127a90156016611b4e565b611282611fd9565b825181515261034082015160208083018051929092528151600091015260408085015182519091015260608085015182519091015251436080918201528301516103e083015151015b602082015160a00152610be381611c35565b6001610360820151602001515160018111156112fb576112fb6126ef565b03611551576103608101516020908101516040908101516001600160a01b03908116610400850152848201805160609081015161044087018051919091528251860151815190960195909552815160809081015186518601528251909401518551931692019190915251519151911515910152476105a08201526103608101516060015161044082015160405160009263038da9cb60e21b926113a092602401612e98565b604051602081830303815290604052906001600160e01b0319166020820180516001600160e01b0383818316178352505050509050600080836103600151600001516001600160a01b03166000846040516113fb9190612eb5565b60006040518083038185875af1925050503d8060008114611438576040519150601f19603f3d011682016040523d82523d6000602084013e61143d565b606091505b509150915061144e82826017611cd0565b506105a084015147036104608501515280516114739082016020908101908301612ed1565b61046085018051602001919091525161048085018190526040517fe59f7dbb27f01bfcbae0ab183d4060b52e445ce2d608e4b68b0eab8345bafafa94506114e19350909150815181526020918201518051805184840152830151604083015290910151606082015260800190565b60405180910390a1610480810151516114fc90156018611b4e565b611504611fd9565b8251815152610340820151602080830180519290925281516000910152604080850151825190910152606080850151825190910152514360809182015283015161048083015151016112cb565b611b11565b60016020830151610200830151516003811061157457611574612df9565b602002015151600581111561158b5761158b6126ef565b036115e857611598611fd9565b8251815152610340820151602080830180519290925281516001910152604080850151825190910152606080850151825190910152805143608091820152840151905160a00152610be381611c35565b60026020830151610200830151516003811061160657611606612df9565b602002015151600581111561161d5761161d6126ef565b036116fc576020820151610200820151516003811061163e5761163e612df9565b602090810291909101516060908101516104a084018181526080918201516104c0860180519115159091528151850151815190950194909452805183015184516001600160a01b039091166040918201528151518551909401939093525190910151915101526116ac611fd9565b82518151526103408201516020808301805192909252815160009101526104c0830151815160400152606080850151825190910152805143608091820152840151905160a00152610be381611c35565b60036020830151610200830151516003811061171a5761171a612df9565b6020020151516005811115611731576117316126ef565b036117b9576020820151610200820151516003811061175257611752612df9565b6020020151608001516104e0820152611769611fd9565b82518151526103408201516020808301805192909252815160009101526040808501518251909101526104e0830151815160600152805143608091820152840151905160a00152610be381611c35565b6004602083015161020083015151600381106117d7576117d7612df9565b60200201515160058111156117ee576117ee6126ef565b0361184b576117fb611fd9565b8251815152610340820151602080830180519290925281516000910152604080850151825190910152606080850151825190910152805143608091820152840151905160a00152610be381611c35565b60056020830151610200830151516003811061186957611869612df9565b6020020151516005811115611880576118806126ef565b0361155157602082015161020082015151600381106118a1576118a1612df9565b602002015160c001516001600160a01b03166105008201526080820151479081106118d257608083015181036118d5565b60005b61052083018190526105008301516040516001600160a01b03909116925081156108fc0291906000818181858888f1935050505015801561191a573d6000803e3d6000fd5b50611923611fd9565b82518151526103408201516020808301805192909252815160009101526040808501518251909101526060808501518251909101525143608091820152610520830151908401516112cb9161197791611b74565b836105200151900390565b600260208501515151600281111561199c5761199c6126ef565b03611b1157602084015151606001516105408201819052516119ca906001600160a01b031633146019611b4e565b6119d63415601a611b4e565b604080830180516060908101516105608501805191909152825160209081015182519091015282516080908101518251860152835185015182516001600160a01b0390911693019290925291515182519015159101525190517fb748e47d7b93c18db46845e9ee3234fbaa1aa373aad07540231d425c1d51e91091611a5a916126b5565b60405180910390a1610560810151604080850191909152610540820151805160208201519183015192517ffe325ddb46ceb5c5c02d1b18bc5e927e25bc0ec2cf49203c2ae8c0c355b290cf93611ab09391612f2a565b60405180910390a1611ac0611fd9565b825181515260208084015181830180519190915280516000920191909152604080850151825190910152606080850151825190910152805143608091820152840151905160a00152610be381611c35565b50505050565b6000611b21611d96565b60208181018051516000905251510151839052611b3c611d77565b611b468282610476565b519392505050565b816102715760405163100960cb60e01b8152600481018290526024015b60405180910390fd5b600082611b818382612f5a565b91508110156101785760405162461bcd60e51b815260206004820152600c60248201526b616464206f766572666c6f7760a01b6044820152606401611b6b565b611bc9611ff9565b60005b6003811015611c1557848160038110611be757611be7612df9565b6020020151828260038110611bfe57611bfe612df9565b602002015280611c0d81612e25565b915050611bcc565b5081818460038110611c2957611c29612df9565b60200201529392505050565b80602001516020015115611c5c5760008080556001819055611c5990600290612026565b50565b611c64612060565b8151518152602080830180515182840152805160409081015181850152815160609081015190850152905160a00151608084015260036000554360015551611cae91839101612f6d565b60405160208183030381529060405260029081611ccb919061304c565b505050565b60608315611cdf575081610194565b825115611cef5782518084602001fd5b60405163100960cb60e01b815260048101839052602401611b6b565b6040518060a0016040528060008152602001600081526020016000815260200160006001600160a01b031681526020016000151581525090565b6040518060600160405280611d586120a7565b8152602001611d65611ff9565b8152602001611d72611d0b565b905290565b6040805160608101825260008082526020820152908101611d72611d0b565b604051806040016040528060008152602001611d726120c5565b6040518060400160405280611dc3611d0b565b8152602001611d72611d45565b604051806105c00160405280611de46120d8565b815260006020820152604001611df8611d0b565b815260006020820152604001611e0c6120eb565b8152602001611e196120eb565b8152602001611e266120eb565b815260006020820152604001611e3a6120eb565b815260006020820152604001611e4e611d0b565b815260006020820152604001611e626120eb565b8152602001611e6f6120eb565b815260006020820152604001611e836120eb565b8152602001611e9061210e565b8152602001611e9d6120eb565b8152602001611eaa6120eb565b8152602001611eb76120eb565b815260006020820152604001611ecb6120eb565b8152602001611ed86120eb565b8152602001611ee56120eb565b815260006020820152604001611ef96120eb565b8152602001611f06611ff9565b8152602001611f13612128565b815260006020820152604001611f27611d0b565b8152602001611f3461214b565b8152602001611f4161214b565b81526000602082018190526040820152606001611f5c611d0b565b8152602001611f6961214b565b8152602001611f7661214b565b8152602001611f83611d0b565b8152602001611f90612165565b8152602001611f9d6120a7565b81526000602082018190526040820152606001611fb861219f565b8152602001611fc5611d0b565b815260200160008152602001600081525090565b6040518060400160405280611fec6120d8565b8152602001611d726121cf565b60405180606001604052806003905b612010612203565b8152602001906001900390816120085790505090565b508054612032906128eb565b6000825580601f10612042575050565b601f016020900490600052602060002090810190611c59919061223f565b6040518060a00160405280612073612203565b8152602001612080611ff9565b815260200161208d612165565b815260200161209a6120a7565b8152602001600081525090565b60405180606001604052806003906020820280368337509192915050565b6040518060200160405280611d72612258565b6040518060200160405280611d72612203565b60408051606081019091528060005b815260006020820181905260409091015290565b604051806040016040528060008152602001611d72612203565b604051806080016040528060006001600160a01b031681526020016120fa61228d565b604051806040016040528060008152602001611d726122a0565b6040518060a001604052806000151581526020016000815260200160006001600160a01b0316815260200160008152602001600081525090565b604051806060016040528060006001600160a01b031681526020016121c261228d565b8152600060209091015290565b6040518060c001604052806121e2611ff9565b8152600060208201526040016121f6612165565b8152602001611fc56120a7565b6040805160e08101909152806000815260200161221e612128565b815260006020820152604001612232611d0b565b81526020016120fa6120a7565b5b808211156122545760008155600101612240565b5090565b604080516080810190915280600081526020016122736120d8565b815260200161228061210e565b8152602001611d7261219f565b60408051606081019091528060006120fa565b604080516080810182526000918101828152606082019290925290819061209a565b634e487b7160e01b600052604160045260246000fd5b6040516060810167ffffffffffffffff811182821017156122fb576122fb6122c2565b60405290565b6040516080810167ffffffffffffffff811182821017156122fb576122fb6122c2565b60405160a0810167ffffffffffffffff811182821017156122fb576122fb6122c2565b60405160e0810167ffffffffffffffff811182821017156122fb576122fb6122c2565b6040805190810167ffffffffffffffff811182821017156122fb576122fb6122c2565b6040516020810167ffffffffffffffff811182821017156122fb576122fb6122c2565b60068110611c5957600080fd5b6001600160a01b0381168114611c5957600080fd5b8035610471816123bd565b60028110611c5957600080fd5b8015158114611c5957600080fd5b8035610471816123ea565b60006060828403121561241557600080fd5b61241d6122d8565b9050813561242a816123dd565b8152602082013561243a816123ea565b6020820152604082013561244d816123bd565b604082015292915050565b600060a0828403121561246a57600080fd5b612472612324565b9050813581526020820135602082015260408201356040820152606082013561249a816123bd565b606082015260808201356124ad816123ea565b608082015292915050565b600082601f8301126124c957600080fd5b6124d16122d8565b8060608401858111156124e357600080fd5b845b818110156125065780356124f8816123bd565b8452602093840193016124e5565b509095945050505050565b600081830361024081121561252557600080fd5b61252d612347565b9150823561253a816123b0565b825260c0601f198201121561254e57600080fd5b50612557612301565b6020830135612565816123bd565b81526125748460408501612403565b602082015260a0830135612587816123bd565b604082015260c083013561259a816123bd565b606082015260208201526125b060e083016123f8565b60408201526125c3836101008401612458565b60608201526125d6836101a084016124b8565b60808201526125e861020083016123f8565b60a08201526125fa61022083016123d2565b60c082015292915050565b600080610260838503121561261957600080fd5b8235915061262a8460208501612511565b90509250929050565b600080600060a0848603121561264857600080fd5b8335612653816123bd565b92506126628560208601612403565b91506080840135612672816123bd565b809150509250925092565b8051825260208082015190830152604080820151908301526060808201516001600160a01b0316908301526080908101511515910152565b60a08101610178828461267d565b8060005b6003811015611b115781516001600160a01b03168452602093840193909101906001016126c7565b634e487b7160e01b600052602160045260246000fd5b805160028110612717576127176126ef565b82526020818101511515908301526040908101516001600160a01b0316910152565b80516006811061274b5761274b6126ef565b825260208181015180516001600160a01b0390811683860152918101519091906127786040860182612705565b50604082810151821660a086015260609283015190911660c0850152820151151560e08401528101516127af61010084018261267d565b5060808101516127c36101a08401826126c3565b5060a0810151151561020083015260c001516001600160a01b031661022090910152565b8060005b6003811015611b11576127ff848351612739565b6102409390930192602091909101906001016127eb565b60006107c08201905061282a8284516126c3565b602083015161283c60608401826127e7565b50604083015161285061072084018261267d565b5092915050565b60005b8381101561287257818101518382015260200161285a565b50506000910152565b82815260406020820152600082518060408401526128a0816060850160208701612857565b601f01601f1916919091016060019392505050565b600061058082840312156128c857600080fd5b50919050565b600061024082840312156128e157600080fd5b6101758383612511565b600181811c908216806128ff57607f821691505b6020821081036128c857634e487b7160e01b600052602260045260246000fd5b600060a0828403121561293157600080fd5b6129396122d8565b90508135612946816123bd565b81526129558360208401612403565b6020820152608082013561244d816123bd565b600081830361058081121561297c57600080fd5b61298461236a565b83358152610560601f198301121561299b57600080fd5b6129a361238d565b6129ab612301565b6020860135600381106129bd57600080fd5b8152610240603f19850112156129d257600080fd5b6129da61238d565b6129e78860408901612511565b8152602082015261026061027f1985011215612a0257600080fd5b612a0a61236a565b93506102808601358452612a22876102a08801612511565b6020850152836040820152612a3b876104e0880161291f565b606082015281526020820152949350505050565b8051610471816123bd565b8051610471816123ea565b600060a08284031215612a7757600080fd5b612a7f612324565b90508151815260208201516020820152604082015160408201526060820151612aa7816123bd565b606082015260808201516124ad816123ea565b600082601f830112612acb57600080fd5b612ad36122d8565b806060840185811115612ae557600080fd5b845b81811015612506578051612afa816123bd565b845260209384019301612ae7565b6000818303610240811215612b1c57600080fd5b612b24612347565b91508251612b31816123b0565b825260c0601f1982011215612b4557600080fd5b612b4d612301565b6020840151612b5b816123bd565b81526060603f1983011215612b6f57600080fd5b612b776122d8565b91506040840151612b87816123dd565b82526060840151612b97816123ea565b60208301526080840151612baa816123bd565b604083015260208101829052612bc260a08501612a4f565b6040820152612bd360c08501612a4f565b6060820152602083015250612bea60e08301612a5a565b6040820152612bfd836101008401612a65565b6060820152612c10836101a08401612aba565b6080820152612c226102008301612a5a565b60a08201526125fa6102208301612a4f565b600060a08284031215612c4657600080fd5b612c4e612324565b90508151612c5b816123ea565b8152602082810151908201526040820151612c75816123bd565b80604083015250606082015160608201526080820151608082015292915050565b6000610a208284031215612ca957600080fd5b612cb1612324565b612cbb8484612b08565b81526102408461025f850112612cd057600080fd5b612cd86122d8565b80610900860187811115612ceb57600080fd5b8387015b81811015612d1057612d018982612b08565b84526020909301928401612cef565b50816020860152612d218882612c34565b604086015250505050612d38846109a08501612aba565b6060820152610a009290920151608083015250919050565b6001600160a01b03838116825282516020808401919091528301515180516105a0840192919060038110612d8657612d866126ef565b806040860152506020810151612da0606086018251612739565b50604081015180516102a086015260200151612dc06102c0860182612739565b5060600151805182166105008501526020810151612de2610520860182612705565b508160408201511661058085015250509392505050565b634e487b7160e01b600052603260045260246000fd5b634e487b7160e01b600052601160045260246000fd5b600060018201612e3757612e37612e0f565b5060010190565b6001600160a01b038316815261026081016101946020830184612739565b61024081016101788284612739565b6001600160a01b0384168152602081018390526102808101612e906040830184612739565b949350505050565b6001600160a01b038316815260c08101610194602083018461267d565b60008251612ec7818460208701612857565b9190910192915050565b60008183036060811215612ee457600080fd5b612eec61236a565b6040821215612efa57600080fd5b612f0261236a565b9150835182526020840151602083015281815260408401516020820152809250505092915050565b6001600160a01b03848116825260a0820190612f496020840186612705565b808416608084015250949350505050565b8082018082111561017857610178612e0f565b6000610a2082019050612f81828451612739565b6020830151612f946102408401826127e7565b50604083810151805115156109008501526020810151610920850152908101516001600160a01b0316610940840152606080820151610960850152608090910151610980840152830151612fec6109a08401826126c3565b506080830151610a0083015292915050565b601f821115611ccb57600081815260208120601f850160051c810160208610156130255750805b601f850160051c820191505b8181101561304457828155600101613031565b505050505050565b815167ffffffffffffffff811115613066576130666122c2565b61307a8161307484546128eb565b84612ffe565b602080601f8311600181146130af57600084156130975750858301515b600019600386901b1c1916600185901b178555613044565b600085815260208120601f198616915b828110156130de578886015182559484019460019091019084016130bf565b50858210156130fc5787850151600019600388901b60f8161c191681555b5050505050600190811b0190555056fea2646970667358221220a1f6f5389ec30814f3bc965978cc1ff0248fd33bc4a9b4d2461aaa13837ce5b764736f6c63430008100033`,
-  BytecodeLen: 15159,
-  Which: `oD`,
-  version: 8,
+  ABI: `[{"inputs":[{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"internalType":"address payable[3]","name":"elem1","type":"address[3]"}],"internalType":"struct T15","name":"v77570","type":"tuple"}],"stateMutability":"payable","type":"constructor"},{"inputs":[{"internalType":"uint256","name":"msg","type":"uint256"}],"name":"ReachError","type":"error"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address payable","name":"v0","type":"address"},{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"indexed":false,"internalType":"struct T4","name":"v1","type":"tuple"}],"name":"Propose","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address payable","name":"v0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"indexed":false,"internalType":"struct T1","name":"v1","type":"tuple"},{"indexed":false,"internalType":"address payable","name":"v2","type":"address"}],"name":"Register","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address payable","name":"v0","type":"address"},{"indexed":false,"internalType":"uint256","name":"v1","type":"uint256"},{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"indexed":false,"internalType":"struct T4","name":"v2","type":"tuple"}],"name":"Support","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"_who","type":"address"},{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"internalType":"address payable[3]","name":"elem1","type":"address[3]"}],"indexed":false,"internalType":"struct T15","name":"_a","type":"tuple"}],"name":"_reach_e0","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"_who","type":"address"},{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"components":[{"internalType":"enum _enum_T13","name":"which","type":"uint8"},{"components":[{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"internalType":"struct T4","name":"elem0","type":"tuple"}],"internalType":"struct T11","name":"_Triumvir_propose0_68335","type":"tuple"},{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"internalType":"struct T4","name":"elem1","type":"tuple"}],"internalType":"struct T8","name":"_Triumvir_support0_68335","type":"tuple"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"}],"internalType":"struct T12","name":"_register0_68335","type":"tuple"}],"internalType":"struct T13","name":"elem1","type":"tuple"}],"indexed":false,"internalType":"struct T14","name":"_a","type":"tuple"}],"name":"_reach_e2","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bool","name":"v0","type":"bool"}],"name":"_reach_oe_v70366","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"bool","name":"v0","type":"bool"}],"name":"_reach_oe_v70873","type":"event"},{"anonymous":false,"inputs":[{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"components":[{"components":[{"internalType":"uint256","name":"A","type":"uint256"},{"internalType":"uint256","name":"B","type":"uint256"}],"internalType":"struct T18","name":"elem0","type":"tuple"},{"internalType":"uint256","name":"elem1","type":"uint256"}],"internalType":"struct T19","name":"elem1","type":"tuple"}],"indexed":false,"internalType":"struct T20","name":"v0","type":"tuple"}],"name":"_reach_oe_v70942","type":"event"},{"anonymous":false,"inputs":[{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"components":[{"components":[{"internalType":"uint256","name":"A","type":"uint256"},{"internalType":"uint256","name":"B","type":"uint256"}],"internalType":"struct T18","name":"elem0","type":"tuple"},{"internalType":"uint256","name":"elem1","type":"uint256"}],"internalType":"struct T19","name":"elem1","type":"tuple"}],"indexed":false,"internalType":"struct T20","name":"v0","type":"tuple"}],"name":"_reach_oe_v70984","type":"event"},{"anonymous":false,"inputs":[{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"indexed":false,"internalType":"struct T3","name":"v0","type":"tuple"}],"name":"_reach_oe_v71503","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"Info","outputs":[{"components":[{"internalType":"address payable[3]","name":"triumvirs","type":"address[3]"},{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"internalType":"struct T4[3]","name":"cmds","type":"tuple[3]"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"protoInfo","type":"tuple"}],"internalType":"struct T6","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},{"inputs":[{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"internalType":"struct T4","name":"v77551","type":"tuple"}],"name":"Triumvir_propose","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"v77556","type":"uint256"},{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"internalType":"struct T4","name":"v77557","type":"tuple"}],"name":"Triumvir_support","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"_reachCreationTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_reachCurrentState","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_reachCurrentTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"components":[{"internalType":"enum _enum_T13","name":"which","type":"uint8"},{"components":[{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"internalType":"struct T4","name":"elem0","type":"tuple"}],"internalType":"struct T11","name":"_Triumvir_propose0_68335","type":"tuple"},{"components":[{"internalType":"uint256","name":"elem0","type":"uint256"},{"components":[{"internalType":"enum _enum_T4","name":"which","type":"uint8"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"},{"internalType":"address payable","name":"elem3","type":"address"}],"internalType":"struct T2","name":"_Harvest","type":"tuple"},{"internalType":"bool","name":"_Kill","type":"bool"},{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"_NewInfo","type":"tuple"},{"internalType":"address payable[3]","name":"_NewTriumvirs","type":"address[3]"},{"internalType":"bool","name":"_NoOp","type":"bool"},{"internalType":"address payable","name":"_Rewards","type":"address"}],"internalType":"struct T4","name":"elem1","type":"tuple"}],"internalType":"struct T8","name":"_Triumvir_support0_68335","type":"tuple"},{"components":[{"internalType":"address payable","name":"elem0","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"elem1","type":"tuple"},{"internalType":"address payable","name":"elem2","type":"address"}],"internalType":"struct T12","name":"_register0_68335","type":"tuple"}],"internalType":"struct T13","name":"elem1","type":"tuple"}],"internalType":"struct T14","name":"v77578","type":"tuple"}],"name":"_reachp_2","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address payable","name":"v77562","type":"address"},{"components":[{"internalType":"enum _enum_T1","name":"which","type":"uint8"},{"internalType":"bool","name":"_None","type":"bool"},{"internalType":"address payable","name":"_Some","type":"address"}],"internalType":"struct T1","name":"v77563","type":"tuple"},{"internalType":"address payable","name":"v77564","type":"address"}],"name":"register","outputs":[{"components":[{"internalType":"uint256","name":"protoFee","type":"uint256"},{"internalType":"uint256","name":"lpFee","type":"uint256"},{"internalType":"uint256","name":"totFee","type":"uint256"},{"internalType":"address payable","name":"protoAddr","type":"address"},{"internalType":"bool","name":"locked","type":"bool"}],"internalType":"struct T3","name":"","type":"tuple"}],"stateMutability":"payable","type":"function"},{"stateMutability":"payable","type":"receive"}]`,
+  Bytecode: `0x601f19608062003ccc3881900390601f820184168301906001600160401b03821184831017620005245782916040528339810190608081830312620005d65760408051919082016001600160401b0381118382101762000524576040528051825282603f82011215620005d657604051926200007b84620005f7565b839160808101918211620005d657602001915b818310620005b4575050506020810191825243600355604051620000b281620005db565b60008152604051620000c481620005f7565b604051620000d281620005f7565b60603682378152620000e362000712565b6020820152620000f26200062f565b6040820152602082015260006040820152600060608201526080620001166200062f565b910152604051916200012883620005f7565b620001326200065c565b835260208301926200014362000712565b84526040810192620001546200062f565b845260ff600454166200059b577fe709fd8c233b0bc15635f5c1669e54669bd1ddfb315ab0dc1efc8633df64d5ca60a060405133815283516020820152620001a2865160408301906200074a565ba15180159081156200058e575b50156200057557346200055c576004815152600060a08251015280518451528051602085510152805160408551015260008351526019602084510152306040845101526005606084510152601e60808451015260405191620002118362000613565b6200021b6200065c565b835260208301946200022c62000712565b86526040840191600083526060850195620002466200062f565b8752600060808701946040516200025d81620005f7565b6060368237865260a088019482865260c0890197838952518952518a5252518652518252439052604051936200029385620005db565b6200029d6200065c565b85526020850193620002ae62000712565b8552620002ba6200062f565b6040870152604051620002cd81620005f7565b60603682376060870152600060808701525195868652518452516040850152516060840152516080830152600360005543600155620003146040519360208501906200077d565b51600061026084015b600382106200053a5750505080608060408193015180511515610920860152602081015161094086015260018060a01b03604082015116610960860152606081015161098086015201516109a08401526200038260608201516109c08501906200074a565b0151610a20828101919091528152610a4081016001600160401b0381118282101762000524576040528051906001600160401b0382116200052457600254600181811c9116801562000519575b60208210146200050357601f811162000499575b50602092601f831160011462000432575091819260009262000426575b50508160011b916000199060031b1c1916176002555b6040516134579081620008758239f35b01519050388062000400565b821692600260005260206000209160005b858110620004805750836001951062000466575b505050811b0160025562000416565b015160001960f88460031b161c1916905538808062000457565b9192602060018192868501518155019401920162000443565b60026000527f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ace601f840160051c81019160208510620004f8575b601f0160051c01905b818110620004eb5750620003e3565b60008155600101620004dc565b9091508190620004d3565b634e487b7160e01b600052602260045260246000fd5b90607f1690620003cf565b634e487b7160e01b600052604160045260246000fd5b6020610240826200054f60019487516200077d565b019301910190916200031d565b60405163100960cb60e01b8152600a6004820152602490fd5b60405163100960cb60e01b815260096004820152602490fd5b90506001541438620001af565b60405163100960cb60e01b815260086004820152602490fd5b82516001600160a01b0381168103620005d6578152602092830192016200008e565b600080fd5b60a081019081106001600160401b038211176200052457604052565b606081019081106001600160401b038211176200052457604052565b60e081019081106001600160401b038211176200052457604052565b604051906200063e82620005db565b60006080838281528260208201528260408201528260608201520152565b6040908151916200066d8362000613565b6000808452815190918491608081016001600160401b03811182821017620006fe5790829160c09493528481528151620006a781620005f7565b85815285602082015285838201526020820152848282015284606082015260208301528381830152620006d96200062f565b606083015251620006ea81620005f7565b606036823760808201528260a08201520152565b634e487b7160e01b85526041600452602485fd5b604051906200072182620005f7565b8160005b6060811062000732575050565b6020906200073f6200065c565b818401520162000725565b6000915b600383106200075c57505050565b81516001600160a01b0316815260019290920191602091820191016200074e565b805160068110156200085e57825260208181015180516001600160a01b0390811683860152918101518051939060028510156200085e57606060c093856040819461022099828c015260208101511515858c015201511660808901528260408201511660a0890152015116828601526040810151151560e08601526080606082015180516101008801526020810151610120880152604081015161014088015284606082015116610160880152015115156101808601526200084960808201516101a08701906200074a565b60a08101511515610200860152015116910152565b634e487b7160e01b600052602160045260246000fdfe60806040526004361015610018575b361561001657005b005b60003560e01c80631a6febfe146100b85780631e93b0f1146100af57806330cf5995146100a65780633b02a7171461009d5780634012e02e14610094578063832307571461008b578063ab53f2c6146100825763dfcc43890361000e5761007d610708565b61000e565b5061007d610693565b5061007d610674565b5061007d610595565b5061007d6102f5565b5061007d6101aa565b5061007d61018b565b6102603660031901126101745761017061015e60606100d636610179565b6101576100e1610b22565b80926100eb6111dd565b9060043582526101006020830191369061114b565b81526040519061010f82610839565b6101176111dd565b825260208201926101266117df565b8452518251525160208251015260018251525160408251015261014761182d565b9060008252516020820152611d63565b0151151590565b60405190151581529081906020820190565b0390f35b600080fd5b61024090602319011261017457602490565b5034610174576000366003190112610174576020600354604051908152f35b50610580366003190112610174576101c0610b22565b604051906101cd82610839565b600435825261056036602319011261017457604051916101ec83610861565b60243560038110156101745783526102403660431901126101745761024d926040516102178161087c565b61022036611080565b81526020820152610230366132f2565b604082015261023e3661339f565b60608201526020820152611d63565b60405160008152602090f35b6001600160a01b031690565b6001600160a01b0381160361017457565b610264359061028482610265565b565b610224359061028482610265565b6104c4359061028482610265565b359061028482610265565b8051825260208082015190830152604080820151908301526060808201516001600160a01b0316908301526080908101511515910152565b60a08101929161028491906102ad565b5060a03660031901126101745760043561030e81610265565b6060366023190112610174576080610170916103d46084359161033083610265565b610338610a33565b50610341610b22565b9283916103ba6103b06103526117b9565b6001600160a01b039384168152936020850161036d36610b90565b81528460408701921682526040519461038586610839565b61038d6117b9565b8652602086019661039c6117df565b885251168551525160208551015251610259565b6040835101611510565b6103c5825160029052565b5160608251015261014761182d565b0151604051918291826102e5565b6000915b600383106103f357505050565b81516001600160a01b0316815260019290920191602091820191016103e6565b50634e487b7160e01b600052602160045260246000fd5b6006111561043457565b610284610413565b6002111561043457565b60409080516104548161043c565b83526020818101511515908401528101516001600160a01b0316910152565b9061022060c0610284938051600681101561051e575b84526020810151606060018060a01b03918281511660208801526104b560208201516040890190610446565b8260408201511660a0880152015116828501526104db604082015160e086019015159052565b6104ee60608201516101008601906102ad565b61050160808201516101a08601906103e2565b60a0810151151561020085015201516001600160a01b0316910152565b610526610413565b610489565b906000905b6003821061053d57505050565b6020610240826105506001948751610473565b01930191019091610530565b6102849092919261072060406107c08301956105798482516103e2565b61058b6020820151606086019061052b565b01519101906102ad565b5034610174576000366003190112610174576105af610ae5565b506101706105bb610b22565b6105c36111f9565b906105d260036000541461151f565b6105da61090b565b916105ef602093848082518301019101611457565b9061064661063a60408401606081510151845152868151015187855101526080815101516040855101526106336106296040835101611503565b6060865101611510565b5151151590565b60808351019015159052565b836060830151928183019384515201518483510152516040825101525191829101526040519182918261055c565b5034610174576000366003190112610174576020600154604051908152f35b5034610174576000806003193601126107055780546106b061090b565b906040519283918252602090604082840152835191826040850152815b8381106106ee57505060608094508284010152601f80199101168101030190f35b8086018201518782016060015286945081016106cd565b80fd5b50610240366003190112610174576101706040610723610b22565b6107d4818351610732816108cd565b60043561073e81610b59565b815261074936610c24565b602082015260e43561075a81610b6d565b8582015261076736610e49565b606082015261077536610f95565b60808201526102043561078781610b6d565b60a0820152610794610286565b60c082015284516107a481610839565b6107ac61179f565b815260208101916107bb6117df565b835281515260008251525160208251015261014761182d565b015160405190151581529081906020820190565b90600182811c92168015610818575b602083101461080257565b634e487b7160e01b600052602260045260246000fd5b91607f16916107f7565b50634e487b7160e01b600052604160045260246000fd5b604081019081106001600160401b0382111761085457604052565b61085c610822565b604052565b608081019081106001600160401b0382111761085457604052565b602081019081106001600160401b0382111761085457604052565b606081019081106001600160401b0382111761085457604052565b60a081019081106001600160401b0382111761085457604052565b60e081019081106001600160401b0382111761085457604052565b601f909101601f19168101906001600160401b0382119082101761085457604052565b604051906000826002549161091f836107e8565b8083526001938085169081156109935750600114610945575b50610284925003836108e8565b6002600090815260008051602061342b83398151915294602093509091905b81831061097b575050610284935082010138610938565b85548884018501529485019487945091830191610964565b905061028494506020925060ff191682840152151560051b82010138610938565b604051906105c082016001600160401b0381118382101761085457604052565b604051906109e182610897565b6060368337565b604051906109f582610897565b60006040838281528260208201520152565b60405190610a1482610861565b6000606083828152610a246109e8565b60208201528260408201520152565b60405190610a40826108b2565b60006080838281528260208201528260408201528260608201520152565b60405190610a6b826108cd565b600060c083828152610a7b610a07565b6020820152826040820152610a8e610a33565b6060820152604051610a9f81610897565b606036823760808201528260a08201520152565b60405190610ac082610897565b8160005b60608110610ad0575050565b602090610adb610a5e565b8184015201610ac4565b60405190610af282610897565b81604051610aff81610897565b60603682378152610b0e610ab3565b60208201526040610b1d610a33565b910152565b60405190610b2f826108b2565b8160008152610b3c610ae5565b602082015260006040820152600060608201526080610b1d610a33565b6006111561017457565b6002111561017457565b8015150361017457565b610244359061028482610b6d565b359061028482610b6d565b60609060231901126101745760405190610ba982610897565b81602435610bb681610b63565b8152604435610bc481610b6d565b6020820152604060643591610bd883610265565b0152565b60609060831901126101745760405190610bf582610897565b81608435610c0281610b63565b815260a435610c1081610b6d565b6020820152604060c43591610bd883610265565b9060c060231983011261017457604051610c3d81610861565b60608193602435610c4d81610265565b8352604319011261017457604051610c6481610897565b604435610c7081610b63565b8152606435610c7e81610b6d565b6020820152608435610c8f81610265565b6040820152602082015260a435610ca581610265565b6040820152606060c43591610bd883610265565b9060c06102c31983011261017457604051610cd381610861565b606081936102c435610ce481610265565b83526102e319011261017457604051610cfc81610897565b6102e435610d0981610b63565b815261030435610d1881610b6d565b602082015261032435610d2a81610265565b6040820152602082015261034435610d4181610265565b604082015260606103643591610bd883610265565b809291039160c083126101745760405190610d7082610861565b606082948235610d7f81610265565b8452601f1901126101745760a0606091604051610d9b81610897565b6020820135610da981610b63565b81526040820135610db981610b6d565b602082015283820135610dcb81610265565b604082015260208501526080810135610de381610265565b6040850152013591610bd883610265565b60a0906101431901126101745760405190610e0e826108b2565b816101443581526101643560208201526101843560408201526101a435610e3481610265565b606082015260806101c43591610bd883610b6d565b60a0906101031901126101745760405190610e63826108b2565b8161010435815261012435602082015261014435604082015261016435610e8981610265565b606082015260806101843591610bd883610b6d565b60a0906103a31901126101745760405190610eb8826108b2565b816103a43581526103c43560208201526103e435604082015261040435610ede81610265565b606082015260806104243591610bd883610b6d565b91908260a091031261017457604051610f0b816108b2565b60808082948035845260208101356020850152604081013560408501526060810135610f3681610265565b6060850152013591610bd883610b6d565b8061020312156101745760405190610f5e82610897565b81610244918211610174576101e4905b828210610f7b5750505090565b602080918335610f8a81610265565b815201910190610f6e565b806101c312156101745760405190610fac82610897565b81610204918211610174576101a4905b828210610fc95750505090565b602080918335610fd881610265565b815201910190610fbc565b8061046312156101745760405190610ffa82610897565b816104a491821161017457610444905b8282106110175750505090565b60208091833561102681610265565b81520191019061100a565b9080601f83011215610174576040519161104a83610897565b82906060810192831161017457905b8282106110665750505090565b60208091833561107581610265565b815201910190611059565b906102406043198301126101745760405161109a816108cd565b80926044356110a881610b59565b825260c06063198201126101745761112f906040516110c681610861565b6064356110d281610265565b81526110dd82610bdc565b602082015260e4356110ee81610265565b60408201526101043561110081610265565b606082015260208401526101243561111781610b6d565b604084015261112581610df4565b6060840152610f47565b608082015261113c610b77565b60a082015260c0610b1d610276565b919091610240818403126101745760c0610b1d6102206040519361116e856108cd565b6111c08597823561117e81610b59565b875261118d8160208501610d56565b602088015261119e60e08401610b85565b60408801526111b1816101008501610ef3565b60608801526101a08301611031565b60808601526111d26102008201610b85565b60a0860152016102a2565b604051906111ea82610839565b81600081526020610b1d610a5e565b6040519061120682610839565b8161120f610a33565b81526020610b1d610ae5565b519061028482610265565b519061028482610b6d565b809291039160c08312610174576040519061124b82610861565b60608294825161125a81610265565b8452601f19011261017457610b1d60a060609260405161127981610897565b602082015161128781610b63565b8152604082015161129781610b6d565b6020820152848201516112a981610265565b604082015260208601526112bf6080820161121b565b60408601520161121b565b91908260a0910312610174576040516112e2816108b2565b6080808294805184526020810151602085015260408101516040850152606081015161130d81610265565b6060850152015191610bd883610b6d565b9080601f83011215610174576040519161133783610897565b82906060810192831161017457905b8282106113535750505090565b60208091835161136281610265565b815201910190611346565b919091610240818403126101745760c0610b1d61022060405193611390856108cd565b6113e2859782516113a081610b59565b87526113af8160208501611231565b60208801526113c060e08401611226565b60408801526113d38161010085016112ca565b60608801526101a0830161131e565b60808601526113f46102008201611226565b60a08601520161121b565b91908260a091031261017457604051611417816108b2565b6080808294805161142781610b6d565b845260208101516020850152604081015161144181610265565b6040850152606081015160608501520151910152565b610a2081830312610174576040519161146f836108b2565b611479818361136d565b83528061025f830112156101745760405161149381610897565b806109008401918383116101745761024090818601905b8482106114ea57505050916114cc816114db93610a00969560208901526113ff565b60408601526109a0830161131e565b60608401520151608082015290565b602083916114f8888561136d565b8152019101906114aa565b516001600160a01b031690565b6001600160a01b039091169052565b1561152657565b60405163100960cb60e01b815260076004820152602490fd5b1561154657565b60405163100960cb60e01b8152600b6004820152602490fd5b1561156657565b60405163100960cb60e01b8152600c6004820152602490fd5b1561158657565b60405163100960cb60e01b8152600d6004820152602490fd5b156115a657565b60405163100960cb60e01b8152601e6004820152602490fd5b156115c657565b60405163100960cb60e01b8152601f6004820152602490fd5b156115e657565b60405163100960cb60e01b815260136004820152602490fd5b1561160657565b60405163100960cb60e01b815260146004820152602490fd5b1561162657565b60405163100960cb60e01b815260156004820152602490fd5b1561164657565b60405163100960cb60e01b815260166004820152602490fd5b1561166657565b60405163100960cb60e01b815260176004820152602490fd5b1561168657565b60405163100960cb60e01b815260186004820152602490fd5b156116a657565b60405163100960cb60e01b815260196004820152602490fd5b156116c657565b60405163100960cb60e01b8152601d6004820152602490fd5b156116e657565b60405163100960cb60e01b8152601b6004820152602490fd5b1561170657565b60405163100960cb60e01b8152600e6004820152602490fd5b1561172657565b60405163100960cb60e01b8152600f6004820152602490fd5b1561174657565b60405163100960cb60e01b815260106004820152602490fd5b1561176657565b60405163100960cb60e01b815260116004820152602490fd5b1561178657565b60405163100960cb60e01b815260126004820152602490fd5b604051906117ac8261087c565b816117b5610a5e565b9052565b604051906117c682610897565b60006040838281526117d66109e8565b60208201520152565b604051906117ec82610861565b81600081526040516117fd8161087c565b611805610a5e565b815260208201526118146111dd565b60408201526060610b1d6117b9565b6003111561043457565b6040519061183a82610839565b81600081526020610b1d6117df565b6040519061185682610839565b6000825260405160208361186983610839565b60405161187581610839565b6000815260008382015283526000828401520152565b6118936109b4565b9061189c61179f565b825260008060208401526118ae610a33565b60408401528060608401526118c16109e8565b60808401526118ce6109e8565b60a08401526118db6109e8565b60c08401528060e08401526118ee6109e8565b61010084015280610120840152611903610a33565b610140840152806101608401526119186109e8565b6101808401526119266109e8565b6101a0840152806101c084015261193b6109e8565b6101e08401526119496111dd565b6102008401526119576109e8565b6102208401526119656109e8565b6102408401526119736109e8565b610260840152806102808401526119886109e8565b6102a08401526119966109e8565b6102c08401526119a46109e8565b6102e0840152806103008401526119b96109e8565b6103208401526119c7610ab3565b6103408401526119d5610a07565b610360840152806103808401526119ea610a33565b6103a08401526119f8611849565b6103c0840152611a06611849565b6103e08401528061040084015280610420840152611a22610a33565b610440840152611a30611849565b610460840152611a3e611849565b610480840152611a4c610a33565b6104a0840152611a5a610a33565b6104c0840152611a686109d4565b6104e08401528061050084015280610520840152611a846117b9565b610540840152611a92610a33565b610560840152806105808401526105a0830152565b90610580909392936040606060206105a086019760018060a01b038095168752805182880152015180516003811015611b36575b83870152611af160208201518388019051610473565b611b0f60208483015180516102a08a015201516102c0880190610473565b015182815116610500860152611b2e6020820151610520870190610446565b015116910152565b611b3e610413565b611adb565b516003811015611b505790565b611b58610413565b90565b6001600160a01b03918216815260a08101949390926080929190611b83906020860190610446565b16910152565b60405190611b96826108cd565b600060c083611ba3610a5e565b8152610a7b610ab3565b50634e487b7160e01b600052601160045260246000fd5b6001906000198114611bd4570190565b611bdc611bad565b0190565b906003811015611bf15760051b0190565b634e487b7160e01b600052603260045260246000fd5b51611b588161043c565b610240810192916102849190610473565b6001600160a01b0390911681526020810191909152610280810192916102849160400190610473565b516006811015611b505790565b506040513d6000823e3d90fd5b6001600160a01b03909116815260c08101929161028491602001906102ad565b3d15611ccd573d906001600160401b038211611cc0575b60405191611cb4601f8201601f1916602001846108e8565b82523d6000602084013e565b611cc8610822565b611c9c565b606090565b8091039060608212610174576040805192611cec84610839565b12610174576040908151611cff81610839565b815181526020820151602082015283520151602082015290565b815181526020918201518051805184840152830151604083015290910151606082015260800190565b6001600160a01b039091168152610260810192916102849160200190610473565b919091611d6e61188b565b90611d8a611d85611d8160045460ff1690565b1590565b61153f565b7f7dc5b063ebecd5e4f9a2a46896f69134a3f12fab54c98e10ef56622c725ae9f660405180611dba843383611aa7565b0390a1600393611dcd856000541461155f565b6020611de8611dda61090b565b828082518301019101611457565b92611dfe81518015908115612eee575b5061157f565b01611e098151611b43565b611e1281611823565b6123d5576020611e289151015180855251611c4b565b611e318161042a565b61227e57600160208401525b611e52611e4d6020850151151590565b6116ff565b60808301946000865152600060208751015285519560c08501968752600096606085019760e08701906101008801905b8a86821061220857505050506001611eb491518060a089015251611ea58161043c565b611eae8161043c565b1461171f565b611ebe341561173f565b611ec9855151611c4b565b611ed28161042a565b6120a85760016101208601525b611ef5611ef0610120870151151590565b61175f565b516101a08501908152906101e085016101c0860160005b838110612028575050505094611ff2608093926000604061028498995192611f5160016101808b019580875251611f428161043c565b611f4b8161043c565b1461177f565b8151600081527f525037b1644d6bf6db10e8adba693e5e73a01a50cb0ac63a6b172940f93e96c790602090a101527f510fa3e00163331e7163ef9e01f872b444c3d8848dda15e731d1789d76c63618611fb38751516040519182913383611d42565b0390a1611fbe611b89565b95845187526020850151916001611fd58251611c07565b611fde8161043c565b0361201f575160400151905b515191612f7c565b6020850152600060408501526040820151606085015251828401524360a0840152015160c082015261326c565b50600090611fea565b8061204861204261203d612095948e51611be0565b611503565b84611510565b612053845160019052565b806040855101526120648651611c07565b61206d8161043c565b6120a15761208361207e8451610259565b610259565b33145b1561209a5783515b8652611bc4565b611f0c565b855161208e565b6000612086565b60016120b5865151611c4b565b6120be8161042a565b036120d15760016101208601525b611edf565b60026120de865151611c4b565b6120e78161042a565b03612191576060855151015161014086019080825260648151106000146121895760206064910151105b1561217c5761213a81516121316040820151916020810151905190612efa565b14610160880152565b61016086015115612175576064604082510151105b1561216a5760406120cc9151015115155b1515610120870152565b506120cc6000612160565b600061214f565b600061016087015261213a565b506000612111565b8161219d865151611c4b565b6121a68161042a565b036121b8576001610120860152611edf565b60046121c5865151611c4b565b6121ce8161042a565b036121e0576001610120860152611edf565b60056121ed865151611c4b565b6121f68161042a565b036120cc576001610120860152611edf565b9061222361221d61203d8361226b9551611be0565b85611510565b61222e835160019052565b8060408451015261223f8551611c07565b6122488161043c565b6122775761225961207e8551610259565b33145b156122705782515b8552611bc4565b611e82565b8451612264565b600061225c565b600161228b845151611c4b565b6122948161042a565b036122a657600160208401525b611e3d565b60026122b3845151611c4b565b6122bc8161042a565b036123615760608351510151604084019080825260648151106000146123595760206064910151105b1561234d5761230d81516123056040820151916020810151905190612efa565b146060860152565b606084015115612346576064604082510151105b1561233b5760406122a19151015115155b15156020850152565b506122a16000612332565b6000612321565b6000606085015261230d565b5060006122e5565b8461236d845151611c4b565b6123768161042a565b036123875760016020840152611e3d565b6004612394845151611c4b565b61239d8161042a565b036123ae5760016020840152611e3d565b60056123bb845151611c4b565b6123c48161042a565b036122a15760016020840152611e3d565b60016123e5829794969751611b43565b6123ee81611823565b03612d5c5782604061240b925101518061020087015251106115df565b610220830160008151526000602082510152805161026085019081526000610280860190876102a08801915b878110612d3e57505050505161246a60016102408701928084525161245b8161043c565b6124648161043c565b146115ff565b6102008501515190600161247e8251611c07565b6124878161043c565b03612d35575160400151905b03612d2b576124a2600061161f565b612509602061020086015101516040516124d2816124c4602082019485611c11565b03601f1981018352826108e8565b5190206124ea60208801516102008801515190611be0565b51604051612500816124c4602082019485611c11565b5190201461163f565b612513341561165f565b516102e084019081526103008401610320850160005b858110612d0e575050506000916060915161256160016102c0880192808452516125528161043c565b61255b8161043c565b1461167f565b610200860151519060016125758251611c07565b61257e8161043c565b148514612d06575160400151905b148314612cfc5761259c8361169f565b6125b3602087015161020087015151885191612f7c565b610340860152604051600081527fecbb55eb21e57c78eb700ea9e1c2f98e83f647b4c6dbcb13b35a2cf207946e9590602090a101527f1ca272bbb6018d7b99180311121f45ec91a0b47a19077a7badd69e3dbd0db37e6102008301515161261e816020870151611be0565b51906126306040519283923384611c22565b0390a161265161264b60208501516102008501515190611be0565b51611c4b565b61265a8161042a565b61299257506020612675818401516102008401515190611be0565b5101519161268e60206103608401948086520151611c07565b6126978161043c565b61284457608081836127b1600080612757610284998261276b604061207e9b019a8b9361270c612701606087510151966103a08d01978851526020815101516020895101528e815101516040895101526106336126f76040835101611503565b60608a5101611510565b8d8751019015159052565b610580479a01998a52612727600160ff196004541617600455565b6127656127376060835101611503565b9551604051978891602083019863038da9cb60e21b8a5260248401611c65565b03601f1981018852876108e8565b51611503565b9251925af19161278361277c611c85565b8094612f4c565b5061279360ff1960045416600455565b4790519003916103c087019283515260208082518301019101611cd2565b60208251015251927f9b88ed534d5c6836f0d1925bba456f75ada69bf31bef0726a4a12ea6f74500966127f26103e087019580875260405191829182611d19565b0390a1612801845151156116df565b61034061280c611b89565b958351875201516020860152600060408601525160608501526060810151828501524360a085015201519051510160c082015261326c565b6001612854602085510151611c07565b61285d8161043c565b1461286757505050565b608061207e91836129426000806127578961289961288f604060206102849e51015101611503565b6104008801611510565b826128fc604089019a8b936128e1612701606087510151966104408d01978851526020815101516020895101528e815101516040895101526106336126f76040835101611503565b6105a0479a01998a52612727600160ff196004541617600455565b9251925af19161291461290d611c85565b8094612f1c565b5061292460ff1960045416600455565b47905190039161046087019283515260208082518301019101611cd2565b60208251015251927f21069e420717cbe75e06a8fdf35509b54df625a48ca9e8fd18264278a839761e61298361048087019580875260405191829182611d19565b0390a1612801845151156116bf565b60016129ac61264b60208601516102008601515190611be0565b6129b58161042a565b03612a0457506080610284926103406129cc611b89565b82518152930151602084015260016040840152604081015160608401526060810151828401524360a0840152015160c082015261326c565b6002612a1e61264b60208601516102008601515190611be0565b612a278161042a565b03612aeb57506080826060612a4a60206102849601516102008601515190611be0565b5101516040612a63846104a08701938085520151151590565b91612a766104c087019384519015159052565b602081510151602084510152612a9b612a926060835101611503565b83855101611510565b8051516060845101525101518382510152610340612ab7611b89565b948351865201516020850152600060408501525160608401526060810151828401524360a0840152015160c082015261326c565b612b0361264b60208501516102008501515190611be0565b612b0c8161042a565b03612b775760808281612b2d60206102849601516102008601515190611be0565b5101516104e08401908152610340612b43611b89565b948351865201516020850152600060408501526040820151606085015251828401524360a0840152015160c082015261326c565b6004612b9161264b60208501516102008501515190611be0565b612b9a8161042a565b03612be857608061028492610340612bb0611b89565b93825185520151602084015260006040840152604081015160608401526060810151828401524360a0840152015160c082015261326c565b6005612c0261264b60208501516102008501515190611be0565b612c0b8161042a565b14612c14575050565b81612ccb612c3c60c0612c3560206102849701516102008701515190611be0565b5101611503565b91612c4c61050085019384611510565b60808101805190916060914781811015612cef5750506000808080805b612c7e61207e6105208d019b838d5251610259565b828215612ce6575bf115612cd9575b610340612c98611b89565b96825188520151602087015260006040870152604081015182870152015160808501524360a08501528251905190612efa565b9051900360c082015261326c565b612ce1611c58565b612c8d565b506108fc612c86565b6000808093819303612c69565b61259c600161169f565b50839061258c565b8061222361221d61203d612d269460608d0151611be0565b612529565b6124a2600161161f565b50600090612493565b61222361221d61203d836060612d55960151611be0565b8890612437565b939091506002612d6c8551611b43565b612d7581611823565b14612d81575b50505050565b7ffe325ddb46ceb5c5c02d1b18bc5e927e25bc0ec2cf49203c2ae8c0c355b290cf6080926060612ee59651015190612dd56105408701928084523390612dce60018060a01b039151610259565b161461159f565b612ddf34156115bf565b8460408501966105606060895101519101908151526020885101516020825101528188510151604082510152612e25612e1b60408a5101611503565b6060835101611510565b612e3e612e33895151151590565b838351019015159052565b7f5358ceaba769a05504fbdfcf4b83c2d3211aaad35400abb53dad9f4433fc5c6a612e708251604051918291826102e5565b0390a15191015251612e828151610259565b612ea3612e9760406020850151940151610259565b60405193849384611b5b565b0390a1612eae611b89565b928151845260208201516020850152600060408501525160608401526060810151828401524360a0840152015160c082015261326c565b38808080612d7b565b90506001541438611df8565b9190820191828111612f0f575b821061017457565b612f17611bad565b612f07565b15612f245790565b805115612f3357805190602001fd5b60405163100960cb60e01b8152601c6004820152602490fd5b15612f545790565b805115612f6357805190602001fd5b60405163100960cb60e01b8152601a6004820152602490fd5b9291612f86610ab3565b9360005b60038110612fad57505090612faa91612fa38286611be0565b5283611be0565b50565b80612fbb612fd79284611be0565b51612fc68289611be0565b52612fd18188611be0565b50611bc4565b612f8a565b60405190612fe9826108b2565b6000608083612ff6610a5e565b8152613000610ab3565b602082015261300d610a33565b604082015260405161301e81610897565b606036823760608201520152565b919091610a006080610a20830194613045848251610473565b613058602082015161024086019061052b565b604081810151805115156109008701526020810151610920870152908101516001600160a01b0316610940860152606080820151610960870152908301516109808601528101516130ae906109a08601906103e2565b0151910152565b8181106130c0575050565b600081556001016130b5565b90601f82116130d9575050565b6102849160026000526020600020906020601f840160051c83019310613107575b601f0160051c01906130b5565b90915081906130fa565b80519091906001600160401b0381116131e7575b613139816131346002546107e8565b6130cc565b602080601f8311600114613175575081929360009261316a575b50508160011b916000199060031b1c191617600255565b015190503880613153565b6002600052601f1983169490919060008051602061342b833981519152926000905b8782106131cf5750508360019596106131b6575b505050811b01600255565b015160001960f88460031b161c191690553880806131ab565b80600185968294968601518155019501930190613197565b6131ef610822565b613125565b6131ff6002546107e8565b806132075750565b601f811160011461321a57506000600255565b600260005261325f90601f0160051c60008051602061342b833981519152017f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5acf6130b5565b6000602081208160025555565b60408101511561328d5750600080556132856000600155565b6102846131f4565b6124c46132ed6102849260c06132a1612fdc565b9180518352602081015160208401526060810151604084015260808101516060840152015160808201526132d56003600055565b6132de43600155565b6040519283916020830161302c565b613111565b9061026061028319830112610174576040519161330e83610839565b610284358352826102406102a3198301126101745760209061337760405193613336856108cd565b6102a43561334381610b59565b855261334e81610cb9565b848601526103843561335f81610b6d565b604086015261336d81610e9e565b6060860152610fe3565b60808401526104a43561338981610b6d565b60a0840152613396610294565b60c08401520152565b9060a06104e319830112610174576040516133b981610897565b606081936104e4356133ca81610265565b8352610503190112610174576040516133e281610897565b610504356133ef81610b63565b8152610524356133fe81610b6d565b60208201526105443561341081610265565b6040820152602082015260406105643591610bd88361026556fe405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5acea164736f6c6343000810000a`,
+  BytecodeLen: 15564,
+  version: 9,
   views: {
-    Info: `Info`
     }
   };
 export const _stateSourceMap = {

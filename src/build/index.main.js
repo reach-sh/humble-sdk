@@ -1,8 +1,8 @@
-// Automatically generated with Reach 0.1.12 (b99432c0*)
+// Automatically generated with Reach 0.1.12 (1f68dfdb)
 /* eslint-disable */
 export const _version = '0.1.12';
-export const _versionHash = '0.1.12 (b99432c0*)';
-export const _backendVersion = 25;
+export const _versionHash = '0.1.12 (1f68dfdb)';
+export const _backendVersion = 26;
 
 export function getExports(s) {
   const stdlib = s.reachStdlib;
@@ -240,6 +240,10 @@ const _ALGO = {
     pure: [],
     sigs: []
     },
+  GlobalNumByteSlice: 1,
+  GlobalNumUint: 0,
+  LocalNumByteSlice: 0,
+  LocalNumUint: 0,
   appApproval: `ByACAAEmAQAiNQAxGEEAeShkSSJbNQGBCFs1AjYaABdJQQAHIjUEIzUGADYaAhc1BDYaAzYaARcAMRmBBRJEsSKyASKyCCOyEDIJsgkyCrIHs0IABTEZIhJEKDQBFjQCFlBnNAZBAAqABBUffHU0B1CwNABJIwgyBBJEMRYSRCNDMRkiEkRC/98iMTQSRCMxNRJEIjE2EkQiMTcSRCI1ASI1AkL/rw==`,
   appClear: `Bw==`,
   companionInfo: null,
@@ -253,64 +257,10 @@ const _ALGO = {
   warnings: []
   };
 const _ETH = {
-  ABI: `[
-  {
-    "stateMutability": "payable",
-    "type": "fallback"
-  },
-  {
-    "inputs": [],
-    "name": "_reachCreationTime",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "_reachCurrentState",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "_reachCurrentTime",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "receive"
-  }
-]`,
-  Bytecode: `0x608060405234801561001057600080fd5b506101fd806100206000396000f3fe6080604052600436106100355760003560e01c80631e93b0f11461003e5780638323075714610062578063ab53f2c61461007757005b3661003c57005b005b34801561004a57600080fd5b506003545b6040519081526020015b60405180910390f35b34801561006e57600080fd5b5060015461004f565b34801561008357600080fd5b5061008c61009a565b604051610059929190610137565b6000606060005460028080546100af9061018d565b80601f01602080910402602001604051908101604052809291908181526020018280546100db9061018d565b80156101285780601f106100fd57610100808354040283529160200191610128565b820191906000526020600020905b81548152906001019060200180831161010b57829003601f168201915b50505050509050915091509091565b82815260006020604081840152835180604085015260005b8181101561016b5785810183015185820160600152820161014f565b506000606082860101526060601f19601f830116850101925050509392505050565b600181811c908216806101a157607f821691505b6020821081036101c157634e487b7160e01b600052602260045260246000fd5b5091905056fea264697066735822122055430ad6310bccb394488d5ffdc74fb9f18f4b03dad3bf5c746dc20c5966c48064736f6c63430008100033`,
-  BytecodeLen: 541,
-  Which: `oD`,
-  version: 8,
+  ABI: `[{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"_reachCreationTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_reachCurrentState","outputs":[{"internalType":"uint256","name":"","type":"uint256"},{"internalType":"bytes","name":"","type":"bytes"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_reachCurrentTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"stateMutability":"payable","type":"receive"}]`,
+  Bytecode: `0x60808060405234610016576101e5908161001c8239f35b600080fdfe6080604090808252600436101561001d575b5050361561001b57005b005b600090813560e01c9081631e93b0f1146101bc5750806383230757146101995763ab53f2c60361001157346101965780600319360112610196578054918051918060025490600182811c9080841693841561018c575b60209485841081146101785783895288949392918690821561015c575050600114610121575b5050601f801996879203011681019581871060018060401b0388111761010d5785858589958694858452855282818601528551809386015281955b8387106100f45750506060945090601f9185828601015201168101030190f35b86810182015188880160600152958101958795506100d4565b634e487b7160e01b84526041600452602484fd5b90849250600286528286209186925b828410610144575050508201013880610099565b8054848b018601528995508694909301928101610130565b925093505060ff191682840152151560051b8201013880610099565b634e487b7160e01b87526022600452602487fd5b91607f1691610073565b80fd5b5090346101b857816003193601126101b8576020906001549051908152f35b5080fd5b9050346101b857816003193601126101b8576020906003548152f3fea164736f6c6343000810000a`,
+  BytecodeLen: 513,
+  version: 9,
   views: {
     }
   };

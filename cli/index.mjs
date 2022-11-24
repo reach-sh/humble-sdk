@@ -33,11 +33,11 @@ const humbleOpts = {
   providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK }
 };
 const pubTestnet = {
-  protocolAddress: "JAL2RRWBDHZW5LOFQBDMDFNOQDCWEUXS2BIICKZV42VQBC2BCUIZRKN5TQ",
-  protocolId: 121344926,
-  partnerFarmAnnouncerId: 121345309,
-  publicFarmAnnouncer: 121345428,
-  limitOrderAnnouncer: 121346090
+  protocolAddress: "TOZSHULV2OPPS5SFGFBWMBIMHXAUUPZYXZ7R2DR3XFVAEH652SO2AZVS6M",
+  protocolId: 145284200,
+  partnerFarmAnnouncerId: 145284434,
+  publicFarmAnnouncer: 145284477,
+  limitOrderAnnouncer: 145284618
 };
 const rf = (s) => `${s} ((requires funded account!))`;
 const sections = [

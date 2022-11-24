@@ -15,7 +15,7 @@ import {
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
 import { checkRewardsImbalance } from "./calculateRewardsPerBlock";
-import { HUMBLE_LP_TOKEN_SYMBOL, ProtocolFarmFunderAddr } from "../constants";
+import { HUMBLE_LP_TOKEN_SYMBOL } from "../constants";
 
 /** Transaction options (create staking pool) */
 export type CreateFarmTxnOpts = {
@@ -46,10 +46,8 @@ export async function createStakingPool(
 ): Promise<TransactionResult<CreateFarmTxnResult>> {
   const { onProgress = noOp, onComplete = noOp, opts } = stakingOpts;
   const data: CreateFarmTxnResult = { amountsDeposited: [0, 0] };
-
-  //    validate args
   const required = [
-    opts.rewardTokenId,
+    opts.rewardTokenId, // validate all args
     opts.stakeTokenId,
     opts.totalRewardsPayout,
     opts.startBlock,
@@ -67,14 +65,20 @@ export async function createStakingPool(
     return errorResult(`Missing fields "${missing}"`, null, data);
   }
 
-  const stakeToken = await fetchToken(acc, opts.stakeTokenId);
-  const notPartner = opts.rewarder0 !== ProtocolFarmFunderAddr();
-  if (stakeToken?.symbol !== HUMBLE_LP_TOKEN_SYMBOL && notPartner) {
-    return errorResult(
-      "Staking token is not a Liquidity Pool token",
-      null,
-      data
-    );
+  const [stakeToken, rewardToken] = await Promise.all([
+    fetchToken(acc, opts.stakeTokenId),
+    fetchToken(acc, opts.rewardTokenId)
+  ]);
+
+  // Warn if invalid stake and reward token selection
+  if (stakeToken?.id === rewardToken?.id) {
+    const err = "Staking and reward token cannot be the same";
+    return errorResult(err, null, data);
+  }
+
+  // Warn if user is creating a farm with non-LP token
+  if (stakeToken?.symbol !== HUMBLE_LP_TOKEN_SYMBOL) {
+    onProgress("WARN: Staking token is not a Liquidity Pool token");
   }
 
   // Deploy and fund contract

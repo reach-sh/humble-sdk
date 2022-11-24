@@ -32,10 +32,15 @@ const TIMEOUT = 15;
 const pools = new Set();
 
 /* 
-  Announced 08/18
 =====================
 farm          pool
-123132710 122708890
+=====================
+123132710  122708890
+145130612  - (no associated pool)
+=====================
+New V3 (0.1.12-rc.9)
+=====================
+145285794  - (no associated pool)
  */
 
 /** Announce a single farm */
@@ -58,61 +63,40 @@ export async function runAnnounceFarmTest(acc) {
   Blue(JSON.stringify(farmResult.data, null, 2));
   if (!isPartner) Red("WARNING: This is a Permissionless farm!");
 
-  const poolId = await answerOrDie("Enter Liquidity Pool Address:");
-  if (!poolId)
-    return exitWithMsgs("Use Humble API to search pool by LP token ID");
-
-  const n2nn = (await answerOrDie("Does the pool contain ALGO? (y/n)")) === "y";
-  Yellow("Fetching Liquidity Pool ...");
-  const poolResult = await fetchLiquidityPool(acc, {
-    poolAddress: poolId,
-    n2nn,
-    includeTokens: true,
-    onProgress: Yellow
-  });
-
-  if (!poolResult.succeeded) return exitWithMsgs(`Pool id ${poolId} not found`);
-  const { data: poolData } = poolResult;
-  const { pool, tokens } = poolData;
-  const [tokA, tokB] = tokens;
   const { contract: farmContract } = farmResult;
+  const { poolAddress: poolId, tokens } = await validatePoolId(stakeToken);
+  const [tokA, tokB] = tokens;
   const stdlib = createReachAPI();
-  if (pool.poolTokenId.toString() !== stakeToken.id.toString()) {
-    return exitWithMsgs("Pool Liquidity Token does not match Farm Stake Token");
-  }
-
   const big = stdlib.bigNumberify;
   const div = stdlib.div;
   const stakeTokenRaw = await acc.tokenMetadata(stakeToken.id);
   const duration = farmView.opts.end - farmView.opts.start;
   const { totalRewards: tr } = farmView;
-  const [nr, nnr] = [
-    tr.network,
-    tr.rewardToken
-    // Number(formatCurrency(tr.network)),
-    // Number(formatCurrency(tr.rewardToken, stakeToken.decimals))
-  ];
-  const rpb = estimateRewardsPerBlock([nr, nnr], duration);
+  const rpb = estimateRewardsPerBlock([tr.network, tr.rewardToken], duration);
+
   Red("=============");
-  iout("total rewards", [nr, nnr]);
+  iout("total rewards", rpb);
   iout("duration (blocks)", duration);
   iout("estimate rewards per block", rpb);
   iout("parsed rewards", [
-    formatCurrency(parseCurrency(rpb[0])),
-    formatCurrency(parseCurrency(rpb[1], tokB.decimals), tokB.decimals)
+    formatCurrency(rpb[0]),
+    formatCurrency(rpb[1], rewardToken.decimals)
   ]);
   Red("=============");
 
-  const Ceiling = (s) => Math.ceil(Number(s));
-  const AId = isNetworkToken(tokA.id) ? null : parseAddress(tokA.id);
+  const safeId = (v) => {
+    const safe = v ? parseAddress(v.id) : null;
+    return isNetworkToken(safe) ? null : safe;
+  };
+  const safeSymbol = (v) => (v ? v.symbol : "");
+  const AId = safeId(tokA);
   const staticFarmData = {
     ctcInfo: parseAddress(farmId),
     endBlock: farmView.opts.end,
     pairTokenAId: asMaybe(AId),
-    pairTokenASymbol: tokA.symbol,
-    pairTokenBId: parseAddress(tokB.id),
-    pairTokenBSymbol: tokB.symbol,
-    rewardsPerBlock: rpb.map(Ceiling),
+    pairTokenASymbol: safeSymbol(tokA),
+    pairTokenBId: safeId(tokB) || 0,
+    pairTokenBSymbol: safeSymbol(tokB),
     rewardTokenDecimals: rewardToken.decimals,
     rewardTokenId: parseAddress(rewardToken.id),
     rewardTokenSymbol: rewardToken.symbol,
@@ -145,4 +129,26 @@ export async function runAnnounceFarmTest(acc) {
     do: () => runAnnounceFarmTest(acc),
     prompt: "Announce another farm? (y/n)"
   });
+}
+
+async function validatePoolId(stakeToken) {
+  Yellow("Enter Liquidity Pool Address:");
+  const poolAddress = await answerOrDie("Enter 0 if no pool");
+  if (poolAddress === "0") return { poolAddress, tokens: [] };
+  if (!poolAddress)
+    return exitWithMsgs("Use Humble API to search pool by LP Token ID");
+
+  const n2nn = (await answerOrDie("Does the pool contain ALGO? (y/n)")) === "y";
+  Yellow("Fetching Liquidity Pool ...");
+  const opts = { poolAddress, n2nn, includeTokens: true, onProgress: Yellow };
+  const { data, succeeded } = await fetchLiquidityPool(acc, opts);
+
+  if (!succeeded) return exitWithMsgs(`Pool id ${poolAddress} not found`);
+
+  const { pool, tokens } = data;
+  if (pool.poolTokenId.toString() !== stakeToken.id.toString()) {
+    return exitWithMsgs("Pool Liquidity Token does not match Farm Stake Token");
+  }
+
+  return { poolAddress, tokens };
 }

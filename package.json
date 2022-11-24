@@ -41,7 +41,7 @@
     "uglify-js": "^3.17.1"
   },
   "dependencies": {
-    "@reach-sh/stdlib": "0.1.12-rc.8",
+    "@reach-sh/stdlib": "0.1.12-rc.9",
     "axios": "^0.27.2",
     "reach-edge": "npm:@reach-sh/stdlib@latest"
   }

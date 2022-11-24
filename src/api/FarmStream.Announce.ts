@@ -4,7 +4,7 @@ import { parseAddress, ReachAccount } from "../reach-helpers/index";
 import {
   ReachTxnOpts,
   SDKStakingRewards,
-  StaticFarmDataUnformatted
+  StaticFarmDataFormatted
 } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { getAnnouncers } from "../constants";
@@ -12,9 +12,7 @@ import { fetchStakingPool } from "./Staker.Fetch";
 import { isPartnerFarm } from "./subscribeToFarmStream";
 
 /** Options for announcing a Farm */
-type AnnounceOpts = {
-  staticFarmData: StaticFarmDataUnformatted;
-} & ReachTxnOpts;
+type AnnounceOpts = { staticFarmData: StaticFarmDataFormatted } & ReachTxnOpts;
 
 /**
  * Remove (un-stake) an amount from a contract. Reduces rewards entitlement.
@@ -73,5 +71,5 @@ export function estimateRewardsPerBlock(
   duration: number
 ) {
   const [net, nonnet] = rewards.map(Number);
-  return [net / duration, nonnet / duration].map(String);
+  return [Math.ceil(net / duration), Math.ceil(nonnet / duration)].map(String);
 }

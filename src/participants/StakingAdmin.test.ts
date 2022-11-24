@@ -1,4 +1,8 @@
-import { createReachAPI, HUMBLE_LP_TOKEN_SYMBOL } from "../index";
+import {
+  createReachAPI,
+  HUMBLE_LP_TOKEN_SYMBOL,
+  initHumbleSDK
+} from "../index";
 import { createStakingPool } from "./StakingAdmin";
 import { StakingRewards } from "../types";
 
@@ -31,11 +35,18 @@ const stakingOpts = {
 };
 
 describe.only("Create Staking Pool", () => {
-  it(`Requires staking token to be a ${HUMBLE_LP_TOKEN_SYMBOL} token`, async () => {
+  it(`Requires staking token to be different from reward token`, async () => {
+    initHumbleSDK();
     expect.assertions(3);
-    const result = await createStakingPool(MockAccount, stakingOpts);
+    const result = await createStakingPool(MockAccount, {
+      ...stakingOpts,
+      opts: {
+        ...stakingOpts.opts,
+        stakeTokenId: stakingOpts.opts.rewardTokenId
+      }
+    });
     expect(result).toBeDefined();
     expect(result.succeeded).toBe(false);
-    expect(result.message).toBe("Staking token is not a Liquidity Pool token");
+    expect(result.message).toBe("Staking and reward token cannot be the same");
   });
 });

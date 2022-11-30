@@ -6,9 +6,13 @@ import {
   SDKOpts
 } from "./reach-helpers";
 import { PoolProtocolInfo } from "./types";
+import { default as ANNOUNCERS } from "./json/ANNOUNCERS.json";
 
 // Strings
 export * from "./constants.strings";
+
+type AppVersion = keyof typeof ANNOUNCERS;
+export const BASE_VERSION: AppVersion = "v3";
 
 // Fees
 export const FLOAT = 0.0001;
@@ -59,6 +63,11 @@ export function getAnnouncers() {
     publicFarmAnnouncer: PUBLIC_FARM_ANNOUNCER_ID,
     limitOrderAnnouncer: LIMIT_ORDER_ANNOUNCER_ID
   };
+}
+
+/** Get versioned announcer contract ids. */
+export function getLegacyAnnouncers(v: AppVersion = BASE_VERSION) {
+  return ANNOUNCERS[v];
 }
 
 /** Get app id of Triumvirate contract. */

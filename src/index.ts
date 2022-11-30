@@ -5,9 +5,12 @@ import { checkInitialized, setSDKOpts } from "./constants";
 // CONSTANTS
 export {
   HUMBLE_LP_TOKEN_SYMBOL,
+  BASE_VERSION,
+  checkInitialized,
   getAnnouncers,
   getBlockchain,
   getDefaultDecimals,
+  getLegacyAnnouncers,
   getNetworkProvider,
   getPoolAnnouncer,
   getProtocolAddr,

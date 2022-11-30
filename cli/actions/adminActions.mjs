@@ -4,6 +4,7 @@ import {
   createLOAnnouncer,
   createTriumvirate
 } from "../runCreateAnnouncer.mjs";
+import { createPoolMigrator } from "../runCreatePoolMigratorTest.mjs";
 
 export const CreateFarmAnnouncer = {
   title: "Create Farm Announcer (requires funds)",
@@ -24,6 +25,10 @@ export const adminActions = [
   {
     title: "Create Limit Order Announcer (requires funds)",
     action: createLOAnnouncer
+  },
+  {
+    title: "Create Pool Liquidity Migrator (requires funds)",
+    action: createPoolMigrator
   },
   AnnounceFarm
 ];

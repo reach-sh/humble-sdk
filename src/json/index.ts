@@ -1,6 +1,7 @@
 import { getBlockchain } from "../constants";
 import { default as ALGO } from "./ALGO.json";
 import { default as ETH } from "./ETH.json";
+import { default as MatchPools } from "./POOLS.V3-V2.json";
 
 const CHAIN_CONSTANTS = { ALGO, ETH };
 
@@ -53,6 +54,11 @@ export function blockConstants(network = getBlockchain()) {
     /* Number of algo blocks written per day */
     BLOCKS_PER_DAY,
     /* Number of algo blocks written per hour */
-    BLOCKS_PER_HR,
+    BLOCKS_PER_HR
   };
+}
+
+/** Get id of `HumbleSwap v2` pool for liquidity migration */ 
+export function getV2PoolId(v3PoolId: string) {
+  return MatchPools[v3PoolId as keyof typeof MatchPools] || null;
 }

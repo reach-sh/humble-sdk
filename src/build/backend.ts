@@ -9,8 +9,10 @@ import * as LimitOrderAnnouncer from "./limitOrder.announcer.js";
 import * as LimitOrderN2NN from "./limitOrder.lo_net_tok.js";
 import * as LimitOrderNN2NN from "./limitOrder.lo_tok_tok.js";
 import * as LimitOrderNN2N from "./limitOrder.lo_tok_net.js";
-import * as PoolMigratorN2NN from "./poolMigrator.net_tok.js";
-import * as PoolMigratorNN2NN from "./poolMigrator.tok_tok.js";
+import * as TransferOldLPN2NN from "./liquidityMigrator.transfer.net_tok";
+import * as TransferOldLPNN2NN from "./liquidityMigrator.transfer.tok_tok.js";
+import * as WithdrawOldLPN2NN from "./liquidityMigrator.withdraw.net_tok";
+import * as WithdrawOldLPNN2NN from "./liquidityMigrator.withdraw.tok_tok.js";
 import {
   BackendModule,
   ReachContract,
@@ -28,8 +30,10 @@ export const limitOrderAnnouncer = LimitOrderAnnouncer;
 export const limitOrderN2NN = LimitOrderN2NN;
 export const limitOrderNN2NN = LimitOrderNN2NN;
 export const limitOrderNN2N = LimitOrderNN2N;
-export const poolMigratorN2NN = PoolMigratorN2NN;
-export const poolMigratorNN2NN = PoolMigratorNN2NN;
+export const transferOldLPN2NN = TransferOldLPN2NN;
+export const transferOldLPNN2NN = TransferOldLPNN2NN;
+export const withdrawOldLPN2NN = WithdrawOldLPN2NN;
+export const withdrawOldLPNN2NN = WithdrawOldLPNN2NN;
 
 /**
  * Get a function for calculating the expected output of a swap.

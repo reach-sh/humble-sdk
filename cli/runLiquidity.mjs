@@ -5,6 +5,7 @@ import {
 } from "@reach-sh/humble-sdk";
 import { runAddLiquidity } from "./runLiquidity.Add.mjs";
 import { runWithdrawLiquidity } from "./runLiquidity.Withdraw.mjs";
+import { createPoolMigrator } from "./runLiquidityMigratorTest.mjs";
 import {
   answerOrDie,
   exitWithMsgs,
@@ -17,7 +18,7 @@ import {
 } from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);
-const actions = ["add", "withdraw"];
+const actions = ["add", "withdraw", "migrate"];
 
 /** Run Add/Withdraw Liquidity Tests */
 export async function runLiquidity(acc) {
@@ -40,10 +41,12 @@ export async function runLiquidity(acc) {
 
   Green(poolResult.message || `Fetched ${poolName} pool`);
   // Get user action
-  Yellow("Are you adding or withdrawing?");
+  Yellow("Are you adding, withdrawing, or migrating?");
   actions.forEach((a, i) => Blue(`${i + 1}. ${a}`));
   const action = await answerOrDie(`Enter selection (number):`);
   const index = Number(action) - 1;
+
+  if (index === 2) return createPoolMigrator(acc);
 
   // Add Liquidity options
   if (index === 0) {

@@ -54,7 +54,7 @@ export async function createPoolMigrator(acc) {
   showTitle("Creating POOL LIQUIDITY MIGRATION CONTRACT");
   Yellow("========================================");
   Red("!! ⚠️ !! This will default a v2 - v3 pool!");
-  Red("!! ⚠️ !! Please adapt 'runCreatePoolMigratorTest.mjs' to handle v4+");
+  Red("!! ⚠️ !! Please adapt 'runLiquidityMigratorTest.mjs' to handle v4+");
   Red("!! ⚠️ !! and remove this warning message");
   Yellow("========================================\n\n");
 

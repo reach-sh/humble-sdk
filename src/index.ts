@@ -20,7 +20,11 @@ export {
 } from "./constants";
 
 // CONTRACTS
-export { LimitOrderType, getLimitOrderVariant } from "./build/backend";
+export {
+  LimitOrderType,
+  LiquidityMigratorOpts,
+  getLimitOrderVariant
+} from "./build/backend";
 
 // DATA & DATA FETCHERS
 export * from "./participants/index";

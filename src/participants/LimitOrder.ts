@@ -3,7 +3,7 @@ import {
   getLimitOrderVariant,
   LimitOrderView
 } from "../build/backend";
-import { getAnnouncers } from "../constants";
+import { getAnnouncers, TXN_SIGN } from "../constants";
 import {
   createReachAPI,
   parseAddress,
@@ -42,7 +42,7 @@ export async function createLimitOrder(
   const variant = getLimitOrderVariant({ tokenA, tokenB });
   const ctc = acc.contract(getLimitOrderBackend(variant));
   const { setSigningMonitor } = createReachAPI();
-  setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+  setSigningMonitor(() => onProgress(TXN_SIGN));
 
   const appId: string | null = await new Promise((resolve) =>
     ctc.participants

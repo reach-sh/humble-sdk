@@ -129,3 +129,30 @@ export type LimitOrderView = {
   /** Token metadata (if fetched) */
   tokens?: [ReachToken | null, ReachToken | null];
 };
+
+export namespace LiquidityMigratorOpts {
+  /** Assert whether pool contains a network token */
+  export declare type N2NN = boolean;
+
+  /** Options for withdrawing liquidity from an old pool */
+  export declare type Withdraw = {
+    /** NON-ATOMIC (user-readable) amount of LP tokens to withdraw */
+    oldLpAmount: string;
+    /** Old pool id */
+    oldLpToken: string;
+    /** New pool id */
+    oldPoolId: string;
+    /** Pool Token A id (order is relevant!) */
+    tokA: string;
+    /** Pool Token B id (order is relevant!) */
+    tokB: string;
+  };
+
+  /** Options for migratiung liquidity from an old to a new pool */
+  export declare type Migrate = Withdraw & {
+    /** Optional new LP token (required if migrating liquidity) */
+    newLpToken?: string;
+    /** Optional new Pool ID (required if migrating liquidity) */
+    newPoolId?: string;
+  };
+}

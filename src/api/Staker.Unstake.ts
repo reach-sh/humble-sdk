@@ -13,6 +13,7 @@ import {
   SDKStakeUpdate
 } from "../utils/utils.staker";
 import { fetchFarmTokens } from "./Staker.Fetch";
+import { TXN_SIGN } from "../constants";
 
 /** Options for unstaking from Farm */
 type UnstakeOpts = { amount: number | string } & PoolFetchOpts;
@@ -55,7 +56,7 @@ export async function unstakeTokensFromFarm(
   onProgress("Withdrawing stake");
 
   try {
-    setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+    setSigningMonitor(() => onProgress(TXN_SIGN));
     const { decimals, symbol } = stakeToken;
     const amt = isBigNumber(stk) ? stk : parseCurrency(stk, decimals);
     const update = await contract.a.Staker.withdrawAndHarvest(amt);

@@ -43,9 +43,7 @@ export function fromMaybe<T extends any>(
   return fallback || value;
 }
 
-/**
- * @internal
- * Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
+/** Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
 export function formatNumberShort(val: any, round = 2) {
   if (isNaN(Number(val))) return "";
 
@@ -78,31 +76,9 @@ export function formatNumberShort(val: any, round = 2) {
   return out;
 }
 
+/** Format arbitrarily large numbers or number strings. (e.g. `fn(1000)` -> `1K` ) */
 export function formatUnsafeInt(val: string, round = 2) {
-  if (isNaN(Number(val))) return "";
-  console.log(val, typeof val);
-  const parts = val.split(".");
-  const numInts = parts[0].length;
-  if (!numInts) return "0";
-  if (numInts <= 3) return truncateNum(val);
-
-  // Get number of vals before first 'comma'
-  const leadingLength = numInts % 3 || 3;
-  const leading = parts[0].substring(0, leadingLength) || parts[0];
-
-  const rest = parts[0].substring(leadingLength);
-  const decimals = trimDecimals(rest.substring(0, round));
-  const groups = [];
-  const grouper = new RegExp(/[0-9]{3}/g);
-  const i = rest.matchAll(grouper);
-  let n = i.next();
-
-  do {
-    groups.push(n.value[0]);
-    n = i.next();
-  } while (!n.done);
-
-  return `${leading}${decimals}${abbrevNumber(groups.length)}`;
+  return formatNumberShort(val, round)
 }
 
 type NumberFormatPart = Intl.NumberFormatPart;

@@ -1,14 +1,18 @@
 import {
-  getNetworkProvider,
-  getLegacyAnnouncers,
   BASE_VERSION,
-  getBlockchain,
-  parseAddress,
+  createLiquidityExtractor,
+  createLiquidityMigrator,
+  createReachAPI,
   fetchLiquidityPool,
-  isNetworkToken,
-  parseCurrency,
+  formatCurrency,
+  getBlockchain,
   getDefaultDecimals,
-  formatCurrency
+  getLegacyAnnouncers,
+  getNetworkProvider,
+  isNetworkToken,
+  parseAddress,
+  parseCurrency,
+  tokenBalance
 } from "@reach-sh/humble-sdk";
 import {
   transferOldLPN2NN,
@@ -45,7 +49,7 @@ const warnOrDie = async ({ prompt, opts }) => {
   Blue(JSON.stringify(opts, null, 2));
   console.log();
   Red("Continue?");
-  const keepGoing = (await answerOrDie("'y' to continue:")) === "y";
+  const keepGoing = (await answerOrDie("['y' to continue]:")) === "y";
   if (!keepGoing) return exitWithMsgs("Exiting ...");
 };
 
@@ -68,9 +72,10 @@ export async function createPoolMigrator(acc) {
   });
 }
 
+/** Select whether pool contains `network tokens` */
 async function selectN2NN() {
-  Yellow(`Will the target pool contain any ${getBlockchain()} tokens?`);
-  return (await answerOrDie("y [press 'Enter' for no]")) === "y";
+  Yellow(`Does this pool contain any ${getBlockchain()} tokens?`);
+  return (await answerOrDie("['y' or press ENTER for no]")) === "y";
 }
 
 /** Select `dev`, `staging`, or `mainnet` */
@@ -85,10 +90,10 @@ async function selectEnvironment() {
 
 /** Choose to `withdraw` or `transfer` liquidity */
 async function selectMigrationType() {
-  Yellow("Will you withdraw or transfer tokens?");
+  Yellow("Will you WITHDRAW or TRANSFER tokens from the OLD pool?");
   listOpts(["Withdraw old LP", "Transfer to new pool"]);
   const opts = ["withdraw", "transfer"];
-  const ex = Number(await answerOrDie("Enter number ['Enter' for 1]:")) - 1;
+  const ex = Number(await answerOrDie("[Number or ENTER to withdraw]:")) - 1;
   return opts[ex] || "withdraw";
 }
 
@@ -115,7 +120,7 @@ async function generateContractOps(acc, env) {
   if (!matches.length) return exitWithMsgs(`No v2 ${poolName} pools found`);
 
   const v2 = matches[0];
-  // Required Contract Options (except "name")
+
   return {
     name: `${poolName} Liquidity Migration Contract`,
     oldlpToken: parseAddress(v2.poolTokenId),
@@ -125,7 +130,9 @@ async function generateContractOps(acc, env) {
     oldPoolId: parseAddress(v2.poolAddress),
     newPoolId: parseAddress(v3PoolId),
     n2nn,
-    tokens: data.tokens
+    tokens: data.tokens,
+    newPool: result.data.pool,
+    oldPool: v2
   };
 }
 
@@ -133,9 +140,10 @@ async function generateContractOps(acc, env) {
 async function matchV2Pool(a, b, env) {
   console.log();
   Blue(`Fetch V2 ${env.toUpperCase()} SERVER Pool`);
-  Yellow("Change v2 Pool Announcer target?");
+  Yellow("Change source (v2) Pool Announcer target?");
+  Yellow(`Enter 'y' if your source pool is NOT in ${env}`);
   const changeAnn =
-    (await answerOrDie(`y or 'Enter' for ${env} announcer`)) === "y";
+    (await answerOrDie(`['y' to change or press ENTER to skip]`)) === "y";
   const e = changeAnn ? await selectEnvironment() : env;
 
   const ann = getLegacyAnnouncers("v2")[e].protocolId.toString();
@@ -143,7 +151,7 @@ async function matchV2Pool(a, b, env) {
   const args = `token1: "${a}", token2: "${b}", announcerId: "${ann}"`;
   const BASE = "https://yhnyufyj90.execute-api.us-east-1.amazonaws.com/prod";
   const url = `${BASE}/humble-dev`;
-  const query = `query {  searchPools(${args}, tradeable: true) { poolAddress, poolTokenId }  }`;
+  const query = `query {  searchPools(${args}, tradeable: true) { poolAddress, poolTokenId, mintedLiquidityTokens, tokenABalance, tokenBBalance }  }`;
   const matches = await axios
     .post(url, { query })
     .then((res) => res.data)
@@ -165,48 +173,39 @@ async function doTransfer(acc) {
   const env = await selectEnvironment();
   const opts = await generateContractOps(acc, env);
   const { name, n2nn, tokens } = opts;
+  const [{ symbol: symbolA }, { symbol: symbolB }] = tokens;
   await warnOrDie({ prompt: `Transfer ${name} Liquidity`, opts });
 
   const backend = n2nn ? transferOldLPN2NN : transferOldLPNN2NN;
   const ctc = acc.contract(backend);
   const transfer = async (a) => {
-    console.log();
-    Yellow(`Withdrawing ${a} LP ...`);
+    await showExpectedAmts(a, opts.oldPool, tokens);
 
-    const oldLPAmt = parseCurrency(a, defDecs);
-    const res = await new Promise((resolve) =>
-      ctc.p.Admin({
-        opts: {
-          oldLPAmt,
-          oldlpToken: opts.oldlpToken,
-          oldPoolId: opts.oldPoolId,
-          newlpToken: opts.newlpToken,
-          newPoolId: opts.newPoolId,
-          tokA: opts.tokA,
-          tokB: opts.tokB
-        },
-        done: (lpRecv, AB) =>
-          resolve({
-            lpTokens: formatCurrency(lpRecv, defDecs),
-            A: formatCurrency(AB.A, tokens[0].decimals),
-            B: formatCurrency(AB.B, tokens[1].decimals)
-          })
-      })
-    ).catch((e) => {
-      Red("Transfer.Deploy.Error");
-      Red(JSON.stringify(e));
-      return { lpTokens: "0", A: "0", B: "0" };
+    const res = await createLiquidityMigrator(acc, {
+      n2nn,
+      tokA: opts.tokA,
+      tokB: opts.tokB,
+      oldLpAmount: a,
+      oldLpToken: opts.oldlpToken,
+      oldPoolId: opts.oldPoolId,
+      newPoolId: opts.newPoolId,
+      newLpToken: opts.newlpToken,
+      onProgress: Yellow
     });
-    if (res.A !== "0") Green(JSON.stringify(res));
+
+    if (res.succeeded) iout(res.message, res.data);
+    else Red(res.message);
 
     Yellow("Transfer more to the same pool?");
-    if ((await answerOrDie("y ['Enter' to skip']")) === "y") {
+    if ((await answerOrDie("['y' or press ENTER to skip]")) === "y") {
+      await logLPBalance(acc, opts.oldlpToken, symbolA, symbolB);
       return transfer(await enterLPToExchange());
     }
 
     return res;
   };
 
+  await logLPBalance(acc, opts.oldlpToken, symbolA, symbolB);
   return transfer(await enterLPToExchange());
 }
 
@@ -215,51 +214,77 @@ async function doWithdraw(acc) {
   const env = await selectEnvironment();
   const opts = await generateContractOps(acc, env);
   const { name, n2nn, tokens } = opts;
+  const [{ symbol: symbolA }, { symbol: symbolB }] = tokens;
   await warnOrDie({ prompt: `Withdraw ${name} Liquidity`, opts });
 
   const backend = n2nn ? withdrawOldLPN2NN : withdrawOldLPNN2NN;
   const ctc = acc.contract(backend);
   const withdraw = async (a) => {
-    console.log();
-    Yellow(`Withdrawing ${a} LP ...`);
+    await showExpectedAmts(a, opts.oldPool, tokens);
 
-    const oldLPAmt = parseCurrency(a, defDecs);
-    const res = await new Promise((resolve) =>
-      ctc.p.Admin({
-        opts: {
-          oldLPAmt,
-          oldlpToken: opts.oldlpToken,
-          oldPoolId: opts.oldPoolId,
-          tokA: opts.tokA,
-          tokB: opts.tokB
-        },
-        done: (AB) =>
-          resolve({
-            A: formatCurrency(AB.A, tokens[0].decimals),
-            B: formatCurrency(AB.B, tokens[1].decimals)
-          })
-      })
-    ).catch((e) => {
-      Red("Withdraw.Deploy.Error");
-      Red(JSON.stringify(e));
-      return { A: "0", B: "0" };
+    const res = await createLiquidityExtractor(acc, {
+      n2nn,
+      tokA: opts.tokA,
+      tokB: opts.tokB,
+      oldLpAmount: a,
+      oldLpToken: opts.oldlpToken,
+      oldPoolId: opts.oldPoolId,
+      onProgress: Yellow
     });
-    if (res.A !== "0") Green(JSON.stringify(res));
+
+    if (res.succeeded) iout(res.message, res.data);
+    else Red(res.message);
 
     Yellow("Withdraw more from the same pool?");
-    if ((await answerOrDie("y ['Enter' to skip']")) === "y") {
+    if ((await answerOrDie("['y' or press ENTER to skip']")) === "y") {
+      await logLPBalance(acc, opts.oldlpToken, symbolA, symbolB);
       return withdraw(await enterLPToExchange());
     }
 
     return res;
   };
 
+  await logLPBalance(acc, opts.oldlpToken, symbolA, symbolB);
   return withdraw(await enterLPToExchange());
 }
 
+/** Show user's current balance of LP token `id` */
+async function logLPBalance(acc, id, symbolA, symbolB) {
+  console.log();
+  const tokenDecimals = getDefaultDecimals();
+  const lpBal = await tokenBalance(acc, { id, tokenDecimals });
+  Blue(`Your LP Balance: ${lpBal} ${symbolA}/${symbolB}`);
+}
+
+/** Specify expected amounts to withdraw from old pool */
+function showExpectedAmts(a, pool, tokens) {
+  const nA = Number(a);
+  const [{ symbol: symbolA }, { symbol: symbolB }] = tokens;
+  const [xA, xB] = [
+    convertLPToTokenValue(nA * 10 ** getDefaultDecimals(), pool, true),
+    convertLPToTokenValue(nA * 10 ** getDefaultDecimals(), pool)
+  ];
+  console.log();
+  Blue(`Withdrawing ( ${xA.toFixed(6)} ${symbolA}, ${xB.toFixed(6)} ${symbolB} ) from pool...`);
+  console.log();
+}
+
+/** Specify how much LP tokens to exchange for funds (or migrate to new pool) */
 async function enterLPToExchange() {
   Yellow("\t How much LP will you exchange?");
-  return answerOrDie("Enter amount:");
+  return answerOrDie("[Enter (NON-ATOMIC/user-friendly) amount]:");
+}
+
+function convertLPToTokenValue(amt, pool, isTokA = false) {
+  const {
+    mintedLiquidityTokens: minted, // atomic units
+    tokenABalance: balA, // non-atomic
+    tokenBBalance: balB // non-atomic
+  } = pool;
+  Red(JSON.stringify({ balA, balB, minted, amt }));
+  const userPoolShare = amt / minted;
+  const conversion = Number(isTokA ? balA : balB) * userPoolShare;
+  return isNaN(conversion) ? 0 : conversion;
 }
 
 // 146325643 : v3, ALGO-GAR        (lpToken: 146325680)    | *MIGRATE

@@ -1,16 +1,14 @@
 import {
-  addLiquidity,
-  calculateOtherAmount,
   createReachAPI,
   fetchLiquidityPool,
-  parseAddress,
-  tokenBalance,
-  withdrawLiquidity
+  tokenBalance
 } from "@reach-sh/humble-sdk";
+import { runAddLiquidity } from "./runLiquidity.Add.mjs";
+import { runWithdrawLiquidity } from "./runLiquidity.Withdraw.mjs";
+import { createPoolMigrator } from "./runLiquidityMigratorTest.mjs";
 import {
   answerOrDie,
   exitWithMsgs,
-  iout,
   Blue,
   Green,
   Yellow,
@@ -20,12 +18,17 @@ import {
 } from "./utils.mjs";
 
 const isNetworkToken = (v) => [0, "0"].includes(v);
-const actions = ["add", "withdraw"];
+const actions = ["add", "withdraw", "migrate"];
 
 /** Run Add/Withdraw Liquidity Tests */
 export async function runLiquidity(acc) {
   console.clear();
   Blue("Running LIQUIDITY");
+  const redo = () =>
+    rerunOrExit({
+      do: () => runLiquidity(acc),
+      prompt: "Re-run Pool Liquidity suite?"
+    });
 
   const poolResult = await fetchLPool(acc, process.argv.slice(2));
   if (!poolResult.succeeded) return exitWithMsgs(poolResult.message);
@@ -35,13 +38,15 @@ export async function runLiquidity(acc) {
   const [tokenA, tokenB] = [tokenIn.symbol, tokenOut.symbol];
   const poolAddress = pool.poolAddress;
   const poolName = `${tokens[0].symbol}/${tokens[1].symbol}`;
-  Green(poolResult.message || `Fetched ${poolName} pool`);
 
+  Green(poolResult.message || `Fetched ${poolName} pool`);
   // Get user action
-  Yellow("Are you adding or withdrawing?");
+  Yellow("Are you adding, withdrawing, or migrating?");
   actions.forEach((a, i) => Blue(`${i + 1}. ${a}`));
   const action = await answerOrDie(`Enter selection (number):`);
   const index = Number(action) - 1;
+
+  if (index === 2) return createPoolMigrator(acc);
 
   // Add Liquidity options
   if (index === 0) {
@@ -54,7 +59,8 @@ export async function runLiquidity(acc) {
       tokenIn: tokenIn.id,
       tokenOut: tokenOut.id
     };
-    return runAddLiquidity(acc, addOpts, poolResult);
+    await runAddLiquidity(acc, addOpts, poolResult);
+    return redo();
   }
 
   //  Withdraw Liquidity options
@@ -73,114 +79,15 @@ export async function runLiquidity(acc) {
       withdrawOpts.percentToWithdraw = p.replace("%", "");
     } else withdrawOpts.exchangeLPTokens = p;
 
-    return runWithdrawLiquidity(acc, withdrawOpts, poolResult);
+    await runWithdrawLiquidity(acc, withdrawOpts, poolResult);
+    return redo();
   }
 
   // No action match
   const expected = actions.map((_, i) => i).join(", ");
   Red(`Invalid action "${action}": expected one of "${expected}"`);
 
-  return rerunOrExit({
-    do: () => runLiquidity(acc),
-    prompt: "Re-run Pool Liquidity suite?"
-  });
-}
-
-/** Add Liquidity to a pool */
-async function runAddLiquidity(acc, opts, poolFetchData) {
-  Blue(`\t * Running ADD-LIQUIDITY (pool "${opts.poolAddress}")`);
-
-  const { amountA, tokenIn, tokenOut } = opts;
-  const { data, contract } = poolFetchData;
-  const { pool } = data;
-  const { poolAddress, tokenAId, tokenBId } = pool;
-  const tokenIds = [tokenAId, tokenBId];
-  const label = "* Input args:";
-  const redo = () =>
-    rerunOrExit({
-      do: () => runLiquidity(acc),
-      prompt: "Re-run Pool Liquidity suite?"
-    });
-
-  const amounts = [amountA];
-  const tokenB = data.tokens.find(({ id }) => id === tokenBId);
-  let amountB = 0;
-  if (pool.tokenBBalance === "0") {
-    amountB = await answerOrDie(`Enter deposit amount for ${tokenB.name}:`);
-  } else {
-    Blue(`${tokenB.name} amount will be calculated for you`);
-    amountB = calculateOtherAmount(amountA, tokenIn, pool);
-  }
-
-  amounts.push(amountB);
-  if (parseAddress(tokenIn) === tokenBId) {
-    tokenIds.reverse();
-    amounts.reverse();
-  }
-
-  const args = {
-    amountA: amounts[0],
-    tokenIn: tokenIds[0],
-    amountB: amounts[1],
-    tokenOut: tokenIds[1]
-  };
-
-  //   Deposit
-  Blue(`\t Pool ${JSON.stringify(pool, null, 2)}`);
-  Blue(`\t ${label} ${JSON.stringify(args, null, 2)}`);
-  Yellow(`Depositing to pool "${poolAddress}"`);
-  const {
-    succeeded,
-    message,
-    data: addResult
-  } = await addLiquidity(acc, {
-    amounts,
-    pool,
-    contract,
-    optInToLPToken: !(await acc.tokenAccepted(pool.poolTokenId)),
-    onProgress: Yellow
-  });
-
-  if (succeeded) {
-    Green("Deposit complete!");
-    iout(message, addResult);
-    Blue("'Add Liquidity' Test complete");
-  } else Red(message);
-
-  redo();
-}
-
-/** Pull Liquidity from a pool */
-async function runWithdrawLiquidity(acc, opts, poolFetchData) {
-  Blue(`\t * Running WITHDRAW-LIQUIDITY (pool "${opts.poolAddress}")`);
-  const { percentToWithdraw, exchangeLPTokens } = opts;
-  const { data: poolFetchResult, contract } = poolFetchData;
-  const redo = () =>
-    rerunOrExit({
-      do: () => runLiquidity(acc),
-      prompt: "Re-run Pool Liquidity suite?"
-    });
-  const { pool } = poolFetchResult;
-  const { succeeded, message, data } = await withdrawLiquidity(acc, {
-    exchangeLPTokens,
-    percentToWithdraw,
-    contract,
-    n2nn: pool.n2nn,
-    onProgress: Yellow,
-    poolAddress: pool.poolAddress,
-    poolTokenId: pool.poolTokenId
-  });
-
-  if (!succeeded) {
-    Red(`Withdraw failed: ${message}`);
-    Blue("'Withdraw Liquidity' test complete");
-  } else {
-    Green("Withdraw successful!");
-    iout(message || "Withdraw successful", data || "(no data)");
-    Blue("'Withdraw Liquidity' test complete");
-  }
-
-  redo();
+  return redo();
 }
 
 /** Fetch pool data */

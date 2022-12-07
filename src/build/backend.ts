@@ -9,6 +9,10 @@ import * as LimitOrderAnnouncer from "./limitOrder.announcer.js";
 import * as LimitOrderN2NN from "./limitOrder.lo_net_tok.js";
 import * as LimitOrderNN2NN from "./limitOrder.lo_tok_tok.js";
 import * as LimitOrderNN2N from "./limitOrder.lo_tok_net.js";
+import * as TransferOldLPN2NN from "./liquidityMigrator.transfer.net_tok";
+import * as TransferOldLPNN2NN from "./liquidityMigrator.transfer.tok_tok.js";
+import * as WithdrawOldLPN2NN from "./liquidityMigrator.withdraw.net_tok";
+import * as WithdrawOldLPNN2NN from "./liquidityMigrator.withdraw.tok_tok.js";
 import {
   BackendModule,
   ReachContract,
@@ -26,6 +30,10 @@ export const limitOrderAnnouncer = LimitOrderAnnouncer;
 export const limitOrderN2NN = LimitOrderN2NN;
 export const limitOrderNN2NN = LimitOrderNN2NN;
 export const limitOrderNN2N = LimitOrderNN2N;
+export const transferOldLPN2NN = TransferOldLPN2NN;
+export const transferOldLPNN2NN = TransferOldLPNN2NN;
+export const withdrawOldLPN2NN = WithdrawOldLPN2NN;
+export const withdrawOldLPNN2NN = WithdrawOldLPNN2NN;
 
 /**
  * Get a function for calculating the expected output of a swap.
@@ -121,3 +129,30 @@ export type LimitOrderView = {
   /** Token metadata (if fetched) */
   tokens?: [ReachToken | null, ReachToken | null];
 };
+
+export namespace LiquidityMigratorOpts {
+  /** Assert whether pool contains a network token */
+  export declare type N2NN = boolean;
+
+  /** Options for withdrawing liquidity from an old pool */
+  export declare type Withdraw = {
+    /** NON-ATOMIC (user-readable) amount of LP tokens to withdraw */
+    oldLpAmount: string;
+    /** Old pool id */
+    oldLpToken: string;
+    /** New pool id */
+    oldPoolId: string;
+    /** Pool Token A id (order is relevant!) */
+    tokA: string;
+    /** Pool Token B id (order is relevant!) */
+    tokB: string;
+  };
+
+  /** Options for migratiung liquidity from an old to a new pool */
+  export declare type Migrate = Withdraw & {
+    /** Optional new LP token (required if migrating liquidity) */
+    newLpToken?: string;
+    /** Optional new Pool ID (required if migrating liquidity) */
+    newPoolId?: string;
+  };
+}

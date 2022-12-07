@@ -5,9 +5,12 @@ import { checkInitialized, setSDKOpts } from "./constants";
 // CONSTANTS
 export {
   HUMBLE_LP_TOKEN_SYMBOL,
+  BASE_VERSION,
+  checkInitialized,
   getAnnouncers,
   getBlockchain,
   getDefaultDecimals,
+  getLegacyAnnouncers,
   getNetworkProvider,
   getPoolAnnouncer,
   getProtocolAddr,
@@ -17,7 +20,11 @@ export {
 } from "./constants";
 
 // CONTRACTS
-export { LimitOrderType, getLimitOrderVariant } from "./build/backend";
+export {
+  LimitOrderType,
+  LiquidityMigratorOpts,
+  getLimitOrderVariant
+} from "./build/backend";
 
 // DATA & DATA FETCHERS
 export * from "./participants/index";

@@ -9,11 +9,10 @@ import { PoolProtocolInfo } from "./types";
 
 // Strings
 export * from "./constants.strings";
+export * from "./constants.versioned";
 
 // Fees
 export const FLOAT = 0.0001;
-
-export const HUMBLE_LP_TOKEN_SYMBOL = "HMBL3LT";
 
 /** @internal Get protocol fee info for all pools */
 export function getFeeInfo(): PoolProtocolInfo {

@@ -6,7 +6,7 @@ import {
   successResult
 } from "./index";
 import { noOp } from "./utils.reach";
-import { getPoolAnnouncer, POOL_CREATION_ERR } from "../constants";
+import { getPoolAnnouncer, POOL_CREATION_ERR, TXN_SIGN } from "../constants";
 import {
   ReachAccount,
   parseAddress,
@@ -70,7 +70,7 @@ export async function deployPool(
     tokenBId
   };
   const { setSigningMonitor } = createReachAPI();
-  setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+  setSigningMonitor(() => onProgress(TXN_SIGN));
 
   try {
     const ctcAdmin = acc.contract(backend);

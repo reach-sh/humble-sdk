@@ -15,7 +15,7 @@ import {
   fetchLiquidityPool
 } from "../participants/index";
 import { fromMaybe, noOp } from "../utils/utils.reach";
-import { getDefaultDecimals } from "../constants";
+import { getDefaultDecimals, TXN_SIGN } from "../constants";
 import { formatAmounts } from "../utils/utils.pool";
 
 /** Required options for withdrawing liquidity from a pool */
@@ -95,7 +95,7 @@ export async function withdrawLiquidity(
   if (pc) ctc = pc as PoolContract;
   const stdlib = createReachAPI();
   const { setSigningMonitor, bigNumberToNumber, bigNumberify } = stdlib;
-  setSigningMonitor(() => onProgress("SIGNING_EVENT"));
+  setSigningMonitor(() => onProgress(TXN_SIGN));
 
   try {
     const tokens = poolRes.tokens as ReachTokenPair;

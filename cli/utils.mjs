@@ -1,4 +1,4 @@
-import { createReachAPI } from "../lib/index.js";
+import { createReachAPI } from "@reach-sh/humble-sdk";
 import Enquirer from "enquirer";
 import algosdk from "algosdk";
 import { loadStdlib } from "@reach-sh/stdlib";

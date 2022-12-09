@@ -17,9 +17,10 @@ export type MigratorOpts = LiquidityMigratorOpts.Migrate & {
 
 export default createLiquidityMigrator;
 
-/** 
+/**
  * Migrate Liquidity from an old to a new pool. This orchestrates the
- * `LiquidityMigrator.Withdraw` and `LiquidityProvider.Add` modules.
+ * `LiquidityMigrator.Withdraw` and `LiquidityProvider.Add` modules. It returns
+ * the `A`, `B`, and Liquidity token amounts received after all operations.
  */
 export async function createLiquidityMigrator(
   acc: ReachAccount,
@@ -71,6 +72,10 @@ export async function createLiquidityMigrator(
     const err = "Withdrawal succeeded, but transfer failed due to slippage";
     console.log("Migrator.Migrate Error", err);
     return errorResult(err, opts.newPoolId, data, poolResult.contract);
+  } else {
+    // deduct user's deposit amounts from amounts received
+    data.A = "0";
+    data.B = (Number(B) - Number(newB)).toString();
   }
 
   // Deposit into new pool

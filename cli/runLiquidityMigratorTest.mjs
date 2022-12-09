@@ -14,12 +14,6 @@ import {
   parseCurrency,
   tokenBalance
 } from "@reach-sh/humble-sdk";
-import {
-  transferOldLPN2NN,
-  transferOldLPNN2NN,
-  withdrawOldLPN2NN,
-  withdrawOldLPNN2NN
-} from "@reach-sh/humble-sdk/lib/build/backend.js";
 import axios from "axios";
 import {
   Blue,
@@ -176,8 +170,6 @@ async function doTransfer(acc) {
   const [{ symbol: symbolA }, { symbol: symbolB }] = tokens;
   await warnOrDie({ prompt: `Transfer ${name} Liquidity`, opts });
 
-  const backend = n2nn ? transferOldLPN2NN : transferOldLPNN2NN;
-  const ctc = acc.contract(backend);
   const transfer = async (a) => {
     await showExpectedAmts(a, opts.oldPool, tokens);
 
@@ -217,8 +209,6 @@ async function doWithdraw(acc) {
   const [{ symbol: symbolA }, { symbol: symbolB }] = tokens;
   await warnOrDie({ prompt: `Withdraw ${name} Liquidity`, opts });
 
-  const backend = n2nn ? withdrawOldLPN2NN : withdrawOldLPNN2NN;
-  const ctc = acc.contract(backend);
   const withdraw = async (a) => {
     await showExpectedAmts(a, opts.oldPool, tokens);
 
@@ -265,7 +255,11 @@ function showExpectedAmts(a, pool, tokens) {
     convertLPToTokenValue(nA * 10 ** getDefaultDecimals(), pool)
   ];
   console.log();
-  Blue(`Withdrawing ( ${xA.toFixed(6)} ${symbolA}, ${xB.toFixed(6)} ${symbolB} ) from pool...`);
+  Blue(
+    `Withdrawing ( ${xA.toFixed(6)} ${symbolA}, ${xB.toFixed(
+      6
+    )} ${symbolB} ) from pool...`
+  );
   console.log();
 }
 

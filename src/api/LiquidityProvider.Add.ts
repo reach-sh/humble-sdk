@@ -95,7 +95,7 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
     const fLPBals = formatAmounts(lpBals, [decs, decs]);
     onProgress(`LP Balances: ${JSON.stringify(fLPBals)}`);
     onProgress(`${formatCurrency(expects)} LP Tokens expected`);
-    onProgress(`Depositing funds`);
+    onProgress(`Depositing funds ( ${A} A, ${B} B )`);
 
     const lpTokens = await Provider.deposit(userDeposit, expects);
     data.lpTokens = bigNumberToNumber(lpTokens);

@@ -9,9 +9,7 @@ import * as LimitOrderAnnouncer from "./limitOrder.announcer.js";
 import * as LimitOrderN2NN from "./limitOrder.lo_net_tok.js";
 import * as LimitOrderNN2NN from "./limitOrder.lo_tok_tok.js";
 import * as LimitOrderNN2N from "./limitOrder.lo_tok_net.js";
-import * as TransferOldLPN2NN from "./liquidityMigrator.transfer.net_tok";
-import * as TransferOldLPNN2NN from "./liquidityMigrator.transfer.tok_tok.js";
-import * as WithdrawOldLPN2NN from "./liquidityMigrator.withdraw.net_tok";
+import * as WithdrawOldLPN2NN from "./liquidityMigrator.withdraw.net_tok.js";
 import * as WithdrawOldLPNN2NN from "./liquidityMigrator.withdraw.tok_tok.js";
 import {
   BackendModule,
@@ -30,8 +28,6 @@ export const limitOrderAnnouncer = LimitOrderAnnouncer;
 export const limitOrderN2NN = LimitOrderN2NN;
 export const limitOrderNN2NN = LimitOrderNN2NN;
 export const limitOrderNN2N = LimitOrderNN2N;
-export const transferOldLPN2NN = TransferOldLPN2NN;
-export const transferOldLPNN2NN = TransferOldLPNN2NN;
 export const withdrawOldLPN2NN = WithdrawOldLPN2NN;
 export const withdrawOldLPNN2NN = WithdrawOldLPNN2NN;
 
@@ -142,17 +138,19 @@ export namespace LiquidityMigratorOpts {
     oldLpToken: string;
     /** New pool id */
     oldPoolId: string;
-    /** Pool Token A id (order is relevant!) */
+    /** Pool Token A id (order is important!) */
     tokA: string;
-    /** Pool Token B id (order is relevant!) */
+    /** Pool Token B id (order is important!) */
     tokB: string;
+    /** (Optional) Pool Tokens A and B (order is important!) */
+    tokens?: [ReachToken, ReachToken];
   };
 
   /** Options for migratiung liquidity from an old to a new pool */
   export declare type Migrate = Withdraw & {
-    /** Optional new LP token (required if migrating liquidity) */
-    newLpToken?: string;
-    /** Optional new Pool ID (required if migrating liquidity) */
-    newPoolId?: string;
+    /** New LP token (required) */
+    newLpToken: string;
+    /** New Pool ID (required) */
+    newPoolId: string;
   };
 }

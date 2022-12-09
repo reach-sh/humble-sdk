@@ -66,7 +66,7 @@ export function calculateOtherAmount(
   const minimum = Number(`1.0e-${tokDecimals}`);
   if (output < minimum) return "0";
 
-  return getValueWithMaxDecimals(output.toString(), tokDecimals);
+  return getValueWithMaxDecimals(output.toString(), tokDecimals).toString();
 }
 
 /**

@@ -331,7 +331,7 @@ export async function Admin(ctcTop, interact) {
   stdlib.assert(v473, {
     at: 'reach standard library:57:5:application',
     fs: ['at ./liquidityMigrator.shared.rsh:72:8:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./liquidityMigrator.withdraw.rsh:53:16:application call to "confirmAmts" (defined at: ./liquidityMigrator.shared.rsh:67:55:function exp)'],
-    msg: 'Invalid contract state',
+    msg: 'Invalid Token B balance',
     who: 'Admin'
     });
   const v478 = v458[stdlib.checkedBigNumberify('./liquidityMigrator.shared.rsh:46:15:application', stdlib.UInt_max, '0')];

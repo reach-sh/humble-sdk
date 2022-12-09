@@ -404,7 +404,7 @@ export async function Admin(ctcTop, interact) {
   stdlib.assert(v1106, {
     at: 'reach standard library:57:5:application',
     fs: ['at ./liquidityMigrator.shared.rsh:70:10:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./liquidityMigrator.withdraw.rsh:53:16:application call to "confirmAmts" (defined at: ./liquidityMigrator.shared.rsh:67:55:function exp)'],
-    msg: 'Invalid contract state',
+    msg: 'Invalid Token A balance',
     who: 'Admin'
     });
   const v1108 = v1092[stdlib.checkedBigNumberify('./liquidityMigrator.shared.rsh:72:21:application', stdlib.UInt_max, '2')];
@@ -413,7 +413,7 @@ export async function Admin(ctcTop, interact) {
   stdlib.assert(v1110, {
     at: 'reach standard library:57:5:application',
     fs: ['at ./liquidityMigrator.shared.rsh:72:8:application call to "check" (defined at: reach standard library:49:32:function exp)', 'at ./liquidityMigrator.withdraw.rsh:53:16:application call to "confirmAmts" (defined at: ./liquidityMigrator.shared.rsh:67:55:function exp)'],
-    msg: 'Invalid contract state',
+    msg: 'Invalid Token B balance',
     who: 'Admin'
     });
   const v1117 = v1092[stdlib.checkedBigNumberify('./liquidityMigrator.shared.rsh:53:15:application', stdlib.UInt_max, '0')];

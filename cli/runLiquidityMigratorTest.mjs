@@ -255,11 +255,9 @@ function showExpectedAmts(a, pool, tokens) {
     convertLPToTokenValue(nA * 10 ** getDefaultDecimals(), pool)
   ];
   console.log();
-  Blue(
-    `Withdrawing ( ${xA.toFixed(6)} ${symbolA}, ${xB.toFixed(
-      6
-    )} ${symbolB} ) from pool...`
-  );
+  const fx = (v) => v.toFixed(6);
+  const pairName = `${fx(xA)} ${symbolA}, ${fx(xB)} ${symbolB}`;
+  Blue(`Withdrawing ( ${pairName} ) from pool...`);
   console.log();
 }
 

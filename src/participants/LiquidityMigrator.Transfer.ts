@@ -1,20 +1,15 @@
-import {
-  LiquidityMigratorOpts,
-  transferOldLPN2NN,
-  transferOldLPNN2NN
-} from "../build/backend";
-import { getDefaultDecimals, TXN_SIGN } from "../constants";
-import {
-  BigNumber,
-  createReachAPI,
-  formatCurrency,
-  parseAddress,
-  ReachAccount
-} from "../reach-helpers";
-import { Balances, ReachTxnOptsCore } from "../types";
+import { addLiquidity } from "../api";
+import { LiquidityMigratorOpts } from "../build/backend";
+import { TXN_SIGN } from "../constants";
+import { createReachAPI, ReachAccount } from "../reach-helpers";
+import { ReachTxnOptsCore } from "../types";
 import { errorResult, isNetworkToken, successResult } from "../utils";
+import { calculateOtherAmount } from "../utils/utils.swap";
 import { noOp } from "../utils/utils.reach";
-import { fetchToken } from "./PoolAnnouncer";
+import createLiquidityExtractor, {
+  ExtractorOpts
+} from "./LiquidityMigrator.Withdraw";
+import { fetchLiquidityPool } from "./PoolAnnouncer";
 
 export type MigratorOpts = LiquidityMigratorOpts.Migrate & {
   n2nn: LiquidityMigratorOpts.N2NN;
@@ -22,68 +17,86 @@ export type MigratorOpts = LiquidityMigratorOpts.Migrate & {
 
 export default createLiquidityMigrator;
 
-/** Migrate Liquidity from an old to a new pool */
+/**
+ * Migrate Liquidity from an old to a new pool. This orchestrates the
+ * `LiquidityMigrator.Withdraw` and `LiquidityProvider.Add` modules. It returns
+ * the `A`, `B`, and Liquidity token amounts received after all operations.
+ */
 export async function createLiquidityMigrator(
   acc: ReachAccount,
   opts: MigratorOpts
 ) {
   const { onProgress = noOp, onComplete = noOp } = opts;
-  const { parseCurrency, setSigningMonitor } = createReachAPI();
-  const backend = opts.n2nn ? transferOldLPN2NN : transferOldLPNN2NN;
-  const ctc = acc.contract(backend);
-  let data = { lpTokens: "0", A: "0", B: "0" };
+  const { setSigningMonitor } = createReachAPI();
+  let data = { lpTokens: "0", A: "0", B: "0" }; // response data
 
-  onProgress("Fetching pool tokens ...");
-  const [tokA, tokB] = await Promise.all([
-    fetchToken(acc, opts.tokA),
-    fetchToken(acc, opts.tokB)
-  ]);
+  // Fetch new pool
+  onProgress("Fetching pool ...");
+  const poolResult = await fetchLiquidityPool(acc, {
+    n2nn: isNetworkToken(opts.tokA),
+    poolAddress: opts.newPoolId,
+    includeTokens: true
+  });
+  const { tokens, pool } = poolResult.data;
+  if (!poolResult.succeeded || !pool || !Array.isArray(tokens)) {
+    const err = `New Pool #${opts.newPoolId} was not found`;
+    console.log("Migrator.FetchPool Error", err);
+    return errorResult(err, opts.newPoolId, data, null, "contractId");
+  }
 
+  // Extract tokens
+  const [tokA, tokB] = tokens;
   if (!tokA || !tokB) {
     const err = "One or more pool tokens were not found";
+    console.log("Migrator.FetchPool Error", err);
     return errorResult(err, opts.oldPoolId, data, null, "contractId");
   }
 
-  try {
-    setSigningMonitor(() => onProgress(TXN_SIGN));
-    onProgress("Creating contract ...");
-    data = await new Promise<typeof data>((resolve) =>
-      ctc.participants
-        .Admin({
-          opts: {
-            tokA: isNetworkToken(opts.tokA) ? null : parseAddress(opts.tokA),
-            tokB: parseAddress(opts.tokB),
-            oldLPAmt: parseCurrency(opts.oldLpAmount),
-            oldlpToken: parseAddress(opts.oldLpToken),
-            oldPoolId: parseAddress(opts.oldPoolId),
-            newlpToken: parseAddress(opts.newLpToken),
-            newPoolId: parseAddress(opts.newPoolId)
-          },
-          done: (lpRecv: BigNumber, AB: Balances) =>
-            resolve({
-              lpTokens: formatCurrency(lpRecv, getDefaultDecimals()),
-              A: formatCurrency(AB.A, tokA?.decimals),
-              B: formatCurrency(AB.B, tokB?.decimals)
-            })
-        })
-        .catch((e: any) => {
-          throw e;
-        })
-    ).catch((e: any) => {
-      throw e;
-    });
-
-    let msg = `${tokA.symbol}/${tokB.symbol} Pool`;
-    msg = `${msg} Liquidity was migrated`;
-    const result = successResult(msg, opts.newPoolId, ctc, data, "contractId");
-    onComplete(result);
-    setSigningMonitor(noOp);
-    return result;
-  } catch (error: any) {
-    const label = "LiquidityMigrate.Transfer Error";
-    const err = `${label}: ${JSON.stringify(error)}`;
-    console.log(`${label}:`, error);
-    setSigningMonitor(noOp);
-    return errorResult(err, opts.newPoolId, data, ctc, "contractId");
+  // Withdraw old liquidity (notifications handled externally)
+  const poolName = `${tokA.symbol}/${tokB.symbol}`;
+  const wOpts: ExtractorOpts = { ...opts, tokens: [tokA, tokB] };
+  const wdResult = await createLiquidityExtractor(acc, wOpts);
+  if (!wdResult.succeeded) {
+    const { message, contract, contractId } = wdResult;
+    return errorResult(message, contractId, data, contract, "contractId");
+  } else {
+    data.A = wdResult.data.A;
+    data.B = wdResult.data.B;
   }
+
+  // Halt if user will be charged more "B" than they got back
+  onProgress(`Calculating new ${poolName} deposit amounts ...`);
+  const { A, B } = wdResult.data;
+  const newB = calculateOtherAmount(Number(A), tokA.id, pool);
+  if (Number(newB) > Number(B)) {
+    const err = "Withdrawal succeeded, but transfer failed due to slippage";
+    console.log("Migrator.Migrate Error", err);
+    return errorResult(err, opts.newPoolId, data, poolResult.contract);
+  } else {
+    // deduct user's deposit amounts from amounts received
+    data.A = "0";
+    data.B = (Number(B) - Number(newB)).toString();
+  }
+
+  // Deposit into new pool
+  setSigningMonitor(() => onProgress(TXN_SIGN));
+  const optedIn = await acc.tokenAccepted(opts.newLpToken);
+  const dpRresult = await addLiquidity(acc, {
+    amounts: [A, newB],
+    pool,
+    contract: poolResult.contract,
+    optInToLPToken: !optedIn,
+    onProgress
+  });
+  if (!dpRresult.succeeded || !dpRresult.data.lpTokens) {
+    const err = `Withdrawal succeeded, but deposit failed: ${dpRresult.message}`;
+    console.log("Migrator.Deposit Error", err);
+    return errorResult(err, opts.newPoolId, data, poolResult.contract);
+  } else data.lpTokens = dpRresult.data.lpTokens?.toString();
+
+  const msg = `Migrated ${poolName} liquidity to #${opts.newPoolId}`;
+  const result = successResult(msg, opts.newPoolId, dpRresult.contract, data);
+  setSigningMonitor(noOp);
+  onComplete(result);
+  return result;
 }

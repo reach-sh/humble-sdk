@@ -21,34 +21,39 @@ export type ExtractorOpts = LiquidityMigratorOpts.Withdraw & {
 
 export default createLiquidityExtractor;
 
+/** @internal Helper */
+const hardExit = (e: any) => {
+  throw e;
+};
+
 /** Withdraw Liquidity from an old pool */
 export async function createLiquidityExtractor(
   acc: ReachAccount,
   opts: ExtractorOpts
 ) {
-  const { onProgress = noOp, onComplete = noOp } = opts;
+  const { onProgress = noOp, onComplete = noOp, tokens } = opts;
   const { parseCurrency, setSigningMonitor } = createReachAPI();
   const backend = opts.n2nn ? withdrawOldLPN2NN : withdrawOldLPNN2NN;
   const ctc = acc.contract(backend);
   let data = { A: "0", B: "0" };
 
   onProgress("Fetching pool tokens ...");
-  const [tokA, tokB] = await Promise.all([
-    fetchToken(acc, opts.tokA),
-    fetchToken(acc, opts.tokB)
-  ]);
+  const [tokA, tokB] =
+    tokens ||
+    (await Promise.all([
+      fetchToken(acc, opts.tokA),
+      fetchToken(acc, opts.tokB)
+    ]));
 
   if (!tokA || !tokB) {
     const err = "One or more pool tokens were not found";
-    return errorResult(err, opts.oldPoolId, data, null, "contractId");
+    return errorResult(err, opts.oldPoolId, data, null);
   }
 
   try {
+    const poolName = `${tokA.symbol}/${tokB.symbol}`;
     setSigningMonitor(() => onProgress(TXN_SIGN));
-    onProgress("Creating contract ...");
-    const hardExit = (e: any) => {
-      throw e;
-    };
+    onProgress(`Withdrawing old ${poolName} liquidity ...`);
     data = await new Promise<typeof data>((resolve) =>
       ctc.participants
         .Admin({
@@ -70,7 +75,7 @@ export async function createLiquidityExtractor(
 
     let msg = `${tokA.symbol}/${tokB.symbol} Pool`;
     msg = `${msg} Liquidity was withdrawn`;
-    const result = successResult(msg, opts.oldPoolId, ctc, data, "contractId");
+    const result = successResult(msg, opts.oldPoolId, ctc, data);
     onComplete(result);
     setSigningMonitor(noOp);
     return result;
@@ -78,7 +83,7 @@ export async function createLiquidityExtractor(
     const label = "LiquidityMigrate.Withdraw Error";
     const err = `${label}: ${JSON.stringify(error)}`;
 
-    const result = errorResult(err, opts.oldPoolId, data, ctc, "contractId");
+    const result = errorResult(err, opts.oldPoolId, data, ctc);
     onComplete(result);
     setSigningMonitor(noOp);
     console.log(`${label}:`, error);

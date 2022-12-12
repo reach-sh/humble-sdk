@@ -10,11 +10,11 @@ const deposit = jest
 const tokenIds = { tokenAId: 456, tokenBId: 123 };
 const p1Ato3B: PoolDetails = {
   ...tokenIds,
-  poolAddress: 1,
-  poolTokenId: 77889910,
-  tokenABalance: 1000,
+  poolAddress: "1",
+  poolTokenId: "77889910",
+  tokenABalance: "1000",
   tokenADecimals: 3,
-  tokenBBalance: 3000,
+  tokenBBalance: "3000",
   tokenBDecimals: 3
 };
 const depositOpts: DepositTxnOpts = {

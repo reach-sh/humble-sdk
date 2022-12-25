@@ -1,10 +1,15 @@
 import { noOp } from "../utils/utils.reach";
 import { StakerAPI, stakingBackend } from "../build/backend";
-import { parseCurrency, ReachAccount } from "../reach-helpers/index";
+import {
+  createReachAPI,
+  parseCurrency,
+  ReachAccount
+} from "../reach-helpers/index";
 import { PoolFetchOpts, StakeUpdate } from "../types";
 import { errorResult, parseContractError, successResult } from "../utils";
 import { formatStakeRewardsUpdate } from "../utils/utils.staker";
 import { fetchFarmToken } from "./Staker.Fetch";
+import { TXN_SIGN } from "../constants";
 
 /** Options for staking */
 type StakerOpts = { amountToStake: string | number } & PoolFetchOpts;
@@ -34,7 +39,7 @@ export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
   const stakeToken = await fetchFarmToken(acc, {
     poolAddress: opts.poolAddress,
     contract: contract,
-    tokenType: "stake",
+    tokenType: "stake"
   });
 
   if (!stakeToken) {
@@ -48,6 +53,7 @@ export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
   const stakerAPI = contract.apis.Staker as StakerAPI;
 
   try {
+    createReachAPI().setSigningMonitor(() => onProgress(TXN_SIGN));
     const amt = parseCurrency(amountToStake, decimals);
     const resp: StakeUpdate = await stakerAPI.stake(amt);
     const message = `Staked ${amountToStake} ${symbol}`;
@@ -56,6 +62,7 @@ export async function stakeTokensToFarm(acc: ReachAccount, opts: StakerOpts) {
     data.amountStaked = fmt.amountStaked;
     data.newTotalStaked = fmt.newTotalStaked;
     const result = successResult(message, poolAddress, contract, data);
+    createReachAPI().setSigningMonitor(noOp);
     onComplete(result);
     return result;
   } catch (error: any) {

@@ -186,6 +186,7 @@ async function deployFarmContract(
   } catch (error: any) {
     const msg = parseContractError("Deploy Farm error", error);
     console.log(msg, { error });
+    createReachAPI().setSigningMonitor(noOp);
     return errorResult(msg, null, data);
   }
 }

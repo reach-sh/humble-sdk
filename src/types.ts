@@ -87,13 +87,13 @@ export type PoolTxnOpts = ReachTxnOpts & {
   n2nn?: boolean;
 };
 
-export type ResourceIdentifier = string | number | Promise<string | number>;
+export type ResourceIdentifier = string | Promise<string>;
 
 export type TokenPair = {
   /** `Token A` id. Use '0' for network token  */
-  tokenAId: string | number;
+  tokenAId: string;
   /** `Token B` id */
-  tokenBId: string | number;
+  tokenBId: string;
 };
 
 /** Basic, high-level info about a `Liquidity Pool` */

@@ -14,7 +14,7 @@ import {
 import { errorResult, parseContractError, successResult } from "../utils";
 import { noOp } from "../utils/utils.reach";
 import { TransactionResult, DepositTxnOpts } from "../types";
-import { getDefaultDecimals } from "../constants";
+import { getDefaultDecimals, TXN_SIGN } from "../constants";
 import { formatAmounts } from "../utils/utils.pool";
 
 export type AddLiquidityResult = { lpTokens?: number };
@@ -69,7 +69,7 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
 
   // (OPTIONAL) opt-in to LP token
   const stdlib = createReachAPI();
-  const { bigNumberToNumber, bigNumberify } = stdlib;
+  const { setSigningMonitor, bigNumberToNumber, bigNumberify } = stdlib;
   const { balance: lpHeld, error } = await getAtomicBalance(acc, {
     onProgress,
     id: poolTokenId?.toString(),
@@ -77,6 +77,7 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
   });
   if (error.length) return errorResult(error, null, data, null);
   onProgress(`User has ${formatCurrency(lpHeld, defaultDecs)} LP tokens`);
+  setSigningMonitor(() => onProgress(TXN_SIGN));
 
   try {
     const [amtA, amtB] = opts.amounts;
@@ -91,7 +92,7 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
     // mintedLiquidityTokens is in atomic units
     const lpBals = { A: lpHeld, B: bigNumberify(mintedLiquidityTokens) };
     const expects = computeMint(userDeposit, poolBals, lpBals);
-    const decs = { decimals: defaultDecs }
+    const decs = { decimals: defaultDecs };
     const fLPBals = formatAmounts(lpBals, [decs, decs]);
     onProgress(`LP Balances: ${JSON.stringify(fLPBals)}`);
     onProgress(`${formatCurrency(expects)} LP Tokens expected`);
@@ -100,11 +101,13 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
     const lpTokens = await Provider.deposit(userDeposit, expects);
     data.lpTokens = bigNumberToNumber(lpTokens);
 
+    setSigningMonitor(noOp);
     return done(successResult("Funds deposited", poolAddress, ctc, data));
   } catch (e) {
     const msg = parseContractError(`Deposit failed.`, e);
     console.log(msg, { e });
     onProgress(msg);
+    setSigningMonitor(noOp);
     return done(errorResult(msg, poolAddress, { lpTokens: 0 }, ctc));
   }
 }

@@ -1,4 +1,5 @@
 import {
+  createReachAPI,
   formatAddress,
   parseAddress,
   parseCurrency,
@@ -15,7 +16,7 @@ import {
 import { errorResult, parseContractError, successResult } from "../utils";
 import { fetchToken } from "./PoolAnnouncer";
 import { checkRewardsImbalance } from "./calculateRewardsPerBlock";
-import { HUMBLE_LP_TOKEN_SYMBOL } from "../constants";
+import { HUMBLE_LP_TOKEN_SYMBOL, TXN_SIGN } from "../constants";
 
 /** Transaction options (create staking pool) */
 export type CreateFarmTxnOpts = {
@@ -153,21 +154,24 @@ async function deployFarmContract(
 
   try {
     onProgress("Deploying contract");
+    createReachAPI().setSigningMonitor(() => onProgress(TXN_SIGN));
 
-    data.poolAddress = await new Promise((resolve) =>
-      ctc.p
+    data.poolAddress = await new Promise((resolve) => {
+      const done = async () => {
+        const appId = await ctc.getInfo();
+        resolve(parseAddress(appId).toString());
+      };
+
+      return ctc.p
         .Deployer({
           opts: deployerOpts,
-          readyForRewarder: async () => {
-            const appId = await ctc.getInfo();
-            resolve(parseAddress(appId).toString());
-          },
-          readyForStakers: () => {}
+          readyForRewarder: done,
+          readyForStakers: done
         })
-        .catch(() => null)
-    );
-    if (data.poolAddress) data.amountsDeposited = rest.totalRewardsPayout;
+        .catch(() => null);
+    });
 
+    if (data.poolAddress) data.amountsDeposited = rest.totalRewardsPayout;
     if (rest.rewarder0 === formatAddress(acc)) {
       try {
         await ctc.a.Setup.fund();
@@ -176,11 +180,13 @@ async function deployFarmContract(
       }
     }
     const result = successResult("Farm created", data.poolAddress, ctc, data);
+    createReachAPI().setSigningMonitor(noOp);
     onComplete(result);
     return result;
   } catch (error: any) {
     const msg = parseContractError("Deploy Farm error", error);
     console.log(msg, { error });
+    createReachAPI().setSigningMonitor(noOp);
     return errorResult(msg, null, data);
   }
 }

@@ -6,10 +6,10 @@
 
 import { default as ANNOUNCERS } from "./json/ANNOUNCERS.json";
 
-type AppVersion = keyof typeof ANNOUNCERS;
+export type HumbleSDKVersion = keyof typeof ANNOUNCERS;
 
 /** Current major version (semver) of the SDK */
-export const BASE_VERSION: AppVersion = "v3";
+export const BASE_VERSION: HumbleSDKVersion = "v3";
 
 /** LP Token symbol for every HumbleSwap pool. Bump when sdk + contract version changes */
 export const HUMBLE_LP_TOKEN_SYMBOL = "HMBL3LT";

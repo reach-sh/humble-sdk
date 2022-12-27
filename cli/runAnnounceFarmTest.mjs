@@ -41,6 +41,7 @@ farm          pool
 New V3 (0.1.12-rc.9)
 =====================
 145285794  - (no associated pool)
+148398027  145299469
  */
 
 /** Announce a single farm */
@@ -64,7 +65,7 @@ export async function runAnnounceFarmTest(acc) {
   if (!isPartner) Red("WARNING: This is a Permissionless farm!");
 
   const { contract: farmContract } = farmResult;
-  const { poolAddress: poolId, tokens } = await validatePoolId(stakeToken);
+  const { poolAddress: poolId, tokens } = await validatePoolId(acc, stakeToken);
   const [tokA, tokB] = tokens;
   const stdlib = createReachAPI();
   const big = stdlib.bigNumberify;
@@ -131,7 +132,7 @@ export async function runAnnounceFarmTest(acc) {
   });
 }
 
-async function validatePoolId(stakeToken) {
+async function validatePoolId(acc, stakeToken) {
   Yellow("Enter Liquidity Pool Address:");
   const poolAddress = await answerOrDie("Enter 0 if no pool");
   if (poolAddress === "0") return { poolAddress, tokens: [] };

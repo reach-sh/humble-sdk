@@ -1,7 +1,6 @@
 import { addLiquidity } from "../api";
 import { LiquidityMigratorOpts } from "../build/backend";
-import { TXN_SIGN } from "../constants";
-import { createReachAPI, ReachAccount } from "../reach-helpers";
+import { ReachAccount } from "../reach-helpers";
 import { ReachTxnOptsCore } from "../types";
 import { errorResult, isNetworkToken, successResult } from "../utils";
 import { calculateOtherAmount } from "../utils/utils.swap";
@@ -27,7 +26,6 @@ export async function createLiquidityMigrator(
   opts: MigratorOpts
 ) {
   const { onProgress = noOp, onComplete = noOp } = opts;
-  const { setSigningMonitor } = createReachAPI();
   let data = { lpTokens: "0", A: "0", B: "0" }; // response data
 
   // Fetch new pool
@@ -79,7 +77,6 @@ export async function createLiquidityMigrator(
   }
 
   // Deposit into new pool
-  setSigningMonitor(() => onProgress(TXN_SIGN));
   const optedIn = await acc.tokenAccepted(opts.newLpToken);
   const dpRresult = await addLiquidity(acc, {
     amounts: [A, newB],
@@ -96,7 +93,6 @@ export async function createLiquidityMigrator(
 
   const msg = `Migrated ${poolName} liquidity to #${opts.newPoolId}`;
   const result = successResult(msg, opts.newPoolId, dpRresult.contract, data);
-  setSigningMonitor(noOp);
   onComplete(result);
   return result;
 }

@@ -113,7 +113,7 @@ export async function fetchLiquidityPool(
   const pool: PoolDetails = {
     poolAddress: ctcInfo.toString(),
     poolTokenId: parseAddress(liquidityToken).toString(),
-    mintedLiquidityTokens: reach.bigNumberToNumber(lptBals.B),
+    mintedLiquidityTokens: lptBals.B.toString(),
     n2nn,
     tokenABalance: formatCurrency(aBal, tokA?.decimals),
     tokenAFees: formatCurrency(totalFees(pABal), tokA?.decimals),

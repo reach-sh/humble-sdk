@@ -17,7 +17,8 @@ export type AnnounceOpts = {
 } & ReachTxnOpts;
 
 /**
- * Remove (un-stake) an amount from a contract. Reduces rewards entitlement.
+ * Publish a farm (i.e. notify an `Announcer` contract, so the UI and server
+ * can find the new farm.)
  * @param acc Reach account instance
  * @param opts Txn opts
  * @param opts.staticFarmData The Farm object that you wnat to announce

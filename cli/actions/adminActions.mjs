@@ -1,5 +1,5 @@
 import { runAnnounceFarmTest } from "../runAnnounceFarmTest.mjs";
-import { createFarmAnnouncer } from "../runCreateAnnouncer.mjs";
+import { createFarmAnnouncer, harvestPoolFees } from "../runCreateAnnouncer.mjs";
 import {
   createLOAnnouncer,
   createTriumvirate
@@ -25,6 +25,10 @@ export const adminActions = [
   {
     title: "Create Triumvirate (requires funds)",
     action: createTriumvirate
+  },
+  {
+    title: "Harvest Pool fees (requires funds)",
+    action: harvestPoolFees
   },
   CreateFarmAnnouncer,
   {

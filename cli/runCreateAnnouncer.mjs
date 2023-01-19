@@ -1,5 +1,7 @@
 import {
   createReachAPI,
+  fetchLiquidityPool,
+  getBlockchain,
   getNetworkProvider,
   parseAddress
 } from "@reach-sh/humble-sdk";
@@ -17,7 +19,8 @@ import {
   answerOrDie,
   exitWithMsgs,
   promptIsFunded,
-  rerunOrExit
+  rerunOrExit,
+  iout
 } from "./utils.mjs";
 
 const showTitle = (t) => {
@@ -74,6 +77,45 @@ export async function createTriumvirate(acc) {
     prompt: "Create another Triumvirate Contract?",
     do: () => createTriumvirate(acc)
   });
+}
+
+/** Harvest pool fees */
+export async function harvestPoolFees(acc) {
+  showTitle("HARVEST FEES");
+  Red("Triumvirate Pool Harvest");
+  Yellow("Enter Pool Id:");
+  const poolAddress = await answerOrDie("id");
+  if (!poolAddress) exitWithMsgs("Invalid Pool ID");
+
+  Yellow(`Does the pool contain ${getBlockchain()}`);
+  const n2nn = (await answerOrDie("y/n")) === "y";
+  const pool = await fetchLiquidityPool(acc, {
+    n2nn,
+    poolAddress,
+    includeTokens: true
+  });
+
+  if (!pool.succeeded) exitWithMsgs(`Pool id ${poolAddress} not found`);
+
+  iout(pool.message, pool.data);
+  const { contract } = pool;
+  /** Change this to someone other than me! Works on testnet only anyway */
+  const recvr = "65R3LC43QDJXQAJFSVW7SMK4URMC4V2PPSEJ6MMFT5HX2MOMURXFFGYECI";
+  const pInfo = {
+    lpFee: 25,
+    /** Change this when the triumvirate is recompiled! */
+    protoAddr: "E5SV5KGEMO7BM27TTCYTD3T2ZMYMNFYGMS7KUJSWSP5XOJHL27JONSKUUM",
+    protoFee: 5,
+    totFee: 30,
+    locked: false
+  };
+  try {
+    const result = await contract.apis.Protocol_harvest(recvr, pInfo);
+    iout("Harvest complete", result);
+  } catch (error) {
+    Red("Harvest failed");
+    console.log(error);
+  }
 }
 
 /**

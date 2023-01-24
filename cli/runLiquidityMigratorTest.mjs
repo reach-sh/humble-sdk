@@ -2,16 +2,13 @@ import {
   BASE_VERSION,
   createLiquidityExtractor,
   createLiquidityMigrator,
-  createReachAPI,
   fetchLiquidityPool,
-  formatCurrency,
   getBlockchain,
   getDefaultDecimals,
   getLegacyAnnouncers,
   getNetworkProvider,
   isNetworkToken,
   parseAddress,
-  parseCurrency,
   tokenBalance
 } from "@reach-sh/humble-sdk";
 import axios from "axios";
@@ -22,7 +19,6 @@ import {
   Yellow,
   answerOrDie,
   exitWithMsgs,
-  promptIsFunded,
   rerunOrExit,
   iout
 } from "./utils.mjs";

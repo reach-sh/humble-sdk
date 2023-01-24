@@ -6,6 +6,7 @@ import {
 import { getAnnouncers, TXN_SIGN } from "../constants";
 import {
   createReachAPI,
+  formatAddress,
   parseAddress,
   parseCurrency,
   ReachAccount
@@ -48,6 +49,7 @@ export async function createLimitOrder(
     ctc.participants
       .D({
         opts: {
+          creator: formatAddress(acc),
           ctcAnnouncer: getAnnouncers().limitOrderAnnouncer,
           tokA: isNetworkToken(tokenA) ? null : tokenA,
           tokB: isNetworkToken(tokenB) ? null : tokenB,

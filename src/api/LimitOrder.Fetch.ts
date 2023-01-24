@@ -7,6 +7,7 @@ import {
 } from "../build/backend";
 import { fetchToken } from "../participants";
 import {
+  formatAddress,
   formatCurrency,
   parseAddress,
   ReachAccount,
@@ -73,7 +74,11 @@ export async function fetchLimitOrder(
   const ctc: LimitOrderContract = contract || acc.contract(bin, contractId);
   try {
     onProgress("Fetching Limit Order ...");
-    const fmtView = (v: LimitOrderView) => ({ ...v, contractId });
+    const fmtView = (v: LimitOrderView) => ({
+      ...v,
+      contractId,
+      creator: formatAddress(v.creator)
+    });
     const view = fromMaybe<LimitOrderView>(await ctc.views.opts(), fmtView);
     const errMessage = `Limit Order may have been filled or cancelled`;
 
@@ -154,6 +159,7 @@ export function formatLimitOrder(
   const ok = (n?: number) => !isNaN(Number(n));
 
   return {
+    creator: v.creator,
     amtA: ok(decA) ? formatCurrency(v.amtA, decA) : v.amtA,
     amtB: ok(decB) ? formatCurrency(v.amtB, decB) : v.amtB,
     tokenA: safeTok(v.tokA).toString(),

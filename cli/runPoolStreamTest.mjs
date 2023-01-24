@@ -62,5 +62,5 @@ function resetTimer() {
 /** End CLI */
 function stopTest() {
   clearTimeout(exitTimeout);
-  exitWithMsgs(`Timer stopped: fetched ${pools.size} pools. Exiting ...`);
+  exitWithMsgs(`Timer stopped: listed ${pools.size} pools. Exiting ...`);
 }

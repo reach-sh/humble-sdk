@@ -57,9 +57,10 @@ export async function subscribeToPoolStream(
   // from the response will be null when unwrapped
   return ctc.events.Register.monitor(({ what }: PoolRegisterEvent) => {
     const [poolAddr, maybeTokA, tokB] = what;
-    const fPoolAddr = parseAddress(poolAddr);
-    const tokA = fromMaybe(maybeTokA, parseAddress, "0");
-    const tokBId = parseAddress(tokB);
+    const strParse = (v: any) => String(parseAddress(v));
+    const fPoolAddr = strParse(poolAddr);
+    const tokA: string = fromMaybe(maybeTokA, strParse, "0");
+    const tokBId = strParse(tokB);
     // Patch: this token was deleted after someone created a pool with it.
     // Excluded since bad thing happen when fetching the pool
     if (tokBId.toString() === "842581764") return;

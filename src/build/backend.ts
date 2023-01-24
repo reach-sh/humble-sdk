@@ -114,13 +114,15 @@ export type LimitOrderType =
 
 /** Limit Order Contract details */
 export type LimitOrderView = {
+  /** Contract creator */
+  creator: string;
   /** Token to sell */
   tokA: any;
   /** Token to buy */
   tokB: any;
-  /** amount A specified or requested in contract */
+  /** amount of `Token A` supplied in contract */
   amtA: any;
-  /** amount B specified or requested in contract */
+  /** amount of `Token B` requested in contract */
   amtB: any;
   /** Token metadata (if fetched) */
   tokens?: [ReachToken | null, ReachToken | null];

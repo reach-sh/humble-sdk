@@ -1,7 +1,9 @@
 import {
   initHumbleSDK,
   getPoolAnnouncer,
-  createReachAPI
+  createReachAPI,
+  getLegacyAnnouncers,
+  BASE_VERSION
 } from "@reach-sh/humble-sdk";
 import { loadStdlib } from "@reach-sh/stdlib";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
@@ -32,13 +34,7 @@ const humbleOpts = {
   network: "TestNet",
   providerEnv: { ALGO_TOKEN: TK, ALGO_INDEXER_TOKEN: TK }
 };
-const pubTestnet = {
-  protocolAddress: "TOZSHULV2OPPS5SFGFBWMBIMHXAUUPZYXZ7R2DR3XFVAEH652SO2AZVS6M",
-  protocolId: 145284200,
-  partnerFarmAnnouncerId: 145284434,
-  publicFarmAnnouncer: 145284477,
-  limitOrderAnnouncer: 145284618
-};
+const { staging: pubTestnet } = getLegacyAnnouncers(BASE_VERSION);
 const rf = (s) => `${s} ((requires funded account!))`;
 const sections = [
   {

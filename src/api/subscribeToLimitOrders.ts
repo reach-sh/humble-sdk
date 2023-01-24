@@ -101,7 +101,8 @@ export async function subscribeToLimitOrders(
       contractId,
       includeTokens: true,
       onProgress,
+      onComplete: onOrderFetched,
       variant
-    }).then(onOrderFetched);
+    });
   });
 }

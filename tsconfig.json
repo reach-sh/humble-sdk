@@ -12,6 +12,7 @@
     "stripInternal": true,
     "noUnusedParameters": true,
     "useDefineForClassFields": true,
+    "importHelpers": true,
     "module": "commonJs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -21,11 +22,11 @@
     "rootDir": "./src",
     "sourceMap": false,
     "strict": true,
-    "target": "es5"
+    "target": "es6"
   },
   "include": ["./src/**/*"],
   "exclude": [
-    "./node_modules",
+    "node_modules*",
     "./lib",
     "./cli",
     "./src/utils.ts",

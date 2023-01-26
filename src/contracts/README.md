@@ -28,6 +28,7 @@ This document represents all smart contracts used by the SDK. Items are ordered 
     - [subscribeToPoolStream](#subscribetopoolstream)
   - [Liquidity Migrator](#liquidity-migrator)
   - [LiquidityMigrator.Transfer](#liquiditymigratortransfer)
+  - [LiquidityMigrator.Withdraw](#liquiditymigratorwithdraw)
 
 ---
 
@@ -97,4 +98,8 @@ The **Pool announcer** (triumvirate) is found in `index.rsh`.
 ## Liquidity Migrator
 Enables migration of funds from `v2` to `v3`
 ## LiquidityMigrator.Transfer
-Withdraw funds from a `v2` pool to the user, then deposit the maximum possible pairing of those funds into a `v3` pool. 
+Withdraw funds from a `v2` pool to the user, then deposit the maximum possible pairing of those funds into a `v3` pool.\
+This is a pair of **withdraw** and **deposit** actions: each transaction can fail separately, but the user's funds remain with them in either case.
+
+## LiquidityMigrator.Withdraw
+Withdraw funds from a `v2` pool to the user. 

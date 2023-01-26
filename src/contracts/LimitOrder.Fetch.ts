@@ -5,7 +5,7 @@ import {
   LimitOrderType,
   LimitOrderView
 } from "../build/backend";
-import { fetchToken } from "../participants";
+import { fetchToken } from "../contracts/index";
 import {
   formatAddress,
   formatCurrency,

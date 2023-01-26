@@ -1,8 +1,4 @@
-import {
-  createReachAPI,
-  HUMBLE_LP_TOKEN_SYMBOL,
-  initHumbleSDK
-} from "../index";
+import { createReachAPI, initHumbleSDK } from "../index";
 import { createStakingPool } from "./StakingAdmin";
 import { StakingRewards } from "../types";
 

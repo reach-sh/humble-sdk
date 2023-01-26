@@ -1,5 +1,4 @@
 import { createReachAPI, initHumbleSDK } from "../index";
-import { ReachContract } from "../reach-helpers";
 import { DepositTxnOpts, PoolDetails } from "../types";
 import { addLiquidity } from "./LiquidityProvider.Add";
 
@@ -7,7 +6,7 @@ const MintedLPTokens = 1200000000;
 const deposit = jest
   .fn()
   .mockImplementation(() => createReachAPI().bigNumberify(MintedLPTokens));
-const tokenIds = { tokenAId: 456, tokenBId: 123 };
+const tokenIds = { tokenAId: "456", tokenBId: "123" };
 const p1Ato3B: PoolDetails = {
   ...tokenIds,
   poolAddress: "1",

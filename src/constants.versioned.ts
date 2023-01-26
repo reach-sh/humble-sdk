@@ -18,3 +18,8 @@ export const HUMBLE_LP_TOKEN_SYMBOL = "HMBL3LT";
 export function getLegacyAnnouncers(v = BASE_VERSION) {
   return ANNOUNCERS[v];
 }
+
+/** Get announcer information for current network */
+export function announcersCurrent() {
+  return ANNOUNCERS[BASE_VERSION];
+}

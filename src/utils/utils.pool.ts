@@ -1,4 +1,4 @@
-import { fetchToken } from "../participants";
+import { fetchToken } from "../contracts/index";
 import {
   errorResult,
   isNetworkToken,

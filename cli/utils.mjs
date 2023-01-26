@@ -21,7 +21,9 @@ export const fmt = (x) => {
 };
 
 /** Ensure user has funds */
-export async function promptIsFunded() {
+export async function promptIsFunded(override = false) {
+  if (override)
+    return Red("Funds-check override active: go bravely into light");
   if ((await answerOrDie("Is this account funded?")) === "y") return;
   exitWithMsgs("A funded account is required for this action");
 }

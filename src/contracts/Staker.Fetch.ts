@@ -17,7 +17,7 @@ import {
   SDKStakingRewards
 } from "../types";
 import { stakingBackend, StakingContract } from "../build/backend";
-import { fetchToken } from "../participants";
+import { fetchToken } from "../contracts/index";
 import { formatRewardsPair } from "../utils/utils.staker";
 import CHAIN_CONSTANTS from "../json";
 import { checkStakingBalance } from "./Staker.API";

@@ -10,10 +10,7 @@ import {
 import { PoolContract } from "../build/backend";
 import { parseContractError, errorResult, successResult } from "../utils";
 import { TransactionResult, ReachTxnOpts, ReachTokenPair } from "../types";
-import {
-  convertLPToTokenValue,
-  fetchLiquidityPool
-} from "../participants/index";
+import { convertLPToTokenValue, fetchLiquidityPool } from "../contracts/index";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 import { getDefaultDecimals, TXN_SIGN } from "../constants";
 import { formatAmounts } from "../utils/utils.pool";

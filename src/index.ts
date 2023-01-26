@@ -19,15 +19,14 @@ export {
   setSlippage
 } from "./constants";
 
+export * from "./constants.versioned"
+
 // CONTRACTS
 export {
   LimitOrderType,
   LiquidityMigratorOpts,
   getLimitOrderVariant
 } from "./build/backend";
-
-// DATA & DATA FETCHERS
-export * from "./participants/index";
 
 // TYPES
 export * from "./types";
@@ -73,8 +72,8 @@ export {
   SDKOpts
 } from "./reach-helpers";
 
-// LIQUIDITY PROVIDER, SWAP, FARMING
-export * from "./api/index";
+// LIQUIDITY PROVIDER, SWAP, FARMING, LIMIT ORDERS, etc
+export * from "./contracts/index";
 
 // UTILS | GENERAL
 export { isNetworkToken } from "./utils";

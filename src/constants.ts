@@ -6,6 +6,7 @@ import {
   SDKOpts
 } from "./reach-helpers";
 import { PoolProtocolInfo } from "./types";
+import { announcersCurrent } from "./constants.versioned";
 
 // Strings
 export * from "./constants.strings";
@@ -148,9 +149,10 @@ function TriumvirContractId(opts: SDKOpts) {
   const { protocolId } = opts.contractOverrides || {};
   if (protocolId) return protocolId;
 
+  const { dev, mainnet } = announcersCurrent();
   return allocateProviderApps(opts.network, [
-    145284095, // V3 Testnet Triumvirate
-    0 // V3 Mainnet Triumvirate
+    dev.protocolId, // V3 Testnet Triumvirate
+    mainnet.protocolId // V3 Mainnet Triumvirate
   ]);
 }
 
@@ -159,9 +161,10 @@ function LimitOrderAnnouncerId(opts: SDKOpts) {
   const { limitOrderAnnouncerId } = opts.contractOverrides || {};
   if (limitOrderAnnouncerId) return limitOrderAnnouncerId;
 
+  const { dev, mainnet } = announcersCurrent();
   return allocateProviderApps(opts.network, [
-    145284580, // V3 Testnet LO Announcer  (new)
-    0 // V3 Mainnet LO Announcer  (new)
+    dev.limitOrderAnnouncer, // V3 Testnet LO Announcer  (new)
+    mainnet.limitOrderAnnouncer // V3 Mainnet LO Announcer  (new)
   ]);
 }
 
@@ -170,9 +173,10 @@ function PartnerFarmAnnouncerId(opts: SDKOpts) {
   const { partnerFarmAnnouncerId } = opts.contractOverrides || {};
   if (partnerFarmAnnouncerId) return partnerFarmAnnouncerId;
 
+  const { dev, mainnet } = announcersCurrent();
   return allocateProviderApps(opts.network, [
-    145284336, // V3 Testnet Partner Farms Announcer
-    0 // V3 Mainnet Partner Farms Announcer
+    dev.partnerFarmAnnouncerId, // V3 Testnet Partner Farms Announcer
+    mainnet.partnerFarmAnnouncerId // V3 Mainnet Partner Farms Announcer
   ]);
 }
 
@@ -181,9 +185,10 @@ function PublicFarmAnnouncerId(opts: SDKOpts) {
   const { publicFarmAnnouncerId } = opts.contractOverrides || {};
   if (publicFarmAnnouncerId) return publicFarmAnnouncerId;
 
+  const { dev, mainnet } = announcersCurrent();
   return allocateProviderApps(opts.network, [
-    145284388, // V3 Testnet Public Farms Announcer
-    0 // V3 Mainnet Public Farms Announcer
+    dev.publicFarmAnnouncer, // V3 Testnet Public Farms Announcer
+    mainnet.publicFarmAnnouncer // V3 Mainnet Public Farms Announcer
   ]);
 }
 
@@ -204,10 +209,11 @@ function allocateProviderApps(net?: NetworkProvider, opts: AppIds = [0, 0]) {
 
 /** @internal Get account address (not App ID!) of Triumvirate contract for current network */
 function ProtocolAddr(opts: SDKOpts) {
+  const currentversion = announcersCurrent();
   const ADDRESSES = {
-    MainNet: "",
+    MainNet: currentversion.mainnet.protocolAddress,
     None: "",
-    TestNet: "E5SV5KGEMO7BM27TTCYTD3T2ZMYMNFYGMS7KUJSWSP5XOJHL27JONSKUUM",
+    TestNet: currentversion.dev.protocolAddress,
     get "ALGO-devnet"() {
       return ADDRESSES.TestNet;
     }

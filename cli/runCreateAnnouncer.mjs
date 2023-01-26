@@ -5,6 +5,7 @@ import {
   getNetworkProvider,
   parseAddress
 } from "@reach-sh/humble-sdk";
+import { loadStdlib } from "@reach-sh/stdlib";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
 import {
   announcerBackend,
@@ -20,7 +21,8 @@ import {
   exitWithMsgs,
   promptIsFunded,
   rerunOrExit,
-  iout
+  iout,
+  getAccountFromArgs
 } from "./utils.mjs";
 
 const showTitle = (t) => {
@@ -29,15 +31,18 @@ const showTitle = (t) => {
 };
 const triumvirs = (net) =>
   net === "TestNet" ? testnetTriumvirs : mainnetTriumvirs;
+
+/** `testnetTriumvirs` can be replaced */
 const testnetTriumvirs = [
   "BJDDWO6U6XBVRRRDANSJIMBWH6H3DOQ2X4NPEAUJZDRPM4FDNNBM3L75D4", // "THE BIG JD"
   "2Z3B5LV5RD7EBUVQ2ZJRNSJJVWODVCITIW5AAV2DCDGE3JORY75G7IFZRA", // "IFZRA"
   "3MVC26UC633QBSP4W7R6PS2OAE7W4NLYR4ULJA7SPSZRNCGETXQE4YIM3Q" // "INTEREST BROTHER"
 ];
+/** `mainnetTriumvirs` should only be changed with executive authorization */
 const mainnetTriumvirs = [
-  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", // chris.algo
+  "HUMBLEQ6AIURCOTF62JMAHUJUHS7C54EP76K3PZGH2FXV4Q5SIAUTDRZKY", // chris.swenor
   "RV5VOEDJUNZQIL4XW6E4PVURVR7UCKEKIOP22ETVKJ3OSBYGPXCYMXMOJI", // jay.mccarthy
-  "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" // andrew.kotulak
+  "6OS4X5D7734XTU46CJ2HERW6KFKS3VYVH2ZBXZCYIIBGM3DJTHULGUXGD4" // andrew.kotulak
 ];
 
 /** Create Partner or Public `Farm` announcer */
@@ -96,41 +101,6 @@ export async function harvestPoolFees(acc) {
   Red("- `triumvir` account creates a `Harvest` proposal");
   Red("- A second `triumvir` supports the proposal");
   Red("- Fees get harvested");
-  // showTitle("HARVEST FEES");
-  // Red("Triumvirate Pool Harvest");
-  // Yellow("Enter Pool Id:");
-  // const poolAddress = await answerOrDie("id");
-  // if (!poolAddress) exitWithMsgs("Invalid Pool ID");
-
-  // Yellow(`Does the pool contain ${getBlockchain()}`);
-  // const n2nn = (await answerOrDie("y/n")) === "y";
-  // const pool = await fetchLiquidityPool(acc, {
-  //   n2nn,
-  //   poolAddress,
-  //   includeTokens: true
-  // });
-
-  // if (!pool.succeeded) exitWithMsgs(`Pool id ${poolAddress} not found`);
-
-  // iout(pool.message, pool.data);
-  // const { contract } = pool;
-  // /** Change this to someone other than me! Works on testnet only anyway */
-  // const recvr = "65R3LC43QDJXQAJFSVW7SMK4URMC4V2PPSEJ6MMFT5HX2MOMURXFFGYECI";
-  // const pInfo = {
-  //   lpFee: 25,
-  //   /** Change this when the triumvirate is recompiled! */
-  //   protoAddr: "E5SV5KGEMO7BM27TTCYTD3T2ZMYMNFYGMS7KUJSWSP5XOJHL27JONSKUUM",
-  //   protoFee: 5,
-  //   totFee: 30,
-  //   locked: false
-  // };
-  // try {
-  //   const result = await contract.apis.Protocol_harvest(recvr, pInfo);
-  //   iout("Harvest complete", result);
-  // } catch (error) {
-  //   Red("Harvest failed");
-  //   console.log(error);
-  // }
 }
 
 /**

@@ -38,11 +38,11 @@
       "limitOrderAnnouncer": 155795555
     },
     "mainnet": {
-      "protocolAddress": "",
-      "protocolId": 0,
-      "partnerFarmAnnouncerId": 0,
-      "publicFarmAnnouncer": 0,
-      "limitOrderAnnouncer": 0
+      "protocolAddress": "DZTWFFO6BYYGDYLASHPKVOTHFDOS7L322SYDB7JK7EOZZLKOY5JOWBWYRU",
+      "protocolId": 1021412502,
+      "partnerFarmAnnouncerId": 1021411568,
+      "publicFarmAnnouncer": 1021411753,
+      "limitOrderAnnouncer": 1021412130
     }
   }
 }

@@ -2,10 +2,7 @@ import { ReachAccount, parseAddress, Maybe } from "../reach-helpers";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 import { announcerBackend } from "../build/backend";
 import { getPoolAnnouncer } from "../constants";
-import {
-  fetchLiquidityPool,
-  FetchPoolOpts
-} from "../participants/PoolAnnouncer";
+import { fetchLiquidityPool, FetchPoolOpts } from "../contracts/PoolAnnouncer";
 import { FetchPoolData, ReachTxnOpts, TransactionResult } from "types";
 
 /** Options for subscribing to pools */

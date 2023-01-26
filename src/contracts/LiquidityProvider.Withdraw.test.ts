@@ -5,7 +5,7 @@ import { asMaybe } from "../utils/utils.reach";
 import { withdrawLiquidity, WithdrawOpts } from "./LiquidityProvider.Withdraw";
 
 const ReturnNum = 1200000000;
-const tokenIds = { tokenAId: 0, tokenBId: 10458941 };
+const tokenIds = { tokenAId: "0", tokenBId: "10458941" };
 const p1Ato3B: PoolDetails = {
   ...tokenIds,
   poolAddress: "1",

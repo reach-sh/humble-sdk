@@ -20,6 +20,6 @@ export function getLegacyAnnouncers(v = BASE_VERSION) {
 }
 
 /** Get announcer information for current network */
-export function getCurrentAnnouncers() {
+export function announcersCurrent() {
   return ANNOUNCERS[BASE_VERSION];
 }

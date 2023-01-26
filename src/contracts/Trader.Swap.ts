@@ -3,7 +3,7 @@ import { Balances, SwapTxnOpts, TransactionResult } from "../types";
 import { formatCurrency, parseCurrency, ReachAccount } from "../reach-helpers";
 import { ASSURANCE_MSG, getSlippage } from "../constants";
 import { errorResult, isNetworkToken, parseContractError } from "../utils";
-import { fetchToken } from "../participants/index";
+import { fetchToken } from "../contracts/index";
 import { noOp } from "../utils/utils.reach";
 
 export type SwapResult = { amountIn: string; amountOut: string };

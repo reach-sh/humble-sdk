@@ -4,7 +4,7 @@ import { errorResult, isNetworkToken, parseContractError } from "../utils";
 import { noOp } from "../utils/utils.reach";
 import { PoolInfo, ReachTxnOpts, TransactionResult } from "../types";
 import { deployPool } from "../utils/utils.pool";
-import { addLiquidity } from "../api/index";
+import { addLiquidity } from "../contracts/index";
 import { HUMBLE_LP_TOKEN_SYMBOL } from "../constants";
 
 export type CreatePoolTxnOpts = {

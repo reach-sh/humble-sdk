@@ -1,4 +1,4 @@
-import { addLiquidity } from "../api";
+import { addLiquidity } from "../contracts";
 import { LiquidityMigratorOpts } from "../build/backend";
 import { ReachAccount } from "../reach-helpers";
 import { ReachTxnOptsCore } from "../types";

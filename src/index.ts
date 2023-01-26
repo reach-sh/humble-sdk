@@ -74,7 +74,7 @@ export {
 } from "./reach-helpers";
 
 // LIQUIDITY PROVIDER, SWAP, FARMING
-export * from "./api/index";
+export * from "./contracts/index";
 
 // UTILS | GENERAL
 export { isNetworkToken } from "./utils";

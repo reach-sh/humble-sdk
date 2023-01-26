@@ -1,13 +1,13 @@
-# src/api
+# src/contracts
 
-All modules for interacting with **smart contract API functions**. 
+All modules for interacting with **smart contract functionality**. 
 
-All SDK contracts are represented here. Items are grouped by contract file or type, although the directory is flat. 
+This document represents all smart contracts used by the SDK. Items are ordered by contract file or type, although the directory is flat. 
 
 ---
 
 ## Table of Contents
-- [src/api](#srcapi)
+- [src/contracts](#srccontracts)
   - [Table of Contents](#table-of-contents)
   - [Liquidity Pools](#liquidity-pools)
     - [LiquidityProvider.add](#liquidityprovideradd)
@@ -26,6 +26,8 @@ All SDK contracts are represented here. Items are grouped by contract file or ty
     - [subscribeToFarmStream](#subscribetofarmstream)
     - [subscribeToLimitOrders](#subscribetolimitorders)
     - [subscribeToPoolStream](#subscribetopoolstream)
+  - [Liquidity Migrator](#liquidity-migrator)
+  - [LiquidityMigrator.Transfer](#liquiditymigratortransfer)
 
 ---
 
@@ -92,3 +94,7 @@ The **Pool announcer** (triumvirate) is found in `index.rsh`.
 
 ---
 
+## Liquidity Migrator
+Enables migration of funds from `v2` to `v3`
+## LiquidityMigrator.Transfer
+Withdraw funds from a `v2` pool to the user, then deposit the maximum possible pairing of those funds into a `v3` pool. 

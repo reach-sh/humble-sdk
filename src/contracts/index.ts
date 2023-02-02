@@ -1,7 +1,10 @@
 /** @file Contract API Functions */
 
-// Pools
-export { swapTokens, SwapResult } from "./Trader.Swap";
+/*        */
+/* Pools  */
+/*        */
+export * from "./LiquidityMigrator.Transfer";
+export * from "./LiquidityMigrator.Withdraw";
 export { addLiquidity, AddLiquidityResult } from "./LiquidityProvider.Add";
 export {
   withdrawLiquidity,
@@ -9,37 +12,38 @@ export {
   WithdrawOpts,
   WithdrawResult
 } from "./LiquidityProvider.Withdraw";
+export * from "./PoolAdmin";
+export { fetchLiquidityPool, fetchToken } from "./PoolAnnouncer";
+export { swapTokens, SwapResult } from "./Trader.Swap";
+export {
+  calculateRewardsPerBlock,
+  checkRewardsImbalance
+} from "./calculateRewardsPerBlock";
 export {
   subscribeToPoolStream,
   PoolSubscriptionOpts
 } from "./subscribeToPoolStream";
 
-// Staking/Farming
+/*                  */
+/* Staking/Farming  */
+/*                  */
+export { announceFarm } from "./FarmStream.Announce";
 export * from "./Staker.API";
+export * from "./StakingAdmin";
 export {
   subscribeToFarmStream,
   isPartnerFarm,
   FarmSubscriptionOpts
 } from "./subscribeToFarmStream";
-export { announceFarm } from "./FarmStream.Announce";
 
-// Limit Order
+/*              */
+/* Limit Order  */
+/*              */
+export * from "./LimitOrder";
+export * from "./LimitOrder.Fetch";
+export * from "./LimitOrder.Fill";
+export * from "./LimitOrder.Cancel";
 export {
   subscribeToLimitOrders,
   LOSubscriptionOpts
 } from "./subscribeToLimitOrders";
-export * from "./LimitOrder.Fetch";
-export * from "./LimitOrder.Cancel";
-
-// Participants
-
-export { fetchLiquidityPool, fetchToken } from "./PoolAnnouncer";
-export * from "./PoolAdmin";
-export * from "./StakingAdmin";
-export * from "./LimitOrder";
-export * from "./LiquidityMigrator.Transfer";
-export * from "./LiquidityMigrator.Withdraw";
-export {
-  calculateRewardsPerBlock,
-  checkRewardsImbalance
-} from "./calculateRewardsPerBlock";

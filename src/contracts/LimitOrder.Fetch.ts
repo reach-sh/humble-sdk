@@ -93,13 +93,13 @@ export async function fetchLimitOrder(
     if (includeTokens) {
       const { tokA, tokB } = view;
       onProgress("Fetching Limit Order Tokens ...");
-      const tokenDecimals = (
-        await fetchLimitOrderTokens(acc, {
-          tokenA: safeTok(tokA) || "0",
-          tokenB: safeTok(tokB) || "0"
-        })
-      ).map((tk) => tk?.decimals);
-      data = formatLimitOrder(view, tokenDecimals as [number, number]);
+      const loTokens = await fetchLimitOrderTokens(acc, {
+        tokenA: safeTok(tokA) || "0",
+        tokenB: safeTok(tokB) || "0"
+      });
+      const tokenDecimals = loTokens.map((tk) => tk?.decimals);
+      const toFormat = {...view, tokens: loTokens }
+      data = formatLimitOrder(toFormat, tokenDecimals as [number, number]);
     } else {
       const { tokenADecimals, tokenBDecimals } = opts;
       data = formatLimitOrder(view, [tokenADecimals, tokenBDecimals]);

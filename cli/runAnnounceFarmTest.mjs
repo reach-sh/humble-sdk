@@ -13,8 +13,8 @@ import {
   parseCurrency,
   subscribeToFarmStream
 } from "@reach-sh/humble-sdk";
+import { estimateRewardsPerBlock } from "@reach-sh/humble-sdk/lib/contracts/FarmStream.Announce.js";
 import { yesno } from "@reach-sh/stdlib/ask.mjs";
-import { estimateRewardsPerBlock } from "../lib/api/FarmStream.Announce.js";
 import {
   exitWithMsgs,
   Blue,

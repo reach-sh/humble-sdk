@@ -1,10 +1,15 @@
 import {
-  fetchToken,
-  getNetworkProvider,
-  createLimitOrder,
   cancelLimitOrder,
+  createLimitOrder,
+  fetchLimitOrder,
+  fetchLimitOrderTokens,
+  fetchLiquidityPool,
+  fetchToken,
+  fillLimitOrder,
   getBlockchain,
-  fetchLimitOrder
+  getLimitOrderVariant,
+  getNetworkProvider,
+  isNetworkToken
 } from "@reach-sh/humble-sdk";
 import selectAction from "./selectAction.mjs";
 import {
@@ -61,6 +66,7 @@ export async function runCreateLimitOrder(acc) {
   });
 }
 
+/** Cancel a Limit Order */
 export async function runCancelLimitOrder(acc) {
   console.clear();
   Red(`Running CANCEL LIMIT-ORDER on ${getNetworkProvider()}`);
@@ -94,12 +100,77 @@ export async function runCancelLimitOrder(acc) {
   });
 }
 
+/** Fill a Limit Order */
+export async function runFillLimitOrder(acc) {
+  console.clear();
+  Blue(`Running FILL LIMIT-ORDER on ${getNetworkProvider()}`);
+  console.log();
+
+  Red("NOTE: Enter y when prompted to fetch Limit Order tokens!");
+  console.log();
+  const loResult = await localFetchLimitOrder(acc);
+  const { tokenA, tokenB, amtA, error } = loResult.data;
+  iout(loResult.message, error || loResult.data);
+  if (error) return exitWithMsgs("Limit order fill failure");
+
+  Yellow("Enter Pool Id:");
+  const poolId = await answerOrDie("Pool Id:");
+  const poolResult = await fetchLiquidityPool(acc, {
+    n2nn: [tokenA, tokenB].some(isNetworkToken),
+    poolAddress: poolId,
+    includeTokens: true
+  });
+  if (!poolResult.data.tokens) return exitWithMsgs("Pool not found");
+  const [A, B] = poolResult.data.tokens;
+  const tokenIds = [A, B].map(({ id }) => id);
+  const poolMatch = tokenIds.includes(tokenA) && tokenIds.includes(tokenB);
+  if (!poolMatch) return exitWithMsgs("Pool does not match token pair");
+
+  const res = await fillLimitOrder(acc, {
+    contractId: loResult.contractId,
+    poolId,
+    n2nn: [tokenA, tokenB].some(isNetworkToken),
+    sellAmount: amtA,
+    sellTokenDecimals: A.decimals,
+    minProfitB: "0",
+    buyTokenDecimals: B.decimals,
+    variant: getLimitOrderVariant({ tokenA, tokenB }),
+    aForB: A.id === tokenA,
+    onProgress: Yellow
+  });
+  iout(res.message, res.data);
+
+  rerunOrExit({
+    prompt: "Fill another Limit Order?",
+    do: () => {
+      console.clear();
+      runFillLimitOrder(acc);
+    }
+  });
+}
+
+/** Fetch a Limit Order */
 export async function runFetchLimitOrder(acc) {
   console.clear();
   Blue(`Running FETCH LIMIT-ORDER on ${getNetworkProvider()}`);
   console.log();
 
-  Yellow("Enter contract id");
+  const result = await localFetchLimitOrder(acc);
+  if (result.succeeded) iout(result.message, result.data);
+  else {
+    Red(result.message);
+    Red(JSON.stringify(result.data || {}));
+  }
+
+  rerunOrExit({
+    do: () => runFetchLimitOrder(acc),
+    prompt: "Fetch another Limit order?"
+  });
+}
+
+/** Shared helper (fetch limit order) */
+async function localFetchLimitOrder(acc) {
+  Yellow("Enter Order contract id");
   const contractId = await answerOrDie("Contract Id:");
 
   Yellow("What type of Limit Order is this?"); // "network-to-token" | "token-to-token" | "token-to-network"
@@ -118,7 +189,7 @@ export async function runFetchLimitOrder(acc) {
     tokenBDecimals = await answerOrDie("Enter Token B Decimals:");
   }
 
-  const result = await fetchLimitOrder(acc, {
+  return fetchLimitOrder(acc, {
     contractId,
     includeTokens,
     tokenADecimals,
@@ -127,21 +198,11 @@ export async function runFetchLimitOrder(acc) {
     onProgress: Yellow,
     formatResult: true
   });
-
-  if (result.succeeded) iout(result.message, result.data);
-  else {
-    Red(result.message);
-    Red(JSON.stringify(result.data || {}));
-  }
-
-  rerunOrExit({
-    do: () => runFetchLimitOrder(acc),
-    prompt: "Fetch another Limit order?"
-  });
 }
 
 function validateLOToken(tok) {
   return ["null", "0"].includes(tok) ? null : tok;
 }
-// 121499712
-// 121522870
+
+// LO: 155814273, POOL: 155813582
+// LO: 156678620, POOL: 155813582

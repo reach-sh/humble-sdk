@@ -1,7 +1,6 @@
 import { getBlockchain } from "../constants";
 import { default as ALGO } from "./ALGO.json";
 import { default as ETH } from "./ETH.json";
-import { default as MatchPools } from "./POOLS.V3-V2.json";
 
 const CHAIN_CONSTANTS = { ALGO, ETH };
 
@@ -28,6 +27,7 @@ export function convertToBlocks(duration: number) {
   return Math.ceil(totalHours * BLOCKS_PER_HR);
 }
 
+/** Convert a JS date object into its approximate Blocktime */
 export function convertDateToBlocks(date: Date, currentBlock: number) {
   // does not convert the dates to UTC
   // This is because it's only using the dates to get the number of hours between two dates
@@ -56,9 +56,4 @@ export function blockConstants(network = getBlockchain()) {
     /* Number of algo blocks written per hour */
     BLOCKS_PER_HR
   };
-}
-
-/** Get id of `HumbleSwap v2` pool for liquidity migration */ 
-export function getV2PoolId(v3PoolId: string) {
-  return MatchPools[v3PoolId as keyof typeof MatchPools] || null;
 }

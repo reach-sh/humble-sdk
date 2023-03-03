@@ -3,7 +3,6 @@
 This directory contains mostly static JSON files, as well as a helper module for interacting with some of them. 
 
 
--- 
 ## Table of Contents
 - [src/json](#srcjson)
   - [Table of Contents](#table-of-contents)
@@ -14,26 +13,30 @@ This directory contains mostly static JSON files, as well as a helper module for
     - [ANNOUNCERS.json](#announcersjson)
     - [ETH.json](#ethjson)
  
---- 
 
-## Files
+
+# Files
 The directory was initially meant to enable plug-and-play integration of new blockchain support. It has since evolved to hold other static values. 
 
+--- 
 ### index.ts
 Module index. Merges some JSON files into a single export, and also provides some utilities that depend on blockchain JSON constants (e.g. `convertDateToBlock`). 
 
 This file is accompanied by an `index.test.ts` file. 
 
+--- 
 ### _CONNECTOR.json
 This is a "template" for integrating new blockchain constants. The basic outline is: 
 - **File name** MUST be `BLOCKCHAIN.json` (e.g. `POLYGON.json`)
 - **File contents** MUST mirror the contents of `_CONNECTOR.json` (same structure with substituted values)
 
 
+--- 
 ### ALGO.json
 Algorand-specific implementation of `_CONNECTOR.json`. Contains Algorand constants. 
 
 
+--- 
 ### ANNOUNCERS.json
 This is the only file that is not directly referenced by the [module index](#indexts).
 
@@ -88,6 +91,7 @@ Each **environment object** holds a standardized set of keys. Remember, HumbleSw
 **IMPORTANT:** Any `0` value is a placeholder or indicates "no value." For example, Limit Orders were introduced in `v3`, so all `v2` environments have a `limitOrderAnnouncer` value of `0`.
 
 
+--- 
 ### ETH.json
 Ethereum-specific implementation of `_CONNECTOR.json`. Contains Ethereum constants. 
 

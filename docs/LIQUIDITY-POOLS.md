@@ -26,6 +26,9 @@ Swapping is in a separate document.
       - [addLiquidity Returns](#addliquidity-returns)
   - [fetchLiquidityPool](#fetchliquiditypool)
       - [fetchLiquidityPool Example](#fetchliquiditypool-example)
+        - [1. With Tokens](#1-with-tokens)
+        - [2. Without Tokens](#2-without-tokens)
+        - [Handle the result](#handle-the-result)
       - [fetchLiquidityPool Parameters](#fetchliquiditypool-parameters)
       - [fetchLiquidityPool Returns](#fetchliquiditypool-returns)
   - [withdrawLiquidity](#withdrawliquidity)
@@ -224,17 +227,39 @@ function fetchLiquidityPool(acc: ReachAccount, opts?: FetchPoolOpts): Promise<Fe
 Fetch data about a single liquidity pool.
 
 #### fetchLiquidityPool Example
+Get a pool ID or reference to one (see [subscribeToPoolStream](./METHODS.md#subscribeToPoolStream)). The SDK now allows you to provide tokens along with your request, so that it doesn't have to re-fetch them.\
+The following examples do not use a real pool id. 
+##### 1. With Tokens
+```typescript
+import { fetchLiquidityPool } from "@reach-sh/humble-sdk";
+
+const acc = /* account source */;
+const [tokenA, tokenB] = await Promise.all([ /* tokens source */ ])
+const { succeeded, data, message } = await fetchLiquidityPool(acc, { 
+    poolAddress: 1122334455,
+    n2nn: true,
+    includeTokens: false,
+    tokens: [ tokenA, tokenB ]
+});
+```
+
+##### 2. Without Tokens
 ```typescript
 import { fetchLiquidityPool } from "@reach-sh/humble-sdk";
 
 // Get a pool ID or reference to one (see 'subscribeToPoolStream')
 // The following is only an example, and is not a real pool id
 const acc = /* account source */;
-const { succeeded, data } = await fetchLiquidityPool(acc, { 
+const { succeeded, data, message } = await fetchLiquidityPool(acc, { 
     poolAddress: 1122334455,
-    n2nn: true 
+    n2nn: true,
+    includeTokens: true
 });
 
+```
+
+##### Handle the result
+```typescript
 if (succeeded) {
     // See 'FetchPoolTxnResult' for everything in 'data'
     const { pool, tokens } = data; 
@@ -254,7 +279,7 @@ if (succeeded) {
         "tokenBDecimals": 6
     }
      */
-}
+} else console.log(message)
 ```
 
 #### fetchLiquidityPool Parameters

@@ -193,7 +193,7 @@ type Token = {
 ---
 
 ## TransactionResult
-SDK Functions always return this object (including for errors). Additional information from the function (or underlying transaction) will be found in the `data` property.
+SDK Functions always return this object (including for errors). Additional information from the function (or underlying transaction) will be found in the `data` property. This standardizes all responses so that you don't need to `try/catch` as often in your code.
 ```typescript
 type TransactionResult<T> = {
     // When true, the transaction succeeded. Quick way to check for an error.
@@ -205,7 +205,7 @@ type TransactionResult<T> = {
     // Any useful data associated about the txn (or any error encountered). The contents will depend on the function that returns it
     data: T;
 
-    // Success or failure message 
+    // Success or failure message. Tells you what went wrong. 
     message: string;
 
     // Contract instance used for the transaction. You can reuse it in subsequent calls to reduce the amount of network requests made. 

@@ -2,9 +2,7 @@
 
 This is a module for the SDK's implementation of the `@reach-sh` standard library. It contains type definitions and helper functions that depend on a reach instance. 
 
-## Table of Contents
 - [src/reach-helpers](#srcreach-helpers)
-  - [Table of Contents](#table-of-contents)
 - [Files](#files)
     - [index.ts](#indexts)
     - [index.test.ts](#indextestts)

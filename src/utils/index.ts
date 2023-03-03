@@ -14,17 +14,16 @@ import {
 import { TransactionResult } from "../types";
 
 /**
- * @internal
  * Format a value using exponential notation
  * @param val Value
  * @returns Formatted value `1e-N`
  */
-export const exponentialFormat = (val: string) => {
+export function exponentialFormat(val: string) {
   if ((val.split(".")[1] || "").length > 7) {
     return Number.parseFloat(val).toExponential(1);
   }
   return val;
-};
+}
 
 /**
  * Assert that `tokenId` is a Network Token (e.g. ALGO, ETH)
@@ -101,7 +100,7 @@ export async function withTimeout(
  * @internal
  * `INTERNAL HELPER` | Creates a `TransactionResult` object
  */
-export function errorResult<T extends any>(
+export function errorResult<T = any>(
   message: string,
   poolAddress: number | string | null = "",
   data: T,

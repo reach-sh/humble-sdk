@@ -13,7 +13,7 @@ import { TransactionResult, ReachTxnOpts, ReachTokenPair } from "../types";
 import { convertLPToTokenValue, fetchLiquidityPool } from "../contracts/index";
 import { fromMaybe, noOp } from "../utils/utils.reach";
 import { getDefaultDecimals, TXN_SIGN } from "../constants";
-import { formatAmounts } from "../utils/utils.pool";
+import { formatAmountPair } from "../utils/utils.pool";
 
 /** Required options for withdrawing liquidity from a pool */
 export type RequiredWithdrawOpts = ReachTxnOpts & {
@@ -108,7 +108,7 @@ export async function withdrawLiquidity(
       A: parseCurrency(expectA, tokens[0].decimals),
       B: parseCurrency(expectB, tokens[1].decimals)
     });
-    const fmted = formatAmounts(apiResult, tokens);
+    const fmted = formatAmountPair(apiResult, tokens);
     data.received = { tokenA: fmted.A, tokenB: fmted.B };
 
     onProgress("Withdrawal complete! Fetching updated LP token balance");

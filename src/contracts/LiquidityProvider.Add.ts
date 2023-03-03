@@ -15,7 +15,7 @@ import { errorResult, parseContractError, successResult } from "../utils";
 import { noOp } from "../utils/utils.reach";
 import { TransactionResult, DepositTxnOpts } from "../types";
 import { getDefaultDecimals, TXN_SIGN } from "../constants";
-import { formatAmounts } from "../utils/utils.pool";
+import { formatAmountPair } from "../utils/utils.pool";
 
 export type AddLiquidityResult = { lpTokens?: number };
 
@@ -93,7 +93,7 @@ export async function addLiquidity(acc: ReachAccount, opts: DepositTxnOpts) {
     const lpBals = { A: lpHeld, B: bigNumberify(mintedLiquidityTokens) };
     const expects = computeMint(userDeposit, poolBals, lpBals);
     const decs = { decimals: defaultDecs };
-    const fLPBals = formatAmounts(lpBals, [decs, decs]);
+    const fLPBals = formatAmountPair(lpBals, [decs, decs]);
     onProgress(`LP Balances: ${JSON.stringify(fLPBals)}`);
     onProgress(`${formatCurrency(expects)} LP Tokens expected`);
     onProgress(`Depositing funds ( ${A} A, ${B} B )`);

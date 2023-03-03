@@ -1,12 +1,11 @@
 # src/json
 
 This directory contains mostly static JSON files, as well as a helper module for interacting with some of them. 
+The directory was initially meant to enable plug-and-play integration of new blockchain support. It has since evolved to hold other static values. 
 
 
-## Table of Contents
 - [src/json](#srcjson)
-  - [Table of Contents](#table-of-contents)
-  - [Files](#files)
+- [Files](#files)
     - [index.ts](#indexts)
     - [\_CONNECTOR.json](#_connectorjson)
     - [ALGO.json](#algojson)
@@ -16,7 +15,7 @@ This directory contains mostly static JSON files, as well as a helper module for
 
 
 # Files
-The directory was initially meant to enable plug-and-play integration of new blockchain support. It has since evolved to hold other static values. 
+All files are listed below.
 
 --- 
 ### index.ts

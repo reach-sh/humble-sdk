@@ -70,7 +70,7 @@ export function calculateOtherAmount(
 }
 
 /**
- * Compares the size of expected swap output to the value of the sa,e
+ * Compares the size of expected swap output to the value of the same
  * in a "ideal"/balanced pool state (i.e. if `k` value doesn't change).
  * @param amtA Input amount for swap
  * @param opts Swap options

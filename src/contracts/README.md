@@ -4,11 +4,9 @@ All modules for interacting with **smart contract functionality**.
 
 This document represents all smart contracts used by the SDK. Items are ordered by contract file or type, although the directory is flat. 
 
----
 
-## Table of Contents
 - [src/contracts](#srccontracts)
-  - [Table of Contents](#table-of-contents)
+- [Files](#files)
   - [Liquidity Pools](#liquidity-pools)
     - [LiquidityProvider.add](#liquidityprovideradd)
     - [LiquidityProvider.withdraw](#liquidityproviderwithdraw)
@@ -30,7 +28,8 @@ This document represents all smart contracts used by the SDK. Items are ordered 
   - [LiquidityMigrator.Transfer](#liquiditymigratortransfer)
   - [LiquidityMigrator.Withdraw](#liquiditymigratorwithdraw)
 
----
+
+# Files
 
 ## Liquidity Pools 
 Items relating to the file `index.rsh`. 

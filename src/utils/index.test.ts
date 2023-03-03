@@ -21,10 +21,9 @@ describe("HumbleSDK General Utils", () => {
     expect(fc).toStrictEqual("0.000001");
   });
 
-  it("Asserts a network token has an ID of 0", () => {
+  it("Asserts a network token matches Reach formats", () => {
     // @ts-expect-error
     expect(Utils.isNetworkToken(undefined)).toBe(false);
-    // @ts-expect-error
     expect(Utils.isNetworkToken(null)).toBe(true);
     expect(Utils.isNetworkToken(1234)).toBe(false);
     expect(Utils.isNetworkToken("")).toBe(false);

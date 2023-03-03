@@ -112,7 +112,7 @@ export async function deployPool(
 }
 
 /** @internal HELPER | "Create Pool failed" response */
-export function createPoolFailed<T>(e: T, m = ""): TransactionResult<T> {
+export function createPoolFailed<T = any>(e: T, m = ""): TransactionResult<T> {
   const data = e;
   const response = { poolAddress: "", succeeded: false, data, message: m };
   if (!m) response.message = parseContractError(POOL_CREATION_ERR, e);
@@ -121,7 +121,7 @@ export function createPoolFailed<T>(e: T, m = ""): TransactionResult<T> {
 }
 
 /** @internal Return a pair of human-readable currency amounts  */
-export function formatAmounts(
+export function formatAmountPair(
   d: { A?: any; B?: any } = {},
   tokenDecs: { decimals: number }[]
 ) {

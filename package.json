@@ -13,6 +13,7 @@
     "test:ci": "jest --testTimeout=300000",
     "compress": "make compress",
     "build": "rm -rf lib/ && tsc && make compress",
+    "preview": "npm run build && npm pack && rm -rf *.tgz",
     "beta": "npm run build && npm publish --tag beta"
   },
   "repository": {

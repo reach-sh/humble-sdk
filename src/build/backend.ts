@@ -3,7 +3,7 @@ import * as PoolBackend from "./index.tok_tok.js";
 import * as PoolBackendN2NN from "./index.net_tok.js";
 import * as TriumvirateBackend from "./index.triumvirate.js";
 import * as StakingBackend from "./staker.main.js";
-import * as LibBackend from "./index.main.js";
+import { getExports as getExportsMain } from "./index.main.js";
 import * as FarmAnnouncerBackend from "./farmAnnouncer.large.js";
 import * as LimitOrderAnnouncer from "./limitOrder.announcer.js";
 import * as LimitOrderN2NN from "./limitOrder.lo_net_tok.js";
@@ -47,7 +47,7 @@ export function getComputeSwap(stdlib: any): ComputeSwapFn {
  * @returns `computeMint` function for calculating the expected added liquidity.
  */
 export function getComputeMint(stdlib: any): ComputeMintFn {
-  return LibBackend.getExports(stdlib).computeMint_;
+  return getExportsMain(stdlib).computeMint_;
 }
 
 /** Determine Limit Order type from token pair */

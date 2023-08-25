@@ -6,7 +6,8 @@ import {
   formatCurrency,
   formatAddress,
   ReachToken,
-  peraTokenMetadata
+  peraTokenMetadata,
+  ReachStdLib
 } from "../reach-helpers";
 import {
   FetchPoolData,
@@ -35,6 +36,22 @@ export type FetchPoolOpts = PoolFetchOpts & {
 export const fetchPool = fetchLiquidityPool;
 
 /**
+ * Get minted liquidity tokens (unsafe)
+ * @param stdlib Reach stdlib
+ * @param lptBals Liquidity token balances
+ * @returns Minted liquidity tokens
+ */
+export const unsafeMintedLiquidityTokens = (stdlib: ReachStdLib) => (lptBals: {A: any; B: any}) => stdlib.bigNumberToNumber(lptBals.B)
+
+/**
+ * Get minted liquidity tokens
+ * @param stdlib Reach stdlib
+ * @param lptBals Liquidity token balances
+ * @returns Minted liquidity tokens
+ */
+export const safeMintedLiquidityTokens = (stdlib: ReachStdLib) => (lptBals: {A: any; B: any}) => stdlib.bigNumberToBigInt(lptBals.B).toString()
+
+/**
  * Fetch data about a pool
  * @param acc Reach Account instance
  * @param opts Additional options for fetching the pool
@@ -46,7 +63,8 @@ export async function fetchLiquidityPool(
   opts: FetchPoolOpts
 ): Promise<TransactionResult<FetchPoolData>> {
   const reach = createReachAPI();
-  const big = reach.bigNumberify;
+  const bn = reach.bigNumberify;
+  const getMintedLiquidityTokens = safeMintedLiquidityTokens(reach);
   const {
     poolAddress = "",
     n2nn = false,
@@ -105,7 +123,7 @@ export async function fetchLiquidityPool(
   onProgress(`Calculating fees ...`);
   const FEE_INFO = getFeeInfo();
   const totalFees = (protocolBal: number) =>
-    big(FEE_INFO.totFee).div(big(FEE_INFO.protoFee)).mul(protocolBal);
+    bn(FEE_INFO.totFee).div(bn(FEE_INFO.protoFee)).mul(protocolBal);
 
   // subtract fees from token balances
   const { A: aBal, B: bBal } = poolBals;
@@ -113,7 +131,7 @@ export async function fetchLiquidityPool(
   const pool: PoolDetails = {
     poolAddress: ctcInfo,
     poolTokenId: parseAddress(liquidityToken),
-    mintedLiquidityTokens: reach.bigNumberToNumber(lptBals.B),
+    mintedLiquidityTokens: getMintedLiquidityTokens(lptBals),
     n2nn,
     tokenABalance: formatCurrency(aBal, tokA?.decimals),
     tokenAFees: formatCurrency(totalFees(pABal), tokA?.decimals),
